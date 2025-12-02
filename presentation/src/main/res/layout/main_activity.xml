@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
   ~
   ~ This file is part of QKSMS.
@@ -32,18 +31,41 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="@style/Toolbar"
+            style="@style/Toolbar.Frosted"
             android:animateLayoutChanges="true"
+            android:background="@drawable/bg_toolbar_frost"
+            android:clickable="true"
+            android:elevation="8dp"
+            android:focusable="true"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:translationZ="8dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
             <org.prauga.messages.common.widget.QkTextView
                 android:id="@+id/toolbarTitle"
                 style="@style/ToolbarText"
-                android:layout_marginStart="16dp"
-                android:visibility="gone" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:textAlignment="center"
+                android:visibility="visible" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
         </androidx.appcompat.widget.Toolbar>
 
         <org.prauga.messages.common.widget.QkTextView
@@ -59,26 +81,66 @@
             tools:text="Your conversations will appear here"
             tools:visibility="invisible" />
 
+        <!--        <com.google.android.material.card.MaterialCardView-->
+        <!--            android:id="@+id/cVTopBar"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="52dp"-->
+        <!--            android:layout_marginStart="25dp"-->
+        <!--            android:layout_marginEnd="12dp"-->
+        <!--            android:layout_marginBottom="12dp"-->
+        <!--            app:cardBackgroundColor="@color/frost_surface"-->
+        <!--            app:cardCornerRadius="26dp"-->
+        <!--            app:cardElevation="6dp"-->
+        <!--            app:cardUseCompatPadding="false"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/toolbar">-->
+
+        <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+        <!--                android:layout_width="match_parent"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:paddingStart="16dp"-->
+        <!--                android:paddingEnd="16dp">-->
+
+        <!--                <ImageView-->
+        <!--                    android:id="@+id/searchIconn"-->
+        <!--                    android:layout_width="24dp"-->
+        <!--                    android:layout_height="24dp"-->
+        <!--                    android:contentDescription="@string/title_conversations"-->
+        <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+        <!--                    app:layout_constraintTop_toTopOf="parent"-->
+        <!--                    app:srcCompat="@drawable/ic_filter"-->
+        <!--                    app:tint="?attr/colorOnSurface" />-->
+
+        <!--&lt;!&ndash;                <org.prauga.messages.common.widget.QkEditText&ndash;&gt;-->
+        <!--&lt;!&ndash;                    android:id="@+id/toolbarSearchn"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    android:layout_width="0dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    android:background="@android:color/transparent"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    android:hint="@string/title_conversations"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    android:maxLines="1"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    android:paddingStart="8dp"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    app:layout_constraintStart_toEndOf="@id/searchIcon"&ndash;&gt;-->
+        <!--&lt;!&ndash;                    app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+        <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+        <!--        </com.google.android.material.card.MaterialCardView>-->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:paddingTop="12dp"
+            android:paddingTop="?attr/actionBarSize"
             android:paddingBottom="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/bottom"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintTop_toTopOf="parent"
             tools:listitem="@layout/conversation_list_item" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="8dp"
-            android:background="@drawable/ab_shadow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/searchPill"
@@ -143,8 +205,8 @@
             app:layout_constraintBottom_toTopOf="@id/snackbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:maxImageSize="32dp"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Quik.FrostedFab"
             app:rippleColor="?attr/colorControlHighlight"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Quik.FrostedFab"
             app:srcCompat="@drawable/ic_compose"
             app:tint="@android:color/white" />
 

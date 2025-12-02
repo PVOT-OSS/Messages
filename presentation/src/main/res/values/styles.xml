@@ -54,6 +54,10 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
+    <style name="Toolbar.Frosted" parent="Toolbar">
+        <item name="android:background">@drawable/bg_toolbar_frost</item>
+    </style>
+
     <style name="ToolbarText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
