@@ -9,6 +9,10 @@ android {
         version = release(36)
     }
 
+    buildFeatures {
+        viewBinding = true
+    }
+
     defaultConfig {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -17,4 +21,5 @@ android {
 
 dependencies {
     implementation(libs.androidx.ktx)
+    implementation(libs.androidx.appcompat)
 }

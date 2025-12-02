@@ -44,13 +44,28 @@ import dev.danascape.messages.repository.BackupRepository
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.backup_controller.*
-import kotlinx.android.synthetic.main.preference_view.view.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import javax.inject.Inject
 
 class BackupController : QkController<BackupView, BackupState, BackupPresenter>(), BackupView {
 
     @Inject override lateinit var presenter: BackupPresenter
+
+    private lateinit var linearLayout: LinearLayout
+    private lateinit var location: PreferenceView
+    private lateinit var restore: PreferenceView
+    private lateinit var progress: View
+    private lateinit var progressIcon: ImageView
+    private lateinit var progressTitle: TextView
+    private lateinit var progressSummary: TextView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressCancel: View
+    private lateinit var fab: LinearLayout
+    private lateinit var fabIcon: ImageView
+    private lateinit var fabLabel: TextView
 
     private val selectFolderCancelSubject: Subject<Unit> = PublishSubject.create()
     private val selectFolderConfirmSubject: Subject<Unit> = PublishSubject.create()
@@ -135,6 +150,21 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
     override fun onViewCreated() {
         super.onViewCreated()
 
+        val view = containerView ?: return
+
+        linearLayout = view.findViewById(R.id.linearLayout)
+        location = view.findViewById(R.id.location)
+        restore = view.findViewById(R.id.restore)
+        progress = view.findViewById(R.id.progress)
+        progressIcon = view.findViewById(R.id.progressIcon)
+        progressTitle = view.findViewById(R.id.progressTitle)
+        progressSummary = view.findViewById(R.id.progressSummary)
+        progressBar = view.findViewById(R.id.progressBar)
+        progressCancel = view.findViewById(R.id.progressCancel)
+        fab = view.findViewById(R.id.fab)
+        fabIcon = view.findViewById(R.id.fabIcon)
+        fabLabel = view.findViewById(R.id.fabLabel)
+
         themedActivity?.colors?.theme()?.let { theme ->
             progressBar.indeterminateTintList = ColorStateList.valueOf(theme.theme)
             progressBar.progressTintList = ColorStateList.valueOf(theme.theme)
@@ -146,7 +176,7 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
         // Make the list titles bold
         linearLayout.children
                 .mapNotNull { it as? PreferenceView }
-                .map { it.titleView }
+                .map { it.findViewById<TextView>(R.id.titleView) }
                 .forEach { it.setTypeface(it.typeface, Typeface.BOLD) }
     }
 

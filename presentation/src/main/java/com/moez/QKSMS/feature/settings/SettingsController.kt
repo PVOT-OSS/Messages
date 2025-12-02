@@ -54,10 +54,10 @@ import dev.danascape.messages.util.Preferences
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.settings_controller.*
-import kotlinx.android.synthetic.main.settings_controller.view.*
-import kotlinx.android.synthetic.main.settings_switch_widget.view.*
-import kotlinx.android.synthetic.main.settings_theme_widget.*
+import android.widget.CompoundButton
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.ScrollView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -76,6 +76,34 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
     @Inject override lateinit var presenter: SettingsPresenter
 
+    private lateinit var preferences: LinearLayout
+    private lateinit var contentView: ScrollView
+    private lateinit var themePreview: View
+    private lateinit var theme: PreferenceView
+    private lateinit var night: PreferenceView
+    private lateinit var nightStart: PreferenceView
+    private lateinit var nightEnd: PreferenceView
+    private lateinit var black: PreferenceView
+    private lateinit var autoEmoji: PreferenceView
+    private lateinit var delayed: PreferenceView
+    private lateinit var delivery: PreferenceView
+    private lateinit var unreadAtTop: PreferenceView
+    private lateinit var signature: PreferenceView
+    private lateinit var textSize: PreferenceView
+    private lateinit var autoColor: PreferenceView
+    private lateinit var systemFont: PreferenceView
+    private lateinit var showStt: PreferenceView
+    private lateinit var unicode: PreferenceView
+    private lateinit var mobileOnly: PreferenceView
+    private lateinit var autoDelete: PreferenceView
+    private lateinit var longAsMms: PreferenceView
+    private lateinit var mmsSize: PreferenceView
+    private lateinit var messsageLinkHandling: PreferenceView
+    private lateinit var disableScreenshots: PreferenceView
+    private lateinit var swipeActions: PreferenceView
+    private lateinit var about: PreferenceView
+    private lateinit var syncingProgress: ProgressBar
+
     private val signatureDialog: TextInputDialog by lazy {
         TextInputDialog(activity!!, context.getString(R.string.settings_signature_title), signatureSubject::onNext)
     }
@@ -89,7 +117,13 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private val signatureSubject: Subject<String> = PublishSubject.create()
     private val autoDeleteSubject: Subject<Int> = PublishSubject.create()
 
-    private val progressAnimator by lazy { ObjectAnimator.ofInt(syncingProgress, "progress", 0, 0) }
+    private val progressAnimator by lazy {
+        if (::syncingProgress.isInitialized) {
+            ObjectAnimator.ofInt(syncingProgress, "progress", 0, 0)
+        } else {
+            null
+        }
+    }
 
     init {
         appComponent.inject(this)
@@ -102,7 +136,37 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     }
 
     override fun onViewCreated() {
-        preferences.postDelayed({ preferences?.animateLayoutChanges = true }, 100)
+        val view = containerView ?: return
+
+        preferences = view.findViewById(R.id.preferences)
+        contentView = view.findViewById(R.id.contentView)
+        themePreview = view.findViewById(R.id.themePreview)
+        theme = view.findViewById(R.id.theme)
+        night = view.findViewById(R.id.night)
+        nightStart = view.findViewById(R.id.nightStart)
+        nightEnd = view.findViewById(R.id.nightEnd)
+        black = view.findViewById(R.id.black)
+        autoEmoji = view.findViewById(R.id.autoEmoji)
+        delayed = view.findViewById(R.id.delayed)
+        delivery = view.findViewById(R.id.delivery)
+        unreadAtTop = view.findViewById(R.id.unreadAtTop)
+        signature = view.findViewById(R.id.signature)
+        textSize = view.findViewById(R.id.textSize)
+        autoColor = view.findViewById(R.id.autoColor)
+        systemFont = view.findViewById(R.id.systemFont)
+        showStt = view.findViewById(R.id.showStt)
+        unicode = view.findViewById(R.id.unicode)
+        mobileOnly = view.findViewById(R.id.mobileOnly)
+        autoDelete = view.findViewById(R.id.autoDelete)
+        longAsMms = view.findViewById(R.id.longAsMms)
+        mmsSize = view.findViewById(R.id.mmsSize)
+        messsageLinkHandling = view.findViewById(R.id.messsageLinkHandling)
+        disableScreenshots = view.findViewById(R.id.disableScreenshots)
+        swipeActions = view.findViewById(R.id.swipeActions)
+        about = view.findViewById(R.id.about)
+        syncingProgress = view.findViewById(R.id.syncingProgress)
+
+        preferences.postDelayed({ preferences.animateLayoutChanges = true }, 100)
 
         when (Build.VERSION.SDK_INT >= 29) {
             true -> nightModeDialog.adapter.setData(R.array.night_modes)
@@ -153,6 +217,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
     override fun messageLinkHandlingSelected(): Observable<Int> = messageLinkHandlingDialog.adapter.menuItemClicks
 
+    private fun PreferenceView.checkbox(): CompoundButton? = findViewById(R.id.checkbox)
+
     override fun render(state: SettingsState) {
         themePreview.setBackgroundTint(state.theme)
         night.summary = state.nightModeSummary
@@ -163,16 +229,16 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         nightEnd.summary = state.nightEnd
 
         black.setVisible(state.nightModeId != Preferences.NIGHT_MODE_OFF)
-        black.checkbox.isChecked = state.black
+        black.checkbox()?.isChecked = state.black
 
-        autoEmoji.checkbox.isChecked = state.autoEmojiEnabled
+        autoEmoji.checkbox()?.isChecked = state.autoEmojiEnabled
 
         delayed.summary = state.sendDelaySummary
         sendDelayDialog.adapter.selectedItem = state.sendDelayId
 
-        delivery.checkbox.isChecked = state.deliveryEnabled
+        delivery.checkbox()?.isChecked = state.deliveryEnabled
 
-        unreadAtTop.checkbox.isChecked = state.unreadAtTopEnabled
+        unreadAtTop.checkbox()?.isChecked = state.unreadAtTopEnabled
 
         signature.summary = state.signature.takeIf { it.isNotBlank() }
                 ?: context.getString(R.string.settings_signature_summary)
@@ -180,14 +246,14 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         textSize.summary = state.textSizeSummary
         textSizeDialog.adapter.selectedItem = state.textSizeId
 
-        autoColor.checkbox.isChecked = state.autoColor
+        autoColor.checkbox()?.isChecked = state.autoColor
 
-        systemFont.checkbox.isChecked = state.systemFontEnabled
+        systemFont.checkbox()?.isChecked = state.systemFontEnabled
 
-        showStt.checkbox.isChecked = state.showStt
+        showStt.checkbox()?.isChecked = state.showStt
 
-        unicode.checkbox.isChecked = state.stripUnicodeEnabled
-        mobileOnly.checkbox.isChecked = state.mobileOnly
+        unicode.checkbox()?.isChecked = state.stripUnicodeEnabled
+        mobileOnly.checkbox()?.isChecked = state.mobileOnly
 
         autoDelete.summary = when (state.autoDelete) {
             0 -> context.getString(R.string.settings_auto_delete_never)
@@ -195,7 +261,7 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
                     R.plurals.settings_auto_delete_summary, state.autoDelete, state.autoDelete)
         }
 
-        longAsMms.checkbox.isChecked = state.longAsMms
+        longAsMms.checkbox()?.isChecked = state.longAsMms
 
         mmsSize.summary = state.maxMmsSizeSummary
         mmsSizeDialog.adapter.selectedItem = state.maxMmsSizeId
@@ -203,7 +269,7 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         messsageLinkHandling.summary = state.messageLinkHandlingSummary
         messageLinkHandlingDialog.adapter.selectedItem = state.messageLinkHandlingId
 
-        disableScreenshots.checkbox.isChecked = state.disableScreenshotsEnabled
+        disableScreenshots.checkbox()?.isChecked = state.disableScreenshotsEnabled
 
         when (state.syncProgress) {
             is SyncRepository.SyncProgress.Idle -> syncingProgress.isVisible = false
@@ -211,7 +277,7 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
             is SyncRepository.SyncProgress.Running -> {
                 syncingProgress.isVisible = true
                 syncingProgress.max = state.syncProgress.max
-                progressAnimator.apply { setIntValues(syncingProgress.progress, state.syncProgress.progress) }.start()
+                progressAnimator?.apply { setIntValues(syncingProgress.progress, state.syncProgress.progress) }?.start()
                 syncingProgress.isIndeterminate = state.syncProgress.indeterminate
             }
         }

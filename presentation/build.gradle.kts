@@ -22,7 +22,6 @@ plugins {
     alias(libs.plugins.android.application)
     id("realm-android")   // must come before Kotlin plugins
     alias(libs.plugins.kotlin.android)
-    id("kotlin-android-extensions")
     id("kotlin-kapt")
 }
 
@@ -97,10 +96,6 @@ android {
     lint {
         abortOnError = false
     }
-}
-
-androidExtensions {
-    isExperimental = true
 }
 
 dependencies {

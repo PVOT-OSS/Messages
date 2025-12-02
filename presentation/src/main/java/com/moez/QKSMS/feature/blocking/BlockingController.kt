@@ -31,20 +31,28 @@ import dev.danascape.messages.feature.blocking.messages.BlockedMessagesControlle
 import dev.danascape.messages.feature.blocking.numbers.BlockedNumbersController
 import dev.danascape.messages.feature.blocking.filters.MessageContentFiltersController
 import dev.danascape.messages.injection.appComponent
-import kotlinx.android.synthetic.main.blocking_controller.*
-import kotlinx.android.synthetic.main.settings_switch_widget.view.*
+import android.widget.CompoundButton
+import android.widget.LinearLayout
+import dev.danascape.messages.common.widget.PreferenceView
 import javax.inject.Inject
 
 class BlockingController : QkController<BlockingView, BlockingState, BlockingPresenter>(), BlockingView {
+
+    @Inject lateinit var colors: Colors
+    @Inject override lateinit var presenter: BlockingPresenter
+
+    private lateinit var parent: LinearLayout
+    private lateinit var blockingManager: PreferenceView
+    private lateinit var blockedNumbers: PreferenceView
+    private lateinit var messageContentFilters: PreferenceView
+    private lateinit var blockedMessages: PreferenceView
+    private lateinit var drop: PreferenceView
 
     override val blockingManagerIntent by lazy { blockingManager.clicks() }
     override val blockedNumbersIntent by lazy { blockedNumbers.clicks() }
     override val messageContentFiltersIntent by lazy { messageContentFilters.clicks() }
     override val blockedMessagesIntent by lazy { blockedMessages.clicks() }
     override val dropClickedIntent by lazy { drop.clicks() }
-
-    @Inject lateinit var colors: Colors
-    @Inject override lateinit var presenter: BlockingPresenter
 
     init {
         appComponent.inject(this)
@@ -54,7 +62,17 @@ class BlockingController : QkController<BlockingView, BlockingState, BlockingPre
 
     override fun onViewCreated() {
         super.onViewCreated()
-        parent.postDelayed({ parent?.animateLayoutChanges = true }, 100)
+
+        val view = containerView ?: return
+
+        parent = view.findViewById(R.id.parent)
+        blockingManager = view.findViewById(R.id.blockingManager)
+        blockedNumbers = view.findViewById(R.id.blockedNumbers)
+        messageContentFilters = view.findViewById(R.id.messageContentFilters)
+        blockedMessages = view.findViewById(R.id.blockedMessages)
+        drop = view.findViewById(R.id.drop)
+
+        parent.postDelayed({ parent.animateLayoutChanges = true }, 100)
     }
 
     override fun onAttach(view: View) {
@@ -66,7 +84,7 @@ class BlockingController : QkController<BlockingView, BlockingState, BlockingPre
 
     override fun render(state: BlockingState) {
         blockingManager.summary = state.blockingManager
-        drop.checkbox.isChecked = state.dropEnabled
+        drop.findViewById<CompoundButton>(R.id.checkbox)?.isChecked = state.dropEnabled
         blockedMessages.isEnabled = !state.dropEnabled
     }
 

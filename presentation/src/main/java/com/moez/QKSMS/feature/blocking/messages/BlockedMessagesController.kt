@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package dev.danascape.messages.feature.blocking.messages
 
 import android.content.Context
@@ -31,8 +32,8 @@ import dev.danascape.messages.feature.blocking.BlockingDialog
 import dev.danascape.messages.injection.appComponent
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.blocked_messages_controller.*
-import kotlinx.android.synthetic.main.container_activity.*
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 
 class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessagesState, BlockedMessagesPresenter>(),
@@ -51,6 +52,9 @@ class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessa
     @Inject lateinit var context: Context
     @Inject override lateinit var presenter: BlockedMessagesPresenter
 
+    private lateinit var conversations: RecyclerView
+    private lateinit var empty: TextView
+
     init {
         appComponent.inject(this)
         retainViewMode = RetainViewMode.RETAIN_DETACH
@@ -59,6 +63,12 @@ class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessa
 
     override fun onViewCreated() {
         super.onViewCreated()
+
+        val view = containerView ?: return
+
+        conversations = view.findViewById(R.id.conversations)
+        empty = view.findViewById(R.id.empty)
+
         blockedMessagesAdapter.emptyView = empty
         conversations.adapter = blockedMessagesAdapter
     }
@@ -90,8 +100,8 @@ class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessa
     override fun render(state: BlockedMessagesState) {
         blockedMessagesAdapter.updateData(state.data)
 
-        themedActivity?.toolbar?.menu?.findItem(R.id.block)?.isVisible = state.selected > 0
-        themedActivity?.toolbar?.menu?.findItem(R.id.delete)?.isVisible = state.selected > 0
+        themedActivity?.toolbarView?.menu?.findItem(R.id.block)?.isVisible = state.selected > 0
+        themedActivity?.toolbarView?.menu?.findItem(R.id.delete)?.isVisible = state.selected > 0
 
         setTitle(when (state.selected) {
             0 -> context.getString(R.string.blocked_messages_title)

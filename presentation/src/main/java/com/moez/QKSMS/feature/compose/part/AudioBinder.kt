@@ -34,6 +34,7 @@ import dev.danascape.messages.common.util.extensions.setBackgroundTint
 import dev.danascape.messages.common.util.extensions.setTint
 import dev.danascape.messages.common.util.extensions.withAlpha
 import dev.danascape.messages.common.widget.BubbleImageView
+import dev.danascape.messages.databinding.MmsAudioPreviewListItemBinding
 import dev.danascape.messages.extensions.isAudio
 import dev.danascape.messages.extensions.resourceExists
 import dev.danascape.messages.feature.compose.MessagesAdapter
@@ -43,8 +44,6 @@ import dev.danascape.messages.util.GlideApp
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.mms_audio_preview_list_item.*
-import kotlinx.android.synthetic.main.mms_image_preview_list_item.thumbnail
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -72,33 +71,38 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                 .subscribeOn(Schedulers.single())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
-                    viewHolder?.seekBar?.progress = QkMediaPlayer.currentPosition
+                    viewHolder?.containerView
+                        ?.findViewById<SeekBar>(R.id.seekBar)
+                        ?.progress = QkMediaPlayer.currentPosition
                 }
                 .subscribe()
         }
     }
 
     private fun uiToPlaying(viewHolder: QkViewHolder) {
-        viewHolder.seekBar.max = QkMediaPlayer.duration
-        viewHolder.seekBar.isEnabled = true
-        viewHolder.seekBar.progress = QkMediaPlayer.currentPosition
-        viewHolder.playPause.setImageResource(R.drawable.exo_icon_pause)
-        viewHolder.playPause.tag = QkMediaPlayer.PlayingState.Playing
-        viewHolder.metadataTitle.isSelected = true     // start marquee
+        val binding = MmsAudioPreviewListItemBinding.bind(viewHolder.containerView)
+        binding.seekBar.max = QkMediaPlayer.duration
+        binding.seekBar.isEnabled = true
+        binding.seekBar.progress = QkMediaPlayer.currentPosition
+        binding.playPause.setImageResource(R.drawable.exo_icon_pause)
+        binding.playPause.tag = QkMediaPlayer.PlayingState.Playing
+        binding.metadataTitle.isSelected = true     // start marquee
     }
 
     private fun uiToPaused(viewHolder: QkViewHolder) {
-        viewHolder.playPause.setImageResource(R.drawable.exo_icon_play)
-        viewHolder.playPause.tag = QkMediaPlayer.PlayingState.Paused
+        val binding = MmsAudioPreviewListItemBinding.bind(viewHolder.containerView)
+        binding.playPause.setImageResource(R.drawable.exo_icon_play)
+        binding.playPause.tag = QkMediaPlayer.PlayingState.Paused
     }
 
     private fun uiToStopped(viewHolder: QkViewHolder) {
-        viewHolder.seekBar.progress = 0
-        viewHolder.seekBar.max = 0
-        viewHolder.seekBar.isEnabled = false
-        viewHolder.playPause.setImageResource(R.drawable.exo_icon_play)
-        viewHolder.playPause.tag = QkMediaPlayer.PlayingState.Stopped
-        viewHolder.metadataTitle.isSelected = false   // stop marquee
+        val binding = MmsAudioPreviewListItemBinding.bind(viewHolder.containerView)
+        binding.seekBar.progress = 0
+        binding.seekBar.max = 0
+        binding.seekBar.isEnabled = false
+        binding.playPause.setImageResource(R.drawable.exo_icon_play)
+        binding.playPause.tag = QkMediaPlayer.PlayingState.Stopped
+        binding.metadataTitle.isSelected = false   // stop marquee
     }
 
     override fun bindPart(
@@ -108,12 +112,14 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
         canGroupWithPrevious: Boolean,
         canGroupWithNext: Boolean,
     ) {
+        val binding = MmsAudioPreviewListItemBinding.bind(holder.containerView)
+
         // click on background - passes back to compose view model
         holder.containerView.setOnClickListener { clicks.onNext(part.id) }
 
         // play/pause button click handling
-        holder.playPause.setOnClickListener {
-            when (holder.playPause.tag) {
+        binding.playPause.setOnClickListener {
+            when (binding.playPause.tag) {
                 QkMediaPlayer.PlayingState.Playing -> {
                     if (audioState.partId == part.id) {
                         QkMediaPlayer.pause()
@@ -203,10 +209,10 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                 holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary)
 
         // sound wave
-        holder.soundWave.setTint(primaryColor)
+        binding.soundWave.setTint(primaryColor)
 
         // seek bar
-        holder.seekBar.apply {
+        binding.seekBar.apply {
             setTint(secondaryColor)
             thumbTintList = ColorStateList.valueOf(secondaryColor)
 
@@ -222,7 +228,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
         }
 
         // playPause button
-        holder.playPause. apply {
+        binding.playPause. apply {
             if ((audioState.partId == part.id) &&
                 (audioState.state == QkMediaPlayer.PlayingState.Playing))
                 uiToPlaying(holder)
@@ -241,7 +247,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                 setDataSource(context, part.getUri())
 
             // metadata title
-            holder.metadataTitle.apply {
+            binding.metadataTitle.apply {
                 text = extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
 
                 if (text.isEmpty())
@@ -254,7 +260,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
             }
 
             // bubble / embedded image
-            holder.thumbnail.apply {
+            binding.thumbnail.apply {
                 bubbleStyle = when {
                     !canGroupWithPrevious && canGroupWithNext ->
                         if (message.isMe()) BubbleImageView.Style.OUT_FIRST else BubbleImageView.Style.IN_FIRST
@@ -267,18 +273,18 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
 
                 val embeddedPicture = embeddedPicture
                 if (embeddedPicture == null) {
-                    holder.frame.layoutParams.height = (holder.frame.layoutParams.width / 2)
+                    binding.frame.layoutParams.height = (binding.frame.layoutParams.width / 2)
                     setTint(secondaryColor)
                     setImageResource(R.drawable.rectangle)
                 } else {
-                    holder.frame.layoutParams.height = holder.frame.layoutParams.width
+                    binding.frame.layoutParams.height = binding.frame.layoutParams.width
                     setTint(null)
                     GlideApp.with(context)
                         .asBitmap()
                         .load(embeddedPicture)
                         .override(
-                            holder.frame.layoutParams.width,
-                            holder.frame.layoutParams.height
+                            binding.frame.layoutParams.width,
+                            binding.frame.layoutParams.height
                         )
                         .into(this)
                 }

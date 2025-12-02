@@ -42,6 +42,10 @@ class RadioPreferenceView @JvmOverloads constructor(
     @Inject lateinit var colors: Colors
     private var layout: RadioPreferenceViewBinding
 
+    val radioButton get() = layout.radioButton
+    val titleView get() = layout.titleView
+    val summaryView get() = layout.summaryView
+
     var title: String? = null
         set(value) {
             field = value

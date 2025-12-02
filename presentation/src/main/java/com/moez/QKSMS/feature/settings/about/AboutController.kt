@@ -24,33 +24,39 @@ import dev.danascape.messages.BuildConfig
 import dev.danascape.messages.R
 import dev.danascape.messages.common.base.QkController
 import dev.danascape.messages.common.widget.PreferenceView
+import dev.danascape.messages.databinding.AboutControllerBinding
 import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.about_controller.*
 import javax.inject.Inject
 
 class AboutController : QkController<AboutView, Unit, AboutPresenter>(), AboutView {
 
     @Inject override lateinit var presenter: AboutPresenter
 
+    private var _binding: AboutControllerBinding? = null
+    private val binding get() = _binding!!
+
     init {
         appComponent.inject(this)
         layoutRes = R.layout.about_controller
     }
 
-    override fun onViewCreated() {
-        version.summary = BuildConfig.VERSION_NAME
-    }
-
     override fun onAttach(view: View) {
         super.onAttach(view)
+        _binding = AboutControllerBinding.bind(view)
+        binding.version.summary = BuildConfig.VERSION_NAME
         presenter.bindIntents(this)
         setTitle(R.string.about_title)
         showBackButton(true)
     }
 
-    override fun preferenceClicks(): Observable<PreferenceView> = (0 until preferences.childCount)
-            .map { index -> preferences.getChildAt(index) }
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        _binding = null
+    }
+
+    override fun preferenceClicks(): Observable<PreferenceView> = (0 until binding.preferences.childCount)
+            .map { index -> binding.preferences.getChildAt(index) }
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
             .let { preferences -> Observable.merge(preferences) }

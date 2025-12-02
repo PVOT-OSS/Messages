@@ -22,21 +22,22 @@ import android.content.Context
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.RelativeLayout
-import dev.danascape.messages.R
 import dev.danascape.messages.common.util.Colors
 import dev.danascape.messages.common.util.extensions.setBackgroundTint
 import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.databinding.ContactChipDetailedBinding
 import dev.danascape.messages.injection.appComponent
 import dev.danascape.messages.model.Recipient
-import kotlinx.android.synthetic.main.contact_chip_detailed.view.*
 import javax.inject.Inject
 
 class DetailedChipView(context: Context) : RelativeLayout(context) {
 
     @Inject lateinit var colors: Colors
 
+    private val binding: ContactChipDetailedBinding
+
     init {
-        View.inflate(context, R.layout.contact_chip_detailed, this)
+        binding = ContactChipDetailedBinding.inflate(android.view.LayoutInflater.from(context), this, true)
         appComponent.inject(this)
 
         setOnClickListener { hide() }
@@ -48,15 +49,15 @@ class DetailedChipView(context: Context) : RelativeLayout(context) {
     }
 
     fun setRecipient(recipient: Recipient) {
-        avatar.setRecipient(recipient)
-        name.text = recipient.contact?.name?.takeIf { it.isNotBlank() } ?: recipient.address
-        info.text = recipient.address
+        binding.avatar.setRecipient(recipient)
+        binding.name.text = recipient.contact?.name?.takeIf { it.isNotBlank() } ?: recipient.address
+        binding.info.text = recipient.address
 
         colors.theme(recipient).let { theme ->
-            card.setBackgroundTint(theme.theme)
-            name.setTextColor(theme.textPrimary)
-            info.setTextColor(theme.textTertiary)
-            delete.setTint(theme.textPrimary)
+            binding.card.setBackgroundTint(theme.theme)
+            binding.name.setTextColor(theme.textPrimary)
+            binding.info.setTextColor(theme.textTertiary)
+            binding.delete.setTint(theme.textPrimary)
         }
     }
 
@@ -77,7 +78,7 @@ class DetailedChipView(context: Context) : RelativeLayout(context) {
     }
 
     fun setOnDeleteListener(listener: (View) -> Unit) {
-        delete.setOnClickListener(listener)
+        binding.delete.setOnClickListener(listener)
     }
 
 }

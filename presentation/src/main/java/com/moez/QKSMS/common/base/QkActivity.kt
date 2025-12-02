@@ -16,23 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package dev.danascape.messages.common.base
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.viewbinding.ViewBinding
+import dev.danascape.messages.R
+import dev.danascape.messages.app.BaseViewBindingActivity
 import dev.danascape.messages.util.Preferences
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.toolbar.*
 import javax.inject.Inject
 
-abstract class QkActivity : AppCompatActivity() {
-    @Inject lateinit var prefs: Preferences
+abstract class QkActivity<Vb : ViewBinding>(
+    inflate: (LayoutInflater) -> Vb
+) : BaseViewBindingActivity<Vb>(inflate) {
+    @Inject
+    lateinit var prefs: Preferences
 
     protected val menu: Subject<Menu> = BehaviorSubject.create()
 
@@ -54,19 +62,20 @@ abstract class QkActivity : AppCompatActivity() {
                 onBackPressed()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     override fun setContentView(layoutResID: Int) {
         super.setContentView(layoutResID)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findToolbar())
         title = title // The title may have been set before layout inflation
     }
 
     override fun setContentView(view: View?) {
         super.setContentView(view)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findToolbar())
         title = title // The title may have been set before layout inflation
     }
 
@@ -76,7 +85,7 @@ abstract class QkActivity : AppCompatActivity() {
 
     override fun setTitle(title: CharSequence?) {
         super.setTitle(title)
-        toolbarTitle?.text = title
+        findToolbarTitle()?.text = title
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -93,10 +102,15 @@ abstract class QkActivity : AppCompatActivity() {
 
     private fun disableScreenshots(disableScreenshots: Boolean) {
         if (disableScreenshots) {
-            window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE)
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_SECURE,
+                WindowManager.LayoutParams.FLAG_SECURE
+            )
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
         }
     }
 
+    protected fun findToolbar(): Toolbar? = findViewById(R.id.toolbar)
+    protected fun findToolbarTitle(): TextView? = findViewById(R.id.toolbarTitle)
 }

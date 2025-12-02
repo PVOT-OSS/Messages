@@ -15,8 +15,7 @@ import dev.danascape.messages.util.Preferences
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.blocking_manager_controller.*
-import kotlinx.android.synthetic.main.blocking_manager_list_option.view.*
+import android.widget.ImageView
 import javax.inject.Inject
 
 class BlockingManagerController : QkController<BlockingManagerView, BlockingManagerState, BlockingManagerPresenter>(),
@@ -24,6 +23,11 @@ class BlockingManagerController : QkController<BlockingManagerView, BlockingMana
 
     @Inject lateinit var colors: Colors
     @Inject override lateinit var presenter: BlockingManagerPresenter
+
+    private lateinit var qksms: BlockingManagerPreferenceView
+    private lateinit var callBlocker: BlockingManagerPreferenceView
+    private lateinit var callControl: BlockingManagerPreferenceView
+    private lateinit var shouldIAnswer: BlockingManagerPreferenceView
 
     private val activityResumedSubject: PublishSubject<Unit> = PublishSubject.create()
 
@@ -33,11 +37,15 @@ class BlockingManagerController : QkController<BlockingManagerView, BlockingMana
         layoutRes = R.layout.blocking_manager_controller
     }
 
-    override fun onAttach(view: View) {
-        super.onAttach(view)
-        presenter.bindIntents(this)
-        setTitle(R.string.blocking_manager_title)
-        showBackButton(true)
+    override fun onViewCreated() {
+        super.onViewCreated()
+
+        val view = containerView ?: return
+
+        qksms = view.findViewById(R.id.qksms)
+        callBlocker = view.findViewById(R.id.callBlocker)
+        callControl = view.findViewById(R.id.callControl)
+        shouldIAnswer = view.findViewById(R.id.shouldIAnswer)
 
         val states = arrayOf(
                 intArrayOf(android.R.attr.state_activated),
@@ -46,10 +54,17 @@ class BlockingManagerController : QkController<BlockingManagerView, BlockingMana
         val textTertiary = view.context.resolveThemeColor(android.R.attr.textColorTertiary)
         val imageTintList = ColorStateList(states, intArrayOf(colors.theme().theme, textTertiary))
 
-        qksms.action.imageTintList = imageTintList
-        callBlocker.action.imageTintList = imageTintList
-        callControl.action.imageTintList = imageTintList
-        shouldIAnswer.action.imageTintList = imageTintList
+        qksms.findViewById<ImageView>(R.id.action).imageTintList = imageTintList
+        callBlocker.findViewById<ImageView>(R.id.action).imageTintList = imageTintList
+        callControl.findViewById<ImageView>(R.id.action).imageTintList = imageTintList
+        shouldIAnswer.findViewById<ImageView>(R.id.action).imageTintList = imageTintList
+    }
+
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+        presenter.bindIntents(this)
+        setTitle(R.string.blocking_manager_title)
+        showBackButton(true)
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -57,23 +72,23 @@ class BlockingManagerController : QkController<BlockingManagerView, BlockingMana
     }
 
     override fun render(state: BlockingManagerState) {
-        qksms.action.setImageResource(getActionIcon(true))
-        qksms.action.isActivated = true
-        qksms.action.isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_QKSMS
+        qksms.findViewById<ImageView>(R.id.action).setImageResource(getActionIcon(true))
+        qksms.findViewById<ImageView>(R.id.action).isActivated = true
+        qksms.findViewById<ImageView>(R.id.action).isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_QKSMS
 
-        callBlocker.action.setImageResource(getActionIcon(state.callBlockerInstalled))
-        callBlocker.action.isActivated = state.callBlockerInstalled
-        callBlocker.action.isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_CB
+        callBlocker.findViewById<ImageView>(R.id.action).setImageResource(getActionIcon(state.callBlockerInstalled))
+        callBlocker.findViewById<ImageView>(R.id.action).isActivated = state.callBlockerInstalled
+        callBlocker.findViewById<ImageView>(R.id.action).isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_CB
                 && state.callBlockerInstalled
 
-        callControl.action.setImageResource(getActionIcon(state.callControlInstalled))
-        callControl.action.isActivated = state.callControlInstalled
-        callControl.action.isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_CC
+        callControl.findViewById<ImageView>(R.id.action).setImageResource(getActionIcon(state.callControlInstalled))
+        callControl.findViewById<ImageView>(R.id.action).isActivated = state.callControlInstalled
+        callControl.findViewById<ImageView>(R.id.action).isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_CC
                 && state.callControlInstalled
 
-        shouldIAnswer.action.setImageResource(getActionIcon(state.siaInstalled))
-        shouldIAnswer.action.isActivated = state.siaInstalled
-        shouldIAnswer.action.isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_SIA
+        shouldIAnswer.findViewById<ImageView>(R.id.action).setImageResource(getActionIcon(state.siaInstalled))
+        shouldIAnswer.findViewById<ImageView>(R.id.action).isActivated = state.siaInstalled
+        shouldIAnswer.findViewById<ImageView>(R.id.action).isInvisible = state.blockingManager != Preferences.BLOCKING_MANAGER_SIA
                 && state.siaInstalled
     }
 

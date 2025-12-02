@@ -37,7 +37,7 @@ import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.conversation_info_controller.*
+import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 
 class ConversationInfoController(
@@ -48,6 +48,8 @@ class ConversationInfoController(
     @Inject lateinit var blockingDialog: BlockingDialog
     @Inject lateinit var navigator: Navigator
     @Inject lateinit var adapter: ConversationInfoAdapter
+
+    private lateinit var recyclerView: RecyclerView
 
     private val nameDialog: TextInputDialog by lazy {
         TextInputDialog(activity!!, activity!!.getString(R.string.info_name), nameChangeSubject::onNext)
@@ -67,6 +69,12 @@ class ConversationInfoController(
     }
 
     override fun onViewCreated() {
+        super.onViewCreated()
+
+        val view = containerView ?: return
+
+        recyclerView = view.findViewById(R.id.recyclerView)
+
         recyclerView.adapter = adapter
         recyclerView.addItemDecoration(GridSpacingItemDecoration(adapter, activity!!))
         recyclerView.layoutManager = GridLayoutManager(activity, 3).apply {

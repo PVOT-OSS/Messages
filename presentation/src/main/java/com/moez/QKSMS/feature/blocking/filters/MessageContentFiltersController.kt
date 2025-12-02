@@ -35,9 +35,11 @@ import dev.danascape.messages.model.MessageContentFilterData
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.message_content_filters_add_dialog.view.*
-import kotlinx.android.synthetic.main.message_content_filters_controller.*
-import kotlinx.android.synthetic.main.settings_switch_widget.view.*
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 
 class MessageContentFiltersController : QkController<MessageContentFiltersView, MessageContentFiltersState,
@@ -45,6 +47,10 @@ class MessageContentFiltersController : QkController<MessageContentFiltersView, 
 
     @Inject override lateinit var presenter: MessageContentFiltersPresenter
     @Inject lateinit var colors: Colors
+
+    private lateinit var add: ImageView
+    private lateinit var filters: RecyclerView
+    private lateinit var empty: TextView
 
     private val adapter = MessageContentFiltersAdapter()
     private val saveFilterSubject: Subject<MessageContentFilterData> = PublishSubject.create()
@@ -64,6 +70,13 @@ class MessageContentFiltersController : QkController<MessageContentFiltersView, 
 
     override fun onViewCreated() {
         super.onViewCreated()
+
+        val view = containerView ?: return
+
+        add = view.findViewById(R.id.add)
+        filters = view.findViewById(R.id.filters)
+        empty = view.findViewById(R.id.empty)
+
         add.setBackgroundTint(colors.theme().theme)
         add.setTint(colors.theme().textPrimary)
         adapter.emptyView = empty
@@ -80,30 +93,38 @@ class MessageContentFiltersController : QkController<MessageContentFiltersView, 
 
     override fun showAddDialog() {
         val layout = LayoutInflater.from(activity).inflate(R.layout.message_content_filters_add_dialog, null)
+        val addDialog = layout.findViewById<LinearLayout>(R.id.add_dialog)
+        val input = layout.findViewById<android.widget.EditText>(R.id.input)
+        val caseSensitivity = layout.findViewById<PreferenceView>(R.id.caseSensitivity)
+        val regexp = layout.findViewById<PreferenceView>(R.id.regexp)
+        val contacts = layout.findViewById<PreferenceView>(R.id.contacts)
 
-        (0 until layout.add_dialog.childCount)
-            .map { index -> layout.add_dialog.getChildAt(index) }
+        (0 until addDialog.childCount)
+            .map { index -> addDialog.getChildAt(index) }
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
             .let { Observable.merge(it) }
             .autoDisposable(scope())
             .subscribe {
-                it.checkbox.isChecked = !it.checkbox.isChecked
-                layout.caseSensitivity.isEnabled = !layout.regexp.checkbox.isChecked
+                it.findViewById<CompoundButton>(R.id.checkbox)?.let { checkbox ->
+                    checkbox.isChecked = !checkbox.isChecked
+                }
+                caseSensitivity.isEnabled = !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false)
             }
 
         val dialog = AlertDialog.Builder(activity!!)
                 .setView(layout)
                 .setPositiveButton(R.string.message_content_filters_dialog_create) { _, _ ->
-                    var text = layout.input.text.toString();
+                    var text = input.text.toString();
                     if (!text.isBlank()) {
-                        if (!layout.regexp.checkbox.isChecked) text = text.trim()
+                        if (!(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false)) text = text.trim()
                         saveFilterSubject.onNext(
                             MessageContentFilterData(
                                 text,
-                                layout.caseSensitivity.checkbox.isChecked && !layout.regexp.checkbox.isChecked,
-                                layout.regexp.checkbox.isChecked,
-                                layout.contacts.checkbox.isChecked
+                                (caseSensitivity.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true) &&
+                                        !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false),
+                                regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true,
+                                contacts.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true
                             )
                         )
                     }

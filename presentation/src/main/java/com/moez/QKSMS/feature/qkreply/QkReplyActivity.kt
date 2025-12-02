@@ -45,44 +45,52 @@ import dev.danascape.messages.common.util.extensions.autoScrollToStart
 import dev.danascape.messages.common.util.extensions.setVisible
 import dev.danascape.messages.common.util.extensions.showKeyboard
 import dev.danascape.messages.common.widget.QkEditText
+import dev.danascape.messages.databinding.QkreplyActivityBinding
 import dev.danascape.messages.feature.compose.MessagesAdapter
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.compose_activity.message
-import kotlinx.android.synthetic.main.qkreply_activity.*
 import javax.inject.Inject
 
-class QkReplyActivity : QkThemedActivity(), QkReplyView {
+class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivityBinding::inflate),
+    QkReplyView {
 
-    @Inject lateinit var adapter: MessagesAdapter
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var adapter: MessagesAdapter
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override val menuItemIntent: Subject<Int> = PublishSubject.create()
-    override val textChangedIntent by lazy { message.textChanges() }
-    override val changeSimIntent by lazy { sim.clicks() }
-    override val sendIntent by lazy { send.clicks() }
+    override val textChangedIntent by lazy { binding.message.textChanges() }
+    override val changeSimIntent by lazy { binding.sim.clicks() }
+    override val sendIntent by lazy { binding.send.clicks() }
 
-    private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[QkReplyViewModel::class.java] }
-
-    private val speechResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode != Activity.RESULT_OK)
-            return@registerForActivityResult
-
-        // check returned results are good
-        val match = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-        if ((match === null) || (match.size < 1) || (match[0].isNullOrEmpty()))
-            return@registerForActivityResult
-
-        // get the edit text view
-        val message = findViewById<QkEditText>(R.id.message)
-        if (message === null)
-            return@registerForActivityResult
-
-        // populate message box with data returned by STT, set cursor to end, and focus
-        message.setText(match[0])
-        message.setSelection(message.text?.length ?: 0)
-        message.requestFocus()
+    private val viewModel by lazy {
+        ViewModelProviders.of(
+            this,
+            viewModelFactory
+        )[QkReplyViewModel::class.java]
     }
+
+    private val speechResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != Activity.RESULT_OK)
+                return@registerForActivityResult
+
+            // check returned results are good
+            val match = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if ((match === null) || (match.size < 1) || (match[0].isNullOrEmpty()))
+                return@registerForActivityResult
+
+            // get the edit text view
+            val message = findViewById<QkEditText>(R.id.message)
+            if (message === null)
+                return@registerForActivityResult
+
+            // populate message box with data returned by STT, set cursor to end, and focus
+            message.setText(match[0])
+            message.setSelection(message.text?.length ?: 0)
+            message.requestFocus()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -90,36 +98,37 @@ class QkReplyActivity : QkThemedActivity(), QkReplyView {
         super.onCreate(savedInstanceState)
 
         setFinishOnTouchOutside(prefs.qkreplyTapDismiss.get())
-        setContentView(R.layout.qkreply_activity)
         window.setBackgroundDrawable(null)
         window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         viewModel.bindView(this)
 
-        toolbar.clipToOutline = true
+        binding.toolbar.clipToOutline = true
 
-        messages.adapter = adapter
-        messages.adapter?.autoScrollToStart(messages)
-        messages.adapter?.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() = messages.scrollToPosition(adapter.itemCount - 1)
+        binding.messages.adapter = adapter
+        binding.messages.adapter?.autoScrollToStart(binding.messages)
+        binding.messages.adapter?.registerAdapterDataObserver(object :
+            RecyclerView.AdapterDataObserver() {
+            override fun onChanged() = binding.messages.scrollToPosition(adapter.itemCount - 1)
         })
 
-        message.setOnTouchListener(object : OnTouchListener {
+        binding.message.setOnTouchListener(object : OnTouchListener {
             private val gestureDetector =
                 GestureDetector(this@QkReplyActivity, object : SimpleOnGestureListener() {
                     override fun onDoubleTap(e: MotionEvent): Boolean {
-                        val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                            .putExtra(
-                                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                            )
-                            // include if want a custom message that the STT can (optionally) display   .putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your message")
+                        val speechRecognizerIntent =
+                            Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                                .putExtra(
+                                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                                )
+                        // include if want a custom message that the STT can (optionally) display   .putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your message")
                         speechResultLauncher.launch(speechRecognizerIntent)
                         return true
                     }
 
                     override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                        message.showKeyboard()
+                        binding.message.showKeyboard()
                         return true
                     }
 
@@ -143,24 +152,25 @@ class QkReplyActivity : QkThemedActivity(), QkReplyView {
 
         title = state.title
 
-        toolbar.menu.findItem(R.id.expand)?.isVisible = !state.expanded
-        toolbar.menu.findItem(R.id.collapse)?.isVisible = state.expanded
+        binding.toolbar.menu.findItem(R.id.expand)?.isVisible = !state.expanded
+        binding.toolbar.menu.findItem(R.id.collapse)?.isVisible = state.expanded
 
         adapter.data = state.data
 
-        counter.text = state.remaining
-        counter.setVisible(counter.text.isNotBlank())
+        binding.counter.text = state.remaining
+        binding.counter.setVisible(binding.counter.text.isNotBlank())
 
-        sim.setVisible(state.subscription != null)
-        sim.contentDescription = getString(R.string.compose_sim_cd, state.subscription?.displayName)
-        simIndex.text = "${state.subscription?.simSlotIndex?.plus(1)}"
+        binding.sim.setVisible(state.subscription != null)
+        binding.sim.contentDescription =
+            getString(R.string.compose_sim_cd, state.subscription?.displayName)
+        binding.simIndex.text = "${state.subscription?.simSlotIndex?.plus(1)}"
 
-        send.isEnabled = state.canSend
-        send.imageAlpha = if (state.canSend) 255 else 128
+        binding.send.isEnabled = state.canSend
+        binding.send.imageAlpha = if (state.canSend) 255 else 128
     }
 
     override fun setDraft(draft: String) {
-        message.setText(draft)
+        binding.message.setText(draft)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -177,5 +187,4 @@ class QkReplyActivity : QkThemedActivity(), QkReplyView {
         black -> R.style.AppThemeDialog_Black
         else -> R.style.AppThemeDialog
     }
-
 }

@@ -172,13 +172,15 @@ class ComposeViewModel @Inject constructor(
             .doOnNext { addresses -> conversationRepo.getOrCreateConversation(addresses) }
             .observeOn(AndroidSchedulers.mainThread())
             .switchMap { addresses ->
-                // monitors convos and triggers when wanted convo is present
                 conversationRepo.getConversations(false)
                     .asObservable()
                     .filter { conversations -> conversations.isLoaded }
-                    .mapNotNull { conversationRepo.getConversation(addresses) }
+                    .mapNotNull { conversationRepo.getConversation(addresses)?.id }
+                    .distinctUntilChanged()
                     .doOnNext { newState { copy(loading = false) } }
-                    .switchMap { conversation -> conversation.asObservable() }
+                    .switchMap { conversationId ->
+                        conversationRepo.getConversationAsync(conversationId).asObservable()
+                    }
                 }
 
         // Merges two potential conversation sources (constructor threadId and contact selection)

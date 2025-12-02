@@ -19,6 +19,7 @@
 package dev.danascape.messages.feature.settings.swipe
 
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
@@ -34,7 +35,8 @@ import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.swipe_actions_controller.*
+import android.widget.ImageView
+import android.widget.TextView
 import javax.inject.Inject
 
 class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState, SwipeActionsPresenter>(), SwipeActionsView {
@@ -42,6 +44,13 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
     @Inject override lateinit var presenter: SwipeActionsPresenter
     @Inject lateinit var actionsDialog: QkDialog
     @Inject lateinit var colors: Colors
+
+    private lateinit var right: ConstraintLayout
+    private lateinit var rightIcon: ImageView
+    private lateinit var rightLabel: TextView
+    private lateinit var left: ConstraintLayout
+    private lateinit var leftIcon: ImageView
+    private lateinit var leftLabel: TextView
 
     /**
      * Allows us to subscribe to [actionClicks] more than once
@@ -56,6 +65,17 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
     }
 
     override fun onViewCreated() {
+        super.onViewCreated()
+
+        val view = containerView ?: return
+
+        right = view.findViewById(R.id.right)
+        rightIcon = view.findViewById(R.id.rightIcon)
+        rightLabel = view.findViewById(R.id.rightLabel)
+        left = view.findViewById(R.id.left)
+        leftIcon = view.findViewById(R.id.leftIcon)
+        leftLabel = view.findViewById(R.id.leftLabel)
+
         colors.theme().let { theme ->
             rightIcon.setBackgroundTint(theme.theme)
             rightIcon.setTint(theme.textPrimary)
@@ -63,8 +83,8 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
             leftIcon.setTint(theme.textPrimary)
         }
 
-        right.postDelayed({ right?.animateLayoutChanges = true }, 100)
-        left.postDelayed({ left?.animateLayoutChanges = true }, 100)
+        right.postDelayed({ right.animateLayoutChanges = true }, 100)
+        left.postDelayed({ left.animateLayoutChanges = true }, 100)
 
         Observable.merge(
                 right.clicks().map { SwipeActionsView.Action.RIGHT },

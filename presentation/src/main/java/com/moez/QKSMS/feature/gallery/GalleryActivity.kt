@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package dev.danascape.messages.feature.gallery
 
 import android.Manifest
@@ -34,24 +35,35 @@ import dev.danascape.messages.R
 import dev.danascape.messages.common.base.QkActivity
 import dev.danascape.messages.common.util.DateFormatter
 import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.databinding.GalleryActivityBinding
 import dev.danascape.messages.model.MmsPart
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.gallery_activity.*
 import javax.inject.Inject
 
-class GalleryActivity : QkActivity(), GalleryView {
+class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate),
+    GalleryView {
 
-    @Inject lateinit var dateFormatter: DateFormatter
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var pagerAdapter: GalleryPagerAdapter
+    @Inject
+    lateinit var dateFormatter: DateFormatter
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var pagerAdapter: GalleryPagerAdapter
 
     val partId by lazy { intent.getLongExtra("partId", 0L) }
 
     private val optionsItemSubject: Subject<Int> = PublishSubject.create()
     private val pageChangedSubject: Subject<MmsPart> = PublishSubject.create()
-    private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[GalleryViewModel::class.java] }
+    private val viewModel by lazy {
+        ViewModelProviders.of(
+            this,
+            viewModelFactory
+        )[GalleryViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
@@ -61,8 +73,8 @@ class GalleryActivity : QkActivity(), GalleryView {
         showBackButton(true)
         viewModel.bindView(this)
 
-        pager.adapter = pagerAdapter
-        pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.pager.adapter = pagerAdapter
+        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 this@GalleryActivity.onPageSelected(position)
             }
@@ -71,26 +83,26 @@ class GalleryActivity : QkActivity(), GalleryView {
         pagerAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
                 pagerAdapter.data?.takeIf { pagerAdapter.itemCount > 0 }
-                        ?.indexOfFirst { part -> part.id == partId }
-                        ?.let { index ->
-                            onPageSelected(index)
-                            pager.setCurrentItem(index, false)
-                            pagerAdapter.unregisterAdapterDataObserver(this)
-                        }
+                    ?.indexOfFirst { part -> part.id == partId }
+                    ?.let { index ->
+                        onPageSelected(index)
+                        binding.pager.setCurrentItem(index, false)
+                        pagerAdapter.unregisterAdapterDataObserver(this)
+                    }
             }
         })
     }
 
     fun onPageSelected(position: Int) {
-        toolbarSubtitle.text = pagerAdapter.getItem(position)?.messages?.firstOrNull()?.date
-                ?.let(dateFormatter::getDetailedTimestamp)
-        toolbarSubtitle.isVisible = toolbarTitle.text.isNotBlank()
+        binding.toolbarSubtitle.text = pagerAdapter.getItem(position)?.messages?.firstOrNull()?.date
+            ?.let(dateFormatter::getDetailedTimestamp)
+        binding.toolbarSubtitle.isVisible = binding.toolbarTitle.text.isNotBlank()
 
         pagerAdapter.getItem(position)?.run(pageChangedSubject::onNext)
     }
 
     override fun render(state: GalleryState) {
-        toolbar.setVisible(state.navigationVisible)
+        binding.toolbar.setVisible(state.navigationVisible)
 
         title = state.title
         pagerAdapter.updateData(state.parts)
@@ -103,7 +115,11 @@ class GalleryActivity : QkActivity(), GalleryView {
     override fun pageChanged(): Observable<MmsPart> = pageChangedSubject
 
     override fun requestStoragePermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 0)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            0
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -123,5 +139,4 @@ class GalleryActivity : QkActivity(), GalleryView {
         super.onDestroy()
         pagerAdapter.destroy()
     }
-
 }

@@ -28,16 +28,13 @@ import dev.danascape.messages.common.base.QkThemedActivity
 import dev.danascape.messages.databinding.ContainerActivityBinding
 
 
-class BackupActivity : QkThemedActivity() {
+class BackupActivity : QkThemedActivity<ContainerActivityBinding>(ContainerActivityBinding::inflate) {
 
     private lateinit var router: Router
-    private lateinit var binding: ContainerActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        binding = ContainerActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         router = Conductor.attachRouter(this, binding.container, savedInstanceState)
         if (!router.hasRootController()) {

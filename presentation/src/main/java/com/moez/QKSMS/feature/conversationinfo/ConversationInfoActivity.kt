@@ -23,20 +23,19 @@ import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
 import dev.danascape.messages.common.base.QkThemedActivity
-import kotlinx.android.synthetic.main.container_activity.*
+import dev.danascape.messages.databinding.ContainerActivityBinding
 
-class ConversationInfoActivity : QkThemedActivity() {
+class ConversationInfoActivity :
+    QkThemedActivity<ContainerActivityBinding>(ContainerActivityBinding::inflate) {
 
     private lateinit var router: Router
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.container_activity)
 
-        router = Conductor.attachRouter(this, container, savedInstanceState)
+        router = Conductor.attachRouter(this, binding.container, savedInstanceState)
         if (!router.hasRootController()) {
             val threadId = intent.extras?.getLong("threadId") ?: 0L
             router.setRoot(RouterTransaction.with(ConversationInfoController(threadId)))
@@ -48,5 +47,4 @@ class ConversationInfoActivity : QkThemedActivity() {
             super.onBackPressed()
         }
     }
-
 }

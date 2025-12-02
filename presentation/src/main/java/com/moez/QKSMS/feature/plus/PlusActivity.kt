@@ -43,14 +43,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class PlusActivity : QkThemedActivity(), PlusView {
+class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivityBinding::inflate), PlusView {
 
     @Inject lateinit var fontProvider: FontProvider
     @Inject lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[PlusViewModel::class.java] }
-    private lateinit var binding: QksmsPlusActivityBinding
 
     override val upgradeIntent get() = binding.upgrade.clicks()
     override val upgradeDonateIntent get() = binding.upgradeDonate.clicks()
@@ -64,8 +63,6 @@ class PlusActivity : QkThemedActivity(), PlusView {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        binding = QksmsPlusActivityBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         setTitle(R.string.title_qksms_plus)
         showBackButton(true)
         viewModel.bindView(this)

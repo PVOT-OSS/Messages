@@ -27,6 +27,8 @@ import dev.danascape.messages.R
 import dev.danascape.messages.common.base.QkAdapter
 import dev.danascape.messages.common.base.QkViewHolder
 import dev.danascape.messages.common.util.extensions.getDisplayName
+import dev.danascape.messages.databinding.AttachmentContactListItemBinding
+import dev.danascape.messages.databinding.AttachmentFileListItemBinding
 import dev.danascape.messages.extensions.getName
 import dev.danascape.messages.feature.extensions.LoadBestIconIntoImageView
 import dev.danascape.messages.feature.extensions.loadBestIconIntoImageView
@@ -34,9 +36,6 @@ import dev.danascape.messages.model.Attachment
 import ezvcard.Ezvcard
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.attachment_contact_list_item.*
-import kotlinx.android.synthetic.main.scheduled_message_image_list_item.fileName
-import kotlinx.android.synthetic.main.scheduled_message_image_list_item.thumbnail
 import javax.inject.Inject
 
 
@@ -73,36 +72,38 @@ class ComposeAttachmentAdapter @Inject constructor(
         val attachment = getItem(position)
 
         if (attachment.isVCard(context)) {
+            val binding = AttachmentContactListItemBinding.bind(holder.containerView)
             try {
                 val displayName = Ezvcard.parse(
                     String(attachment.getResourceBytes(context))
                 ).first().getDisplayName() ?: ""
-                holder.name.text = displayName
-                holder.name.isVisible = displayName.isNotEmpty()
+                binding.name.text = displayName
+                binding.name.isVisible = displayName.isNotEmpty()
             } catch (e: Exception) {
                 // npe from Ezvcard first() call above can be thrown if resource bytes cannot
                 // be retrieved from contact resource provider
-                holder.vCardAvatar.setImageResource(android.R.drawable.ic_delete)
-                holder.name.text = context.getString(R.string.attachment_missing)
-                holder.name.isVisible = true
+                binding.vCardAvatar.setImageResource(android.R.drawable.ic_delete)
+                binding.name.text = context.getString(R.string.attachment_missing)
+                binding.name.isVisible = true
             }
             return
         }
 
+        val binding = AttachmentFileListItemBinding.bind(holder.containerView)
         // set best image and text to use for icon
-        when (attachment.uri.loadBestIconIntoImageView(context, holder.thumbnail)) {
+        when (attachment.uri.loadBestIconIntoImageView(context, binding.thumbnail)) {
             LoadBestIconIntoImageView.Missing -> {
-                holder.fileName.text = context.getString(R.string.attachment_missing)
-                holder.fileName.visibility = View.VISIBLE
+                binding.fileName.text = context.getString(R.string.attachment_missing)
+                binding.fileName.visibility = View.VISIBLE
             }
             LoadBestIconIntoImageView.ActivityIcon,
             LoadBestIconIntoImageView.DefaultAudioIcon,
             LoadBestIconIntoImageView.GenericIcon -> {
                 // generic style icon used, also show name
-                holder.fileName.text = attachment.uri.getName(context)
-                holder.fileName.visibility = View.VISIBLE
+                binding.fileName.text = attachment.uri.getName(context)
+                binding.fileName.visibility = View.VISIBLE
             }
-            else -> holder.fileName.visibility = View.GONE
+            else -> binding.fileName.visibility = View.GONE
         }
     }
 

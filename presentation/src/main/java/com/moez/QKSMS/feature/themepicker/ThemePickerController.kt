@@ -20,6 +20,7 @@ package dev.danascape.messages.feature.themepicker
 
 import android.animation.ObjectAnimator
 import android.view.View
+import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
@@ -34,8 +35,12 @@ import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.theme_picker_controller.*
-import kotlinx.android.synthetic.main.theme_picker_hsv.*
+import android.widget.ImageView
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
+import dev.danascape.messages.common.widget.PagerTitleView
+import dev.danascape.messages.common.widget.QkEditText
+import dev.danascape.messages.common.widget.QkTextView
 import javax.inject.Inject
 
 class ThemePickerController(
@@ -47,6 +52,16 @@ class ThemePickerController(
     @Inject lateinit var colors: Colors
     @Inject lateinit var themeAdapter: ThemeAdapter
     @Inject lateinit var themePagerAdapter: ThemePagerAdapter
+
+    private lateinit var contentView: View
+    private lateinit var pager: ViewPager
+    private lateinit var tabs: PagerTitleView
+    private lateinit var materialColors: RecyclerView
+    private lateinit var picker: HSVPickerView
+    private lateinit var hex: QkEditText
+    private lateinit var applyGroup: Group
+    private lateinit var clear: ImageView
+    private lateinit var apply: QkTextView
 
     private val viewQksmsPlusSubject: Subject<Unit> = PublishSubject.create()
 
@@ -61,6 +76,20 @@ class ThemePickerController(
     }
 
     override fun onViewCreated() {
+        super.onViewCreated()
+
+        val view = containerView ?: return
+
+        contentView = view.findViewById(R.id.contentView)
+        pager = view.findViewById(R.id.pager)
+        tabs = view.findViewById(R.id.tabs)
+        materialColors = view.findViewById(R.id.materialColors)
+        picker = view.findViewById(R.id.picker)
+        hex = view.findViewById(R.id.hex)
+        applyGroup = view.findViewById(R.id.applyGroup)
+        clear = view.findViewById(R.id.clear)
+        apply = view.findViewById(R.id.apply)
+
         pager.offscreenPageLimit = 1
         pager.adapter = themePagerAdapter
         tabs.pager = pager

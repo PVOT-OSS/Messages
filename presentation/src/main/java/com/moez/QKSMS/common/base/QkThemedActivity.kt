@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package dev.danascape.messages.common.base
 
 import android.annotation.SuppressLint
@@ -23,9 +24,12 @@ import android.app.ActivityManager
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.iterator
 import androidx.lifecycle.Lifecycle
+import androidx.viewbinding.ViewBinding
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import dev.danascape.messages.R
@@ -43,7 +47,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.toolbar.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -53,12 +56,23 @@ import javax.inject.Inject
  * In most cases, this should be used instead of the base QkActivity, except for when
  * an activity does not depend on the theme
  */
-abstract class QkThemedActivity : QkActivity() {
+abstract class QkThemedActivity<Vb : ViewBinding>(
+    inflate: (LayoutInflater) -> Vb
+) : QkActivity<Vb>(inflate) {
 
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var conversationRepo: ConversationRepository
-    @Inject lateinit var messageRepo: MessageRepository
-    @Inject lateinit var phoneNumberUtils: PhoneNumberUtils
+    @Inject
+    lateinit var colors: Colors
+
+    @Inject
+    lateinit var conversationRepo: ConversationRepository
+
+    @Inject
+    lateinit var messageRepo: MessageRepository
+
+    @Inject
+    lateinit var phoneNumberUtils: PhoneNumberUtils
+
+    val toolbarView: Toolbar? get() = findViewById(R.id.toolbar)
 
     /**
      * In case the activity should be themed for a specific conversation, the selected conversation
@@ -71,29 +85,29 @@ abstract class QkThemedActivity : QkActivity() {
      * Set it based on the latest message in the conversation
      */
     val theme: Observable<Colors.Theme> = threadId
-            .distinctUntilChanged()
-            .switchMap { threadId ->
-                val conversation = conversationRepo.getConversation(threadId)
-                when {
-                    conversation == null -> Observable.just(Optional(null))
+        .distinctUntilChanged()
+        .switchMap { threadId ->
+            val conversation = conversationRepo.getConversation(threadId)
+            when {
+                conversation == null -> Observable.just(Optional(null))
 
-                    conversation.recipients.size == 1 -> Observable.just(Optional(conversation.recipients.first()))
+                conversation.recipients.size == 1 -> Observable.just(Optional(conversation.recipients.first()))
 
-                    else -> messageRepo.getLastIncomingMessage(conversation.id)
-                            .asObservable()
-                            .mapNotNull { messages -> messages.firstOrNull() }
-                            .distinctUntilChanged { message -> message.address }
-                            .mapNotNull { message ->
-                                conversation.recipients.find { recipient ->
-                                    phoneNumberUtils.compare(recipient.address, message.address)
-                                }
-                            }
-                            .map { recipient -> Optional(recipient) }
-                            .startWith(Optional(conversation.recipients.firstOrNull()))
-                            .distinctUntilChanged()
-                }
+                else -> messageRepo.getLastIncomingMessage(conversation.id)
+                    .asObservable()
+                    .mapNotNull { messages -> messages.firstOrNull() }
+                    .distinctUntilChanged { message -> message.address }
+                    .mapNotNull { message ->
+                        conversation.recipients.find { recipient ->
+                            phoneNumberUtils.compare(recipient.address, message.address)
+                        }
+                    }
+                    .map { recipient -> Optional(recipient) }
+                    .startWith(Optional(conversation.recipients.firstOrNull()))
+                    .distinctUntilChanged()
             }
-            .switchMap { colors.themeObservable(it.value) }
+        }
+        .switchMap { colors.themeObservable(it.value) }
 
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,12 +115,13 @@ abstract class QkThemedActivity : QkActivity() {
         super.onCreate(savedInstanceState)
 
         // When certain preferences change, we need to recreate the activity
-        val triggers = listOf(prefs.nightMode, prefs.night, prefs.black, prefs.textSize, prefs.systemFont)
+        val triggers =
+            listOf(prefs.nightMode, prefs.night, prefs.black, prefs.textSize, prefs.systemFont)
         Observable.merge(triggers.map { it.asObservable().skip(1) })
-                .debounce(400, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .autoDisposable(scope())
-                .subscribe { recreate() }
+            .debounce(400, TimeUnit.MILLISECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .autoDisposable(scope())
+            .subscribe { recreate() }
 
         // We can only set light nav bar on API 27 in attrs, but we can do it in API 26 here
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
@@ -123,7 +138,8 @@ abstract class QkThemedActivity : QkActivity() {
         // Set the color for the recent apps title
         val toolbarColor = resolveThemeColor(R.attr.colorPrimary)
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
-        val taskDesc = ActivityManager.TaskDescription(getString(R.string.app_name), icon, toolbarColor)
+        val taskDesc =
+            ActivityManager.TaskDescription(getString(R.string.app_name), icon, toolbarColor)
         setTaskDescription(taskDesc)
     }
 
@@ -132,7 +148,7 @@ abstract class QkThemedActivity : QkActivity() {
 
         // Set the color for the overflow and navigation icon
         val textSecondary = resolveThemeColor(android.R.attr.textColorSecondary)
-        toolbar?.overflowIcon = toolbar?.overflowIcon?.apply { setTint(textSecondary) }
+        toolbarView?.overflowIcon = toolbarView?.overflowIcon?.apply { setTint(textSecondary) }
 
         // Update the colours of the menu items
         Observables.combineLatest(menu, theme) { menu, theme ->
@@ -158,5 +174,4 @@ abstract class QkThemedActivity : QkActivity() {
         black -> R.style.AppTheme_Black
         else -> R.style.AppTheme
     }
-
 }
