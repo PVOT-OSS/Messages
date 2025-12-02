@@ -28,7 +28,7 @@ plugins {
 
 android {
     namespace = "dev.danascape.messages"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "dev.danascape.messages"
