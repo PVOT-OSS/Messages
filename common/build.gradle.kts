@@ -24,15 +24,15 @@ plugins {
 }
 
 android {
-    compileSdk = 36
+    namespace = "org.prauga.messages.common"
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    namespace = "org.prauga.messages.common"
 }
 
 dependencies {

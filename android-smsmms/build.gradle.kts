@@ -24,11 +24,13 @@ plugins {
 }
 
 android {
-    compileSdk = 36
+    namespace = "com.klinker.android.send_message"
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 36
     }
 
     useLibrary("org.apache.http.legacy")
@@ -36,8 +38,6 @@ android {
     lint {
         abortOnError = false
     }
-
-    namespace = "com.klinker.android.send_message"
 }
 
 dependencies {

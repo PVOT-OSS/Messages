@@ -22,6 +22,8 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.os.Bundle
+import android.view.View
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.work.Configuration
@@ -36,6 +38,7 @@ import dagger.android.HasActivityInjector
 import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
 import org.prauga.messages.R
+import org.prauga.messages.app.utils.AppUtil.applyEdgeToEdgeInsets
 import org.prauga.messages.common.util.FileLoggingTree
 import org.prauga.messages.injection.AppComponentManager
 import org.prauga.messages.injection.appComponent
@@ -54,26 +57,46 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverInjector, HasServiceInjector {
+class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverInjector,
+    HasServiceInjector {
 
     /**
      * Inject these so that they are forced to initialize
      */
     @Suppress("unused")
-    @Inject lateinit var qkMigration: QkMigration
+    @Inject
+    lateinit var qkMigration: QkMigration
 
-    @Inject lateinit var billingManager: BillingManager
-    @Inject lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
-    @Inject lateinit var dispatchingBroadcastReceiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
-    @Inject lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
-    @Inject lateinit var fileLoggingTree: FileLoggingTree
-    @Inject lateinit var nightModeManager: NightModeManager
-    @Inject lateinit var realmMigration: QkRealmMigration
-    @Inject lateinit var referralManager: ReferralManager
-    @Inject lateinit var workerFactory: WorkerFactory
+    @Inject
+    lateinit var billingManager: BillingManager
+
+    @Inject
+    lateinit var dispatchingActivityInjector: DispatchingAndroidInjector<Activity>
+
+    @Inject
+    lateinit var dispatchingBroadcastReceiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
+
+    @Inject
+    lateinit var dispatchingServiceInjector: DispatchingAndroidInjector<Service>
+
+    @Inject
+    lateinit var fileLoggingTree: FileLoggingTree
+
+    @Inject
+    lateinit var nightModeManager: NightModeManager
+
+    @Inject
+    lateinit var realmMigration: QkRealmMigration
+
+    @Inject
+    lateinit var referralManager: ReferralManager
+
+    @Inject
+    lateinit var workerFactory: WorkerFactory
 
     override fun onCreate() {
         super.onCreate()
+        registerActivityLifecycle()
 
         // set application context for SpeakManager
         SpeakManager.setContext(this)
@@ -85,11 +108,13 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
         appComponent.inject(this)
 
         Realm.init(this)
-        Realm.setDefaultConfiguration(RealmConfiguration.Builder()
+        Realm.setDefaultConfiguration(
+            RealmConfiguration.Builder()
                 .compactOnLaunch()
                 .migration(realmMigration)
                 .schemaVersion(QkRealmMigration.SchemaVersion)
-                .build())
+                .build()
+        )
 
         qkMigration.performMigration()
 
@@ -106,24 +131,25 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
 
         // configure emoji compatibility with bundled package
         // (bundled library works with no play-services/gsm os versions)
-        EmojiCompat.init(BundledEmojiCompatConfig(this)
-            .registerInitCallback(object: EmojiCompat.InitCallback() {
-                override fun onInitialized() {
-                    super.onInitialized()
-                    Timber.v("bundled emojicompat initialized")
-                }
+        EmojiCompat.init(
+            BundledEmojiCompatConfig(this)
+                .registerInitCallback(object : EmojiCompat.InitCallback() {
+                    override fun onInitialized() {
+                        super.onInitialized()
+                        Timber.v("bundled emojicompat initialized")
+                    }
 
-                override fun onFailed(throwable: Throwable?) {
-                    super.onFailed(throwable)
-                    Timber.e("bundled emojicompat initialization failed")
-                }
-            })
+                    override fun onFailed(throwable: Throwable?) {
+                        super.onFailed(throwable)
+                        Timber.e("bundled emojicompat initialization failed")
+                    }
+                })
         )
 
         // rxdogtag provides 'look-back' for exceptions in rxjava2 'chains'
         RxDogTag.builder()
-                .configureWith(AutoDisposeConfigurer::configure)
-                .install()
+            .configureWith(AutoDisposeConfigurer::configure)
+            .install()
 
         // init work manager with custom factory supporting dagger/injection capability
         WorkManager.initialize(
@@ -133,6 +159,24 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
 
         // register, or re-register, housekeeping work manager
         HousekeepingWorker.register(applicationContext)
+    }
+
+    private fun registerActivityLifecycle() {
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityCreated(
+                activity: Activity,
+                savedInstanceState: Bundle?
+            ) {
+                activity.applyEdgeToEdgeInsets()
+            }
+
+            override fun onActivityStarted(activity: Activity) {}
+            override fun onActivityResumed(activity: Activity) {}
+            override fun onActivityPaused(activity: Activity) {}
+            override fun onActivityStopped(activity: Activity) {}
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+            override fun onActivityDestroyed(activity: Activity) {}
+        })
     }
 
     override fun activityInjector(): AndroidInjector<Activity> {
@@ -146,5 +190,4 @@ class QKApplication : Application(), HasActivityInjector, HasBroadcastReceiverIn
     override fun serviceInjector(): AndroidInjector<Service> {
         return dispatchingServiceInjector
     }
-
 }
