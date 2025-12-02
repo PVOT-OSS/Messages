@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.blocking
+package dev.danascape.messages.blocking
 
 import android.content.ComponentName
 import android.content.Context
@@ -28,8 +28,8 @@ import android.os.IBinder
 import android.os.Message
 import android.os.Messenger
 import androidx.core.os.bundleOf
-import dev.octoshrimpy.quik.common.util.extensions.isInstalled
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.common.util.extensions.isInstalled
+import dev.danascape.messages.util.tryOrNull
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.subjects.SingleSubject

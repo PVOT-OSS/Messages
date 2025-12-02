@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common
+package dev.danascape.messages.common
 
 import android.app.Activity
 import android.app.Application
@@ -35,17 +35,17 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.FileLoggingTree
-import dev.octoshrimpy.quik.injection.AppComponentManager
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.interactor.SpeakThreads
-import dev.octoshrimpy.quik.manager.BillingManager
-import dev.octoshrimpy.quik.manager.ReferralManager
-import dev.octoshrimpy.quik.migration.QkMigration
-import dev.octoshrimpy.quik.migration.QkRealmMigration
-import dev.octoshrimpy.quik.util.NightModeManager
-import dev.octoshrimpy.quik.worker.HousekeepingWorker
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.FileLoggingTree
+import dev.danascape.messages.injection.AppComponentManager
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.interactor.SpeakThreads
+import dev.danascape.messages.manager.BillingManager
+import dev.danascape.messages.manager.ReferralManager
+import dev.danascape.messages.migration.QkMigration
+import dev.danascape.messages.migration.QkRealmMigration
+import dev.danascape.messages.util.NightModeManager
+import dev.danascape.messages.worker.HousekeepingWorker
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.coroutines.Dispatchers

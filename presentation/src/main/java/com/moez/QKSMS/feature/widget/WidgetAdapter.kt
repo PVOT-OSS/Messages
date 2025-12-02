@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.widget
+package dev.danascape.messages.feature.widget
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -28,20 +28,20 @@ import android.widget.RemoteViewsService
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.DateFormatter
-import dev.octoshrimpy.quik.common.util.extensions.dpToPx
-import dev.octoshrimpy.quik.common.util.extensions.getColorCompat
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.PhoneNumber
-import dev.octoshrimpy.quik.receiver.StartActivityFromWidgetReceiver
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.util.GlideApp
-import dev.octoshrimpy.quik.util.Preferences
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.DateFormatter
+import dev.danascape.messages.common.util.extensions.dpToPx
+import dev.danascape.messages.common.util.extensions.getColorCompat
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.PhoneNumber
+import dev.danascape.messages.receiver.StartActivityFromWidgetReceiver
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.util.GlideApp
+import dev.danascape.messages.util.Preferences
+import dev.danascape.messages.util.tryOrNull
 import javax.inject.Inject
 
 class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {

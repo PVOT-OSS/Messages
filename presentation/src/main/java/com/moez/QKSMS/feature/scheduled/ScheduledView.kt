@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.scheduled
+package dev.danascape.messages.feature.scheduled
 
-import dev.octoshrimpy.quik.common.base.QkView
+import dev.danascape.messages.common.base.QkView
 import io.reactivex.Observable
 
 interface ScheduledView : QkView<ScheduledState> {

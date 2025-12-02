@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.settings
+package dev.danascape.messages.feature.settings
 
 import android.animation.ObjectAnimator
 import android.app.TimePickerDialog
@@ -32,25 +32,25 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.longClicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.BuildConfig
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.MenuItem
-import dev.octoshrimpy.quik.common.QkChangeHandler
-import dev.octoshrimpy.quik.common.QkDialog
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.animateLayoutChanges
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.common.widget.PreferenceView
-import dev.octoshrimpy.quik.common.widget.TextInputDialog
-import dev.octoshrimpy.quik.feature.settings.about.AboutController
-import dev.octoshrimpy.quik.feature.settings.autodelete.AutoDeleteDialog
-import dev.octoshrimpy.quik.feature.settings.swipe.SwipeActionsController
-import dev.octoshrimpy.quik.feature.themepicker.ThemePickerController
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.repository.SyncRepository
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.BuildConfig
+import dev.danascape.messages.R
+import dev.danascape.messages.common.MenuItem
+import dev.danascape.messages.common.QkChangeHandler
+import dev.danascape.messages.common.QkDialog
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.animateLayoutChanges
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.common.widget.PreferenceView
+import dev.danascape.messages.common.widget.TextInputDialog
+import dev.danascape.messages.feature.settings.about.AboutController
+import dev.danascape.messages.feature.settings.autodelete.AutoDeleteDialog
+import dev.danascape.messages.feature.settings.swipe.SwipeActionsController
+import dev.danascape.messages.feature.themepicker.ThemePickerController
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.repository.SyncRepository
+import dev.danascape.messages.util.Preferences
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

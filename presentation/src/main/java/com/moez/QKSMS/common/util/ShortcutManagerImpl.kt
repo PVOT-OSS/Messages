@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -26,12 +26,12 @@ import android.os.Build
 import androidx.core.app.Person
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
-import dev.octoshrimpy.quik.common.util.extensions.getThemedIcon
-import dev.octoshrimpy.quik.common.util.extensions.toPerson
-import dev.octoshrimpy.quik.feature.compose.ComposeActivity
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
+import dev.danascape.messages.common.util.extensions.getThemedIcon
+import dev.danascape.messages.common.util.extensions.toPerson
+import dev.danascape.messages.feature.compose.ComposeActivity
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageRepository
 import me.leolin.shortcutbadger.ShortcutBadger
 import timber.log.Timber
 import javax.inject.Inject
@@ -41,7 +41,7 @@ class ShortcutManagerImpl @Inject constructor(
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository,
     private val colors: Colors
-) : dev.octoshrimpy.quik.manager.ShortcutManager {
+) : dev.danascape.messages.manager.ShortcutManager {
 
     override fun updateBadge() {
         val count = messageRepo.getUnreadCount().toInt()

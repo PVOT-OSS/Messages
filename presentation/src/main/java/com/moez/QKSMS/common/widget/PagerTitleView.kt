@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.widget
+package dev.danascape.messages.common.widget
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -27,13 +27,13 @@ import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.forEach
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.databinding.TabViewBinding
-import dev.octoshrimpy.quik.extensions.Optional
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.repository.ConversationRepository
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.forEach
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.databinding.TabViewBinding
+import dev.danascape.messages.extensions.Optional
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.repository.ConversationRepository
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject

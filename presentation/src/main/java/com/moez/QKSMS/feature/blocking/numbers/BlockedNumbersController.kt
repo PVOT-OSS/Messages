@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking.numbers
+package dev.danascape.messages.feature.blocking.numbers
 
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import com.jakewharton.rxbinding2.view.clicks
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setTint
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.util.PhoneNumberUtils
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

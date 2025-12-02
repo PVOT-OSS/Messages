@@ -23,7 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <dev.octoshrimpy.quik.common.widget.QkTextView
+    <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/snackbarTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         app:textSize="primary"
         tools:text="Love texting again" />
 
-    <dev.octoshrimpy.quik.common.widget.QkTextView
+    <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/snackbarMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         app:textSize="secondary"
         tools:text="Make QUIK your default SMS app" />
 
-    <dev.octoshrimpy.quik.common.widget.QkTextView
+    <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/snackbarButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

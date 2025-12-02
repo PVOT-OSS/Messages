@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <dev.octoshrimpy.quik.common.widget.QkTextView
+        <dev.danascape.messages.common.widget.QkTextView
             android:id="@+id/filename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
             app:textSize="primary"
             tools:text="a test file.pdf" />
 
-        <dev.octoshrimpy.quik.common.widget.QkTextView
+        <dev.danascape.messages.common.widget.QkTextView
             android:id="@+id/size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

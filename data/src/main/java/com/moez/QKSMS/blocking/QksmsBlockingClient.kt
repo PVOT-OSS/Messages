@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.blocking
+package dev.danascape.messages.blocking
 
-import dev.octoshrimpy.quik.repository.BlockingRepository
+import dev.danascape.messages.repository.BlockingRepository
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

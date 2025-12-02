@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.settings.autodelete
+package dev.danascape.messages.feature.settings.autodelete
 
 import android.app.Activity
 import android.content.DialogInterface
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.databinding.SettingsAutoDeleteDialogBinding
+import dev.danascape.messages.R
+import dev.danascape.messages.databinding.SettingsAutoDeleteDialogBinding
 
 class AutoDeleteDialog(context: Activity, listener: (Int) -> Unit) : AlertDialog(context) {
 

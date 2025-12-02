@@ -16,6 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.model
+package dev.danascape.messages.model
 
 data class SearchResult(val query: String, val conversation: Conversation, val messages: Int)

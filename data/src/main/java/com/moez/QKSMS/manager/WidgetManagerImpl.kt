@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.manager
+package dev.danascape.messages.manager
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import com.klinker.android.send_message.BroadcastUtils
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.util.Preferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
@@ -61,7 +61,7 @@ class WidgetManagerImpl @Inject constructor(
 
     override fun updateTheme() {
         val ids = AppWidgetManager.getInstance(context)
-            .getAppWidgetIds(ComponentName(context.packageName, "dev.octoshrimpy.quik.feature.widget.WidgetProvider"))
+            .getAppWidgetIds(ComponentName(context.packageName, "dev.danascape.messages.feature.widget.WidgetProvider"))
 
         val intent = Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids)
 

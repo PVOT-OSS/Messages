@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.settings
+package dev.danascape.messages.feature.settings
 
-import dev.octoshrimpy.quik.repository.SyncRepository
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.repository.SyncRepository
+import dev.danascape.messages.util.Preferences
 
 data class SettingsState(
     val theme: Int = 0,

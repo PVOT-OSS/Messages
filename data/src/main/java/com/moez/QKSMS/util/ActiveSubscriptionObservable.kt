@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.util
+package dev.danascape.messages.util
 
-import dev.octoshrimpy.quik.compat.SubscriptionInfoCompat
-import dev.octoshrimpy.quik.compat.SubscriptionManagerCompat
+import dev.danascape.messages.compat.SubscriptionInfoCompat
+import dev.danascape.messages.compat.SubscriptionManagerCompat
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable

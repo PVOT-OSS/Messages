@@ -34,7 +34,7 @@ android {
         minSdk 23
         targetSdkVersion 33
     }
-    namespace 'dev.octoshrimpy.quik.domain'
+    namespace 'dev.danascape.messages.domain'
 }
 
 dependencies {

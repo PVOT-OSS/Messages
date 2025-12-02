@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.backup
+package dev.danascape.messages.feature.backup
 
 import android.net.Uri
-import dev.octoshrimpy.quik.common.base.QkViewContract
+import dev.danascape.messages.common.base.QkViewContract
 import io.reactivex.Observable
 
 interface BackupView : QkViewContract<BackupState> {

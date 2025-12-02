@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.mapper
+package dev.danascape.messages.mapper
 
 import android.content.Context
 import android.database.Cursor
@@ -27,12 +27,12 @@ import android.provider.Telephony.Sms
 import com.google.android.mms.pdu_alt.EncodedStringValue
 import com.google.android.mms.pdu_alt.PduHeaders
 import com.google.android.mms.pdu_alt.PduPersister
-import dev.octoshrimpy.quik.manager.KeyManager
-import dev.octoshrimpy.quik.manager.PermissionManager
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.util.Preferences
-import dev.octoshrimpy.quik.util.SqliteWrapper
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.manager.KeyManager
+import dev.danascape.messages.manager.PermissionManager
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.util.Preferences
+import dev.danascape.messages.util.SqliteWrapper
+import dev.danascape.messages.util.tryOrNull
 import javax.inject.Inject
 
 class CursorToMessageImpl @Inject constructor(

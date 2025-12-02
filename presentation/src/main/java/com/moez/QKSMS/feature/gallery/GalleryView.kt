@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.gallery
+package dev.danascape.messages.feature.gallery
 
-import dev.octoshrimpy.quik.common.base.QkView
-import dev.octoshrimpy.quik.model.MmsPart
+import dev.danascape.messages.common.base.QkView
+import dev.danascape.messages.model.MmsPart
 import io.reactivex.Observable
 
 interface GalleryView : QkView<GalleryState> {

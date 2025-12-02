@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.editing
+package dev.danascape.messages.feature.compose.editing
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.common.base.QkViewHolder
-import dev.octoshrimpy.quik.common.util.extensions.forwardTouches
-import dev.octoshrimpy.quik.extensions.Optional
-import dev.octoshrimpy.quik.model.PhoneNumber
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.common.base.QkViewHolder
+import dev.danascape.messages.common.util.extensions.forwardTouches
+import dev.danascape.messages.extensions.Optional
+import dev.danascape.messages.model.PhoneNumber
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.phone_number_list_item.*

@@ -16,32 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.injection.android
+package dev.danascape.messages.injection.android
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import dev.octoshrimpy.quik.feature.widget.WidgetProvider
-import dev.octoshrimpy.quik.injection.scope.ActivityScope
-import dev.octoshrimpy.quik.receiver.BlockThreadReceiver
-import dev.octoshrimpy.quik.receiver.BootReceiver
-import dev.octoshrimpy.quik.receiver.DefaultSmsChangedReceiver
-import dev.octoshrimpy.quik.receiver.DeleteMessagesReceiver
-import dev.octoshrimpy.quik.receiver.MarkArchivedReceiver
-import dev.octoshrimpy.quik.receiver.MarkReadReceiver
-import dev.octoshrimpy.quik.receiver.MarkSeenReceiver
-import dev.octoshrimpy.quik.receiver.MmsReceivedReceiver
-import dev.octoshrimpy.quik.receiver.MmsReceiver
-import dev.octoshrimpy.quik.receiver.MmsSentReceiver
-import dev.octoshrimpy.quik.receiver.MmsUpdatedReceiver
-import dev.octoshrimpy.quik.receiver.NightModeReceiver
-import dev.octoshrimpy.quik.receiver.RemoteMessagingReceiver
-import dev.octoshrimpy.quik.receiver.SendScheduledMessageReceiver
-import dev.octoshrimpy.quik.receiver.SmsDeliveredReceiver
-import dev.octoshrimpy.quik.receiver.SmsProviderChangedReceiver
-import dev.octoshrimpy.quik.receiver.SmsReceiver
-import dev.octoshrimpy.quik.receiver.SmsSentReceiver
-import dev.octoshrimpy.quik.receiver.SpeakThreadsReceiver
-import dev.octoshrimpy.quik.receiver.StartActivityFromWidgetReceiver
+import dev.danascape.messages.feature.widget.WidgetProvider
+import dev.danascape.messages.injection.scope.ActivityScope
+import dev.danascape.messages.receiver.BlockThreadReceiver
+import dev.danascape.messages.receiver.BootReceiver
+import dev.danascape.messages.receiver.DefaultSmsChangedReceiver
+import dev.danascape.messages.receiver.DeleteMessagesReceiver
+import dev.danascape.messages.receiver.MarkArchivedReceiver
+import dev.danascape.messages.receiver.MarkReadReceiver
+import dev.danascape.messages.receiver.MarkSeenReceiver
+import dev.danascape.messages.receiver.MmsReceivedReceiver
+import dev.danascape.messages.receiver.MmsReceiver
+import dev.danascape.messages.receiver.MmsSentReceiver
+import dev.danascape.messages.receiver.MmsUpdatedReceiver
+import dev.danascape.messages.receiver.NightModeReceiver
+import dev.danascape.messages.receiver.RemoteMessagingReceiver
+import dev.danascape.messages.receiver.SendScheduledMessageReceiver
+import dev.danascape.messages.receiver.SmsDeliveredReceiver
+import dev.danascape.messages.receiver.SmsProviderChangedReceiver
+import dev.danascape.messages.receiver.SmsReceiver
+import dev.danascape.messages.receiver.SmsSentReceiver
+import dev.danascape.messages.receiver.SpeakThreadsReceiver
+import dev.danascape.messages.receiver.StartActivityFromWidgetReceiver
 
 @Module
 abstract class BroadcastReceiverBuilderModule {

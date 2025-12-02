@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.settings.swipe
+package dev.danascape.messages.feature.settings.swipe
 
 import android.view.View
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.QkDialog
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.animateLayoutChanges
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setTint
-import dev.octoshrimpy.quik.injection.appComponent
+import dev.danascape.messages.R
+import dev.danascape.messages.common.QkDialog
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.animateLayoutChanges
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.receiver
+package dev.danascape.messages.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.RemoteInput
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.compat.SubscriptionManagerCompat
-import dev.octoshrimpy.quik.interactor.MarkRead
-import dev.octoshrimpy.quik.interactor.SendMessage
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
+import dev.danascape.messages.compat.SubscriptionManagerCompat
+import dev.danascape.messages.interactor.MarkRead
+import dev.danascape.messages.interactor.SendMessage
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageRepository
 import javax.inject.Inject
 
 class RemoteMessagingReceiver : BroadcastReceiver() {

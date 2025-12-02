@@ -1,7 +1,7 @@
-package dev.octoshrimpy.quik.feature.conversationinfo
+package dev.danascape.messages.feature.conversationinfo
 
-import dev.octoshrimpy.quik.model.MmsPart
-import dev.octoshrimpy.quik.model.Recipient
+import dev.danascape.messages.model.MmsPart
+import dev.danascape.messages.model.Recipient
 import io.realm.RealmList
 
 sealed class ConversationInfoItem {

@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util.extensions
+package dev.danascape.messages.common.util.extensions
 
 import android.content.Context
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.repository.BackupRepository
+import dev.danascape.messages.R
+import dev.danascape.messages.repository.BackupRepository
 
 fun BackupRepository.Progress.getLabel(context: Context): String? {
     return when (this) {

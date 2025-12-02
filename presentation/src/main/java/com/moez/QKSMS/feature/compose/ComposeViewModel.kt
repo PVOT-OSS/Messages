@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose
+package dev.danascape.messages.feature.compose
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -39,45 +39,45 @@ import com.moez.QKSMS.manager.MediaRecorderManager.AUDIO_FILE_SUFFIX
 import com.moez.QKSMS.util.Constants.Companion.SAVED_MESSAGE_TEXT_FILE_PREFIX
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.base.QkViewModel
-import dev.octoshrimpy.quik.common.util.ClipboardUtils
-import dev.octoshrimpy.quik.common.util.MessageDetailsFormatter
-import dev.octoshrimpy.quik.common.util.extensions.makeToast
-import dev.octoshrimpy.quik.common.widget.MicInputCloudView
-import dev.octoshrimpy.quik.common.widget.QkContextMenuRecyclerView
-import dev.octoshrimpy.quik.compat.SubscriptionManagerCompat
-import dev.octoshrimpy.quik.extensions.asObservable
-import dev.octoshrimpy.quik.extensions.isImage
-import dev.octoshrimpy.quik.extensions.isSmil
-import dev.octoshrimpy.quik.extensions.isVideo
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.interactor.AddScheduledMessage
-import dev.octoshrimpy.quik.interactor.CancelDelayedMessage
-import dev.octoshrimpy.quik.interactor.DeleteMessages
-import dev.octoshrimpy.quik.interactor.MarkRead
-import dev.octoshrimpy.quik.interactor.RetrySending
-import dev.octoshrimpy.quik.interactor.SaveImage
-import dev.octoshrimpy.quik.interactor.SendMessage
-import dev.octoshrimpy.quik.manager.ActiveConversationManager
-import dev.octoshrimpy.quik.manager.BillingManager
-import dev.octoshrimpy.quik.manager.PermissionManager
-import dev.octoshrimpy.quik.model.Attachment
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.MmsPart
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.model.getText
-import dev.octoshrimpy.quik.repository.ContactRepository
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
-import dev.octoshrimpy.quik.repository.ScheduledMessageRepository
-import dev.octoshrimpy.quik.util.ActiveSubscriptionObservable
-import dev.octoshrimpy.quik.util.FileUtils
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
-import dev.octoshrimpy.quik.util.Preferences
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.base.QkViewModel
+import dev.danascape.messages.common.util.ClipboardUtils
+import dev.danascape.messages.common.util.MessageDetailsFormatter
+import dev.danascape.messages.common.util.extensions.makeToast
+import dev.danascape.messages.common.widget.MicInputCloudView
+import dev.danascape.messages.common.widget.QkContextMenuRecyclerView
+import dev.danascape.messages.compat.SubscriptionManagerCompat
+import dev.danascape.messages.extensions.asObservable
+import dev.danascape.messages.extensions.isImage
+import dev.danascape.messages.extensions.isSmil
+import dev.danascape.messages.extensions.isVideo
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.interactor.AddScheduledMessage
+import dev.danascape.messages.interactor.CancelDelayedMessage
+import dev.danascape.messages.interactor.DeleteMessages
+import dev.danascape.messages.interactor.MarkRead
+import dev.danascape.messages.interactor.RetrySending
+import dev.danascape.messages.interactor.SaveImage
+import dev.danascape.messages.interactor.SendMessage
+import dev.danascape.messages.manager.ActiveConversationManager
+import dev.danascape.messages.manager.BillingManager
+import dev.danascape.messages.manager.PermissionManager
+import dev.danascape.messages.model.Attachment
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.MmsPart
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.model.getText
+import dev.danascape.messages.repository.ContactRepository
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageRepository
+import dev.danascape.messages.repository.ScheduledMessageRepository
+import dev.danascape.messages.util.ActiveSubscriptionObservable
+import dev.danascape.messages.util.FileUtils
+import dev.danascape.messages.util.PhoneNumberUtils
+import dev.danascape.messages.util.Preferences
+import dev.danascape.messages.util.tryOrNull
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
@@ -438,7 +438,7 @@ class ComposeViewModel @Inject constructor(
                     navigator.viewFile(
                         FileProvider.getUriForFile(
                             context,
-                            "dev.octoshrimpy.quik.messagesText",
+                            "dev.danascape.messages.messagesText",
                             uri.toFile()
                         ),
                         mimeType

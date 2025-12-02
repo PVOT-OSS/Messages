@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.extensions
+package dev.danascape.messages.extensions
 
 import com.google.android.mms.ContentType
-import dev.octoshrimpy.quik.model.MmsPart
+import dev.danascape.messages.model.MmsPart
 
 fun MmsPart.isSmil() = ContentType.APP_SMIL.lowercase() == type.lowercase()
 

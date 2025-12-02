@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.plus
+package dev.danascape.messages.feature.plus
 
-import dev.octoshrimpy.quik.common.base.QkView
-import dev.octoshrimpy.quik.manager.BillingManager
+import dev.danascape.messages.common.base.QkView
+import dev.danascape.messages.manager.BillingManager
 import io.reactivex.Observable
 
 interface PlusView : QkView<PlusState> {

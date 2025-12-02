@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.notificationprefs
+package dev.danascape.messages.feature.notificationprefs
 
 import android.net.Uri
-import dev.octoshrimpy.quik.common.base.QkView
-import dev.octoshrimpy.quik.common.widget.PreferenceView
+import dev.danascape.messages.common.base.QkView
+import dev.danascape.messages.common.widget.PreferenceView
 import io.reactivex.Observable
 import io.reactivex.subjects.Subject
 

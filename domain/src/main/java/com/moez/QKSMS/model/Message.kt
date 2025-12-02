@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.model
+package dev.danascape.messages.model
 
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.Telephony.Mms
 import android.provider.Telephony.MmsSms
 import android.provider.Telephony.Sms
-import dev.octoshrimpy.quik.extensions.joinTo
+import dev.danascape.messages.extensions.joinTo
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.Index

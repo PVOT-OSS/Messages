@@ -16,31 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.injection.android
+package dev.danascape.messages.injection.android
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import dev.octoshrimpy.quik.feature.backup.BackupActivity
-import dev.octoshrimpy.quik.feature.blocking.BlockingActivity
-import dev.octoshrimpy.quik.feature.compose.ComposeActivity
-import dev.octoshrimpy.quik.feature.compose.ComposeActivityModule
-import dev.octoshrimpy.quik.feature.contacts.ContactsActivity
-import dev.octoshrimpy.quik.feature.contacts.ContactsActivityModule
-import dev.octoshrimpy.quik.feature.conversationinfo.ConversationInfoActivity
-import dev.octoshrimpy.quik.feature.gallery.GalleryActivity
-import dev.octoshrimpy.quik.feature.gallery.GalleryActivityModule
-import dev.octoshrimpy.quik.feature.main.MainActivity
-import dev.octoshrimpy.quik.feature.main.MainActivityModule
-import dev.octoshrimpy.quik.feature.notificationprefs.NotificationPrefsActivity
-import dev.octoshrimpy.quik.feature.notificationprefs.NotificationPrefsActivityModule
-import dev.octoshrimpy.quik.feature.plus.PlusActivity
-import dev.octoshrimpy.quik.feature.plus.PlusActivityModule
-import dev.octoshrimpy.quik.feature.qkreply.QkReplyActivity
-import dev.octoshrimpy.quik.feature.qkreply.QkReplyActivityModule
-import dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity
-import dev.octoshrimpy.quik.feature.scheduled.ScheduledActivityModule
-import dev.octoshrimpy.quik.feature.settings.SettingsActivity
-import dev.octoshrimpy.quik.injection.scope.ActivityScope
+import dev.danascape.messages.feature.backup.BackupActivity
+import dev.danascape.messages.feature.blocking.BlockingActivity
+import dev.danascape.messages.feature.compose.ComposeActivity
+import dev.danascape.messages.feature.compose.ComposeActivityModule
+import dev.danascape.messages.feature.contacts.ContactsActivity
+import dev.danascape.messages.feature.contacts.ContactsActivityModule
+import dev.danascape.messages.feature.conversationinfo.ConversationInfoActivity
+import dev.danascape.messages.feature.gallery.GalleryActivity
+import dev.danascape.messages.feature.gallery.GalleryActivityModule
+import dev.danascape.messages.feature.main.MainActivity
+import dev.danascape.messages.feature.main.MainActivityModule
+import dev.danascape.messages.feature.notificationprefs.NotificationPrefsActivity
+import dev.danascape.messages.feature.notificationprefs.NotificationPrefsActivityModule
+import dev.danascape.messages.feature.plus.PlusActivity
+import dev.danascape.messages.feature.plus.PlusActivityModule
+import dev.danascape.messages.feature.qkreply.QkReplyActivity
+import dev.danascape.messages.feature.qkreply.QkReplyActivityModule
+import dev.danascape.messages.feature.scheduled.ScheduledActivity
+import dev.danascape.messages.feature.scheduled.ScheduledActivityModule
+import dev.danascape.messages.feature.settings.SettingsActivity
+import dev.danascape.messages.injection.scope.ActivityScope
 
 @Module
 abstract class ActivityBuilderModule {

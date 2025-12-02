@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.receiver
+package dev.danascape.messages.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -27,9 +27,9 @@ import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.repository.MessageRepository
-import dev.octoshrimpy.quik.worker.ReceiveSmsWorker
-import dev.octoshrimpy.quik.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
+import dev.danascape.messages.repository.MessageRepository
+import dev.danascape.messages.worker.ReceiveSmsWorker
+import dev.danascape.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber

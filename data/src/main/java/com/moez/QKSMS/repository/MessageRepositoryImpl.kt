@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -41,25 +41,25 @@ import com.google.android.mms.pdu_alt.PduPersister
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.StripAccents
 import com.klinker.android.send_message.Transaction
-import dev.octoshrimpy.quik.common.util.extensions.now
-import dev.octoshrimpy.quik.compat.TelephonyCompat
-import dev.octoshrimpy.quik.extensions.anyOf
-import dev.octoshrimpy.quik.extensions.isImage
-import dev.octoshrimpy.quik.extensions.isVideo
-import dev.octoshrimpy.quik.extensions.resourceExists
-import dev.octoshrimpy.quik.manager.ActiveConversationManager
-import dev.octoshrimpy.quik.manager.KeyManager
-import dev.octoshrimpy.quik.model.Attachment
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.MmsPart
-import dev.octoshrimpy.quik.receiver.SendSmsReceiver
-import dev.octoshrimpy.quik.receiver.SmsDeliveredReceiver
-import dev.octoshrimpy.quik.receiver.SmsSentReceiver
-import dev.octoshrimpy.quik.util.ImageUtils
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
-import dev.octoshrimpy.quik.util.Preferences
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.common.util.extensions.now
+import dev.danascape.messages.compat.TelephonyCompat
+import dev.danascape.messages.extensions.anyOf
+import dev.danascape.messages.extensions.isImage
+import dev.danascape.messages.extensions.isVideo
+import dev.danascape.messages.extensions.resourceExists
+import dev.danascape.messages.manager.ActiveConversationManager
+import dev.danascape.messages.manager.KeyManager
+import dev.danascape.messages.model.Attachment
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.MmsPart
+import dev.danascape.messages.receiver.SendSmsReceiver
+import dev.danascape.messages.receiver.SmsDeliveredReceiver
+import dev.danascape.messages.receiver.SmsSentReceiver
+import dev.danascape.messages.util.ImageUtils
+import dev.danascape.messages.util.PhoneNumberUtils
+import dev.danascape.messages.util.Preferences
+import dev.danascape.messages.util.tryOrNull
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults

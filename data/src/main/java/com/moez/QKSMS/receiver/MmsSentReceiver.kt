@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.receiver
+package dev.danascape.messages.receiver
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -30,7 +30,7 @@ import com.google.android.mms.MmsException
 import com.google.android.mms.util_alt.SqliteWrapper
 import com.klinker.android.send_message.Transaction
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.interactor.SyncMessage
+import dev.danascape.messages.interactor.SyncMessage
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject

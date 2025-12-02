@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
 import android.content.Context
 import com.squareup.moshi.Moshi
-import dev.octoshrimpy.quik.extensions.insertOrUpdate
-import dev.octoshrimpy.quik.manager.KeyManager
-import dev.octoshrimpy.quik.model.EmojiReaction
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.util.EmojiPatternStrings
+import dev.danascape.messages.extensions.insertOrUpdate
+import dev.danascape.messages.manager.KeyManager
+import dev.danascape.messages.model.EmojiReaction
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.util.EmojiPatternStrings
 import io.realm.Realm
 import io.realm.Sort
 import timber.log.Timber

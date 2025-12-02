@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking.filters
+package dev.danascape.messages.feature.blocking.filters
 
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.common.base.QkPresenter
-import dev.octoshrimpy.quik.repository.MessageContentFilterRepository
+import dev.danascape.messages.common.base.QkPresenter
+import dev.danascape.messages.repository.MessageContentFilterRepository
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 

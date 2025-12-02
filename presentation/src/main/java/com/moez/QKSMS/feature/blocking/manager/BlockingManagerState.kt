@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.feature.blocking.manager
+package dev.danascape.messages.feature.blocking.manager
 
 data class BlockingManagerState(
     val blockingManager: Int = 0,

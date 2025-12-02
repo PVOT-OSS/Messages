@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.widget
+package dev.danascape.messages.common.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setTint
-import dev.octoshrimpy.quik.databinding.AvatarViewBinding
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.util.GlideApp
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.databinding.AvatarViewBinding
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.util.GlideApp
 import javax.inject.Inject
 
 class AvatarView @JvmOverloads constructor(

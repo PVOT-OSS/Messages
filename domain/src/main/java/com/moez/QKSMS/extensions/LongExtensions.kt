@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.extensions
+package dev.danascape.messages.extensions
 
 import java.util.concurrent.TimeUnit
 

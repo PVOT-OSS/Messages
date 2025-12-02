@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.util
+package dev.danascape.messages.util
 
 import android.content.Context
 import android.net.Uri
@@ -7,7 +7,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.contentValuesOf
 import androidx.core.net.toFile
-import dev.octoshrimpy.quik.extensions.isEmpty
+import dev.danascape.messages.extensions.isEmpty
 import java.io.File
 
 class FileUtils {

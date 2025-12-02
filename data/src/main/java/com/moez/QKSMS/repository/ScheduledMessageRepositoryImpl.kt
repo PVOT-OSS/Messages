@@ -1,6 +1,6 @@
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
-import dev.octoshrimpy.quik.model.ScheduledMessage
+import dev.danascape.messages.model.ScheduledMessage
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.widget
+package dev.danascape.messages.common.widget
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -25,14 +25,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.forwardTouches
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeAttribute
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.databinding.RadioPreferenceViewBinding
-import dev.octoshrimpy.quik.injection.appComponent
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.forwardTouches
+import dev.danascape.messages.common.util.extensions.resolveThemeAttribute
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.databinding.RadioPreferenceViewBinding
+import dev.danascape.messages.injection.appComponent
 import javax.inject.Inject
 
 class RadioPreferenceView @JvmOverloads constructor(

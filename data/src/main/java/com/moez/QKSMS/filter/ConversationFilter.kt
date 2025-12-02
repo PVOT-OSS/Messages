@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.filter
+package dev.danascape.messages.filter
 
-import dev.octoshrimpy.quik.model.Conversation
+import dev.danascape.messages.model.Conversation
 import javax.inject.Inject
 
 class ConversationFilter @Inject constructor(private val recipientFilter: RecipientFilter) : Filter<Conversation>() {

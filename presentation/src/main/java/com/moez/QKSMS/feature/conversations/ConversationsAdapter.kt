@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.conversations
+package dev.danascape.messages.feature.conversations
 
 import android.content.Context
 import android.graphics.Typeface
@@ -25,17 +25,17 @@ import android.view.ViewGroup
 import androidx.core.text.buildSpannedString
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.base.QkRealmAdapter
-import dev.octoshrimpy.quik.common.base.QkViewHolder
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.DateFormatter
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.common.util.extensions.setTint
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.repository.ScheduledMessageRepository
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.base.QkRealmAdapter
+import dev.danascape.messages.common.base.QkViewHolder
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.DateFormatter
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.repository.ScheduledMessageRepository
+import dev.danascape.messages.util.PhoneNumberUtils
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.conversation_list_item.*
 import kotlinx.android.synthetic.main.conversation_list_item.view.*

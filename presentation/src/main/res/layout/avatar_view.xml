@@ -23,9 +23,9 @@
     android:id="@+id/avatar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:parentTag="dev.octoshrimpy.quik.common.widget.AvatarView">
+    tools:parentTag="dev.danascape.messages.common.widget.AvatarView">
 
-    <dev.octoshrimpy.quik.common.widget.QkTextView
+    <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/initial"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

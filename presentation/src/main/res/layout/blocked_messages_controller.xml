@@ -24,7 +24,7 @@
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground">
 
-    <dev.octoshrimpy.quik.common.widget.QkTextView
+    <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/empty"
         style="@style/TextSecondary"
         android:layout_width="match_parent"

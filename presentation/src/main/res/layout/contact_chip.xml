@@ -33,12 +33,12 @@
         android:backgroundTint="?attr/bubbleColor"
         android:orientation="horizontal">
 
-        <dev.octoshrimpy.quik.common.widget.AvatarView
+        <dev.danascape.messages.common.widget.AvatarView
             android:id="@+id/avatar"
             android:layout_width="36dp"
             android:layout_height="36dp" />
 
-        <dev.octoshrimpy.quik.common.widget.QkTextView
+        <dev.danascape.messages.common.widget.QkTextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

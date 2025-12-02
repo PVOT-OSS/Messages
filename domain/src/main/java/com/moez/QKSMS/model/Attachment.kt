@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.model
+package dev.danascape.messages.model
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -25,15 +25,15 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.net.toFile
 import androidx.core.view.inputmethod.InputContentInfoCompat
-import dev.octoshrimpy.quik.extensions.contactToVCard
-import dev.octoshrimpy.quik.extensions.getName
-import dev.octoshrimpy.quik.extensions.getResourceBytes
-import dev.octoshrimpy.quik.extensions.getSize
-import dev.octoshrimpy.quik.extensions.getType
-import dev.octoshrimpy.quik.extensions.isAudio
-import dev.octoshrimpy.quik.extensions.isContact
-import dev.octoshrimpy.quik.extensions.isImage
-import dev.octoshrimpy.quik.extensions.isVCard
+import dev.danascape.messages.extensions.contactToVCard
+import dev.danascape.messages.extensions.getName
+import dev.danascape.messages.extensions.getResourceBytes
+import dev.danascape.messages.extensions.getSize
+import dev.danascape.messages.extensions.getType
+import dev.danascape.messages.extensions.isAudio
+import dev.danascape.messages.extensions.isContact
+import dev.danascape.messages.extensions.isImage
+import dev.danascape.messages.extensions.isVCard
 
 
 @SuppressLint("Range")

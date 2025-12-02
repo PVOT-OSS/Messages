@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.themepicker
+package dev.danascape.messages.feature.themepicker
 
 import android.animation.ObjectAnimator
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.dpToPx
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.feature.themepicker.injection.ThemePickerModule
-import dev.octoshrimpy.quik.injection.appComponent
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.dpToPx
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.feature.themepicker.injection.ThemePickerModule
+import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

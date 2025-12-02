@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking.messages
+package dev.danascape.messages.feature.blocking.messages
 
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkRealmAdapter
-import dev.octoshrimpy.quik.common.base.QkViewHolder
-import dev.octoshrimpy.quik.common.util.DateFormatter
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkRealmAdapter
+import dev.danascape.messages.common.base.QkViewHolder
+import dev.danascape.messages.common.util.DateFormatter
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.util.Preferences
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.blocked_list_item.*
 import kotlinx.android.synthetic.main.blocked_list_item.view.*

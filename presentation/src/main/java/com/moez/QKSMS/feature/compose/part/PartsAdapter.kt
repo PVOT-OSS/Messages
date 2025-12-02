@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.part
+package dev.danascape.messages.feature.compose.part
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.common.base.QkViewHolder
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.widget.QkContextMenuRecyclerView
-import dev.octoshrimpy.quik.extensions.isSmil
-import dev.octoshrimpy.quik.extensions.isText
-import dev.octoshrimpy.quik.feature.compose.BubbleUtils.canGroup
-import dev.octoshrimpy.quik.feature.compose.MessagesAdapter
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.MmsPart
+import dev.danascape.messages.common.base.QkViewHolder
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.widget.QkContextMenuRecyclerView
+import dev.danascape.messages.extensions.isSmil
+import dev.danascape.messages.extensions.isText
+import dev.danascape.messages.feature.compose.BubbleUtils.canGroup
+import dev.danascape.messages.feature.compose.MessagesAdapter
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.MmsPart
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.message_list_item_in.*
 import javax.inject.Inject

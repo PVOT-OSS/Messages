@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.mapper
+package dev.danascape.messages.mapper
 
 import android.content.Context
 import android.database.Cursor
@@ -24,7 +24,7 @@ import android.net.Uri
 import android.provider.Telephony
 import androidx.core.database.getIntOrNull
 import androidx.core.database.getStringOrNull
-import dev.octoshrimpy.quik.model.MmsPart
+import dev.danascape.messages.model.MmsPart
 import javax.inject.Inject
 
 class CursorToPartImpl @Inject constructor(private val context: Context) : CursorToPart {

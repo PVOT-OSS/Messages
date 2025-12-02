@@ -1,7 +1,7 @@
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.app.Activity
-import dev.octoshrimpy.quik.manager.BillingManager
+import dev.danascape.messages.manager.BillingManager
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject

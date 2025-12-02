@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.base
+package dev.danascape.messages.common.base
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

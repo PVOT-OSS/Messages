@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.qkreply
+package dev.danascape.messages.feature.qkreply
 
 import android.telephony.SmsMessage
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.base.QkViewModel
-import dev.octoshrimpy.quik.compat.SubscriptionManagerCompat
-import dev.octoshrimpy.quik.extensions.asObservable
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.interactor.DeleteMessages
-import dev.octoshrimpy.quik.interactor.MarkRead
-import dev.octoshrimpy.quik.interactor.SendMessage
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
-import dev.octoshrimpy.quik.util.ActiveSubscriptionObservable
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.base.QkViewModel
+import dev.danascape.messages.compat.SubscriptionManagerCompat
+import dev.danascape.messages.extensions.asObservable
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.interactor.DeleteMessages
+import dev.danascape.messages.interactor.MarkRead
+import dev.danascape.messages.interactor.SendMessage
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageRepository
+import dev.danascape.messages.util.ActiveSubscriptionObservable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.withLatestFrom

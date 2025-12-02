@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking
+package dev.danascape.messages.feature.blocking
 
 import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.blocking.BlockingClient
-import dev.octoshrimpy.quik.interactor.MarkBlocked
-import dev.octoshrimpy.quik.interactor.MarkUnblocked
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.R
+import dev.danascape.messages.blocking.BlockingClient
+import dev.danascape.messages.interactor.MarkBlocked
+import dev.danascape.messages.interactor.MarkUnblocked
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.util.Preferences
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch

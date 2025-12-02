@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
 import android.content.Context
 import android.net.Uri
@@ -24,12 +24,12 @@ import android.provider.BaseColumns
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
-import dev.octoshrimpy.quik.extensions.asFlowable
-import dev.octoshrimpy.quik.extensions.asObservable
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.ContactGroup
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.extensions.asFlowable
+import dev.danascape.messages.extensions.asObservable
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.ContactGroup
+import dev.danascape.messages.util.Preferences
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single

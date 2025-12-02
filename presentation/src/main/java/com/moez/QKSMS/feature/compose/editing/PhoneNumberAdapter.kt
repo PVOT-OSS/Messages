@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.editing
+package dev.danascape.messages.feature.compose.editing
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.databinding.ContactNumberListItemBinding
-import dev.octoshrimpy.quik.model.PhoneNumber
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.databinding.ContactNumberListItemBinding
+import dev.danascape.messages.model.PhoneNumber
 
 class PhoneNumberAdapter : QkAdapter<PhoneNumber, QkBindingViewHolder<ContactNumberListItemBinding>>() {
 

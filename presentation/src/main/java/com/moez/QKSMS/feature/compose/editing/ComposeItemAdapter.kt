@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.editing
+package dev.danascape.messages.feature.compose.editing
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.common.base.QkViewHolder
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.forwardTouches
-import dev.octoshrimpy.quik.common.util.extensions.setTint
-import dev.octoshrimpy.quik.extensions.associateByNotNull
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.ContactGroup
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.repository.ConversationRepository
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.common.base.QkViewHolder
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.forwardTouches
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.extensions.associateByNotNull
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.ContactGroup
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.repository.ConversationRepository
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.PublishSubject

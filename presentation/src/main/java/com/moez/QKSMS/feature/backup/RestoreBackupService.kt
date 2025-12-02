@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.backup
+package dev.danascape.messages.feature.backup
 
 import android.annotation.SuppressLint
 import android.app.Service
@@ -27,9 +27,9 @@ import android.os.IBinder
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.common.util.extensions.getLabel
-import dev.octoshrimpy.quik.manager.NotificationManager
-import dev.octoshrimpy.quik.repository.BackupRepository
+import dev.danascape.messages.common.util.extensions.getLabel
+import dev.danascape.messages.manager.NotificationManager
+import dev.danascape.messages.repository.BackupRepository
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -42,9 +42,9 @@ class RestoreBackupService : Service() {
     companion object {
         private const val NOTIFICATION_ID = -1
 
-        private const val ACTION_START = "dev.octoshrimpy.quik.ACTION_START"
-        private const val ACTION_STOP = "dev.octoshrimpy.quik.ACTION_STOP"
-        private const val EXTRA_FILE_URI = "dev.octoshrimpy.quik.EXTRA_FILE_URI"
+        private const val ACTION_START = "dev.danascape.messages.ACTION_START"
+        private const val ACTION_STOP = "dev.danascape.messages.ACTION_STOP"
+        private const val EXTRA_FILE_URI = "dev.danascape.messages.EXTRA_FILE_URI"
 
         fun start(context: Context, backupFile: Uri) {
             val intent = Intent(context, RestoreBackupService::class.java)

@@ -16,25 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
 import android.content.ContentUris
 import android.content.Context
-import dev.octoshrimpy.quik.compat.TelephonyCompat
-import dev.octoshrimpy.quik.extensions.anyOf
-import dev.octoshrimpy.quik.extensions.asObservable
-import dev.octoshrimpy.quik.extensions.map
-import dev.octoshrimpy.quik.extensions.removeAccents
-import dev.octoshrimpy.quik.filter.ConversationFilter
-import dev.octoshrimpy.quik.mapper.CursorToConversation
-import dev.octoshrimpy.quik.mapper.CursorToRecipient
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.model.SearchResult
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.compat.TelephonyCompat
+import dev.danascape.messages.extensions.anyOf
+import dev.danascape.messages.extensions.asObservable
+import dev.danascape.messages.extensions.map
+import dev.danascape.messages.extensions.removeAccents
+import dev.danascape.messages.filter.ConversationFilter
+import dev.danascape.messages.mapper.CursorToConversation
+import dev.danascape.messages.mapper.CursorToRecipient
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.model.SearchResult
+import dev.danascape.messages.util.PhoneNumberUtils
+import dev.danascape.messages.util.tryOrNull
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

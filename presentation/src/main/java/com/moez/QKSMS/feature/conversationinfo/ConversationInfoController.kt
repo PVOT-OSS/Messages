@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.conversationinfo
+package dev.danascape.messages.feature.conversationinfo
 
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -24,16 +24,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bluelinelabs.conductor.RouterTransaction
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.QkChangeHandler
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.util.extensions.scrapViews
-import dev.octoshrimpy.quik.common.widget.TextInputDialog
-import dev.octoshrimpy.quik.feature.blocking.BlockingDialog
-import dev.octoshrimpy.quik.feature.conversationinfo.injection.ConversationInfoModule
-import dev.octoshrimpy.quik.feature.themepicker.ThemePickerController
-import dev.octoshrimpy.quik.injection.appComponent
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.QkChangeHandler
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.util.extensions.scrapViews
+import dev.danascape.messages.common.widget.TextInputDialog
+import dev.danascape.messages.feature.blocking.BlockingDialog
+import dev.danascape.messages.feature.conversationinfo.injection.ConversationInfoModule
+import dev.danascape.messages.feature.themepicker.ThemePickerController
+import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

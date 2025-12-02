@@ -16,22 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.graphics.Typeface
 import android.os.Build
 import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.TextView
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.TextViewStyler.Companion.SIZE_PRIMARY
-import dev.octoshrimpy.quik.common.util.TextViewStyler.Companion.SIZE_SECONDARY
-import dev.octoshrimpy.quik.common.util.TextViewStyler.Companion.SIZE_TERTIARY
-import dev.octoshrimpy.quik.common.util.TextViewStyler.Companion.SIZE_TOOLBAR
-import dev.octoshrimpy.quik.common.util.extensions.getColorCompat
-import dev.octoshrimpy.quik.common.widget.QkEditText
-import dev.octoshrimpy.quik.common.widget.QkTextView
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_PRIMARY
+import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_SECONDARY
+import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_TERTIARY
+import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_TOOLBAR
+import dev.danascape.messages.common.util.extensions.getColorCompat
+import dev.danascape.messages.common.widget.QkEditText
+import dev.danascape.messages.common.widget.QkTextView
+import dev.danascape.messages.util.Preferences
 import javax.inject.Inject
 
 

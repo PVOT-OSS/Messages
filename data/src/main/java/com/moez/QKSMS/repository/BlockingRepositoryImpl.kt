@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
-import dev.octoshrimpy.quik.extensions.anyOf
-import dev.octoshrimpy.quik.model.BlockedNumber
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
+import dev.danascape.messages.extensions.anyOf
+import dev.danascape.messages.model.BlockedNumber
+import dev.danascape.messages.util.PhoneNumberUtils
 import io.realm.Realm
 import io.realm.RealmResults
 import javax.inject.Inject

@@ -26,7 +26,7 @@
     android:layout_marginTop="2dp"
     android:clipChildren="false">
 
-    <dev.octoshrimpy.quik.common.widget.BubbleImageView
+    <dev.danascape.messages.common.widget.BubbleImageView
         android:id="@+id/thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -72,7 +72,7 @@
             app:srcCompat="@drawable/exo_icon_play"
             app:tint="@color/tools_theme" />
 
-        <dev.octoshrimpy.quik.common.widget.QkTextView
+        <dev.danascape.messages.common.widget.QkTextView
             android:id="@+id/metadataTitle"
             style="@style/TextPrimary"
             android:layout_width="0dp"

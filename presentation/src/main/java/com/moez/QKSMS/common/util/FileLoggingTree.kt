@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import dev.octoshrimpy.quik.util.FileUtils
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.util.FileUtils
+import dev.danascape.messages.util.Preferences
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.io.FileNotFoundException

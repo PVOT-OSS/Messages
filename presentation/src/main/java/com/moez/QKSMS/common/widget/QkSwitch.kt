@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.widget
+package dev.danascape.messages.common.widget
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import androidx.appcompat.widget.SwitchCompat
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.common.util.extensions.withAlpha
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.common.util.extensions.withAlpha
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.util.Preferences
 import javax.inject.Inject
 
 class QkSwitch @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : SwitchCompat(context, attrs) {

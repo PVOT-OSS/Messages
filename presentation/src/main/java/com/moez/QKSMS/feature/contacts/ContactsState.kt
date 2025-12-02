@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.contacts
+package dev.danascape.messages.feature.contacts
 
-import dev.octoshrimpy.quik.feature.compose.editing.ComposeItem
-import dev.octoshrimpy.quik.model.Contact
+import dev.danascape.messages.feature.compose.editing.ComposeItem
+import dev.danascape.messages.model.Contact
 
 data class ContactsState(
     val query: String = "",

@@ -55,7 +55,7 @@
                     app:layout_constraintTop_toTopOf="@id/progressTitle"
                     tools:src="@drawable/ic_file_download_black_24dp" />
 
-                <dev.octoshrimpy.quik.common.widget.QkTextView
+                <dev.danascape.messages.common.widget.QkTextView
                     android:id="@+id/progressTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                     app:textSize="primary"
                     tools:text="Restoring from backup" />
 
-                <dev.octoshrimpy.quik.common.widget.QkTextView
+                <dev.danascape.messages.common.widget.QkTextView
                     android:id="@+id/progressSummary"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -118,7 +118,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <dev.octoshrimpy.quik.common.widget.PreferenceView
+            <dev.danascape.messages.common.widget.PreferenceView
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,7 +126,7 @@
                 app:title="@string/backup_location_title"
                 app:summary="@string/backup_location_summary" />
 
-            <dev.octoshrimpy.quik.common.widget.PreferenceView
+            <dev.danascape.messages.common.widget.PreferenceView
                 android:id="@+id/restore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,7 +139,7 @@
                 android:layout_height="1dp"
                 android:background="?android:attr/divider" />
 
-            <dev.octoshrimpy.quik.common.widget.QkTextView
+            <dev.danascape.messages.common.widget.QkTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="24dp"
@@ -170,7 +170,7 @@
             android:src="@drawable/ic_star_black_24dp"
             tools:tint="@color/textPrimaryDark" />
 
-        <dev.octoshrimpy.quik.common.widget.QkTextView
+        <dev.danascape.messages.common.widget.QkTextView
             android:id="@+id/fabLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

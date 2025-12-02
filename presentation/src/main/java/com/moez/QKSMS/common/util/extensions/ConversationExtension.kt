@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.common.util.extensions
+package dev.danascape.messages.common.util.extensions
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -11,9 +11,9 @@ import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.widget.AvatarView
-import dev.octoshrimpy.quik.model.Conversation
+import dev.danascape.messages.R
+import dev.danascape.messages.common.widget.AvatarView
+import dev.danascape.messages.model.Conversation
 import timber.log.Timber
 
 fun Conversation.getThemedIcon(context: Context, width: Int, height: Int): IconCompat {

@@ -17,7 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.octoshrimpy.quik.feature.blocking.manager
+package dev.danascape.messages.feature.blocking.manager
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -27,10 +27,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeAttribute
-import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.databinding.BlockingManagerPreferenceViewBinding
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.extensions.resolveThemeAttribute
+import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.databinding.BlockingManagerPreferenceViewBinding
 
 class BlockingManagerPreferenceView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null

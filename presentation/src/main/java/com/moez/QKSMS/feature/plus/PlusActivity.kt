@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.plus
+package dev.danascape.messages.feature.plus
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -25,18 +25,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkThemedActivity
-import dev.octoshrimpy.quik.common.util.FontProvider
-import dev.octoshrimpy.quik.common.util.extensions.makeToast
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setTint
-import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.common.widget.PreferenceView
-import dev.octoshrimpy.quik.feature.plus.experiment.UpgradeButtonExperiment
-import dev.octoshrimpy.quik.manager.BillingManager
-import dev.octoshrimpy.quik.databinding.QksmsPlusActivityBinding
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkThemedActivity
+import dev.danascape.messages.common.util.FontProvider
+import dev.danascape.messages.common.util.extensions.makeToast
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.common.widget.PreferenceView
+import dev.danascape.messages.feature.plus.experiment.UpgradeButtonExperiment
+import dev.danascape.messages.manager.BillingManager
+import dev.danascape.messages.databinding.QksmsPlusActivityBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

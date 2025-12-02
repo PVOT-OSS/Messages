@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.part
+package dev.danascape.messages.feature.compose.part
 
 import android.content.Context
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkViewHolder
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.common.widget.BubbleImageView
-import dev.octoshrimpy.quik.extensions.isImage
-import dev.octoshrimpy.quik.extensions.isVideo
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.MmsPart
-import dev.octoshrimpy.quik.util.GlideApp
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkViewHolder
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.common.widget.BubbleImageView
+import dev.danascape.messages.extensions.isImage
+import dev.danascape.messages.extensions.isVideo
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.MmsPart
+import dev.danascape.messages.util.GlideApp
 import kotlinx.android.synthetic.main.mms_image_preview_list_item.*
 import javax.inject.Inject
 

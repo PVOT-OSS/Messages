@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.scheduled
+package dev.danascape.messages.feature.scheduled
 
 import android.os.Bundle
 import android.view.Menu
@@ -27,10 +27,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkThemedActivity
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setTint
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkThemedActivity
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setTint
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.main_activity.toolbar

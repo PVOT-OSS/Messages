@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.main
+package dev.danascape.messages.feature.main
 
 import android.content.Context
-import dev.octoshrimpy.quik.experiment.Experiment
-import dev.octoshrimpy.quik.experiment.Variant
+import dev.danascape.messages.experiment.Experiment
+import dev.danascape.messages.experiment.Variant
 import javax.inject.Inject
 
 class DrawerBadgesExperiment @Inject constructor(

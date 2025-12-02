@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking
+package dev.danascape.messages.feature.blocking
 
 import android.view.View
 import com.bluelinelabs.conductor.RouterTransaction
 import com.jakewharton.rxbinding2.view.clicks
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.QkChangeHandler
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.animateLayoutChanges
-import dev.octoshrimpy.quik.feature.blocking.manager.BlockingManagerController
-import dev.octoshrimpy.quik.feature.blocking.messages.BlockedMessagesController
-import dev.octoshrimpy.quik.feature.blocking.numbers.BlockedNumbersController
-import dev.octoshrimpy.quik.feature.blocking.filters.MessageContentFiltersController
-import dev.octoshrimpy.quik.injection.appComponent
+import dev.danascape.messages.R
+import dev.danascape.messages.common.QkChangeHandler
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.animateLayoutChanges
+import dev.danascape.messages.feature.blocking.manager.BlockingManagerController
+import dev.danascape.messages.feature.blocking.messages.BlockedMessagesController
+import dev.danascape.messages.feature.blocking.numbers.BlockedNumbersController
+import dev.danascape.messages.feature.blocking.filters.MessageContentFiltersController
+import dev.danascape.messages.injection.appComponent
 import kotlinx.android.synthetic.main.blocking_controller.*
 import kotlinx.android.synthetic.main.settings_switch_widget.view.*
 import javax.inject.Inject

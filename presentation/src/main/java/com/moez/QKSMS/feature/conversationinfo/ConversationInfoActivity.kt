@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.conversationinfo
+package dev.danascape.messages.feature.conversationinfo
 
 import android.os.Bundle
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkThemedActivity
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkThemedActivity
 import kotlinx.android.synthetic.main.container_activity.*
 
 class ConversationInfoActivity : QkThemedActivity() {

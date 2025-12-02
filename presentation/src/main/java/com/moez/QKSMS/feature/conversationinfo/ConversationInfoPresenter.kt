@@ -16,29 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.conversationinfo
+package dev.danascape.messages.feature.conversationinfo
 
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.base.QkPresenter
-import dev.octoshrimpy.quik.common.util.ClipboardUtils
-import dev.octoshrimpy.quik.common.util.extensions.makeToast
-import dev.octoshrimpy.quik.extensions.asObservable
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.feature.conversationinfo.ConversationInfoItem.ConversationInfoMedia
-import dev.octoshrimpy.quik.feature.conversationinfo.ConversationInfoItem.ConversationInfoRecipient
-import dev.octoshrimpy.quik.interactor.DeleteConversations
-import dev.octoshrimpy.quik.interactor.MarkArchived
-import dev.octoshrimpy.quik.interactor.MarkUnarchived
-import dev.octoshrimpy.quik.interactor.MarkUnread
-import dev.octoshrimpy.quik.manager.PermissionManager
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.base.QkPresenter
+import dev.danascape.messages.common.util.ClipboardUtils
+import dev.danascape.messages.common.util.extensions.makeToast
+import dev.danascape.messages.extensions.asObservable
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoMedia
+import dev.danascape.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoRecipient
+import dev.danascape.messages.interactor.DeleteConversations
+import dev.danascape.messages.interactor.MarkArchived
+import dev.danascape.messages.interactor.MarkUnarchived
+import dev.danascape.messages.interactor.MarkUnread
+import dev.danascape.messages.manager.PermissionManager
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.plusAssign

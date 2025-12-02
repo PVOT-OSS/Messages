@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -25,28 +25,28 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.provider.Telephony
 import com.f2prateek.rx.preferences2.RxSharedPreferences
-import dev.octoshrimpy.quik.extensions.forEach
-import dev.octoshrimpy.quik.extensions.insertOrUpdate
-import dev.octoshrimpy.quik.extensions.map
-import dev.octoshrimpy.quik.manager.KeyManager
-import dev.octoshrimpy.quik.mapper.CursorToContact
-import dev.octoshrimpy.quik.mapper.CursorToContactGroup
-import dev.octoshrimpy.quik.mapper.CursorToContactGroupMember
-import dev.octoshrimpy.quik.mapper.CursorToConversation
-import dev.octoshrimpy.quik.mapper.CursorToMessage
-import dev.octoshrimpy.quik.mapper.CursorToPart
-import dev.octoshrimpy.quik.mapper.CursorToRecipient
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.ContactGroup
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.EmojiReaction
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.MmsPart
-import dev.octoshrimpy.quik.model.PhoneNumber
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.model.SyncLog
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.extensions.forEach
+import dev.danascape.messages.extensions.insertOrUpdate
+import dev.danascape.messages.extensions.map
+import dev.danascape.messages.manager.KeyManager
+import dev.danascape.messages.mapper.CursorToContact
+import dev.danascape.messages.mapper.CursorToContactGroup
+import dev.danascape.messages.mapper.CursorToContactGroupMember
+import dev.danascape.messages.mapper.CursorToConversation
+import dev.danascape.messages.mapper.CursorToMessage
+import dev.danascape.messages.mapper.CursorToPart
+import dev.danascape.messages.mapper.CursorToRecipient
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.ContactGroup
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.EmojiReaction
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.MmsPart
+import dev.danascape.messages.model.PhoneNumber
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.model.SyncLog
+import dev.danascape.messages.util.PhoneNumberUtils
+import dev.danascape.messages.util.tryOrNull
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.Realm

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.scheduled
+package dev.danascape.messages.feature.scheduled
 
 import android.content.Context
 import android.net.Uri
@@ -24,16 +24,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkRealmAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.databinding.ScheduledMessageListItemBinding
-import dev.octoshrimpy.quik.common.util.DateFormatter
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.model.ScheduledMessage
-import dev.octoshrimpy.quik.repository.ContactRepository
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkRealmAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.databinding.ScheduledMessageListItemBinding
+import dev.danascape.messages.common.util.DateFormatter
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.model.ScheduledMessage
+import dev.danascape.messages.repository.ContactRepository
+import dev.danascape.messages.util.PhoneNumberUtils
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject

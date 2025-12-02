@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
-import dev.octoshrimpy.quik.model.Message
+import dev.danascape.messages.model.Message
 import io.realm.Realm
 
 data class ParsedEmojiReaction(val emoji: String, val originalMessage: String, val isRemoval: Boolean = false)

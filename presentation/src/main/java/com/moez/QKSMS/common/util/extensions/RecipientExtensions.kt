@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.common.util.extensions
+package dev.danascape.messages.common.util.extensions
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -17,12 +17,12 @@ import androidx.core.app.Person
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.widget.TextViewCompat
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.widget.QkTextView
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.util.GlideApp
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.widget.QkTextView
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.util.GlideApp
+import dev.danascape.messages.util.tryOrNull
 import timber.log.Timber
 
 

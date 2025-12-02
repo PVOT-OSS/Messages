@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.editing
+package dev.danascape.messages.feature.compose.editing
 
 enum class PhoneNumberAction {
     CANCEL,

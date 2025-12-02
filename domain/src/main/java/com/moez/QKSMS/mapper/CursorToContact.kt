@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.mapper
+package dev.danascape.messages.mapper
 
 import android.database.Cursor
-import dev.octoshrimpy.quik.model.Contact
+import dev.danascape.messages.model.Contact
 
 interface CursorToContact : Mapper<Cursor, Contact> {
 

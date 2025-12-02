@@ -16,27 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.contacts
+package dev.danascape.messages.feature.contacts
 
 import android.view.inputmethod.EditorInfo
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.common.base.QkViewModel
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.extensions.removeAccents
-import dev.octoshrimpy.quik.feature.compose.editing.ComposeItem
-import dev.octoshrimpy.quik.feature.compose.editing.PhoneNumberAction
-import dev.octoshrimpy.quik.filter.ContactFilter
-import dev.octoshrimpy.quik.filter.ContactGroupFilter
-import dev.octoshrimpy.quik.interactor.SetDefaultPhoneNumber
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.ContactGroup
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.PhoneNumber
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.repository.ContactRepository
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
+import dev.danascape.messages.common.base.QkViewModel
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.extensions.removeAccents
+import dev.danascape.messages.feature.compose.editing.ComposeItem
+import dev.danascape.messages.feature.compose.editing.PhoneNumberAction
+import dev.danascape.messages.filter.ContactFilter
+import dev.danascape.messages.filter.ContactGroupFilter
+import dev.danascape.messages.interactor.SetDefaultPhoneNumber
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.ContactGroup
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.PhoneNumber
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.repository.ContactRepository
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.util.PhoneNumberUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables

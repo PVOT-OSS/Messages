@@ -17,7 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.octoshrimpy.quik.extensions
+package dev.danascape.messages.extensions
 
 import io.reactivex.Flowable
 import io.reactivex.Observable

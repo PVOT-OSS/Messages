@@ -22,7 +22,7 @@
  * SPDX-FileCopyrightText: 2023 Julius Linus <julius.linus@nextcloud.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package dev.octoshrimpy.quik.common.widget
+package dev.danascape.messages.common.widget
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -38,7 +38,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
-import dev.octoshrimpy.quik.R
+import dev.danascape.messages.R
 import kotlin.math.roundToInt
 
 class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, attrs) {

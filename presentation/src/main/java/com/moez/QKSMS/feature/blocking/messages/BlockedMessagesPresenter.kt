@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking.messages
+package dev.danascape.messages.feature.blocking.messages
 
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.blocking.BlockingClient
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.base.QkPresenter
-import dev.octoshrimpy.quik.interactor.DeleteConversations
-import dev.octoshrimpy.quik.repository.ConversationRepository
+import dev.danascape.messages.R
+import dev.danascape.messages.blocking.BlockingClient
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.base.QkPresenter
+import dev.danascape.messages.interactor.DeleteConversations
+import dev.danascape.messages.repository.ConversationRepository
 import javax.inject.Inject
 
 class BlockedMessagesPresenter @Inject constructor(

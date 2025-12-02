@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.backup
+package dev.danascape.messages.feature.backup
 
-import dev.octoshrimpy.quik.repository.BackupRepository
+import dev.danascape.messages.repository.BackupRepository
 
 data class BackupState(
     val backupProgress: BackupRepository.Progress = BackupRepository.Progress.Idle(),

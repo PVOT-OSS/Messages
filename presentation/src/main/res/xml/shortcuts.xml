@@ -28,9 +28,9 @@
         android:shortcutShortLabel="@string/shortcut_compose_short_label">
 
         <intent
-            android:action="dev.octoshrimpy.quik.START"
-            android:targetClass="dev.octoshrimpy.quik.feature.compose.ComposeActivity"
-            android:targetPackage="dev.octoshrimpy.quik" />
+            android:action="dev.danascape.messages.START"
+            android:targetClass="dev.danascape.messages.feature.compose.ComposeActivity"
+            android:targetPackage="dev.danascape.messages" />
 
         <categories android:name="android.shortcut.conversation" />
 

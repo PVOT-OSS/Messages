@@ -18,7 +18,7 @@
  */
 @file:Suppress("NOTHING_TO_INLINE")
 
-package dev.octoshrimpy.quik.common.androidxcompat
+package dev.danascape.messages.common.androidxcompat
 
 import androidx.annotation.CheckResult
 import androidx.drawerlayout.widget.DrawerLayout

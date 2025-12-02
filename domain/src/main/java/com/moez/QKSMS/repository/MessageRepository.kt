@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
 import android.net.Uri
-import dev.octoshrimpy.quik.model.Attachment
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.MmsPart
+import dev.danascape.messages.model.Attachment
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.MmsPart
 import io.realm.RealmResults
 
 interface MessageRepository {

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.androidxcompat;
+package dev.danascape.messages.common.androidxcompat;
 
 import static com.jakewharton.rxbinding2.internal.Preconditions.checkMainThread;
 

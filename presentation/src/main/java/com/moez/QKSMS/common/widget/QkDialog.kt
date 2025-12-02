@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.widget
+package dev.danascape.messages.common.widget
 
 import android.app.Activity
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.databinding.QkDialogBinding
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.databinding.QkDialogBinding
 
 class QkDialog(private val context: Activity) : AlertDialog(context) {
 

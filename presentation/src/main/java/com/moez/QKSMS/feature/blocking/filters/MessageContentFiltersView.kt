@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking.filters
+package dev.danascape.messages.feature.blocking.filters
 
-import dev.octoshrimpy.quik.common.base.QkViewContract
-import dev.octoshrimpy.quik.model.MessageContentFilterData
+import dev.danascape.messages.common.base.QkViewContract
+import dev.danascape.messages.model.MessageContentFilterData
 import io.reactivex.Observable
 
 interface MessageContentFiltersView : QkViewContract<MessageContentFiltersState> {

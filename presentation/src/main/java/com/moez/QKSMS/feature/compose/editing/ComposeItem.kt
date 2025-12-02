@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.editing
+package dev.danascape.messages.feature.compose.editing
 
-import dev.octoshrimpy.quik.model.Contact
-import dev.octoshrimpy.quik.model.ContactGroup
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.PhoneNumber
+import dev.danascape.messages.model.Contact
+import dev.danascape.messages.model.ContactGroup
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.PhoneNumber
 import io.realm.RealmList
 
 sealed class ComposeItem {

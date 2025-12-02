@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.interactor
+package dev.danascape.messages.interactor
 
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers

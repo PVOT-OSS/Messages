@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.main
+package dev.danascape.messages.feature.main
 
 import android.content.Intent
-import dev.octoshrimpy.quik.common.base.QkView
-import dev.octoshrimpy.quik.manager.ChangelogManager
+import dev.danascape.messages.common.base.QkView
+import dev.danascape.messages.manager.ChangelogManager
 import io.reactivex.Observable
 
 interface MainView : QkView<MainState> {

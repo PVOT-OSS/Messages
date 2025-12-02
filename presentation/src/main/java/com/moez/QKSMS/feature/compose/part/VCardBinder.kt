@@ -16,22 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.part
+package dev.danascape.messages.feature.compose.part
 
 import android.content.Context
 import androidx.core.view.isVisible
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkViewHolder
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.getDisplayName
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.common.util.extensions.setBackgroundTint
-import dev.octoshrimpy.quik.common.util.extensions.setTint
-import dev.octoshrimpy.quik.extensions.isVCard
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.feature.compose.BubbleUtils
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.MmsPart
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkViewHolder
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.getDisplayName
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.extensions.isVCard
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.feature.compose.BubbleUtils
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.MmsPart
 import ezvcard.Ezvcard
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

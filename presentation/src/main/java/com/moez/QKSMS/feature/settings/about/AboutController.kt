@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.settings.about
+package dev.danascape.messages.feature.settings.about
 
 import android.view.View
 import com.jakewharton.rxbinding2.view.clicks
-import dev.octoshrimpy.quik.BuildConfig
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.widget.PreferenceView
-import dev.octoshrimpy.quik.injection.appComponent
+import dev.danascape.messages.BuildConfig
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.widget.PreferenceView
+import dev.danascape.messages.injection.appComponent
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.about_controller.*
 import javax.inject.Inject

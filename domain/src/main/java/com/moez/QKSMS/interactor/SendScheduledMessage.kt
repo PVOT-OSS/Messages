@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.interactor
+package dev.danascape.messages.interactor
 
 import android.content.Context
 import android.net.Uri
-import dev.octoshrimpy.quik.compat.TelephonyCompat
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.model.Attachment
-import dev.octoshrimpy.quik.repository.ScheduledMessageRepository
+import dev.danascape.messages.compat.TelephonyCompat
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.model.Attachment
+import dev.danascape.messages.repository.ScheduledMessageRepository
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.toFlowable
 import io.realm.RealmList

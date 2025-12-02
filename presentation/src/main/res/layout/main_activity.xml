@@ -38,13 +38,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <dev.octoshrimpy.quik.common.widget.QkTextView
+            <dev.danascape.messages.common.widget.QkTextView
                 android:id="@+id/toolbarTitle"
                 style="@style/ToolbarText"
                 android:layout_marginStart="16dp"
                 android:visibility="gone" />
 
-            <dev.octoshrimpy.quik.common.widget.QkEditText
+            <dev.danascape.messages.common.widget.QkEditText
                 android:id="@+id/toolbarSearch"
                 style="@style/ToolbarText"
                 android:layout_marginTop="8dp"
@@ -65,7 +65,7 @@
                 android:nextFocusRight="@+id/compose" />
         </androidx.appcompat.widget.Toolbar>
 
-        <dev.octoshrimpy.quik.common.widget.QkTextView
+        <dev.danascape.messages.common.widget.QkTextView
             android:id="@+id/empty"
             style="@style/TextSecondary"
             android:layout_width="match_parent"

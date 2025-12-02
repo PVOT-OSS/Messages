@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.interactor
+package dev.danascape.messages.interactor
 
-import dev.octoshrimpy.quik.repository.MessageRepository
+import dev.danascape.messages.repository.MessageRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
 

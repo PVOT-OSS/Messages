@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <dev.octoshrimpy.quik.common.widget.QkTextView
+            <dev.danascape.messages.common.widget.QkTextView
                 android:id="@+id/timestamp"
                 style="@style/TextSecondary"
                 android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
                 app:layout_constraintTop_toTopOf="@id/timestamp"
                 app:tint="?android:attr/textColorSecondary" />
 
-            <dev.octoshrimpy.quik.common.widget.QkTextView
+            <dev.danascape.messages.common.widget.QkTextView
                 android:id="@+id/simIndex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
             android:clipToPadding="false"
             android:clipChildren="false">
 
-            <dev.octoshrimpy.quik.common.widget.AvatarView
+            <dev.danascape.messages.common.widget.AvatarView
                 android:id="@+id/avatar"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
@@ -100,7 +100,7 @@
                 android:paddingEnd="4dp"
                 android:paddingStart="4dp">
 
-                <dev.octoshrimpy.quik.common.widget.QkContextMenuRecyclerViewLongMmsPart
+                <dev.danascape.messages.common.widget.QkContextMenuRecyclerViewLongMmsPart
                     android:id="@+id/parts"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
                     tools:itemCount="1"
                     tools:listitem="@layout/mms_image_preview_list_item" />
 
-                <dev.octoshrimpy.quik.common.widget.TightTextView
+                <dev.danascape.messages.common.widget.TightTextView
                     android:id="@+id/body"
                     style="@style/TextPrimary"
                     android:layout_width="wrap_content"
@@ -162,7 +162,7 @@
 
         </LinearLayout>
 
-        <dev.octoshrimpy.quik.common.widget.QkTextView
+        <dev.danascape.messages.common.widget.QkTextView
             android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

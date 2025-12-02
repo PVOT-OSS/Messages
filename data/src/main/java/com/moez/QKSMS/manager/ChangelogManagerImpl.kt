@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.manager
+package dev.danascape.messages.manager
 
 import android.content.Context
 import android.util.Log
@@ -24,8 +24,8 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import dev.octoshrimpy.quik.common.util.extensions.versionCode
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.common.util.extensions.versionCode
+import dev.danascape.messages.util.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

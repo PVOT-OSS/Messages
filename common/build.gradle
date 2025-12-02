@@ -28,7 +28,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
-    namespace 'dev.octoshrimpy.quik.common'
+    namespace 'dev.danascape.messages.common'
 }
 
 dependencies {

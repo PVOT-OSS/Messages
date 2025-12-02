@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking.numbers
+package dev.danascape.messages.feature.blocking.numbers
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkRealmAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.model.BlockedNumber
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkRealmAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.model.BlockedNumber
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import dev.octoshrimpy.quik.databinding.BlockedNumberListItemBinding
+import dev.danascape.messages.databinding.BlockedNumberListItemBinding
 
 class BlockedNumbersAdapter : QkRealmAdapter<BlockedNumber, QkBindingViewHolder<BlockedNumberListItemBinding>>() {
 

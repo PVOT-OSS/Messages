@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common
+package dev.danascape.messages.common
 
 import android.app.Activity
 import android.app.role.RoleManager
@@ -28,23 +28,23 @@ import android.os.Build
 import android.provider.ContactsContract
 import android.provider.Settings
 import android.provider.Telephony
-import dev.octoshrimpy.quik.BuildConfig
-import dev.octoshrimpy.quik.compat.TelephonyCompat
-import dev.octoshrimpy.quik.extensions.resourceExists
-import dev.octoshrimpy.quik.feature.backup.BackupActivity
-import dev.octoshrimpy.quik.feature.blocking.BlockingActivity
-import dev.octoshrimpy.quik.feature.compose.ComposeActivity
-import dev.octoshrimpy.quik.feature.conversationinfo.ConversationInfoActivity
-import dev.octoshrimpy.quik.feature.gallery.GalleryActivity
-import dev.octoshrimpy.quik.feature.main.MainActivity
-import dev.octoshrimpy.quik.feature.notificationprefs.NotificationPrefsActivity
-import dev.octoshrimpy.quik.feature.plus.PlusActivity
-import dev.octoshrimpy.quik.feature.scheduled.ScheduledActivity
-import dev.octoshrimpy.quik.feature.settings.SettingsActivity
-import dev.octoshrimpy.quik.manager.BillingManager
-import dev.octoshrimpy.quik.manager.NotificationManager
-import dev.octoshrimpy.quik.manager.PermissionManager
-import dev.octoshrimpy.quik.model.ScheduledMessage
+import dev.danascape.messages.BuildConfig
+import dev.danascape.messages.compat.TelephonyCompat
+import dev.danascape.messages.extensions.resourceExists
+import dev.danascape.messages.feature.backup.BackupActivity
+import dev.danascape.messages.feature.blocking.BlockingActivity
+import dev.danascape.messages.feature.compose.ComposeActivity
+import dev.danascape.messages.feature.conversationinfo.ConversationInfoActivity
+import dev.danascape.messages.feature.gallery.GalleryActivity
+import dev.danascape.messages.feature.main.MainActivity
+import dev.danascape.messages.feature.notificationprefs.NotificationPrefsActivity
+import dev.danascape.messages.feature.plus.PlusActivity
+import dev.danascape.messages.feature.scheduled.ScheduledActivity
+import dev.danascape.messages.feature.settings.SettingsActivity
+import dev.danascape.messages.manager.BillingManager
+import dev.danascape.messages.manager.NotificationManager
+import dev.danascape.messages.manager.PermissionManager
+import dev.danascape.messages.model.ScheduledMessage
 import javax.inject.Inject
 import javax.inject.Singleton
 

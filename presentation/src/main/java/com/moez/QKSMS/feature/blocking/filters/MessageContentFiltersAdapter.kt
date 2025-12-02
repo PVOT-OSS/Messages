@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.blocking.filters
+package dev.danascape.messages.feature.blocking.filters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkRealmAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.model.MessageContentFilter
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkRealmAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.model.MessageContentFilter
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import dev.octoshrimpy.quik.databinding.MessageContentFilterListItemBinding
+import dev.danascape.messages.databinding.MessageContentFilterListItemBinding
 
 class MessageContentFiltersAdapter : QkRealmAdapter<MessageContentFilter, QkBindingViewHolder<MessageContentFilterListItemBinding>>() {
 

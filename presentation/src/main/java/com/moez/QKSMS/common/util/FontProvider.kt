@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.content.Context
 import android.graphics.Typeface
 import androidx.core.content.res.ResourcesCompat
-import dev.octoshrimpy.quik.R
+import dev.danascape.messages.R
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton

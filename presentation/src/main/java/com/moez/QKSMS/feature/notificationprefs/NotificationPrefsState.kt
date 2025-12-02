@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.notificationprefs
+package dev.danascape.messages.feature.notificationprefs
 
 import android.os.Build
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.util.Preferences
 
 data class NotificationPrefsState(
     val threadId: Long = 0,

@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.receiver
+package dev.danascape.messages.receiver
 
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.interactor.MarkDelivered
-import dev.octoshrimpy.quik.interactor.MarkDeliveryFailed
+import dev.danascape.messages.interactor.MarkDelivered
+import dev.danascape.messages.interactor.MarkDeliveryFailed
 import javax.inject.Inject
 
 class SmsDeliveredReceiver : BroadcastReceiver() {

@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.contacts
+package dev.danascape.messages.feature.contacts
 
-import dev.octoshrimpy.quik.common.base.QkView
-import dev.octoshrimpy.quik.extensions.Optional
-import dev.octoshrimpy.quik.feature.compose.editing.ComposeItem
-import dev.octoshrimpy.quik.feature.compose.editing.PhoneNumberAction
+import dev.danascape.messages.common.base.QkView
+import dev.danascape.messages.extensions.Optional
+import dev.danascape.messages.feature.compose.editing.ComposeItem
+import dev.danascape.messages.feature.compose.editing.PhoneNumberAction
 import io.reactivex.Observable
 import io.reactivex.subjects.Subject
 

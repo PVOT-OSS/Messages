@@ -1,1 +1,0 @@
-Remplacement open source de l'appli SMS Android. Renaissance de QKSMS.

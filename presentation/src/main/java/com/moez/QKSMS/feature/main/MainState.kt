@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.main
+package dev.danascape.messages.feature.main
 
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.SearchResult
-import dev.octoshrimpy.quik.repository.SyncRepository
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.SearchResult
+import dev.danascape.messages.repository.SyncRepository
 import io.realm.RealmResults
 
 data class MainState(

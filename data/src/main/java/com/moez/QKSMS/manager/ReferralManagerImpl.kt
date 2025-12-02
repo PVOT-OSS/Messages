@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.manager
+package dev.danascape.messages.manager
 
 import javax.inject.Inject
 

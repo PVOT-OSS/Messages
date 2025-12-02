@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.content.Context
 import android.graphics.Color
 import androidx.core.content.res.getColorOrThrow
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.extensions.getColorCompat
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.extensions.getColorCompat
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.util.PhoneNumberUtils
+import dev.danascape.messages.util.Preferences
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton

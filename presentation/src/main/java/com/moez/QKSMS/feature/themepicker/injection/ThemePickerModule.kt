@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.themepicker.injection
+package dev.danascape.messages.feature.themepicker.injection
 
 import dagger.Module
 import dagger.Provides
-import dev.octoshrimpy.quik.feature.themepicker.ThemePickerController
-import dev.octoshrimpy.quik.injection.scope.ControllerScope
+import dev.danascape.messages.feature.themepicker.ThemePickerController
+import dev.danascape.messages.injection.scope.ControllerScope
 import javax.inject.Named
 
 @Module

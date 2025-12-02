@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.feature.blocking.manager
+package dev.danascape.messages.feature.blocking.manager
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -6,12 +6,12 @@ import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.view.isInvisible
 import com.jakewharton.rxbinding2.view.clicks
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkController
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.extensions.resolveThemeColor
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkController
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.extensions.resolveThemeColor
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.util.Preferences
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject

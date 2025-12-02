@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.mapper
+package dev.danascape.messages.mapper
 
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.Telephony.Threads
-import dev.octoshrimpy.quik.manager.PermissionManager
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.Recipient
+import dev.danascape.messages.manager.PermissionManager
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.Recipient
 import javax.inject.Inject
 
 class CursorToConversationImpl @Inject constructor(

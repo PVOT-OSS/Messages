@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common
+package dev.danascape.messages.common
 
 import android.app.Activity
 import android.content.Context
@@ -24,9 +24,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import dev.octoshrimpy.quik.common.util.extensions.dpToPx
-import dev.octoshrimpy.quik.common.util.extensions.setPadding
-import dev.octoshrimpy.quik.injection.appComponent
+import dev.danascape.messages.common.util.extensions.dpToPx
+import dev.danascape.messages.common.util.extensions.setPadding
+import dev.danascape.messages.injection.appComponent
 import javax.inject.Inject
 
 /**

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.worker
+package dev.danascape.messages.worker
 
 import android.content.Context
 import androidx.work.Constraints
@@ -27,7 +27,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.moez.QKSMS.manager.MediaRecorderManager
 import com.moez.QKSMS.util.Constants
-import dev.octoshrimpy.quik.repository.ScheduledMessageRepository
+import dev.danascape.messages.repository.ScheduledMessageRepository
 import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

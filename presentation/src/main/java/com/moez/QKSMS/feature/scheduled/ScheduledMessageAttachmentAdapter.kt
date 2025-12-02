@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.scheduled
+package dev.danascape.messages.feature.scheduled
 
 import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.extensions.getName
-import dev.octoshrimpy.quik.feature.extensions.LoadBestIconIntoImageView
-import dev.octoshrimpy.quik.feature.extensions.loadBestIconIntoImageView
-import dev.octoshrimpy.quik.databinding.ScheduledMessageImageListItemBinding
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.extensions.getName
+import dev.danascape.messages.feature.extensions.LoadBestIconIntoImageView
+import dev.danascape.messages.feature.extensions.loadBestIconIntoImageView
+import dev.danascape.messages.databinding.ScheduledMessageImageListItemBinding
 import javax.inject.Inject
 
 

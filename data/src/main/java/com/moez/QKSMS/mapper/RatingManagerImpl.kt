@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.mapper
+package dev.danascape.messages.mapper
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences
-import dev.octoshrimpy.quik.manager.RatingManager
+import dev.danascape.messages.manager.RatingManager
 import io.reactivex.rxkotlin.Observables
 import javax.inject.Inject
 

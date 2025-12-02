@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.content.ComponentName
 import android.content.IntentFilter
@@ -24,13 +24,13 @@ import android.graphics.drawable.Icon
 import android.service.chooser.ChooserTarget
 import android.service.chooser.ChooserTargetService
 import androidx.core.os.bundleOf
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.feature.compose.ComposeActivity
-import dev.octoshrimpy.quik.injection.appComponent
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.util.GlideApp
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.R
+import dev.danascape.messages.feature.compose.ComposeActivity
+import dev.danascape.messages.injection.appComponent
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.util.GlideApp
+import dev.danascape.messages.util.tryOrNull
 import javax.inject.Inject
 
 class QkChooserTargetService : ChooserTargetService() {

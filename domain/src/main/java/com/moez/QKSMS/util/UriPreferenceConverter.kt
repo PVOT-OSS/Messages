@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.util
+package dev.danascape.messages.util
 
 import android.net.Uri
 import com.f2prateek.rx.preferences2.Preference.Converter

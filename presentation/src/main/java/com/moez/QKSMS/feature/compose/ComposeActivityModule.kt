@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose
+package dev.danascape.messages.feature.compose
 
 import android.content.Intent
 import android.net.Uri
@@ -24,8 +24,8 @@ import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import dev.octoshrimpy.quik.injection.ViewModelKey
-import dev.octoshrimpy.quik.model.Attachment
+import dev.danascape.messages.injection.ViewModelKey
+import dev.danascape.messages.model.Attachment
 import javax.inject.Named
 
 @Module

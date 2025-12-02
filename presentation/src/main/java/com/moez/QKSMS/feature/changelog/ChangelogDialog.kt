@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.changelog
+package dev.danascape.messages.feature.changelog
 
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import dev.octoshrimpy.quik.BuildConfig
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.databinding.ChangelogDialogBinding
-import dev.octoshrimpy.quik.feature.main.MainActivity
-import dev.octoshrimpy.quik.manager.ChangelogManager
+import dev.danascape.messages.BuildConfig
+import dev.danascape.messages.R
+import dev.danascape.messages.databinding.ChangelogDialogBinding
+import dev.danascape.messages.feature.main.MainActivity
+import dev.danascape.messages.manager.ChangelogManager
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 

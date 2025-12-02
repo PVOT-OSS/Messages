@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.interactor
+package dev.danascape.messages.interactor
 
 import android.net.Uri
-import dev.octoshrimpy.quik.blocking.BlockingClient
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.manager.ActiveConversationManager
-import dev.octoshrimpy.quik.manager.NotificationManager
-import dev.octoshrimpy.quik.repository.ContactRepository
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageContentFilterRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
-import dev.octoshrimpy.quik.repository.SyncRepository
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.blocking.BlockingClient
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.manager.ActiveConversationManager
+import dev.danascape.messages.manager.NotificationManager
+import dev.danascape.messages.repository.ContactRepository
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageContentFilterRepository
+import dev.danascape.messages.repository.MessageRepository
+import dev.danascape.messages.repository.SyncRepository
+import dev.danascape.messages.util.Preferences
 import io.reactivex.Flowable
 import timber.log.Timber
 import javax.inject.Inject

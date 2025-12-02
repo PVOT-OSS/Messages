@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.filter
+package dev.danascape.messages.filter
 
-import dev.octoshrimpy.quik.extensions.removeAccents
-import dev.octoshrimpy.quik.model.Contact
+import dev.danascape.messages.extensions.removeAccents
+import dev.danascape.messages.model.Contact
 import javax.inject.Inject
 
 class ContactFilter @Inject constructor(private val phoneNumberFilter: PhoneNumberFilter) : Filter<Contact>() {

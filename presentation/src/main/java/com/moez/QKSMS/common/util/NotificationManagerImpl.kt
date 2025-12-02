@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.common.util
+package dev.danascape.messages.common.util
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -36,31 +36,31 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.util.extensions.dpToPx
-import dev.octoshrimpy.quik.common.util.extensions.fromRecipient
-import dev.octoshrimpy.quik.common.util.extensions.toPerson
-import dev.octoshrimpy.quik.extensions.isImage
-import dev.octoshrimpy.quik.feature.compose.ComposeActivity
-import dev.octoshrimpy.quik.feature.qkreply.QkReplyActivity
-import dev.octoshrimpy.quik.manager.PermissionManager
-import dev.octoshrimpy.quik.manager.ShortcutManager
-import dev.octoshrimpy.quik.mapper.CursorToPartImpl
-import dev.octoshrimpy.quik.receiver.BlockThreadReceiver
-import dev.octoshrimpy.quik.receiver.DeleteMessagesReceiver
-import dev.octoshrimpy.quik.receiver.MarkArchivedReceiver
-import dev.octoshrimpy.quik.receiver.MarkReadReceiver
-import dev.octoshrimpy.quik.receiver.MarkSeenReceiver
-import dev.octoshrimpy.quik.receiver.RemoteMessagingReceiver
-import dev.octoshrimpy.quik.receiver.SpeakThreadsReceiver
-import dev.octoshrimpy.quik.receiver.SendSmsReceiver
-import dev.octoshrimpy.quik.repository.ContactRepository
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
-import dev.octoshrimpy.quik.util.GlideApp
-import dev.octoshrimpy.quik.util.PhoneNumberUtils
-import dev.octoshrimpy.quik.util.Preferences
-import dev.octoshrimpy.quik.util.tryOrNull
+import dev.danascape.messages.R
+import dev.danascape.messages.common.util.extensions.dpToPx
+import dev.danascape.messages.common.util.extensions.fromRecipient
+import dev.danascape.messages.common.util.extensions.toPerson
+import dev.danascape.messages.extensions.isImage
+import dev.danascape.messages.feature.compose.ComposeActivity
+import dev.danascape.messages.feature.qkreply.QkReplyActivity
+import dev.danascape.messages.manager.PermissionManager
+import dev.danascape.messages.manager.ShortcutManager
+import dev.danascape.messages.mapper.CursorToPartImpl
+import dev.danascape.messages.receiver.BlockThreadReceiver
+import dev.danascape.messages.receiver.DeleteMessagesReceiver
+import dev.danascape.messages.receiver.MarkArchivedReceiver
+import dev.danascape.messages.receiver.MarkReadReceiver
+import dev.danascape.messages.receiver.MarkSeenReceiver
+import dev.danascape.messages.receiver.RemoteMessagingReceiver
+import dev.danascape.messages.receiver.SpeakThreadsReceiver
+import dev.danascape.messages.receiver.SendSmsReceiver
+import dev.danascape.messages.repository.ContactRepository
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageRepository
+import dev.danascape.messages.util.GlideApp
+import dev.danascape.messages.util.PhoneNumberUtils
+import dev.danascape.messages.util.Preferences
+import dev.danascape.messages.util.tryOrNull
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -76,7 +76,7 @@ class NotificationManagerImpl @Inject constructor(
     private val phoneNumberUtils: PhoneNumberUtils,
     private val contactRepo: ContactRepository,
     private val shortcutManager: ShortcutManager
-) : dev.octoshrimpy.quik.manager.NotificationManager {
+) : dev.danascape.messages.manager.NotificationManager {
 
     companion object {
         const val DEFAULT_CHANNEL_ID = "notifications_default"

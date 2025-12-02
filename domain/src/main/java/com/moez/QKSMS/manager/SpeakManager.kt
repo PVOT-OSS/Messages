@@ -8,7 +8,7 @@ import android.os.Build
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.text.format.DateFormat
-import dev.octoshrimpy.quik.model.Conversation
+import dev.danascape.messages.model.Conversation
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.Calendar

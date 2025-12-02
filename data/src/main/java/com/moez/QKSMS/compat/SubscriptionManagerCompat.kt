@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.compat
+package dev.danascape.messages.compat
 
 import android.content.Context
 import android.telephony.SubscriptionManager
-import dev.octoshrimpy.quik.manager.PermissionManager
+import dev.danascape.messages.manager.PermissionManager
 import javax.inject.Inject
 
 class SubscriptionManagerCompat @Inject constructor(context: Context, private val permissions: PermissionManager) {

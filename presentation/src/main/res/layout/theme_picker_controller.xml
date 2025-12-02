@@ -25,7 +25,7 @@
     android:background="?android:attr/windowBackground"
     android:orientation="vertical">
 
-    <dev.octoshrimpy.quik.common.widget.PagerTitleView
+    <dev.danascape.messages.common.widget.PagerTitleView
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="40dp"

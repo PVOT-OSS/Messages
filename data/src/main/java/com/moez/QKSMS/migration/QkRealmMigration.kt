@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.migration
+package dev.danascape.messages.migration
 
 import android.annotation.SuppressLint
-import dev.octoshrimpy.quik.extensions.map
-import dev.octoshrimpy.quik.mapper.CursorToContactImpl
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.extensions.map
+import dev.danascape.messages.mapper.CursorToContactImpl
+import dev.danascape.messages.util.Preferences
 import io.realm.DynamicRealm
 import io.realm.DynamicRealmObject
 import io.realm.FieldAttribute

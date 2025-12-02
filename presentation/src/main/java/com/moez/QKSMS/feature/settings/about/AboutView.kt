@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.settings.about
+package dev.danascape.messages.feature.settings.about
 
-import dev.octoshrimpy.quik.common.base.QkViewContract
-import dev.octoshrimpy.quik.common.widget.PreferenceView
+import dev.danascape.messages.common.base.QkViewContract
+import dev.danascape.messages.common.widget.PreferenceView
 import io.reactivex.Observable
 
 interface AboutView : QkViewContract<Unit> {

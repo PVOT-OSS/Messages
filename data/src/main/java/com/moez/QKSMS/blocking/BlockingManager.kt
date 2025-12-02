@@ -1,6 +1,6 @@
-package dev.octoshrimpy.quik.blocking
+package dev.danascape.messages.blocking
 
-import dev.octoshrimpy.quik.util.Preferences
+import dev.danascape.messages.util.Preferences
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

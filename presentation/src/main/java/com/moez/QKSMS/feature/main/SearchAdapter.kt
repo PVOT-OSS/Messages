@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.main
+package dev.danascape.messages.feature.main
 
 import android.content.Context
 import android.text.SpannableString
@@ -24,16 +24,16 @@ import android.text.Spanned
 import android.text.style.BackgroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.common.util.Colors
-import dev.octoshrimpy.quik.common.util.DateFormatter
-import dev.octoshrimpy.quik.common.util.extensions.setVisible
-import dev.octoshrimpy.quik.extensions.removeAccents
-import dev.octoshrimpy.quik.model.SearchResult
-import dev.octoshrimpy.quik.databinding.SearchListItemBinding
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.common.util.Colors
+import dev.danascape.messages.common.util.DateFormatter
+import dev.danascape.messages.common.util.extensions.setVisible
+import dev.danascape.messages.extensions.removeAccents
+import dev.danascape.messages.model.SearchResult
+import dev.danascape.messages.databinding.SearchListItemBinding
 import javax.inject.Inject
 
 class SearchAdapter @Inject constructor(

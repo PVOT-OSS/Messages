@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.changelog
+package dev.danascape.messages.feature.changelog
 
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.databinding.ChangelogListItemBinding
-import dev.octoshrimpy.quik.manager.ChangelogManager
+import dev.danascape.messages.R
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.databinding.ChangelogListItemBinding
+import dev.danascape.messages.manager.ChangelogManager
 
 class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapter.ChangelogItem, QkBindingViewHolder<ChangelogListItemBinding>>() {
 

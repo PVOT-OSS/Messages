@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.contacts
+package dev.danascape.messages.feature.contacts
 
 import android.app.Activity
 import android.content.Intent
@@ -27,17 +27,17 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.editorActions
 import com.jakewharton.rxbinding2.widget.textChanges
 import dagger.android.AndroidInjection
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.ViewModelFactory
-import dev.octoshrimpy.quik.common.base.QkThemedActivity
-import dev.octoshrimpy.quik.common.util.extensions.hideKeyboard
-import dev.octoshrimpy.quik.common.util.extensions.showKeyboard
-import dev.octoshrimpy.quik.common.widget.QkDialog
-import dev.octoshrimpy.quik.extensions.Optional
-import dev.octoshrimpy.quik.feature.compose.editing.ComposeItem
-import dev.octoshrimpy.quik.feature.compose.editing.ComposeItemAdapter
-import dev.octoshrimpy.quik.feature.compose.editing.PhoneNumberAction
-import dev.octoshrimpy.quik.feature.compose.editing.PhoneNumberPickerAdapter
+import dev.danascape.messages.R
+import dev.danascape.messages.common.ViewModelFactory
+import dev.danascape.messages.common.base.QkThemedActivity
+import dev.danascape.messages.common.util.extensions.hideKeyboard
+import dev.danascape.messages.common.util.extensions.showKeyboard
+import dev.danascape.messages.common.widget.QkDialog
+import dev.danascape.messages.extensions.Optional
+import dev.danascape.messages.feature.compose.editing.ComposeItem
+import dev.danascape.messages.feature.compose.editing.ComposeItemAdapter
+import dev.danascape.messages.feature.compose.editing.PhoneNumberAction
+import dev.danascape.messages.feature.compose.editing.PhoneNumberPickerAdapter
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

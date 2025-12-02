@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.manager
+package dev.danascape.messages.manager
 
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import dev.octoshrimpy.quik.receiver.SendScheduledMessageReceiver
+import dev.danascape.messages.receiver.SendScheduledMessageReceiver
 import javax.inject.Inject
 
 class AlarmManagerImpl @Inject constructor(private val context: Context) : AlarmManager {

@@ -23,7 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <dev.octoshrimpy.quik.common.widget.RadioPreferenceView
+    <dev.danascape.messages.common.widget.RadioPreferenceView
         android:id="@+id/number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

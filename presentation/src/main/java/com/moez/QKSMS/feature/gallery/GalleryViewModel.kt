@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.gallery
+package dev.danascape.messages.feature.gallery
 
 import android.content.Context
 import com.moez.QKSMS.contentproviders.MmsPartProvider
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.octoshrimpy.quik.R
-import dev.octoshrimpy.quik.common.Navigator
-import dev.octoshrimpy.quik.common.base.QkViewModel
-import dev.octoshrimpy.quik.common.util.extensions.makeToast
-import dev.octoshrimpy.quik.extensions.mapNotNull
-import dev.octoshrimpy.quik.interactor.SaveImage
-import dev.octoshrimpy.quik.manager.PermissionManager
-import dev.octoshrimpy.quik.repository.ConversationRepository
-import dev.octoshrimpy.quik.repository.MessageRepository
+import dev.danascape.messages.R
+import dev.danascape.messages.common.Navigator
+import dev.danascape.messages.common.base.QkViewModel
+import dev.danascape.messages.common.util.extensions.makeToast
+import dev.danascape.messages.extensions.mapNotNull
+import dev.danascape.messages.interactor.SaveImage
+import dev.danascape.messages.manager.PermissionManager
+import dev.danascape.messages.repository.ConversationRepository
+import dev.danascape.messages.repository.MessageRepository
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject

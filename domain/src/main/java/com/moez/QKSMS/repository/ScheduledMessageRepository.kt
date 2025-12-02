@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.repository
+package dev.danascape.messages.repository
 
-import dev.octoshrimpy.quik.model.Recipient
-import dev.octoshrimpy.quik.model.ScheduledMessage
+import dev.danascape.messages.model.Recipient
+import dev.danascape.messages.model.ScheduledMessage
 import io.realm.RealmList
 import io.realm.RealmResults
 

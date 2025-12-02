@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose
+package dev.danascape.messages.feature.compose
 
-import dev.octoshrimpy.quik.compat.SubscriptionInfoCompat
-import dev.octoshrimpy.quik.model.Attachment
-import dev.octoshrimpy.quik.model.Conversation
-import dev.octoshrimpy.quik.model.Message
-import dev.octoshrimpy.quik.model.Recipient
+import dev.danascape.messages.compat.SubscriptionInfoCompat
+import dev.danascape.messages.model.Attachment
+import dev.danascape.messages.model.Conversation
+import dev.danascape.messages.model.Message
+import dev.danascape.messages.model.Recipient
 import io.realm.RealmResults
 
 data class ComposeState(

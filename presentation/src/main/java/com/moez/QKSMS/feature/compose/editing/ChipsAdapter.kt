@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.feature.compose.editing
+package dev.danascape.messages.feature.compose.editing
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
-import dev.octoshrimpy.quik.common.base.QkAdapter
-import dev.octoshrimpy.quik.common.base.QkBindingViewHolder
-import dev.octoshrimpy.quik.common.util.extensions.dpToPx
-import dev.octoshrimpy.quik.databinding.ContactChipBinding
-import dev.octoshrimpy.quik.model.Recipient
+import dev.danascape.messages.common.base.QkAdapter
+import dev.danascape.messages.common.base.QkBindingViewHolder
+import dev.danascape.messages.common.util.extensions.dpToPx
+import dev.danascape.messages.databinding.ContactChipBinding
+import dev.danascape.messages.model.Recipient
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 

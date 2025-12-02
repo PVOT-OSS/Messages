@@ -16,36 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.octoshrimpy.quik.injection
+package dev.danascape.messages.injection
 
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
-import dev.octoshrimpy.quik.common.QKApplication
-import dev.octoshrimpy.quik.common.QkDialog
-import dev.octoshrimpy.quik.common.util.QkChooserTargetService
-import dev.octoshrimpy.quik.common.widget.AvatarView
-import dev.octoshrimpy.quik.common.widget.PagerTitleView
-import dev.octoshrimpy.quik.common.widget.PreferenceView
-import dev.octoshrimpy.quik.common.widget.QkEditText
-import dev.octoshrimpy.quik.common.widget.QkSwitch
-import dev.octoshrimpy.quik.common.widget.QkTextView
-import dev.octoshrimpy.quik.common.widget.RadioPreferenceView
-import dev.octoshrimpy.quik.feature.backup.BackupController
-import dev.octoshrimpy.quik.feature.blocking.BlockingController
-import dev.octoshrimpy.quik.feature.blocking.filters.MessageContentFiltersController
-import dev.octoshrimpy.quik.feature.blocking.manager.BlockingManagerController
-import dev.octoshrimpy.quik.feature.blocking.messages.BlockedMessagesController
-import dev.octoshrimpy.quik.feature.blocking.numbers.BlockedNumbersController
-import dev.octoshrimpy.quik.feature.compose.editing.DetailedChipView
-import dev.octoshrimpy.quik.feature.conversationinfo.injection.ConversationInfoComponent
-import dev.octoshrimpy.quik.feature.settings.SettingsController
-import dev.octoshrimpy.quik.feature.settings.about.AboutController
-import dev.octoshrimpy.quik.feature.settings.swipe.SwipeActionsController
-import dev.octoshrimpy.quik.feature.themepicker.injection.ThemePickerComponent
-import dev.octoshrimpy.quik.feature.widget.WidgetAdapter
-import dev.octoshrimpy.quik.injection.android.ActivityBuilderModule
-import dev.octoshrimpy.quik.injection.android.BroadcastReceiverBuilderModule
-import dev.octoshrimpy.quik.injection.android.ServiceBuilderModule
+import dev.danascape.messages.common.QKApplication
+import dev.danascape.messages.common.QkDialog
+import dev.danascape.messages.common.util.QkChooserTargetService
+import dev.danascape.messages.common.widget.AvatarView
+import dev.danascape.messages.common.widget.PagerTitleView
+import dev.danascape.messages.common.widget.PreferenceView
+import dev.danascape.messages.common.widget.QkEditText
+import dev.danascape.messages.common.widget.QkSwitch
+import dev.danascape.messages.common.widget.QkTextView
+import dev.danascape.messages.common.widget.RadioPreferenceView
+import dev.danascape.messages.feature.backup.BackupController
+import dev.danascape.messages.feature.blocking.BlockingController
+import dev.danascape.messages.feature.blocking.filters.MessageContentFiltersController
+import dev.danascape.messages.feature.blocking.manager.BlockingManagerController
+import dev.danascape.messages.feature.blocking.messages.BlockedMessagesController
+import dev.danascape.messages.feature.blocking.numbers.BlockedNumbersController
+import dev.danascape.messages.feature.compose.editing.DetailedChipView
+import dev.danascape.messages.feature.conversationinfo.injection.ConversationInfoComponent
+import dev.danascape.messages.feature.settings.SettingsController
+import dev.danascape.messages.feature.settings.about.AboutController
+import dev.danascape.messages.feature.settings.swipe.SwipeActionsController
+import dev.danascape.messages.feature.themepicker.injection.ThemePickerComponent
+import dev.danascape.messages.feature.widget.WidgetAdapter
+import dev.danascape.messages.injection.android.ActivityBuilderModule
+import dev.danascape.messages.injection.android.BroadcastReceiverBuilderModule
+import dev.danascape.messages.injection.android.ServiceBuilderModule
 import javax.inject.Singleton
 
 @Singleton

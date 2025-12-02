@@ -22,7 +22,7 @@
     android:id="@+id/toolbar"
     style="@style/Toolbar">
 
-    <dev.octoshrimpy.quik.common.widget.QkTextView
+    <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/toolbarTitle"
         style="@style/ToolbarText"
         tools:text="Conversations" />

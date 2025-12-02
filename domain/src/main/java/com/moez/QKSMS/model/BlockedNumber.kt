@@ -1,4 +1,4 @@
-package dev.octoshrimpy.quik.model
+package dev.danascape.messages.model
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
