@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 33
+        targetSdk = 36
     }
 
     namespace = "dev.danascape.messages.domain"
