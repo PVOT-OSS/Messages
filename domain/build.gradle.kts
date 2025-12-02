@@ -19,9 +19,9 @@
  */
 
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
     id("realm-android")   // must come before Kotlin plugins
-    id("kotlin-android")
+    alias(libs.plugins.kotlin.android)
     id("kotlin-android-extensions")
     id("kotlin-kapt")
 }

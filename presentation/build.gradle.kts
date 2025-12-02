@@ -22,9 +22,9 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     id("realm-android")   // must come before Kotlin plugins
-    id("kotlin-android")
+    alias(libs.plugins.kotlin.android)
     id("kotlin-android-extensions")
     id("kotlin-kapt")
 }
