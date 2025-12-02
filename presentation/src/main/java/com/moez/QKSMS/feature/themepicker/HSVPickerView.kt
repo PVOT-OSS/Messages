@@ -16,26 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.prauga.messages.feature.themepicker
 
+package dev.danascape.messages.feature.themepicker
+
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import org.prauga.messages.R
-import org.prauga.messages.common.util.extensions.setBackgroundTint
-import org.prauga.messages.common.util.extensions.setTint
-import org.prauga.messages.common.util.extensions.within
+import dev.danascape.messages.common.util.extensions.setBackgroundTint
+import dev.danascape.messages.common.util.extensions.setTint
+import dev.danascape.messages.common.util.extensions.within
+import dev.danascape.messages.databinding.HsvPickerViewBinding
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
-import kotlinx.android.synthetic.main.hsv_picker_view.view.*
 
+@SuppressLint("ClickableViewAccessibility")
 class HSVPickerView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs) {
+
+    private val binding: HsvPickerViewBinding = HsvPickerViewBinding.inflate(LayoutInflater.from(context), this)
 
     val selectedColor: Subject<Int> = BehaviorSubject.create()
 
@@ -52,12 +56,10 @@ class HSVPickerView @JvmOverloads constructor(
         }
 
     init {
-        View.inflate(context, R.layout.hsv_picker_view, this)
-
         var swatchX = 0f
         var swatchY = 0f
 
-        saturation.setOnTouchListener { _, event ->
+        binding.saturation.setOnTouchListener { _, event ->
             setupBounds()
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -68,8 +70,8 @@ class HSVPickerView @JvmOverloads constructor(
 
                 MotionEvent.ACTION_MOVE -> {
                     // Calculate the new x/y position
-                    swatch.x = (event.rawX + swatchX + min).within(min, max)
-                    swatch.y = (event.rawY + swatchY + min).within(min, max)
+                    binding.swatch.x = (event.rawX + swatchX + min).within(min, max)
+                    binding.swatch.y = (event.rawY + swatchY + min).within(min, max)
 
                     updateSelectedColor()
                 }
@@ -85,7 +87,7 @@ class HSVPickerView @JvmOverloads constructor(
 
         var hueThumbX = 0f
 
-        hueGroup.setOnTouchListener { _, event ->
+        binding.hueGroup.setOnTouchListener { _, event ->
             setupBounds()
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -96,8 +98,8 @@ class HSVPickerView @JvmOverloads constructor(
                 MotionEvent.ACTION_MOVE -> {
                     val x = (event.rawX + hueThumbX + min).within(min, max)
 
-                    hueThumb.x = x
-                    hue = (hueThumb.x - min) / (max - min) * 360
+                    binding.hueThumb.x = x
+                    hue = (binding.hueThumb.x - min) / (max - min) * 360
 
                     updateSelectedColor()
                 }
@@ -111,14 +113,14 @@ class HSVPickerView @JvmOverloads constructor(
             true
         }
 
-        hueTrack.clipToOutline = true
-        hueTrack.setImageDrawable(GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, hues))
+        binding.hueTrack.clipToOutline = true
+        binding.hueTrack.setImageDrawable(GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, hues))
     }
 
     private fun setupBounds() {
         if (min == 0f || max == 0f) {
-            min = saturation.x - swatch.width / 2
-            max = min + saturation.width
+            min = binding.saturation.x - binding.swatch.width / 2
+            max = min + binding.saturation.width
         }
     }
 
@@ -126,10 +128,10 @@ class HSVPickerView @JvmOverloads constructor(
         setupBounds()
 
         val range = max - min
-        val hsv = floatArrayOf(hue, (swatch.x - min) / range, 1 - (swatch.y - min) / range)
+        val hsv = floatArrayOf(hue, (binding.swatch.x - min) / range, 1 - (binding.swatch.y - min) / range)
         val color = Color.HSVToColor(hsv)
 
-        swatch.setTint(color)
+        binding.swatch.setTint(color)
         selectedColor.onNext(color)
     }
 
@@ -145,9 +147,9 @@ class HSVPickerView @JvmOverloads constructor(
             setupBounds()
             val range = max - min
 
-            hueThumb.x = range * hsv[0] / 360 + min
-            swatch.x = range * hsv[1] + min
-            swatch.y = range * (1 - hsv[2]) + min
+            binding.hueThumb.x = range * hsv[0] / 360 + min
+            binding.swatch.x = range * hsv[1] + min
+            binding.swatch.y = range * (1 - hsv[2]) + min
 
             updateSelectedColor()
         }
@@ -156,7 +158,7 @@ class HSVPickerView @JvmOverloads constructor(
     private fun updateHue() {
         val hsv = floatArrayOf(hue, 1f, 1f)
         val tint = Color.HSVToColor(hsv)
-        saturation.setBackgroundTint(tint)
+        binding.saturation.setBackgroundTint(tint)
     }
 
 }
