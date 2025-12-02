@@ -151,6 +151,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         }
 
         toggle.syncState()
+        title = ""
         binding.toolbar.setNavigationOnClickListener {
             dismissKeyboard()
             homeIntent.onNext(Unit)
@@ -242,7 +243,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 state.page.selected == 0 ||
                 state.page is Searching
         )
-        binding.toolbarTitle.setVisible(binding.toolbarSearch.visibility != View.VISIBLE)
+        binding.toolbarTitle.setVisible(true)
 
         binding.toolbar.menu.apply {
             findItem(R.id.select_all)?.isVisible =
@@ -279,7 +280,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         when (state.page) {
             is Inbox -> {
                 showBackButton(state.page.selected > 0)
-                title = getString(R.string.main_title_selected, state.page.selected)
+                binding.toolbarTitle.text = when {
+                    state.page.selected > 0 -> getString(R.string.main_title_selected, state.page.selected)
+                    else -> getString(R.string.app_name)
+                }
                 if (binding.recyclerView.adapter !== conversationsAdapter)
                     binding.recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
@@ -289,6 +293,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
             is Searching -> {
                 showBackButton(true)
+                binding.toolbarTitle.text = getString(R.string.title_conversations)
                 if (binding.recyclerView.adapter !== searchAdapter) binding.recyclerView.adapter = searchAdapter
                 searchAdapter.data = state.page.data ?: listOf()
                 itemTouchHelper.attachToRecyclerView(null)
@@ -297,9 +302,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
             is Archived -> {
                 showBackButton(state.page.selected > 0)
-                title = when (state.page.selected != 0) {
-                    true -> getString(R.string.main_title_selected, state.page.selected)
-                    false -> getString(R.string.title_archived)
+                binding.toolbarTitle.text = when {
+                    state.page.selected > 0 -> getString(R.string.main_title_selected, state.page.selected)
+                    else -> getString(R.string.title_archived)
                 }
                 if (binding.recyclerView.adapter !== conversationsAdapter)
                     binding.recyclerView.adapter = conversationsAdapter
@@ -308,7 +313,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 binding.empty.setText(R.string.archived_empty_text)
             }
 
-            else -> {}
+            else -> {
+                binding.toolbarTitle.text = getString(R.string.app_name)
+            }
         }
 
         binding.drawer.inbox.isActivated = state.page is Inbox
