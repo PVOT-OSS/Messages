@@ -18,9 +18,6 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.FileInputStream
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.android.application)
     id("realm-android")   // must come before Kotlin plugins
@@ -46,19 +43,36 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
+
     signingConfigs {
-        // use the existing debug signing config (default created by Android Gradle plugin)
-        // create release signing config
-        create("release") {
-            val keystoreProps = Properties()
-            val keystorePropsFile = rootProject.file("./.gradle/.gradlerc")
-            storeFile = file("./my-release-key.keystore")
-            keyAlias = "quik_release"
-            if (keystorePropsFile.exists()) {
-                keystoreProps.load(FileInputStream(keystorePropsFile))
-            }
-            storePassword = keystoreProps["storePassword"]?.toString()
-            keyPassword = keystoreProps["keyPassword"]?.toString()
+        create("platform") {
+            storeFile = file("$rootDir/keystore/platform.jks")
+            storePassword = "platform"
+            keyAlias = "platform"
+            keyPassword = "platform"
+        }
+    }
+
+    buildTypes {
+        debug {
+            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("platform")
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+            signingConfig = signingConfigs.getByName("debug")
+        }
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android.txt"),
+                "proguard-rules.pro"
+            )
+            signingConfig = signingConfigs.getByName("platform")
         }
     }
 
@@ -66,23 +80,6 @@ android {
         // Disables dependency metadata when building APKs and AABs.
         includeInApk = false
         includeInBundle = false
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
-                "proguard-rules.pro"
-            )
-            signingConfig = signingConfigs.getByName("release")
-        }
-        getByName("debug") {
-            applicationIdSuffix = ".debug"
-            versionNameSuffix = "-debug"
-            signingConfig = signingConfigs.getByName("debug")
-        }
     }
 
     compileOptions {
@@ -98,27 +95,10 @@ android {
     lint {
         abortOnError = false
     }
-
-    buildFeatures {
-        buildConfig = true
-        viewBinding = true
-    }
-
-    // override signing credentials when running on CI
-    if (System.getenv("CI") == "true") {
-        signingConfigs.getByName("release").storePassword = System.getenv("keystore_password")
-        signingConfigs.getByName("release").keyAlias = System.getenv("key_alias")
-        signingConfigs.getByName("release").keyPassword = System.getenv("key_password")
-    }
 }
 
 androidExtensions {
     isExperimental = true
-}
-
-configurations {
-    create("debug")
-    create("release")
 }
 
 dependencies {
