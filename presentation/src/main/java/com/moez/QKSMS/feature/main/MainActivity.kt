@@ -192,6 +192,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     binding.drawer.rateIcon.setTint(theme.theme)
                     binding.compose.setBackgroundTint(theme.theme)
 
+                    binding.searchPill.setCardBackgroundColor(theme.highlight)
+                    binding.searchIcon.setTint(theme.textPrimary)
+                    binding.toolbarSearch.setTextColor(theme.textPrimary)
+                    binding.toolbarSearch.setHintTextColor(theme.textSecondary)
+
                     // Set the FAB compose icon color
                     binding.compose.setTint(theme.textPrimary)
                 }

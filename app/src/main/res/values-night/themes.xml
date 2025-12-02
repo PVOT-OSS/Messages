@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="MessagesTheme" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/md_theme_primary</item>
+        <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
+
+        <item name="colorSecondary">@color/md_theme_secondary</item>
+        <item name="colorOnSecondary">@color/md_theme_onSecondary</item>
+
+        <!--        <item name="colorBackground">@color/md_theme_background</item>-->
+        <item name="colorOnBackground">@color/md_theme_onBackground</item>
+
+        <item name="colorSurface">@color/md_theme_surface</item>
+        <item name="colorOnSurface">@color/md_theme_onSurface</item>
+
+        <item name="colorSurfaceVariant">@color/md_theme_surfaceVariant</item>
+        <item name="colorOutline">@color/md_theme_outline</item>
+
+        <item name="colorControlHighlight">@color/ripple_color</item>
+
+        <item name="android:statusBarColor">@color/md_theme_background</item>
+        <item name="android:navigationBarColor">@color/md_theme_background</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <!--        <item name="android:windowLightNavigationBar">false</item>-->
+
+        <item name="floatingActionButtonStyle">@style/Widget.Messages.FAB.Dark</item>
+    </style>
+
+    <style name="Widget.Messages.FAB.Dark" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="backgroundTint">@color/md_theme_surface</item>
+        <item name="tint">@color/md_theme_primary</item>
+        <item name="rippleColor">@color/ripple_color</item>
+    </style>
+</resources>

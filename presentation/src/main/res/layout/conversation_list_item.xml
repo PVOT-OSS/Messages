@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
   ~
   ~ This file is part of QKSMS.
@@ -24,20 +23,21 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
+    android:nextFocusRight="@+id/compose"
     android:orientation="horizontal"
     android:paddingStart="12dp"
-    android:paddingTop="8dp"
+    android:paddingTop="10dp"
     android:paddingEnd="16dp"
-    android:paddingBottom="8dp"
-    android:nextFocusRight="@+id/compose">
+    android:paddingBottom="10dp">
 
     <dev.danascape.messages.common.widget.GroupAvatarView
         android:id="@+id/avatars"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="54dp"
+        android:layout_height="55dp"
         android:layout_gravity="top"
+        android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/unread"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
 
@@ -50,6 +50,7 @@
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:lines="1"
+        android:textDirection="ltr"
         app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toTopOf="@id/snippet"
         app:layout_constraintEnd_toStartOf="@id/date"
@@ -57,8 +58,7 @@
         app:layout_constraintStart_toEndOf="@id/avatars"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        tools:text="@tools:sample/full_names"
-        android:textDirection="ltr" />
+        tools:text="@tools:sample/full_names" />
 
     <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/snippet"
@@ -97,7 +97,7 @@
         android:src="@drawable/ic_event_black_24dp"
         android:tint="?android:attr/textColorTertiary"
         android:visibility="gone"
-        app:layout_constraintEnd_toStartOf="@id/unread"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/snippet"
         tools:visibility="visible" />
 
@@ -110,14 +110,15 @@
         android:paddingBottom="2dp"
         android:src="@drawable/circle"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/snippet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:tint="@color/tools_theme"
         tools:visibility="visible" />
 
     <dev.danascape.messages.common.widget.QkTextView
         android:id="@+id/date"
-        style="@style/TextTertiary"
+        style="@style/TextSecondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="md_theme_primary">#6FB7FF</color>
+    <color name="md_theme_onPrimary">#0B1620</color>
+
+    <color name="md_theme_secondary">#6EEB95</color>
+    <color name="md_theme_onSecondary">#052009</color>
+
+    <color name="md_theme_background">#0B0B0F</color>
+    <color name="md_theme_onBackground">#FFFFFF</color>
+
+    <color name="md_theme_surface">#0F0F13</color>
+    <color name="md_theme_onSurface">#FFFFFF</color>
+
+    <color name="md_theme_surfaceVariant">#1B1B1F</color>
+    <color name="md_theme_outline">#2E2E33</color>
+
+    <color name="label_primary">#FFFFFF</color>
+    <color name="label_secondary">#99FFFFFF</color>
+    <color name="label_tertiary">#4DFFFFFF</color>
+
+    <color name="separator">#2E2E33</color>
+    <color name="bubble_message">#1E3B5A</color>
+
+    <color name="bubble_sms">#0F3E1E</color>
+    <color name="bubble_incoming">#162230</color>
+
+    <color name="accent_highlight">#15324D</color>
+    <color name="ripple_color">#226FB7FF</color>
+</resources>
