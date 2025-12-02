@@ -24,15 +24,15 @@ plugins {
 }
 
 android {
-    compileSdk = 36
+    namespace = "dev.danascape.messages.common"
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    namespace = "dev.danascape.messages.common"
 }
 
 dependencies {

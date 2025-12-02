@@ -25,7 +25,10 @@ plugins {
 }
 
 android {
-    compileSdk = 36
+    namespace = "dev.danascape.messages.data"
+    compileSdk {
+        version = release(36)
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -34,11 +37,8 @@ android {
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    namespace = "dev.danascape.messages.data"
 }
 
 dependencies {
