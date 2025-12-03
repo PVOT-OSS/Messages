@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?><!--<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:id="@+id/coordinator"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:background="@android:color/transparent">-->
+
+<!--    <com.google.android.material.card.MaterialCardView-->
+<!--        android:id="@+id/sheet_card"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_gravity="bottom"-->
+<!--        android:clickable="true"-->
+<!--        android:focusable="true"-->
+<!--        app:cardCornerRadius="@dimen/sheet_corner_radius"-->
+<!--        app:cardPreventCornerOverlap="false"-->
+<!--        app:cardUseCompatPadding="true"-->
+<!--        android:backgroundTint="@color/surface_dark">-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:paddingTop="@dimen/sheet_top_padding"-->
+<!--            android:paddingStart="@dimen/sheet_side_padding"-->
+<!--            android:paddingEnd="@dimen/sheet_side_padding"-->
+<!--            android:paddingBottom="0dp">-->
+
+<!--            &lt;!&ndash; Top bar: handle, title, close &ndash;&gt;-->
+<!--            <View-->
+<!--                android:id="@+id/handle"-->
+<!--                android:layout_width="@dimen/handle_width"-->
+<!--                android:layout_height="@dimen/handle_height"-->
+<!--                android:background="@drawable/handle_drawable"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/title"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="New Message"-->
+<!--                android:textSize="16sp"-->
+<!--                android:textColor="@color/on_surface"-->
+<!--                android:gravity="center"-->
+<!--                android:fontFamily="sans-serif-medium"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/handle"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                android:layout_marginTop="@dimen/title_margin_top" />-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/close_btn"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:layout_marginTop="@dimen/title_margin_top"-->
+<!--                android:background="?attr/selectableItemBackgroundBorderless"-->
+<!--                android:tint="@color/on_surface"-->
+<!--                app:layout_constraintTop_toTopOf="@id/title"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintBaseline_toBaselineOf="@id/title"/>-->
+
+<!--            &lt;!&ndash; To: label + input + plus &ndash;&gt;-->
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:id="@+id/to_input_layout"-->
+<!--                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:boxBackgroundMode="outline"-->
+<!--                app:boxStrokeColor="@color/outline"-->
+<!--                app:boxBackgroundColor="@color/field_background"-->
+<!--                app:shapeAppearance="@style/RoundedSmall"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/title"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toStartOf="@+id/to_plus_btn"-->
+<!--                android:layout_marginTop="@dimen/to_row_top_margin">-->
+
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/to_edit_text"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:hint="To:"-->
+<!--                    android:inputType="textEmailAddress"-->
+<!--                    android:textColor="@color/on_surface"-->
+<!--                    android:paddingStart="12dp"-->
+<!--                    android:paddingEnd="12dp"/>-->
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/to_plus_btn"-->
+<!--                android:layout_width="44dp"-->
+<!--                android:layout_height="44dp"-->
+<!--                android:background="@drawable/rounded_button_bg"-->
+<!--                android:tint="@color/on_surface"-->
+<!--                app:layout_constraintTop_toTopOf="@id/to_input_layout"-->
+<!--                app:layout_constraintBottom_toBottomOf="@id/to_input_layout"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                android:layout_marginStart="8dp"/>-->
+
+<!--            &lt;!&ndash; Spacer so the message area sits at bottom above keyboard &ndash;&gt;-->
+<!--            <View-->
+<!--                android:id="@+id/gap"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/to_input_layout"-->
+<!--                app:layout_constraintBottom_toTopOf="@id/message_row"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"/>-->
+
+<!--            &lt;!&ndash; Message row (left plus, input, mic/voice icon) &ndash;&gt;-->
+<!--            <LinearLayout-->
+<!--                android:id="@+id/message_row"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="64dp"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="center_vertical"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                android:layout_marginBottom="8dp">-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/left_plus"-->
+<!--                    android:layout_width="56dp"-->
+<!--                    android:layout_height="56dp"-->
+<!--                    android:background="@drawable/rounded_button_bg"-->
+<!--                    android:tint="@color/on_surface"-->
+<!--                    android:layout_marginEnd="8dp"/>-->
+
+<!--                <com.google.android.material.textfield.TextInputEditText-->
+<!--                    android:id="@+id/message_edit_text"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="56dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:hint=""-->
+<!--                    android:background="@drawable/message_input_bg"-->
+<!--                    android:paddingStart="14dp"-->
+<!--                    android:paddingEnd="14dp"-->
+<!--                    android:textColor="@color/on_surface"-->
+<!--                    android:inputType="textMultiLine"-->
+<!--                    android:maxLines="4"-->
+<!--                    android:minLines="1" />-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/voice_btn"-->
+<!--                    android:layout_width="56dp"-->
+<!--                    android:layout_height="56dp"-->
+<!--                    android:background="@drawable/rounded_button_bg"-->
+<!--                    android:tint="@color/on_surface"-->
+<!--                    android:layout_marginStart="8dp"/>-->
+<!--            </LinearLayout>-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--    </com.google.android.material.card.MaterialCardView>-->
+
+<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/searchPill"
+        android:layout_width="0dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="26dp"
+        app:cardElevation="6dp"
+        app:cardUseCompatPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:strokeWidth="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <ImageView
+                android:id="@+id/searchIcon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Search"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_search"
+                app:tint="?attr/colorOnSurface" />
+
+            <dev.danascape.messages.common.widget.QkEditText
+                android:id="@+id/toolbarSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:maxLines="1"
+                android:paddingStart="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/searchIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/compose"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="20dp"-->
+<!--        android:layout_marginBottom="12dp"-->
+<!--        app:backgroundTint="@color/frost_surface"-->
+<!--        app:borderWidth="2dp"-->
+<!--        app:fabCustomSize="56dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:maxImageSize="32dp"-->
+<!--        app:rippleColor="?attr/colorControlHighlight"-->
+<!--        app:shapeAppearanceOverlay="@style/ShapeAppearance.Quik.FrostedFab"-->
+<!--        app:srcCompat="@drawable/ic_compose"-->
+<!--        app:tint="@android:color/white" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

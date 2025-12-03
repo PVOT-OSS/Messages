@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="sheet_corner_radius">20dp</dimen>
+    <dimen name="sheet_top_padding">10dp</dimen>
+    <dimen name="sheet_side_padding">16dp</dimen>
+    <dimen name="handle_width">36dp</dimen>
+    <dimen name="handle_height">4dp</dimen>
+    <dimen name="title_margin_top">10dp</dimen>
+    <dimen name="to_row_top_margin">18dp</dimen>
+</resources>

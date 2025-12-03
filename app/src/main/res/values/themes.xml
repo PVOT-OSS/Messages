@@ -32,4 +32,14 @@
         <item name="tint">@color/md_theme_primary</item>
         <item name="rippleColor">@color/ripple_color</item>
     </style>
+
+
+    <style name="MyCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardUseCompatPadding">true</item>
+    </style>
+
+    <style name="RoundedSmall">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
 </resources>

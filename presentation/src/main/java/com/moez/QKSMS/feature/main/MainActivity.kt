@@ -47,6 +47,7 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import dagger.android.AndroidInjection
 import dev.danascape.messages.R
+import dev.danascape.messages.app.MessageComposeFragment
 import dev.danascape.messages.common.Navigator
 import dev.danascape.messages.common.androidxcompat.drawerOpen
 import dev.danascape.messages.common.base.QkThemedActivity
@@ -406,6 +407,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override fun onDestroy() =
         super.onDestroy().also { disposables.dispose() }
 
+    override fun showMessageComposer() {
+        if (supportFragmentManager.findFragmentByTag(MESSAGE_COMPOSE_TAG) != null) return
+        MessageComposeFragment().show(supportFragmentManager, MESSAGE_COMPOSE_TAG)
+    }
+
     override fun showBackButton(show: Boolean) =
         toggle.let {
             it.onDrawerSlide(binding.drawer.root, if (show) 1f else 0f)
@@ -507,5 +513,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 binding.drawer.inbox.requestFocus()
         } else
             binding.toolbarSearch.requestFocus()
+    }
+
+    private companion object {
+        const val MESSAGE_COMPOSE_TAG = "MessageComposeFragment"
     }
 }

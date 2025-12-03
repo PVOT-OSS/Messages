@@ -28,4 +28,12 @@
 
     <color name="accent_highlight">#D6ECFF</color>
     <color name="ripple_color">#330A84FF</color>
+
+
+    <color name="surface_dark">#121212</color>
+    <color name="on_surface">#E6E6E6</color>
+    <color name="field_background">#1E1E1E</color>
+    <color name="button_bg">#2A2A2A</color>
+    <color name="outline">#2E2E2E</color>
+    <color name="handle">#3A3A3A</color>
 </resources>
