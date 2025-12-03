@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
   ~
   ~ This file is part of QKSMS.
@@ -46,6 +45,7 @@
             android:layout_height="78dp"
             android:background="@drawable/circle"
             android:padding="6dp"
+            android:visibility="gone"
             tools:backgroundTint="@color/tools_theme"
             tools:tint="@color/textPrimaryDark" />
 
@@ -57,6 +57,7 @@
             android:background="@drawable/circle"
             android:elevation="1dp"
             android:padding="8dp"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_speech_to_text_black"
             tools:tint="@color/tools_theme" />
 
@@ -355,8 +356,8 @@
         android:layout_marginEnd="8dp"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/scheduled_send_cd"
-        android:src="@drawable/ic_schedule_send_black_24dp"
         android:padding="10dp"
+        android:src="@drawable/ic_schedule_send_black_24dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/messageBackground"
         app:layout_constraintEnd_toEndOf="parent"
