@@ -31,4 +31,8 @@
 
     <color name="frost_surface">#CCFFFFFF</color>
     <color name="frost_stroke">#4DFFFFFF</color>
+
+    <color name="ic_launcher">#ffffff</color>
+    <color name="ic_launcher_background">#0A84FF</color>
+
 </resources>
