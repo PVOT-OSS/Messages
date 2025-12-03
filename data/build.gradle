@@ -34,7 +34,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    namespace 'dev.danascape.messages.data'
+    namespace 'org.prauga.messages.data'
 }
 
 dependencies {

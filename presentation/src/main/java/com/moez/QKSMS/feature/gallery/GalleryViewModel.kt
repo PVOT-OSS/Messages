@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.gallery
+package org.prauga.messages.feature.gallery
 
 import android.content.Context
 import com.moez.QKSMS.contentproviders.MmsPartProvider
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkViewModel
-import dev.danascape.messages.common.util.extensions.makeToast
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.interactor.SaveImage
-import dev.danascape.messages.manager.PermissionManager
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.repository.MessageRepository
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkViewModel
+import org.prauga.messages.common.util.extensions.makeToast
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.interactor.SaveImage
+import org.prauga.messages.manager.PermissionManager
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject

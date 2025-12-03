@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.settings.swipe
+package org.prauga.messages.feature.settings.swipe
 
 import android.view.View
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.QkDialog
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.animateLayoutChanges
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.R
+import org.prauga.messages.common.QkDialog
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.animateLayoutChanges
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

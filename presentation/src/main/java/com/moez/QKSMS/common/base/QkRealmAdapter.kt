@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.base
+package org.prauga.messages.common.base
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.util.extensions.setVisible
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.OrderedRealmCollection

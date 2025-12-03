@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose.editing
+package org.prauga.messages.feature.compose.editing
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.common.base.QkAdapter
-import dev.danascape.messages.common.base.QkBindingViewHolder
-import dev.danascape.messages.common.util.extensions.dpToPx
-import dev.danascape.messages.databinding.ContactChipBinding
-import dev.danascape.messages.model.Recipient
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.common.util.extensions.dpToPx
+import org.prauga.messages.databinding.ContactChipBinding
+import org.prauga.messages.model.Recipient
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 

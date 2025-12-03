@@ -41,7 +41,7 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <dev.danascape.messages.common.widget.QkTextView
+            <org.prauga.messages.common.widget.QkTextView
                 android:id="@+id/toolbarTitle"
                 style="@style/ToolbarText"
                 android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
                     android:paddingStart="24dp"
                     android:paddingEnd="24dp">
 
-                    <dev.danascape.messages.common.widget.QkTextView
+                    <org.prauga.messages.common.widget.QkTextView
                         style="@style/TextPrimary"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -87,12 +87,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp" />
 
-                    <dev.danascape.messages.common.widget.TightTextView
+                    <org.prauga.messages.common.widget.TightTextView
                         style="@style/ScheduledSampleTextStyle"
                         android:layout_gravity="end"
                         android:text="@string/scheduled_empty_message_1" />
 
-                    <dev.danascape.messages.common.widget.TightTextView
+                    <org.prauga.messages.common.widget.TightTextView
                         android:id="@+id/sampleMessage"
                         style="@style/ScheduledSampleTextStyle"
                         android:layout_marginTop="16dp"
@@ -101,13 +101,13 @@
                         tools:backgroundTint="@color/tools_theme"
                         tools:textColor="@color/textPrimaryDark" />
 
-                    <dev.danascape.messages.common.widget.TightTextView
+                    <org.prauga.messages.common.widget.TightTextView
                         style="@style/ScheduledSampleTextStyle"
                         android:layout_gravity="end"
                         android:layout_marginTop="16dp"
                         android:text="@string/scheduled_empty_message_3" />
 
-                    <dev.danascape.messages.common.widget.QkTextView
+                    <org.prauga.messages.common.widget.QkTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
@@ -170,7 +170,7 @@
                 android:src="@drawable/ic_star_black_24dp"
                 tools:tint="@color/textPrimaryDark" />
 
-            <dev.danascape.messages.common.widget.QkTextView
+            <org.prauga.messages.common.widget.QkTextView
                 android:id="@+id/upgradeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

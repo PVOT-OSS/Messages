@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.backup
+package org.prauga.messages.feature.backup
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -29,18 +29,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.util.QkActivityResultContracts
-import dev.danascape.messages.common.util.extensions.getLabel
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setNegativeButton
-import dev.danascape.messages.common.util.extensions.setPositiveButton
-import dev.danascape.messages.common.util.extensions.setShowing
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.common.widget.PreferenceView
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.repository.BackupRepository
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.util.QkActivityResultContracts
+import org.prauga.messages.common.util.extensions.getLabel
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setNegativeButton
+import org.prauga.messages.common.util.extensions.setPositiveButton
+import org.prauga.messages.common.util.extensions.setShowing
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.repository.BackupRepository
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

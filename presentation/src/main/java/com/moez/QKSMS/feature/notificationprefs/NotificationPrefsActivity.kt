@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.notificationprefs
+package org.prauga.messages.feature.notificationprefs
 
 import android.app.Activity
 import android.content.Intent
@@ -31,12 +31,12 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.QkDialog
-import dev.danascape.messages.common.base.QkThemedActivity
-import dev.danascape.messages.common.util.extensions.animateLayoutChanges
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.common.widget.PreferenceView
+import org.prauga.messages.R
+import org.prauga.messages.common.QkDialog
+import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.util.extensions.animateLayoutChanges
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.widget.PreferenceView
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

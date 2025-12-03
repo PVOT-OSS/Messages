@@ -17,7 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.danascape.messages.feature.widget
+package org.prauga.messages.feature.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -25,8 +25,8 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
-import dev.danascape.messages.R
-import dev.danascape.messages.receiver.SpeakThreadsReceiver
+import org.prauga.messages.R
+import org.prauga.messages.receiver.SpeakThreadsReceiver
 
 class WidgetSpeakUnseenProvider : AppWidgetProvider() {
 

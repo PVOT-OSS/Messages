@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.contacts
+package org.prauga.messages.feature.contacts
 
 import android.app.Activity
 import android.content.Intent
@@ -27,17 +27,17 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.editorActions
 import com.jakewharton.rxbinding2.widget.textChanges
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.ViewModelFactory
-import dev.danascape.messages.common.base.QkThemedActivity
-import dev.danascape.messages.common.util.extensions.hideKeyboard
-import dev.danascape.messages.common.util.extensions.showKeyboard
-import dev.danascape.messages.common.widget.QkDialog
-import dev.danascape.messages.extensions.Optional
-import dev.danascape.messages.feature.compose.editing.ComposeItem
-import dev.danascape.messages.feature.compose.editing.ComposeItemAdapter
-import dev.danascape.messages.feature.compose.editing.PhoneNumberAction
-import dev.danascape.messages.feature.compose.editing.PhoneNumberPickerAdapter
+import org.prauga.messages.R
+import org.prauga.messages.common.ViewModelFactory
+import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.util.extensions.hideKeyboard
+import org.prauga.messages.common.util.extensions.showKeyboard
+import org.prauga.messages.common.widget.QkDialog
+import org.prauga.messages.extensions.Optional
+import org.prauga.messages.feature.compose.editing.ComposeItem
+import org.prauga.messages.feature.compose.editing.ComposeItemAdapter
+import org.prauga.messages.feature.compose.editing.PhoneNumberAction
+import org.prauga.messages.feature.compose.editing.PhoneNumberPickerAdapter
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

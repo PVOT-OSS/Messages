@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.qkreply
+package org.prauga.messages.feature.qkreply
 
 import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import dev.danascape.messages.injection.ViewModelKey
+import org.prauga.messages.injection.ViewModelKey
 import javax.inject.Named
 
 @Module

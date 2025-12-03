@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.changelog
+package org.prauga.messages.feature.changelog
 
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkAdapter
-import dev.danascape.messages.common.base.QkBindingViewHolder
-import dev.danascape.messages.databinding.ChangelogListItemBinding
-import dev.danascape.messages.manager.ChangelogManager
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.databinding.ChangelogListItemBinding
+import org.prauga.messages.manager.ChangelogManager
 
 class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapter.ChangelogItem, QkBindingViewHolder<ChangelogListItemBinding>>() {
 

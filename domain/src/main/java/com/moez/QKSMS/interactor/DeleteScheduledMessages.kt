@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.interactor
+package org.prauga.messages.interactor
 
 import android.annotation.SuppressLint
 import android.content.Context
-import dev.danascape.messages.repository.ScheduledMessageRepository
+import org.prauga.messages.repository.ScheduledMessageRepository
 import io.reactivex.Flowable
 import timber.log.Timber
 import java.io.File

@@ -42,7 +42,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
         app:textSize="primary"
         tools:text="Person Name" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -24,7 +24,7 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import androidx.core.net.toFile
-import dev.danascape.messages.util.FileUtils
+import org.prauga.messages.util.FileUtils
 import java.util.UUID
 
 object MediaRecorderManager : MediaRecorder() {

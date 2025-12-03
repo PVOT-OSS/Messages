@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.migration
+package org.prauga.messages.migration
 
 import android.content.Context
-import dev.danascape.messages.blocking.QksmsBlockingClient
-import dev.danascape.messages.common.util.extensions.versionCode
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.blocking.QksmsBlockingClient
+import org.prauga.messages.common.util.extensions.versionCode
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.util.Preferences
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject

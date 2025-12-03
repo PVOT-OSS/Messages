@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.main
+package org.prauga.messages.feature.main
 
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.SearchResult
-import dev.danascape.messages.repository.SyncRepository
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.SearchResult
+import org.prauga.messages.repository.SyncRepository
 import io.realm.RealmResults
 
 data class MainState(

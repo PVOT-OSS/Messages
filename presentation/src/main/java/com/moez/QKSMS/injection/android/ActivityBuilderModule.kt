@@ -16,31 +16,31 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.injection.android
+package org.prauga.messages.injection.android
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import dev.danascape.messages.feature.backup.BackupActivity
-import dev.danascape.messages.feature.blocking.BlockingActivity
-import dev.danascape.messages.feature.compose.ComposeActivity
-import dev.danascape.messages.feature.compose.ComposeActivityModule
-import dev.danascape.messages.feature.contacts.ContactsActivity
-import dev.danascape.messages.feature.contacts.ContactsActivityModule
-import dev.danascape.messages.feature.conversationinfo.ConversationInfoActivity
-import dev.danascape.messages.feature.gallery.GalleryActivity
-import dev.danascape.messages.feature.gallery.GalleryActivityModule
-import dev.danascape.messages.feature.main.MainActivity
-import dev.danascape.messages.feature.main.MainActivityModule
-import dev.danascape.messages.feature.notificationprefs.NotificationPrefsActivity
-import dev.danascape.messages.feature.notificationprefs.NotificationPrefsActivityModule
-import dev.danascape.messages.feature.plus.PlusActivity
-import dev.danascape.messages.feature.plus.PlusActivityModule
-import dev.danascape.messages.feature.qkreply.QkReplyActivity
-import dev.danascape.messages.feature.qkreply.QkReplyActivityModule
-import dev.danascape.messages.feature.scheduled.ScheduledActivity
-import dev.danascape.messages.feature.scheduled.ScheduledActivityModule
-import dev.danascape.messages.feature.settings.SettingsActivity
-import dev.danascape.messages.injection.scope.ActivityScope
+import org.prauga.messages.feature.backup.BackupActivity
+import org.prauga.messages.feature.blocking.BlockingActivity
+import org.prauga.messages.feature.compose.ComposeActivity
+import org.prauga.messages.feature.compose.ComposeActivityModule
+import org.prauga.messages.feature.contacts.ContactsActivity
+import org.prauga.messages.feature.contacts.ContactsActivityModule
+import org.prauga.messages.feature.conversationinfo.ConversationInfoActivity
+import org.prauga.messages.feature.gallery.GalleryActivity
+import org.prauga.messages.feature.gallery.GalleryActivityModule
+import org.prauga.messages.feature.main.MainActivity
+import org.prauga.messages.feature.main.MainActivityModule
+import org.prauga.messages.feature.notificationprefs.NotificationPrefsActivity
+import org.prauga.messages.feature.notificationprefs.NotificationPrefsActivityModule
+import org.prauga.messages.feature.plus.PlusActivity
+import org.prauga.messages.feature.plus.PlusActivityModule
+import org.prauga.messages.feature.qkreply.QkReplyActivity
+import org.prauga.messages.feature.qkreply.QkReplyActivityModule
+import org.prauga.messages.feature.scheduled.ScheduledActivity
+import org.prauga.messages.feature.scheduled.ScheduledActivityModule
+import org.prauga.messages.feature.settings.SettingsActivity
+import org.prauga.messages.injection.scope.ActivityScope
 
 @Module
 abstract class ActivityBuilderModule {

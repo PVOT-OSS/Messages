@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.conversations
+package org.prauga.messages.feature.conversations
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -26,10 +26,10 @@ import android.graphics.Rect
 import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.dpToPx
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.R
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.dpToPx
+import org.prauga.messages.util.Preferences
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.plusAssign

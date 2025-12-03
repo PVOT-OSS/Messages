@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.filters
+package org.prauga.messages.feature.blocking.filters
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkRealmAdapter
-import dev.danascape.messages.common.base.QkBindingViewHolder
-import dev.danascape.messages.model.MessageContentFilter
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkRealmAdapter
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.model.MessageContentFilter
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import dev.danascape.messages.databinding.MessageContentFilterListItemBinding
+import org.prauga.messages.databinding.MessageContentFilterListItemBinding
 
 class MessageContentFiltersAdapter : QkRealmAdapter<MessageContentFilter, QkBindingViewHolder<MessageContentFilterListItemBinding>>() {
 

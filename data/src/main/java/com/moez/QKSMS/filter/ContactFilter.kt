@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.filter
+package org.prauga.messages.filter
 
-import dev.danascape.messages.extensions.removeAccents
-import dev.danascape.messages.model.Contact
+import org.prauga.messages.extensions.removeAccents
+import org.prauga.messages.model.Contact
 import javax.inject.Inject
 
 class ContactFilter @Inject constructor(private val phoneNumberFilter: PhoneNumberFilter) : Filter<Contact>() {

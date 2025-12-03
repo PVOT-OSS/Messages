@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.messages
+package org.prauga.messages.feature.blocking.messages
 
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkRealmAdapter
-import dev.danascape.messages.common.base.QkViewHolder
-import dev.danascape.messages.common.util.DateFormatter
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkRealmAdapter
+import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.util.Preferences
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.blocked_list_item.*
 import kotlinx.android.synthetic.main.blocked_list_item.view.*

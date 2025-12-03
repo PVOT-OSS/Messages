@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.receiver
+package org.prauga.messages.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
-import dev.danascape.messages.interactor.SendScheduledMessage
-import dev.danascape.messages.repository.MessageRepository
+import org.prauga.messages.interactor.SendScheduledMessage
+import org.prauga.messages.repository.MessageRepository
 import javax.inject.Inject
 
 class SendScheduledMessageReceiver : BroadcastReceiver() {

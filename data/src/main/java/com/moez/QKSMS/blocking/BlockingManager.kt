@@ -1,6 +1,6 @@
-package dev.danascape.messages.blocking
+package org.prauga.messages.blocking
 
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.util.Preferences
 import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject

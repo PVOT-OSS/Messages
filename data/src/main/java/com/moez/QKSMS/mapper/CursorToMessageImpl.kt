@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.mapper
+package org.prauga.messages.mapper
 
 import android.content.Context
 import android.database.Cursor
@@ -27,12 +27,12 @@ import android.provider.Telephony.Sms
 import com.google.android.mms.pdu_alt.EncodedStringValue
 import com.google.android.mms.pdu_alt.PduHeaders
 import com.google.android.mms.pdu_alt.PduPersister
-import dev.danascape.messages.manager.KeyManager
-import dev.danascape.messages.manager.PermissionManager
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.util.Preferences
-import dev.danascape.messages.util.SqliteWrapper
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.manager.KeyManager
+import org.prauga.messages.manager.PermissionManager
+import org.prauga.messages.model.Message
+import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.SqliteWrapper
+import org.prauga.messages.util.tryOrNull
 import javax.inject.Inject
 
 class CursorToMessageImpl @Inject constructor(

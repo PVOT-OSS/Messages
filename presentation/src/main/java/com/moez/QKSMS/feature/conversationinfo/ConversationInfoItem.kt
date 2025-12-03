@@ -1,7 +1,7 @@
-package dev.danascape.messages.feature.conversationinfo
+package org.prauga.messages.feature.conversationinfo
 
-import dev.danascape.messages.model.MmsPart
-import dev.danascape.messages.model.Recipient
+import org.prauga.messages.model.MmsPart
+import org.prauga.messages.model.Recipient
 import io.realm.RealmList
 
 sealed class ConversationInfoItem {

@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.numbers
+package org.prauga.messages.feature.blocking.numbers
 
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import dev.danascape.messages.util.PhoneNumberUtils
+import org.prauga.messages.util.PhoneNumberUtils
 
 class BlockedNumberTextWatcher(
     private val editText: EditText,

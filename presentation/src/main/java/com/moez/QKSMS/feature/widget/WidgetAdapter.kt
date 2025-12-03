@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.widget
+package org.prauga.messages.feature.widget
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
@@ -28,20 +28,20 @@ import android.widget.RemoteViewsService
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.DateFormatter
-import dev.danascape.messages.common.util.extensions.dpToPx
-import dev.danascape.messages.common.util.extensions.getColorCompat
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.model.Contact
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.PhoneNumber
-import dev.danascape.messages.receiver.StartActivityFromWidgetReceiver
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.util.GlideApp
-import dev.danascape.messages.util.Preferences
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.R
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.extensions.dpToPx
+import org.prauga.messages.common.util.extensions.getColorCompat
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.PhoneNumber
+import org.prauga.messages.receiver.StartActivityFromWidgetReceiver
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.util.GlideApp
+import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.tryOrNull
 import javax.inject.Inject
 
 class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {

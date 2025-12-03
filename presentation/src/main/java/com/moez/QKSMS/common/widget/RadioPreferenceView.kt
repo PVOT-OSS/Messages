@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -25,14 +25,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.forwardTouches
-import dev.danascape.messages.common.util.extensions.resolveThemeAttribute
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.databinding.RadioPreferenceViewBinding
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.R
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.forwardTouches
+import org.prauga.messages.common.util.extensions.resolveThemeAttribute
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.databinding.RadioPreferenceViewBinding
+import org.prauga.messages.injection.appComponent
 import javax.inject.Inject
 
 class RadioPreferenceView @JvmOverloads constructor(

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.main
+package org.prauga.messages.feature.main
 
 import android.Manifest
 import android.animation.ObjectAnimator
@@ -44,24 +44,24 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.androidxcompat.drawerOpen
-import dev.danascape.messages.common.base.QkThemedActivity
-import dev.danascape.messages.common.util.extensions.autoScrollToStart
-import dev.danascape.messages.common.util.extensions.dismissKeyboard
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.common.util.extensions.scrapViews
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.common.widget.TextInputDialog
-import dev.danascape.messages.feature.blocking.BlockingDialog
-import dev.danascape.messages.feature.changelog.ChangelogDialog
-import dev.danascape.messages.feature.conversations.ConversationItemTouchCallback
-import dev.danascape.messages.feature.conversations.ConversationsAdapter
-import dev.danascape.messages.manager.ChangelogManager
-import dev.danascape.messages.repository.SyncRepository
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.androidxcompat.drawerOpen
+import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.util.extensions.autoScrollToStart
+import org.prauga.messages.common.util.extensions.dismissKeyboard
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.common.util.extensions.scrapViews
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.widget.TextInputDialog
+import org.prauga.messages.feature.blocking.BlockingDialog
+import org.prauga.messages.feature.changelog.ChangelogDialog
+import org.prauga.messages.feature.conversations.ConversationItemTouchCallback
+import org.prauga.messages.feature.conversations.ConversationsAdapter
+import org.prauga.messages.manager.ChangelogManager
+import org.prauga.messages.repository.SyncRepository
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject

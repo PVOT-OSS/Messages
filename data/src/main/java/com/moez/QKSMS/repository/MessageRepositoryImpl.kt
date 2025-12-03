@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -41,25 +41,25 @@ import com.google.android.mms.pdu_alt.PduPersister
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.StripAccents
 import com.klinker.android.send_message.Transaction
-import dev.danascape.messages.common.util.extensions.now
-import dev.danascape.messages.compat.TelephonyCompat
-import dev.danascape.messages.extensions.anyOf
-import dev.danascape.messages.extensions.isImage
-import dev.danascape.messages.extensions.isVideo
-import dev.danascape.messages.extensions.resourceExists
-import dev.danascape.messages.manager.ActiveConversationManager
-import dev.danascape.messages.manager.KeyManager
-import dev.danascape.messages.model.Attachment
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.model.MmsPart
-import dev.danascape.messages.receiver.SendSmsReceiver
-import dev.danascape.messages.receiver.SmsDeliveredReceiver
-import dev.danascape.messages.receiver.SmsSentReceiver
-import dev.danascape.messages.util.ImageUtils
-import dev.danascape.messages.util.PhoneNumberUtils
-import dev.danascape.messages.util.Preferences
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.common.util.extensions.now
+import org.prauga.messages.compat.TelephonyCompat
+import org.prauga.messages.extensions.anyOf
+import org.prauga.messages.extensions.isImage
+import org.prauga.messages.extensions.isVideo
+import org.prauga.messages.extensions.resourceExists
+import org.prauga.messages.manager.ActiveConversationManager
+import org.prauga.messages.manager.KeyManager
+import org.prauga.messages.model.Attachment
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
+import org.prauga.messages.receiver.SendSmsReceiver
+import org.prauga.messages.receiver.SmsDeliveredReceiver
+import org.prauga.messages.receiver.SmsSentReceiver
+import org.prauga.messages.util.ImageUtils
+import org.prauga.messages.util.PhoneNumberUtils
+import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.tryOrNull
 import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults

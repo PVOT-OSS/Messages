@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.interactor
+package org.prauga.messages.interactor
 
-import dev.danascape.messages.manager.ShortcutManager
-import dev.danascape.messages.repository.ConversationRepository
+import org.prauga.messages.manager.ShortcutManager
+import org.prauga.messages.repository.ConversationRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
 

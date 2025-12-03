@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -25,28 +25,28 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.provider.Telephony
 import com.f2prateek.rx.preferences2.RxSharedPreferences
-import dev.danascape.messages.extensions.forEach
-import dev.danascape.messages.extensions.insertOrUpdate
-import dev.danascape.messages.extensions.map
-import dev.danascape.messages.manager.KeyManager
-import dev.danascape.messages.mapper.CursorToContact
-import dev.danascape.messages.mapper.CursorToContactGroup
-import dev.danascape.messages.mapper.CursorToContactGroupMember
-import dev.danascape.messages.mapper.CursorToConversation
-import dev.danascape.messages.mapper.CursorToMessage
-import dev.danascape.messages.mapper.CursorToPart
-import dev.danascape.messages.mapper.CursorToRecipient
-import dev.danascape.messages.model.Contact
-import dev.danascape.messages.model.ContactGroup
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.EmojiReaction
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.model.MmsPart
-import dev.danascape.messages.model.PhoneNumber
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.model.SyncLog
-import dev.danascape.messages.util.PhoneNumberUtils
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.extensions.forEach
+import org.prauga.messages.extensions.insertOrUpdate
+import org.prauga.messages.extensions.map
+import org.prauga.messages.manager.KeyManager
+import org.prauga.messages.mapper.CursorToContact
+import org.prauga.messages.mapper.CursorToContactGroup
+import org.prauga.messages.mapper.CursorToContactGroupMember
+import org.prauga.messages.mapper.CursorToConversation
+import org.prauga.messages.mapper.CursorToMessage
+import org.prauga.messages.mapper.CursorToPart
+import org.prauga.messages.mapper.CursorToRecipient
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.ContactGroup
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.EmojiReaction
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
+import org.prauga.messages.model.PhoneNumber
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.model.SyncLog
+import org.prauga.messages.util.PhoneNumberUtils
+import org.prauga.messages.util.tryOrNull
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.Realm

@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking
+package org.prauga.messages.feature.blocking
 
 import android.app.Activity
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
-import dev.danascape.messages.R
-import dev.danascape.messages.blocking.BlockingClient
-import dev.danascape.messages.interactor.MarkBlocked
-import dev.danascape.messages.interactor.MarkUnblocked
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.R
+import org.prauga.messages.blocking.BlockingClient
+import org.prauga.messages.interactor.MarkBlocked
+import org.prauga.messages.interactor.MarkUnblocked
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.util.Preferences
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch

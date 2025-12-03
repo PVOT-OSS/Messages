@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose
+package org.prauga.messages.feature.compose
 
-import dev.danascape.messages.R
-import dev.danascape.messages.model.Message
+import org.prauga.messages.R
+import org.prauga.messages.model.Message
 import java.util.concurrent.TimeUnit
 
 object BubbleUtils {

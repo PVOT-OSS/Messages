@@ -17,7 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.danascape.messages.feature.widget
+package org.prauga.messages.feature.widget
 
 import android.content.Intent
 import android.widget.RemoteViewsService

@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.injection
+package org.prauga.messages.injection
 
-import dev.danascape.messages.common.QKApplication
+import org.prauga.messages.common.QKApplication
 
 internal lateinit var appComponent: AppComponent
     private set

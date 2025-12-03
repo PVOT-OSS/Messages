@@ -17,7 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.danascape.messages.common.util.extensions
+package org.prauga.messages.common.util.extensions
 
 import ezvcard.VCard
 

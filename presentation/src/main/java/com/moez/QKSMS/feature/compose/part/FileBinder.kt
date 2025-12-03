@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose.part
+package org.prauga.messages.feature.compose.part
 
 import android.annotation.SuppressLint
 import android.content.Context
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkViewHolder
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.feature.compose.BubbleUtils
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.model.MmsPart
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.feature.compose.BubbleUtils
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

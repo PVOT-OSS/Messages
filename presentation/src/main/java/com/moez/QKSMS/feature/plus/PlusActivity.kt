@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.plus
+package org.prauga.messages.feature.plus
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -25,18 +25,18 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkThemedActivity
-import dev.danascape.messages.common.util.FontProvider
-import dev.danascape.messages.common.util.extensions.makeToast
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.common.widget.PreferenceView
-import dev.danascape.messages.feature.plus.experiment.UpgradeButtonExperiment
-import dev.danascape.messages.manager.BillingManager
-import dev.danascape.messages.databinding.QksmsPlusActivityBinding
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.util.FontProvider
+import org.prauga.messages.common.util.extensions.makeToast
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.feature.plus.experiment.UpgradeButtonExperiment
+import org.prauga.messages.manager.BillingManager
+import org.prauga.messages.databinding.QksmsPlusActivityBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

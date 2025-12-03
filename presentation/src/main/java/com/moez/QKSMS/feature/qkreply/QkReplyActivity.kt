@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.qkreply
+package org.prauga.messages.feature.qkreply
 
 import android.app.Activity
 import android.content.Intent
@@ -39,13 +39,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkThemedActivity
-import dev.danascape.messages.common.util.extensions.autoScrollToStart
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.common.util.extensions.showKeyboard
-import dev.danascape.messages.common.widget.QkEditText
-import dev.danascape.messages.feature.compose.MessagesAdapter
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.util.extensions.autoScrollToStart
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.util.extensions.showKeyboard
+import org.prauga.messages.common.widget.QkEditText
+import org.prauga.messages.feature.compose.MessagesAdapter
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.compose_activity.message

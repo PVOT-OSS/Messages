@@ -118,5 +118,5 @@
 -keep class io.reactivex.** { *; }
 -keep class io.reactivex.subjects.** { *; }
 -keep class androidx.activity.result.** { *; }
--keep class dev.danascape.messages.** { *; }
+-keep class org.prauga.messages.** { *; }
 

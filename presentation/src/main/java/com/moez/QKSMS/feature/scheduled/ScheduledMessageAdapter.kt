@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.scheduled
+package org.prauga.messages.feature.scheduled
 
 import android.content.Context
 import android.net.Uri
@@ -24,16 +24,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkRealmAdapter
-import dev.danascape.messages.common.base.QkBindingViewHolder
-import dev.danascape.messages.databinding.ScheduledMessageListItemBinding
-import dev.danascape.messages.common.util.DateFormatter
-import dev.danascape.messages.model.Contact
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.model.ScheduledMessage
-import dev.danascape.messages.repository.ContactRepository
-import dev.danascape.messages.util.PhoneNumberUtils
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkRealmAdapter
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.databinding.ScheduledMessageListItemBinding
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.model.ScheduledMessage
+import org.prauga.messages.repository.ContactRepository
+import org.prauga.messages.util.PhoneNumberUtils
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject

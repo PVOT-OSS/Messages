@@ -16,27 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.contacts
+package org.prauga.messages.feature.contacts
 
 import android.view.inputmethod.EditorInfo
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.common.base.QkViewModel
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.extensions.removeAccents
-import dev.danascape.messages.feature.compose.editing.ComposeItem
-import dev.danascape.messages.feature.compose.editing.PhoneNumberAction
-import dev.danascape.messages.filter.ContactFilter
-import dev.danascape.messages.filter.ContactGroupFilter
-import dev.danascape.messages.interactor.SetDefaultPhoneNumber
-import dev.danascape.messages.model.Contact
-import dev.danascape.messages.model.ContactGroup
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.PhoneNumber
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.repository.ContactRepository
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.util.PhoneNumberUtils
+import org.prauga.messages.common.base.QkViewModel
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.extensions.removeAccents
+import org.prauga.messages.feature.compose.editing.ComposeItem
+import org.prauga.messages.feature.compose.editing.PhoneNumberAction
+import org.prauga.messages.filter.ContactFilter
+import org.prauga.messages.filter.ContactGroupFilter
+import org.prauga.messages.interactor.SetDefaultPhoneNumber
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.ContactGroup
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.PhoneNumber
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.repository.ContactRepository
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.util.PhoneNumberUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables

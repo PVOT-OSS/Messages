@@ -22,7 +22,7 @@
     android:id="@+id/toolbar"
     style="@style/Toolbar">
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/toolbarTitle"
         style="@style/ToolbarText"
         tools:text="Conversations" />

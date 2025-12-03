@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.settings.about
+package org.prauga.messages.feature.settings.about
 
 import android.view.View
 import com.jakewharton.rxbinding2.view.clicks
-import dev.danascape.messages.BuildConfig
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.widget.PreferenceView
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.BuildConfig
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.injection.appComponent
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.about_controller.*
 import javax.inject.Inject

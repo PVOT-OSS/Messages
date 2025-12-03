@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose.editing
+package org.prauga.messages.feature.compose.editing
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkAdapter
-import dev.danascape.messages.common.base.QkBindingViewHolder
-import dev.danascape.messages.databinding.ContactNumberListItemBinding
-import dev.danascape.messages.model.PhoneNumber
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.databinding.ContactNumberListItemBinding
+import org.prauga.messages.model.PhoneNumber
 
 class PhoneNumberAdapter : QkAdapter<PhoneNumber, QkBindingViewHolder<ContactNumberListItemBinding>>() {
 

@@ -1,6 +1,6 @@
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
-import dev.danascape.messages.model.ScheduledMessage
+import org.prauga.messages.model.ScheduledMessage
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.numbers
+package org.prauga.messages.feature.blocking.numbers
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkRealmAdapter
-import dev.danascape.messages.common.base.QkBindingViewHolder
-import dev.danascape.messages.model.BlockedNumber
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkRealmAdapter
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.model.BlockedNumber
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import dev.danascape.messages.databinding.BlockedNumberListItemBinding
+import org.prauga.messages.databinding.BlockedNumberListItemBinding
 
 class BlockedNumbersAdapter : QkRealmAdapter<BlockedNumber, QkBindingViewHolder<BlockedNumberListItemBinding>>() {
 

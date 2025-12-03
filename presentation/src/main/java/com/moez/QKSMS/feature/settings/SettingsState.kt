@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.settings
+package org.prauga.messages.feature.settings
 
-import dev.danascape.messages.repository.SyncRepository
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.repository.SyncRepository
+import org.prauga.messages.util.Preferences
 
 data class SettingsState(
     val theme: Int = 0,

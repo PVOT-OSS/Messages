@@ -1,4 +1,4 @@
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.app.Activity
 import android.content.Context

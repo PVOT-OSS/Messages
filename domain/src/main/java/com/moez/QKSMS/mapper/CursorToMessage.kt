@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.mapper
+package org.prauga.messages.mapper
 
 import android.database.Cursor
 import android.provider.Telephony.Mms
 import android.provider.Telephony.MmsSms
 import android.provider.Telephony.Sms
-import dev.danascape.messages.model.Message
+import org.prauga.messages.model.Message
 import timber.log.Timber
 import java.util.Arrays
 

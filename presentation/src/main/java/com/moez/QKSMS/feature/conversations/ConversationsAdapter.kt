@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.conversations
+package org.prauga.messages.feature.conversations
 
 import android.content.Context
 import android.graphics.Typeface
@@ -25,17 +25,17 @@ import android.view.ViewGroup
 import androidx.core.text.buildSpannedString
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkRealmAdapter
-import dev.danascape.messages.common.base.QkViewHolder
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.DateFormatter
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.repository.ScheduledMessageRepository
-import dev.danascape.messages.util.PhoneNumberUtils
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkRealmAdapter
+import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.repository.ScheduledMessageRepository
+import org.prauga.messages.util.PhoneNumberUtils
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.conversation_list_item.*
 import kotlinx.android.synthetic.main.conversation_list_item.view.*

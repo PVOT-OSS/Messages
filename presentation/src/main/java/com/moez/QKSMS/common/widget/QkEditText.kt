@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.content.Context
 import android.os.Build
@@ -30,9 +30,9 @@ import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
 import com.google.android.mms.ContentType
-import dev.danascape.messages.common.util.TextViewStyler
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.common.util.TextViewStyler
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.util.tryOrNull
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject

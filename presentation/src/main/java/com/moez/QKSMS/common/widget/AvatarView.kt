@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.databinding.AvatarViewBinding
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.util.GlideApp
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.databinding.AvatarViewBinding
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.util.GlideApp
 import javax.inject.Inject
 
 class AvatarView @JvmOverloads constructor(

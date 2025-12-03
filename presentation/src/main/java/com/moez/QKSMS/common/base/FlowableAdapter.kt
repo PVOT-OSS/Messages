@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.base
+package org.prauga.messages.common.base
 
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView

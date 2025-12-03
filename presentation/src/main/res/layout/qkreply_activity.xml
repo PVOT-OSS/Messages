@@ -76,7 +76,7 @@
         app:layout_constraintStart_toStartOf="@id/message"
         app:layout_constraintTop_toTopOf="@id/message" />
 
-    <dev.danascape.messages.common.widget.QkEditText
+    <org.prauga.messages.common.widget.QkEditText
         android:id="@+id/message"
         style="@style/TextPrimary"
         android:layout_width="0dp"
@@ -111,7 +111,7 @@
         app:layout_constraintBottom_toBottomOf="@id/message"
         app:layout_constraintEnd_toEndOf="@id/messageBackground" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/simIndex"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -126,7 +126,7 @@
         tools:ignore="SpUsage"
         tools:text="1" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/counter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_weight="1">
 
-        <dev.danascape.messages.common.widget.QkTextView
+        <org.prauga.messages.common.widget.QkTextView
             android:id="@+id/toolbarTitle"
             style="@style/ToolbarText"
             tools:text="Conversations" />

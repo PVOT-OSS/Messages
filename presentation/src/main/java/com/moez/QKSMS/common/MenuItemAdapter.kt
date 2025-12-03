@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common
+package org.prauga.messages.common
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -24,12 +24,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.ArrayRes
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.common.base.QkAdapter
-import dev.danascape.messages.common.base.QkBindingViewHolder
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.databinding.MenuListItemBinding
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.databinding.MenuListItemBinding
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose
+package org.prauga.messages.feature.compose
 
 import android.net.Uri
 import android.view.MenuItem
@@ -24,10 +24,10 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.view.inputmethod.InputContentInfoCompat
 import com.moez.QKSMS.common.QkMediaPlayer
-import dev.danascape.messages.common.base.QkView
-import dev.danascape.messages.common.widget.MicInputCloudView
-import dev.danascape.messages.model.Attachment
-import dev.danascape.messages.model.Recipient
+import org.prauga.messages.common.base.QkView
+import org.prauga.messages.common.widget.MicInputCloudView
+import org.prauga.messages.model.Attachment
+import org.prauga.messages.model.Recipient
 import io.reactivex.Observable
 import io.reactivex.subjects.Subject
 

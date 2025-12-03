@@ -16,32 +16,32 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.injection.android
+package org.prauga.messages.injection.android
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import dev.danascape.messages.feature.widget.WidgetProvider
-import dev.danascape.messages.injection.scope.ActivityScope
-import dev.danascape.messages.receiver.BlockThreadReceiver
-import dev.danascape.messages.receiver.BootReceiver
-import dev.danascape.messages.receiver.DefaultSmsChangedReceiver
-import dev.danascape.messages.receiver.DeleteMessagesReceiver
-import dev.danascape.messages.receiver.MarkArchivedReceiver
-import dev.danascape.messages.receiver.MarkReadReceiver
-import dev.danascape.messages.receiver.MarkSeenReceiver
-import dev.danascape.messages.receiver.MmsReceivedReceiver
-import dev.danascape.messages.receiver.MmsReceiver
-import dev.danascape.messages.receiver.MmsSentReceiver
-import dev.danascape.messages.receiver.MmsUpdatedReceiver
-import dev.danascape.messages.receiver.NightModeReceiver
-import dev.danascape.messages.receiver.RemoteMessagingReceiver
-import dev.danascape.messages.receiver.SendScheduledMessageReceiver
-import dev.danascape.messages.receiver.SmsDeliveredReceiver
-import dev.danascape.messages.receiver.SmsProviderChangedReceiver
-import dev.danascape.messages.receiver.SmsReceiver
-import dev.danascape.messages.receiver.SmsSentReceiver
-import dev.danascape.messages.receiver.SpeakThreadsReceiver
-import dev.danascape.messages.receiver.StartActivityFromWidgetReceiver
+import org.prauga.messages.feature.widget.WidgetProvider
+import org.prauga.messages.injection.scope.ActivityScope
+import org.prauga.messages.receiver.BlockThreadReceiver
+import org.prauga.messages.receiver.BootReceiver
+import org.prauga.messages.receiver.DefaultSmsChangedReceiver
+import org.prauga.messages.receiver.DeleteMessagesReceiver
+import org.prauga.messages.receiver.MarkArchivedReceiver
+import org.prauga.messages.receiver.MarkReadReceiver
+import org.prauga.messages.receiver.MarkSeenReceiver
+import org.prauga.messages.receiver.MmsReceivedReceiver
+import org.prauga.messages.receiver.MmsReceiver
+import org.prauga.messages.receiver.MmsSentReceiver
+import org.prauga.messages.receiver.MmsUpdatedReceiver
+import org.prauga.messages.receiver.NightModeReceiver
+import org.prauga.messages.receiver.RemoteMessagingReceiver
+import org.prauga.messages.receiver.SendScheduledMessageReceiver
+import org.prauga.messages.receiver.SmsDeliveredReceiver
+import org.prauga.messages.receiver.SmsProviderChangedReceiver
+import org.prauga.messages.receiver.SmsReceiver
+import org.prauga.messages.receiver.SmsSentReceiver
+import org.prauga.messages.receiver.SpeakThreadsReceiver
+import org.prauga.messages.receiver.StartActivityFromWidgetReceiver
 
 @Module
 abstract class BroadcastReceiverBuilderModule {

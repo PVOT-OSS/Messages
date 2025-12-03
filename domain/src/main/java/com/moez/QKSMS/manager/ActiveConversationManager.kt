@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.manager
+package org.prauga.messages.manager
 
 /**
  * Keeps track of the conversation that the user is currently viewing. This is useful when we

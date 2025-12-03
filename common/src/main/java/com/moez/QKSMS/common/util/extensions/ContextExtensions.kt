@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util.extensions
+package org.prauga.messages.common.util.extensions
 
 import android.app.job.JobScheduler
 import android.content.Context
@@ -29,7 +29,7 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.util.tryOrNull
 
 fun Context.getColorCompat(colorRes: Int): Int {
     //return black as a default color, in case an invalid color ID was passed in

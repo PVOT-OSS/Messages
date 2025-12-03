@@ -1,4 +1,4 @@
-package dev.danascape.messages.feature.extensions
+package org.prauga.messages.feature.extensions
 
 import android.text.Spannable
 import androidx.emoji2.text.EmojiCompat

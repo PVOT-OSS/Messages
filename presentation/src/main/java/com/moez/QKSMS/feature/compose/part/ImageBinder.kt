@@ -16,19 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose.part
+package org.prauga.messages.feature.compose.part
 
 import android.content.Context
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkViewHolder
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.common.widget.BubbleImageView
-import dev.danascape.messages.extensions.isImage
-import dev.danascape.messages.extensions.isVideo
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.model.MmsPart
-import dev.danascape.messages.util.GlideApp
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.widget.BubbleImageView
+import org.prauga.messages.extensions.isImage
+import org.prauga.messages.extensions.isVideo
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
+import org.prauga.messages.util.GlideApp
 import kotlinx.android.synthetic.main.mms_image_preview_list_item.*
 import javax.inject.Inject
 

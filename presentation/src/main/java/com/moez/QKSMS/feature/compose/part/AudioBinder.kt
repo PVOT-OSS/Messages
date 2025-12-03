@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose.part
+package org.prauga.messages.feature.compose.part
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -25,21 +25,21 @@ import android.media.MediaMetadataRetriever
 import android.view.View
 import android.widget.SeekBar
 import com.moez.QKSMS.common.QkMediaPlayer
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkViewHolder
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.common.util.extensions.withAlpha
-import dev.danascape.messages.common.widget.BubbleImageView
-import dev.danascape.messages.extensions.isAudio
-import dev.danascape.messages.extensions.resourceExists
-import dev.danascape.messages.feature.compose.MessagesAdapter
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.model.MmsPart
-import dev.danascape.messages.util.GlideApp
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.common.util.extensions.withAlpha
+import org.prauga.messages.common.widget.BubbleImageView
+import org.prauga.messages.extensions.isAudio
+import org.prauga.messages.extensions.resourceExists
+import org.prauga.messages.feature.compose.MessagesAdapter
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
+import org.prauga.messages.util.GlideApp
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

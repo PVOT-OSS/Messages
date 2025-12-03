@@ -16,22 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.graphics.Typeface
 import android.os.Build
 import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.TextView
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_PRIMARY
-import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_SECONDARY
-import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_TERTIARY
-import dev.danascape.messages.common.util.TextViewStyler.Companion.SIZE_TOOLBAR
-import dev.danascape.messages.common.util.extensions.getColorCompat
-import dev.danascape.messages.common.widget.QkEditText
-import dev.danascape.messages.common.widget.QkTextView
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.R
+import org.prauga.messages.common.util.TextViewStyler.Companion.SIZE_PRIMARY
+import org.prauga.messages.common.util.TextViewStyler.Companion.SIZE_SECONDARY
+import org.prauga.messages.common.util.TextViewStyler.Companion.SIZE_TERTIARY
+import org.prauga.messages.common.util.TextViewStyler.Companion.SIZE_TOOLBAR
+import org.prauga.messages.common.util.extensions.getColorCompat
+import org.prauga.messages.common.widget.QkEditText
+import org.prauga.messages.common.widget.QkTextView
+import org.prauga.messages.util.Preferences
 import javax.inject.Inject
 
 

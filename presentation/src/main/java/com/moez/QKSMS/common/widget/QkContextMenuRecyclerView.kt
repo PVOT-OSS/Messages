@@ -1,13 +1,13 @@
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.ContextMenu
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.common.base.QkAdapter
-import dev.danascape.messages.common.base.QkViewHolder
-import dev.danascape.messages.model.MmsPart
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.model.MmsPart
 
 open class QkContextMenuRecyclerView<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE> : RecyclerView {
     class ViewHolder<VIEW_HOLDER_VALUE_TYPE>(view: View) : QkViewHolder(view) {

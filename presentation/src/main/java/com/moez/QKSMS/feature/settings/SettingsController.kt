@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.settings
+package org.prauga.messages.feature.settings
 
 import android.animation.ObjectAnimator
 import android.app.TimePickerDialog
@@ -32,25 +32,25 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.longClicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.BuildConfig
-import dev.danascape.messages.R
-import dev.danascape.messages.common.MenuItem
-import dev.danascape.messages.common.QkChangeHandler
-import dev.danascape.messages.common.QkDialog
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.animateLayoutChanges
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.common.widget.PreferenceView
-import dev.danascape.messages.common.widget.TextInputDialog
-import dev.danascape.messages.feature.settings.about.AboutController
-import dev.danascape.messages.feature.settings.autodelete.AutoDeleteDialog
-import dev.danascape.messages.feature.settings.swipe.SwipeActionsController
-import dev.danascape.messages.feature.themepicker.ThemePickerController
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.repository.SyncRepository
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.BuildConfig
+import org.prauga.messages.R
+import org.prauga.messages.common.MenuItem
+import org.prauga.messages.common.QkChangeHandler
+import org.prauga.messages.common.QkDialog
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.animateLayoutChanges
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.common.widget.TextInputDialog
+import org.prauga.messages.feature.settings.about.AboutController
+import org.prauga.messages.feature.settings.autodelete.AutoDeleteDialog
+import org.prauga.messages.feature.settings.swipe.SwipeActionsController
+import org.prauga.messages.feature.themepicker.ThemePickerController
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.repository.SyncRepository
+import org.prauga.messages.util.Preferences
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

@@ -28,7 +28,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
     }
-    namespace 'dev.danascape.messages.common'
+    namespace 'org.prauga.messages.common'
 }
 
 dependencies {

@@ -27,7 +27,7 @@
     android:paddingBottom="4dp"
     app:layout_constraintVertical_chainStyle="packed">
 
-    <dev.danascape.messages.common.widget.GroupAvatarView
+    <org.prauga.messages.common.widget.GroupAvatarView
         android:id="@+id/avatars"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/title"
         style="@style/TextPrimary"
         android:layout_width="0dp"
@@ -54,7 +54,7 @@
         tools:text="@tools:sample/full_names"
         android:textDirection="ltr" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,7 +67,7 @@
         app:textSize="tertiary"
         tools:text="Oct 5" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/blocker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
         app:textSize="secondary"
         tools:text="Call Control" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/reason"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

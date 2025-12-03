@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking
+package org.prauga.messages.feature.blocking
 
 import android.view.View
 import com.bluelinelabs.conductor.RouterTransaction
 import com.jakewharton.rxbinding2.view.clicks
-import dev.danascape.messages.R
-import dev.danascape.messages.common.QkChangeHandler
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.animateLayoutChanges
-import dev.danascape.messages.feature.blocking.manager.BlockingManagerController
-import dev.danascape.messages.feature.blocking.messages.BlockedMessagesController
-import dev.danascape.messages.feature.blocking.numbers.BlockedNumbersController
-import dev.danascape.messages.feature.blocking.filters.MessageContentFiltersController
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.R
+import org.prauga.messages.common.QkChangeHandler
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.animateLayoutChanges
+import org.prauga.messages.feature.blocking.manager.BlockingManagerController
+import org.prauga.messages.feature.blocking.messages.BlockedMessagesController
+import org.prauga.messages.feature.blocking.numbers.BlockedNumbersController
+import org.prauga.messages.feature.blocking.filters.MessageContentFiltersController
+import org.prauga.messages.injection.appComponent
 import kotlinx.android.synthetic.main.blocking_controller.*
 import kotlinx.android.synthetic.main.settings_switch_widget.view.*
 import javax.inject.Inject

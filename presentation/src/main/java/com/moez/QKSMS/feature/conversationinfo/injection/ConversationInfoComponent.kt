@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.conversationinfo.injection
+package org.prauga.messages.feature.conversationinfo.injection
 
 import dagger.Subcomponent
-import dev.danascape.messages.feature.conversationinfo.ConversationInfoController
-import dev.danascape.messages.injection.scope.ControllerScope
+import org.prauga.messages.feature.conversationinfo.ConversationInfoController
+import org.prauga.messages.injection.scope.ControllerScope
 
 @ControllerScope
 @Subcomponent(modules = [ConversationInfoModule::class])

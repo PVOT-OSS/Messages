@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.app.Activity
 import android.content.DialogInterface
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import dev.danascape.messages.R
-import dev.danascape.messages.databinding.TextInputDialogBinding
+import org.prauga.messages.R
+import org.prauga.messages.databinding.TextInputDialogBinding
 
 class TextInputDialog(context: Activity, hint: String, listener: (String) -> Unit) : AlertDialog(context) {
 

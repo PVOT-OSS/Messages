@@ -23,7 +23,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
         app:layout_constraintVertical_weight="1"
         app:textSize="dialog" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/version"
         style="@style/TextSecondary"
         android:layout_width="match_parent"
@@ -66,7 +66,7 @@
         app:layout_constraintVertical_weight="0"
         tools:listitem="@layout/changelog_list_item" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/more"
         style="@style/TextSecondary"
         android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
         app:layout_constraintTop_toBottomOf="@id/changelog"
         app:layout_constraintVertical_weight="1" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/dismiss"
         style="@style/TextSecondary"
         android:layout_width="wrap_content"

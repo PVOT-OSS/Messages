@@ -17,7 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.danascape.messages.manager
+package org.prauga.messages.manager
 
 import android.app.Activity
 import io.reactivex.Observable

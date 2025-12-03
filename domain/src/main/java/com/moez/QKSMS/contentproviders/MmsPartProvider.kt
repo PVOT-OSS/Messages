@@ -60,7 +60,7 @@ class MmsPartProvider : ContentProvider() {
             return Uri
                 .Builder()
                 .scheme(ContentResolver.SCHEME_CONTENT)
-                .authority("dev.danascape.messages.mmspart")
+                .authority("org.prauga.messages.mmspart")
                 .encodedPath("part/$partId/$partName")
                 .build()
         }

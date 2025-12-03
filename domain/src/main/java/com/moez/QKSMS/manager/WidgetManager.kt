@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.manager
+package org.prauga.messages.manager
 
 interface WidgetManager {
 
     companion object {
-        const val ACTION_NOTIFY_DATASET_CHANGED = "dev.danascape.messages.intent.action.ACTION_NOTIFY_DATASET_CHANGED"
+        const val ACTION_NOTIFY_DATASET_CHANGED = "org.prauga.messages.intent.action.ACTION_NOTIFY_DATASET_CHANGED"
     }
 
     fun sendDatasetChanged()

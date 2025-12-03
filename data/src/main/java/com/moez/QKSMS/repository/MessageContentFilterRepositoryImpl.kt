@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
-import dev.danascape.messages.model.MessageContentFilter
-import dev.danascape.messages.model.MessageContentFilterData
+import org.prauga.messages.model.MessageContentFilter
+import org.prauga.messages.model.MessageContentFilterData
 import io.realm.Realm
 import io.realm.RealmResults
 import javax.inject.Inject

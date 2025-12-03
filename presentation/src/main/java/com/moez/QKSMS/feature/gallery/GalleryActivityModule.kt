@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.gallery
+package org.prauga.messages.feature.gallery
 
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import dev.danascape.messages.injection.ViewModelKey
+import org.prauga.messages.injection.ViewModelKey
 import javax.inject.Named
 
 @Module

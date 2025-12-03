@@ -23,7 +23,7 @@
     android:layout_height="48dp"
     android:orientation="horizontal">
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/filter"
         style="@style/TextPrimary"
         android:layout_width="0dp"

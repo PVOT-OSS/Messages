@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose
+package org.prauga.messages.feature.compose
 
 import android.Manifest
 import android.animation.LayoutTransition
@@ -61,26 +61,26 @@ import com.uber.autodispose.ObservableSubscribeProxy
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkThemedActivity
-import dev.danascape.messages.common.util.DateFormatter
-import dev.danascape.messages.common.util.extensions.autoScrollToStart
-import dev.danascape.messages.common.util.extensions.dpToPx
-import dev.danascape.messages.common.util.extensions.hideKeyboard
-import dev.danascape.messages.common.util.extensions.makeToast
-import dev.danascape.messages.common.util.extensions.scrapViews
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.common.util.extensions.showKeyboard
-import dev.danascape.messages.common.widget.MicInputCloudView
-import dev.danascape.messages.common.widget.QkEditText
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.feature.compose.editing.ChipsAdapter
-import dev.danascape.messages.feature.contacts.ContactsActivity
-import dev.danascape.messages.model.Attachment
-import dev.danascape.messages.model.Recipient
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.extensions.autoScrollToStart
+import org.prauga.messages.common.util.extensions.dpToPx
+import org.prauga.messages.common.util.extensions.hideKeyboard
+import org.prauga.messages.common.util.extensions.makeToast
+import org.prauga.messages.common.util.extensions.scrapViews
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.common.util.extensions.showKeyboard
+import org.prauga.messages.common.widget.MicInputCloudView
+import org.prauga.messages.common.widget.QkEditText
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.feature.compose.editing.ChipsAdapter
+import org.prauga.messages.feature.contacts.ContactsActivity
+import org.prauga.messages.model.Attachment
+import org.prauga.messages.model.Recipient
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

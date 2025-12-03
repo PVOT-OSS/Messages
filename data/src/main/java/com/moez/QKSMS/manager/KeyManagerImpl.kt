@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.manager
+package org.prauga.messages.manager
 
-import dev.danascape.messages.model.Message
+import org.prauga.messages.model.Message
 import io.realm.Realm
 import javax.inject.Inject
 import javax.inject.Singleton

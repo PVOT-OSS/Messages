@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.blocking
+package org.prauga.messages.blocking
 
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import androidx.core.database.getStringOrNull
-import dev.danascape.messages.common.util.extensions.isInstalled
-import dev.danascape.messages.extensions.map
+import org.prauga.messages.common.util.extensions.isInstalled
+import org.prauga.messages.extensions.map
 import io.reactivex.Completable
 import io.reactivex.Single
 import timber.log.Timber

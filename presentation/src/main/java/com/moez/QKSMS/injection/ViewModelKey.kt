@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.injection
+package org.prauga.messages.injection
 
 import androidx.lifecycle.ViewModel
 import dagger.MapKey

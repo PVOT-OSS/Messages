@@ -1,4 +1,4 @@
-package dev.danascape.messages.manager
+package org.prauga.messages.manager
 
 import javax.inject.Inject
 

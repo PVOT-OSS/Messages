@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.conversationinfo
+package org.prauga.messages.feature.conversationinfo
 
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -24,16 +24,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bluelinelabs.conductor.RouterTransaction
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.QkChangeHandler
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.util.extensions.scrapViews
-import dev.danascape.messages.common.widget.TextInputDialog
-import dev.danascape.messages.feature.blocking.BlockingDialog
-import dev.danascape.messages.feature.conversationinfo.injection.ConversationInfoModule
-import dev.danascape.messages.feature.themepicker.ThemePickerController
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.QkChangeHandler
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.util.extensions.scrapViews
+import org.prauga.messages.common.widget.TextInputDialog
+import org.prauga.messages.feature.blocking.BlockingDialog
+import org.prauga.messages.feature.conversationinfo.injection.ConversationInfoModule
+import org.prauga.messages.feature.themepicker.ThemePickerController
+import org.prauga.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

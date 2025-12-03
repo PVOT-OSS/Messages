@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
-import dev.danascape.messages.common.util.TextViewStyler
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.common.util.TextViewStyler
+import org.prauga.messages.injection.appComponent
 import javax.inject.Inject
 
 open class QkTextView @JvmOverloads constructor(

@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.content.Context
 import com.google.android.mms.pdu_alt.EncodedStringValue
 import com.google.android.mms.pdu_alt.MultimediaMessagePdu
 import com.google.android.mms.pdu_alt.PduPersister
-import dev.danascape.messages.R
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.R
+import org.prauga.messages.model.Message
+import org.prauga.messages.util.tryOrNull
 import javax.inject.Inject
 
 class MessageDetailsFormatter @Inject constructor(

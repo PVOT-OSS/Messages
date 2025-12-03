@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.main
+package org.prauga.messages.feature.main
 
 import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import dev.danascape.messages.injection.ViewModelKey
-import dev.danascape.messages.injection.scope.ActivityScope
+import org.prauga.messages.injection.ViewModelKey
+import org.prauga.messages.injection.scope.ActivityScope
 import io.reactivex.disposables.CompositeDisposable
 
 @Module

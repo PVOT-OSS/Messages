@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.interactor
+package org.prauga.messages.interactor
 
 import com.f2prateek.rx.preferences2.RxSharedPreferences
-import dev.danascape.messages.util.NightModeManager
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.util.NightModeManager
+import org.prauga.messages.util.Preferences
 import io.reactivex.Flowable
 import javax.inject.Inject
 

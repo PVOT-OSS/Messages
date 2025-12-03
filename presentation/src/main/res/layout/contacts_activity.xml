@@ -24,7 +24,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="dev.danascape.messages.feature.compose.ComposeActivity">
+    tools:context="org.prauga.messages.feature.compose.ComposeActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/contacts"
@@ -57,7 +57,7 @@
             android:layout_height="match_parent"
             android:animateLayoutChanges="true">
 
-            <dev.danascape.messages.common.widget.QkEditText
+            <org.prauga.messages.common.widget.QkEditText
                 android:id="@+id/search"
                 style="@style/ToolbarText"
                 android:layout_marginTop="8dp"
@@ -76,7 +76,7 @@
                 app:textSize="primary"
                 tools:textSize="16sp" />
 
-<!--            <dev.danascape.messages.common.widget.QkEditText-->
+<!--            <org.prauga.messages.common.widget.QkEditText-->
 <!--                android:id="@+id/search"-->
 <!--                android:layout_width="match_parent"-->
 <!--                android:layout_height="match_parent"-->

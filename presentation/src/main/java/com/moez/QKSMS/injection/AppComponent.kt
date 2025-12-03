@@ -16,36 +16,36 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.injection
+package org.prauga.messages.injection
 
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
-import dev.danascape.messages.common.QKApplication
-import dev.danascape.messages.common.QkDialog
-import dev.danascape.messages.common.util.QkChooserTargetService
-import dev.danascape.messages.common.widget.AvatarView
-import dev.danascape.messages.common.widget.PagerTitleView
-import dev.danascape.messages.common.widget.PreferenceView
-import dev.danascape.messages.common.widget.QkEditText
-import dev.danascape.messages.common.widget.QkSwitch
-import dev.danascape.messages.common.widget.QkTextView
-import dev.danascape.messages.common.widget.RadioPreferenceView
-import dev.danascape.messages.feature.backup.BackupController
-import dev.danascape.messages.feature.blocking.BlockingController
-import dev.danascape.messages.feature.blocking.filters.MessageContentFiltersController
-import dev.danascape.messages.feature.blocking.manager.BlockingManagerController
-import dev.danascape.messages.feature.blocking.messages.BlockedMessagesController
-import dev.danascape.messages.feature.blocking.numbers.BlockedNumbersController
-import dev.danascape.messages.feature.compose.editing.DetailedChipView
-import dev.danascape.messages.feature.conversationinfo.injection.ConversationInfoComponent
-import dev.danascape.messages.feature.settings.SettingsController
-import dev.danascape.messages.feature.settings.about.AboutController
-import dev.danascape.messages.feature.settings.swipe.SwipeActionsController
-import dev.danascape.messages.feature.themepicker.injection.ThemePickerComponent
-import dev.danascape.messages.feature.widget.WidgetAdapter
-import dev.danascape.messages.injection.android.ActivityBuilderModule
-import dev.danascape.messages.injection.android.BroadcastReceiverBuilderModule
-import dev.danascape.messages.injection.android.ServiceBuilderModule
+import org.prauga.messages.common.QKApplication
+import org.prauga.messages.common.QkDialog
+import org.prauga.messages.common.util.QkChooserTargetService
+import org.prauga.messages.common.widget.AvatarView
+import org.prauga.messages.common.widget.PagerTitleView
+import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.common.widget.QkEditText
+import org.prauga.messages.common.widget.QkSwitch
+import org.prauga.messages.common.widget.QkTextView
+import org.prauga.messages.common.widget.RadioPreferenceView
+import org.prauga.messages.feature.backup.BackupController
+import org.prauga.messages.feature.blocking.BlockingController
+import org.prauga.messages.feature.blocking.filters.MessageContentFiltersController
+import org.prauga.messages.feature.blocking.manager.BlockingManagerController
+import org.prauga.messages.feature.blocking.messages.BlockedMessagesController
+import org.prauga.messages.feature.blocking.numbers.BlockedNumbersController
+import org.prauga.messages.feature.compose.editing.DetailedChipView
+import org.prauga.messages.feature.conversationinfo.injection.ConversationInfoComponent
+import org.prauga.messages.feature.settings.SettingsController
+import org.prauga.messages.feature.settings.about.AboutController
+import org.prauga.messages.feature.settings.swipe.SwipeActionsController
+import org.prauga.messages.feature.themepicker.injection.ThemePickerComponent
+import org.prauga.messages.feature.widget.WidgetAdapter
+import org.prauga.messages.injection.android.ActivityBuilderModule
+import org.prauga.messages.injection.android.BroadcastReceiverBuilderModule
+import org.prauga.messages.injection.android.ServiceBuilderModule
 import javax.inject.Singleton
 
 @Singleton

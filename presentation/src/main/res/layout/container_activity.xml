@@ -28,7 +28,7 @@
         style="@style/Toolbar"
         android:elevation="8dp">
 
-        <dev.danascape.messages.common.widget.QkTextView
+        <org.prauga.messages.common.widget.QkTextView
             android:id="@+id/toolbarTitle"
             style="@style/ToolbarText"
             tools:text="Conversations" />

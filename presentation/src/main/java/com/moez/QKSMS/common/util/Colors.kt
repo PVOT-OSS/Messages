@@ -16,16 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.content.Context
 import android.graphics.Color
 import androidx.core.content.res.getColorOrThrow
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.extensions.getColorCompat
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.util.PhoneNumberUtils
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.R
+import org.prauga.messages.common.util.extensions.getColorCompat
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.util.PhoneNumberUtils
+import org.prauga.messages.util.Preferences
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton

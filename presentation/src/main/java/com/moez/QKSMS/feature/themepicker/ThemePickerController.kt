@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.themepicker
+package org.prauga.messages.feature.themepicker
 
 import android.animation.ObjectAnimator
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.dpToPx
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.feature.themepicker.injection.ThemePickerModule
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.dpToPx
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.feature.themepicker.injection.ThemePickerModule
+import org.prauga.messages.injection.appComponent
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

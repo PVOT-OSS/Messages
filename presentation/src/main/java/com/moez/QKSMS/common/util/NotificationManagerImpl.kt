@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -36,31 +36,31 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.extensions.dpToPx
-import dev.danascape.messages.common.util.extensions.fromRecipient
-import dev.danascape.messages.common.util.extensions.toPerson
-import dev.danascape.messages.extensions.isImage
-import dev.danascape.messages.feature.compose.ComposeActivity
-import dev.danascape.messages.feature.qkreply.QkReplyActivity
-import dev.danascape.messages.manager.PermissionManager
-import dev.danascape.messages.manager.ShortcutManager
-import dev.danascape.messages.mapper.CursorToPartImpl
-import dev.danascape.messages.receiver.BlockThreadReceiver
-import dev.danascape.messages.receiver.DeleteMessagesReceiver
-import dev.danascape.messages.receiver.MarkArchivedReceiver
-import dev.danascape.messages.receiver.MarkReadReceiver
-import dev.danascape.messages.receiver.MarkSeenReceiver
-import dev.danascape.messages.receiver.RemoteMessagingReceiver
-import dev.danascape.messages.receiver.SpeakThreadsReceiver
-import dev.danascape.messages.receiver.SendSmsReceiver
-import dev.danascape.messages.repository.ContactRepository
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.repository.MessageRepository
-import dev.danascape.messages.util.GlideApp
-import dev.danascape.messages.util.PhoneNumberUtils
-import dev.danascape.messages.util.Preferences
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.R
+import org.prauga.messages.common.util.extensions.dpToPx
+import org.prauga.messages.common.util.extensions.fromRecipient
+import org.prauga.messages.common.util.extensions.toPerson
+import org.prauga.messages.extensions.isImage
+import org.prauga.messages.feature.compose.ComposeActivity
+import org.prauga.messages.feature.qkreply.QkReplyActivity
+import org.prauga.messages.manager.PermissionManager
+import org.prauga.messages.manager.ShortcutManager
+import org.prauga.messages.mapper.CursorToPartImpl
+import org.prauga.messages.receiver.BlockThreadReceiver
+import org.prauga.messages.receiver.DeleteMessagesReceiver
+import org.prauga.messages.receiver.MarkArchivedReceiver
+import org.prauga.messages.receiver.MarkReadReceiver
+import org.prauga.messages.receiver.MarkSeenReceiver
+import org.prauga.messages.receiver.RemoteMessagingReceiver
+import org.prauga.messages.receiver.SpeakThreadsReceiver
+import org.prauga.messages.receiver.SendSmsReceiver
+import org.prauga.messages.repository.ContactRepository
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
+import org.prauga.messages.util.GlideApp
+import org.prauga.messages.util.PhoneNumberUtils
+import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -76,7 +76,7 @@ class NotificationManagerImpl @Inject constructor(
     private val phoneNumberUtils: PhoneNumberUtils,
     private val contactRepo: ContactRepository,
     private val shortcutManager: ShortcutManager
-) : dev.danascape.messages.manager.NotificationManager {
+) : org.prauga.messages.manager.NotificationManager {
 
     companion object {
         const val DEFAULT_CHANNEL_ID = "notifications_default"

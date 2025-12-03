@@ -1,4 +1,4 @@
-package dev.danascape.messages.extensions
+package org.prauga.messages.extensions
 
 inline fun <K, T> Iterable<T>.associateByNotNull(keySelector: (T) -> K?): Map<K, T> {
     val map = hashMapOf<K, T>()

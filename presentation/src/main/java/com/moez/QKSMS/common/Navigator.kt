@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common
+package org.prauga.messages.common
 
 import android.app.Activity
 import android.app.role.RoleManager
@@ -28,23 +28,23 @@ import android.os.Build
 import android.provider.ContactsContract
 import android.provider.Settings
 import android.provider.Telephony
-import dev.danascape.messages.BuildConfig
-import dev.danascape.messages.compat.TelephonyCompat
-import dev.danascape.messages.extensions.resourceExists
-import dev.danascape.messages.feature.backup.BackupActivity
-import dev.danascape.messages.feature.blocking.BlockingActivity
-import dev.danascape.messages.feature.compose.ComposeActivity
-import dev.danascape.messages.feature.conversationinfo.ConversationInfoActivity
-import dev.danascape.messages.feature.gallery.GalleryActivity
-import dev.danascape.messages.feature.main.MainActivity
-import dev.danascape.messages.feature.notificationprefs.NotificationPrefsActivity
-import dev.danascape.messages.feature.plus.PlusActivity
-import dev.danascape.messages.feature.scheduled.ScheduledActivity
-import dev.danascape.messages.feature.settings.SettingsActivity
-import dev.danascape.messages.manager.BillingManager
-import dev.danascape.messages.manager.NotificationManager
-import dev.danascape.messages.manager.PermissionManager
-import dev.danascape.messages.model.ScheduledMessage
+import org.prauga.messages.BuildConfig
+import org.prauga.messages.compat.TelephonyCompat
+import org.prauga.messages.extensions.resourceExists
+import org.prauga.messages.feature.backup.BackupActivity
+import org.prauga.messages.feature.blocking.BlockingActivity
+import org.prauga.messages.feature.compose.ComposeActivity
+import org.prauga.messages.feature.conversationinfo.ConversationInfoActivity
+import org.prauga.messages.feature.gallery.GalleryActivity
+import org.prauga.messages.feature.main.MainActivity
+import org.prauga.messages.feature.notificationprefs.NotificationPrefsActivity
+import org.prauga.messages.feature.plus.PlusActivity
+import org.prauga.messages.feature.scheduled.ScheduledActivity
+import org.prauga.messages.feature.settings.SettingsActivity
+import org.prauga.messages.manager.BillingManager
+import org.prauga.messages.manager.NotificationManager
+import org.prauga.messages.manager.PermissionManager
+import org.prauga.messages.model.ScheduledMessage
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -178,22 +178,22 @@ class Navigator @Inject constructor(
     }
 
     fun showDeveloper() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/octoshrimpy"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape"))
         startActivityExternal(intent)
     }
 
     fun showSourceCode() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/octoshrimpy/quik"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages"))
         startActivityExternal(intent)
     }
 
     fun showChangelog() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/octoshrimpy/quik/releases"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages/releases"))
         startActivityExternal(intent)
     }
 
     fun showLicense() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/octoshrimpy/quik/blob/master/LICENSE"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages/blob/master/LICENSE"))
         startActivityExternal(intent)
     }
 
@@ -209,12 +209,12 @@ class Navigator @Inject constructor(
     }
 
     fun showDonation() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/octoshrimpy/quik"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages"))
         startActivityExternal(intent)
     }
 
     fun showRating() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/octoshrimpy/quik"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages"))
                 .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
                         or Intent.FLAG_ACTIVITY_NEW_DOCUMENT
                         or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
@@ -222,7 +222,7 @@ class Navigator @Inject constructor(
         try {
             startActivityExternal(intent)
         } catch (e: ActivityNotFoundException) {
-            val url = "https://github.com/octoshrimpy/quik"
+            val url = "https://github.com/danascape/Messages"
             startActivityExternal(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
     }
@@ -257,8 +257,8 @@ class Navigator @Inject constructor(
     fun showSupport() {
         val intent = Intent(Intent.ACTION_SENDTO)
         intent.data = Uri.parse("mailto:")
-        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("quik@octo.sh"))
-        intent.putExtra(Intent.EXTRA_SUBJECT, "QUIK Support")
+        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("saalim.priv@gmail.com"))
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Messages Support")
         intent.putExtra(Intent.EXTRA_TEXT, StringBuilder("\n\n")
                 .append("\n\n--- Please write your message above this line ---\n\n")
                 .append("Package: ${context.packageName}\n")
@@ -274,7 +274,7 @@ class Navigator @Inject constructor(
     fun showInvite() {
         Intent(Intent.ACTION_SEND)
                 .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, "https://github.com/octoshrimpy/quik/releases/latest")
+                .putExtra(Intent.EXTRA_TEXT, "https://github.com/danascape/Messages/releases/latest")
                 .let { Intent.createChooser(it, null) }
                 .let(::startActivityExternal)
     }

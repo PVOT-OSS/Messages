@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.filters
+package org.prauga.messages.feature.blocking.filters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -24,14 +24,14 @@ import androidx.appcompat.app.AlertDialog
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkController
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.common.widget.PreferenceView
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.model.MessageContentFilterData
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkController
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.model.MessageContentFilterData
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

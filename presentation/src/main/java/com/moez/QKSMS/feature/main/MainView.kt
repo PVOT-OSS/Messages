@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.main
+package org.prauga.messages.feature.main
 
 import android.content.Intent
-import dev.danascape.messages.common.base.QkView
-import dev.danascape.messages.manager.ChangelogManager
+import org.prauga.messages.common.base.QkView
+import org.prauga.messages.manager.ChangelogManager
 import io.reactivex.Observable
 
 interface MainView : QkView<MainState> {

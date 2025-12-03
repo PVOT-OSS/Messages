@@ -31,7 +31,7 @@
     android:paddingBottom="8dp"
     android:nextFocusRight="@+id/compose">
 
-    <dev.danascape.messages.common.widget.GroupAvatarView
+    <org.prauga.messages.common.widget.GroupAvatarView
         android:id="@+id/avatars"
         android:layout_width="56dp"
         android:layout_height="56dp"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/title"
         style="@style/TextPrimary"
         android:layout_width="wrap_content"
@@ -60,7 +60,7 @@
         tools:text="@tools:sample/full_names"
         android:textDirection="ltr" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/snippet"
         style="@style/TextSecondary"
         android:layout_width="0dp"
@@ -115,7 +115,7 @@
         tools:tint="@color/tools_theme"
         tools:visibility="visible" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/date"
         style="@style/TextTertiary"
         android:layout_width="wrap_content"

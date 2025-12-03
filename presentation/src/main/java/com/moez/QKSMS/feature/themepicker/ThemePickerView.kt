@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.themepicker
+package org.prauga.messages.feature.themepicker
 
-import dev.danascape.messages.common.base.QkViewContract
+import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
 
 interface ThemePickerView : QkViewContract<ThemePickerState> {

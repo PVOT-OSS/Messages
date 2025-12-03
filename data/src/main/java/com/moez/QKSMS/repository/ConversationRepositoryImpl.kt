@@ -16,25 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
 import android.content.ContentUris
 import android.content.Context
-import dev.danascape.messages.compat.TelephonyCompat
-import dev.danascape.messages.extensions.anyOf
-import dev.danascape.messages.extensions.asObservable
-import dev.danascape.messages.extensions.map
-import dev.danascape.messages.extensions.removeAccents
-import dev.danascape.messages.filter.ConversationFilter
-import dev.danascape.messages.mapper.CursorToConversation
-import dev.danascape.messages.mapper.CursorToRecipient
-import dev.danascape.messages.model.Contact
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.model.SearchResult
-import dev.danascape.messages.util.PhoneNumberUtils
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.compat.TelephonyCompat
+import org.prauga.messages.extensions.anyOf
+import org.prauga.messages.extensions.asObservable
+import org.prauga.messages.extensions.map
+import org.prauga.messages.extensions.removeAccents
+import org.prauga.messages.filter.ConversationFilter
+import org.prauga.messages.mapper.CursorToConversation
+import org.prauga.messages.mapper.CursorToRecipient
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.model.SearchResult
+import org.prauga.messages.util.PhoneNumberUtils
+import org.prauga.messages.util.tryOrNull
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

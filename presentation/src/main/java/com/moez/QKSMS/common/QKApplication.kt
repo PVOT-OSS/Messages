@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common
+package org.prauga.messages.common
 
 import android.app.Activity
 import android.app.Application
@@ -35,17 +35,17 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.FileLoggingTree
-import dev.danascape.messages.injection.AppComponentManager
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.interactor.SpeakThreads
-import dev.danascape.messages.manager.BillingManager
-import dev.danascape.messages.manager.ReferralManager
-import dev.danascape.messages.migration.QkMigration
-import dev.danascape.messages.migration.QkRealmMigration
-import dev.danascape.messages.util.NightModeManager
-import dev.danascape.messages.worker.HousekeepingWorker
+import org.prauga.messages.R
+import org.prauga.messages.common.util.FileLoggingTree
+import org.prauga.messages.injection.AppComponentManager
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.interactor.SpeakThreads
+import org.prauga.messages.manager.BillingManager
+import org.prauga.messages.manager.ReferralManager
+import org.prauga.messages.migration.QkMigration
+import org.prauga.messages.migration.QkRealmMigration
+import org.prauga.messages.util.NightModeManager
+import org.prauga.messages.worker.HousekeepingWorker
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.coroutines.Dispatchers

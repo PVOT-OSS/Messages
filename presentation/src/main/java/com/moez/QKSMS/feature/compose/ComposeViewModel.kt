@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose
+package org.prauga.messages.feature.compose
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -39,45 +39,45 @@ import com.moez.QKSMS.manager.MediaRecorderManager.AUDIO_FILE_SUFFIX
 import com.moez.QKSMS.util.Constants.Companion.SAVED_MESSAGE_TEXT_FILE_PREFIX
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkViewModel
-import dev.danascape.messages.common.util.ClipboardUtils
-import dev.danascape.messages.common.util.MessageDetailsFormatter
-import dev.danascape.messages.common.util.extensions.makeToast
-import dev.danascape.messages.common.widget.MicInputCloudView
-import dev.danascape.messages.common.widget.QkContextMenuRecyclerView
-import dev.danascape.messages.compat.SubscriptionManagerCompat
-import dev.danascape.messages.extensions.asObservable
-import dev.danascape.messages.extensions.isImage
-import dev.danascape.messages.extensions.isSmil
-import dev.danascape.messages.extensions.isVideo
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.interactor.AddScheduledMessage
-import dev.danascape.messages.interactor.CancelDelayedMessage
-import dev.danascape.messages.interactor.DeleteMessages
-import dev.danascape.messages.interactor.MarkRead
-import dev.danascape.messages.interactor.RetrySending
-import dev.danascape.messages.interactor.SaveImage
-import dev.danascape.messages.interactor.SendMessage
-import dev.danascape.messages.manager.ActiveConversationManager
-import dev.danascape.messages.manager.BillingManager
-import dev.danascape.messages.manager.PermissionManager
-import dev.danascape.messages.model.Attachment
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.model.MmsPart
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.model.getText
-import dev.danascape.messages.repository.ContactRepository
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.repository.MessageRepository
-import dev.danascape.messages.repository.ScheduledMessageRepository
-import dev.danascape.messages.util.ActiveSubscriptionObservable
-import dev.danascape.messages.util.FileUtils
-import dev.danascape.messages.util.PhoneNumberUtils
-import dev.danascape.messages.util.Preferences
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkViewModel
+import org.prauga.messages.common.util.ClipboardUtils
+import org.prauga.messages.common.util.MessageDetailsFormatter
+import org.prauga.messages.common.util.extensions.makeToast
+import org.prauga.messages.common.widget.MicInputCloudView
+import org.prauga.messages.common.widget.QkContextMenuRecyclerView
+import org.prauga.messages.compat.SubscriptionManagerCompat
+import org.prauga.messages.extensions.asObservable
+import org.prauga.messages.extensions.isImage
+import org.prauga.messages.extensions.isSmil
+import org.prauga.messages.extensions.isVideo
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.interactor.AddScheduledMessage
+import org.prauga.messages.interactor.CancelDelayedMessage
+import org.prauga.messages.interactor.DeleteMessages
+import org.prauga.messages.interactor.MarkRead
+import org.prauga.messages.interactor.RetrySending
+import org.prauga.messages.interactor.SaveImage
+import org.prauga.messages.interactor.SendMessage
+import org.prauga.messages.manager.ActiveConversationManager
+import org.prauga.messages.manager.BillingManager
+import org.prauga.messages.manager.PermissionManager
+import org.prauga.messages.model.Attachment
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.model.getText
+import org.prauga.messages.repository.ContactRepository
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
+import org.prauga.messages.repository.ScheduledMessageRepository
+import org.prauga.messages.util.ActiveSubscriptionObservable
+import org.prauga.messages.util.FileUtils
+import org.prauga.messages.util.PhoneNumberUtils
+import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.tryOrNull
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
@@ -438,7 +438,7 @@ class ComposeViewModel @Inject constructor(
                     navigator.viewFile(
                         FileProvider.getUriForFile(
                             context,
-                            "dev.danascape.messages.messagesText",
+                            "org.prauga.messages.messagesText",
                             uri.toFile()
                         ),
                         mimeType

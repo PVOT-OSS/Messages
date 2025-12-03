@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common
+package org.prauga.messages.common
 
 import android.animation.Animator
 import android.animation.AnimatorSet
@@ -28,7 +28,7 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.changehandler.AnimatorChangeHandler
-import dev.danascape.messages.common.util.extensions.dpToPx
+import org.prauga.messages.common.util.extensions.dpToPx
 
 class QkChangeHandler : AnimatorChangeHandler(250, true) {
 

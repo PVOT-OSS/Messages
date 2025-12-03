@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.filters
+package org.prauga.messages.feature.blocking.filters
 
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.common.base.QkPresenter
-import dev.danascape.messages.repository.MessageContentFilterRepository
+import org.prauga.messages.common.base.QkPresenter
+import org.prauga.messages.repository.MessageContentFilterRepository
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 

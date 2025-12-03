@@ -70,12 +70,12 @@
     <string name="archived_empty_text">Your archived conversations will appear here</string>
     <string name="main_fab_cd">Start new conversation</string>
     <string name="main_default_sms_title">Love texting again</string>
-    <string name="main_default_sms_message">Make QUIK your default SMS app</string>
+    <string name="main_default_sms_message">Make Messages your default SMS app</string>
     <string name="main_default_sms_change">Change</string>
     <string name="main_permission_required">Permission required</string>
-    <string name="main_permission_sms">QUIK needs permission to send and view SMS messages</string>
-    <string name="main_permission_contacts">QUIK needs permission to view your contacts</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">Messages needs permission to send and view SMS messages</string>
+    <string name="main_permission_contacts">Messages needs permission to view your contacts</string>
+    <string name="main_permission_notifications">Messages needs permission to display notifications</string>
     <string name="main_permission_allow">Allow</string>
 
     <string name="scheduled_menu_send_now">Send now</string>
@@ -93,7 +93,7 @@
     <string name="drawer_plus_banner_title" translatable="false">DEPRECATED - drawer_plus_banner_title</string>
     <string name="drawer_plus_banner_summary">Unlock amazing new features, and support development</string>
 
-    <string name="rate_title">Enjoying QUIK?</string>
+    <string name="rate_title">Enjoying Messages?</string>
     <string name="rate_summary">Share some love and leave us a Star on GitHub!</string>
     <string name="rate_okay">OKAY!</string>
     <string name="rate_dismiss">DISMISS</string>
@@ -332,7 +332,7 @@
     <string name="settings_diable_screenshots_summary">Prevent your OS and other apps from taking screenshots of the app.</string>
     <string name="settings_sync_title">Sync messages</string>
     <string name="settings_sync_summary">Re-sync your messages with the native Android SMS database</string>
-    <string name="settings_about_title">About QUIK</string>
+    <string name="settings_about_title">About Messages</string>
     <string name="settings_version">Version %s</string>
     <string name="settings_logging_enabled">Debug logging enabled</string>
     <string name="settings_logging_disabled">Debug logging disabled</string>
@@ -345,7 +345,7 @@
     <string name="blocking_conversations">Blocked conversations</string>
 
     <string name="blocking_manager_title">Blocking Manager</string>
-    <string name="blocking_manager_qksms_summary">Built-in blocking functionality in QUIK</string>
+    <string name="blocking_manager_qksms_summary">Built-in blocking functionality in Messages</string>
     <string name="blocking_manager_call_blocker_title" translatable="false">Call Blocker - Incoming/Outgoing</string>
     <string name="blocking_manager_call_blocker_summary">Block spam messages, numbers &amp; unknown calls with blacklist &amp; Schedule</string>
     <string name="blocking_manager_call_control_title" translatable="false">Call Control</string>
@@ -447,14 +447,14 @@
     <string name="theme_hex">HEX</string>
     <string name="theme_apply">Apply</string>
 
-    <string name="about_developer" translatable="false">Marcos Jones</string>
-    <string name="about_source" translatable="false">https://github.com/octoshrimpy/quik</string>
-    <string name="about_changelog" translatable="false">https://github.com/octoshrimpy/quik/releases</string>
-    <string name="about_contact" translatable="false">quik@octo.sh</string>
+    <string name="about_developer" translatable="false">Saalim Quadri</string>
+    <string name="about_source" translatable="false">https://github.com/danascape/Messages</string>
+    <string name="about_changelog" translatable="false">https://github.com/danascape/Messages/releases</string>
+    <string name="about_contact" translatable="false">saalim.priv@gmail.com</string>
     <string name="about_license" translatable="false">GNU General Public License v3.0</string>
     <string name="about_copyright" translatable="false">© 2014–2025</string>
 
-    <string name="changelog_title" translatable="false">New in QUIK</string>
+    <string name="changelog_title" translatable="false">New in Messages</string>
     <string name="changelog_version" translatable="false">Version %s</string>
     <string name="changelog_added" translatable="false">Added</string>
     <string name="changelog_improved" translatable="false">Improved</string>

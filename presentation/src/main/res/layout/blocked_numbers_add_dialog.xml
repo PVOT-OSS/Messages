@@ -23,7 +23,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -33,7 +33,7 @@
         android:textColor="?android:attr/textColorPrimary"
         app:textSize="dialog" />
 
-    <dev.danascape.messages.common.widget.QkEditText
+    <org.prauga.messages.common.widget.QkEditText
         android:id="@+id/input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

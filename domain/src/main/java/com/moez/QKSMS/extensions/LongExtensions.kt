@@ -1,4 +1,4 @@
-package dev.danascape.messages.extensions
+package org.prauga.messages.extensions
 
 import java.util.concurrent.TimeUnit
 

@@ -16,17 +16,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.themepicker
+package org.prauga.messages.feature.themepicker
 
 import com.f2prateek.rx.preferences2.Preference
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkPresenter
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.manager.BillingManager
-import dev.danascape.messages.manager.WidgetManager
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkPresenter
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.manager.BillingManager
+import org.prauga.messages.manager.WidgetManager
+import org.prauga.messages.util.Preferences
 import io.reactivex.rxkotlin.Observables
 import javax.inject.Inject
 import javax.inject.Named

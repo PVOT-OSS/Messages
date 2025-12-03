@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.receiver
+package org.prauga.messages.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -25,8 +25,8 @@ import android.os.Build
 import android.provider.Telephony
 import androidx.annotation.RequiresApi
 import dagger.android.AndroidInjection
-import dev.danascape.messages.interactor.SyncMessages
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.interactor.SyncMessages
+import org.prauga.messages.util.Preferences
 import javax.inject.Inject
 
 class DefaultSmsChangedReceiver : BroadcastReceiver() {

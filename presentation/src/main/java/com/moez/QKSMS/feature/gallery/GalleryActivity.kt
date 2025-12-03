@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.gallery
+package org.prauga.messages.feature.gallery
 
 import android.Manifest
 import android.os.Bundle
@@ -30,11 +30,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkActivity
-import dev.danascape.messages.common.util.DateFormatter
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.model.MmsPart
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkActivity
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.model.MmsPart
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

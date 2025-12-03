@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.receiver
+package org.prauga.messages.receiver
 
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
-import dev.danascape.messages.interactor.MarkFailed
-import dev.danascape.messages.interactor.MarkSent
+import org.prauga.messages.interactor.MarkFailed
+import org.prauga.messages.interactor.MarkSent
 import javax.inject.Inject
 
 class SmsSentReceiver : BroadcastReceiver() {

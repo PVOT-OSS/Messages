@@ -24,7 +24,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="2dp">
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         app:textSize="secondary"
         tools:text="Mobile" />
 
-    <dev.danascape.messages.common.widget.QkTextView
+    <org.prauga.messages.common.widget.QkTextView
         android:id="@+id/address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

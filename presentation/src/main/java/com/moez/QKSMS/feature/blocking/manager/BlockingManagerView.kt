@@ -1,6 +1,6 @@
-package dev.danascape.messages.feature.blocking.manager
+package org.prauga.messages.feature.blocking.manager
 
-import dev.danascape.messages.common.base.QkViewContract
+import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
 import io.reactivex.Single
 

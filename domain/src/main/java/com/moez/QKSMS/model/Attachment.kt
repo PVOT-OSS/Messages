@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.model
+package org.prauga.messages.model
 
 import android.annotation.SuppressLint
 import android.content.ContentResolver
@@ -25,15 +25,15 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.net.toFile
 import androidx.core.view.inputmethod.InputContentInfoCompat
-import dev.danascape.messages.extensions.contactToVCard
-import dev.danascape.messages.extensions.getName
-import dev.danascape.messages.extensions.getResourceBytes
-import dev.danascape.messages.extensions.getSize
-import dev.danascape.messages.extensions.getType
-import dev.danascape.messages.extensions.isAudio
-import dev.danascape.messages.extensions.isContact
-import dev.danascape.messages.extensions.isImage
-import dev.danascape.messages.extensions.isVCard
+import org.prauga.messages.extensions.contactToVCard
+import org.prauga.messages.extensions.getName
+import org.prauga.messages.extensions.getResourceBytes
+import org.prauga.messages.extensions.getSize
+import org.prauga.messages.extensions.getType
+import org.prauga.messages.extensions.isAudio
+import org.prauga.messages.extensions.isContact
+import org.prauga.messages.extensions.isImage
+import org.prauga.messages.extensions.isVCard
 
 
 @SuppressLint("Range")

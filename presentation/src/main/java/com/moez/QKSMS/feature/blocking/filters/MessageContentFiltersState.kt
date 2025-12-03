@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.filters
+package org.prauga.messages.feature.blocking.filters
 
-import dev.danascape.messages.model.MessageContentFilter
+import org.prauga.messages.model.MessageContentFilter
 import io.realm.RealmResults
 
 data class MessageContentFiltersState(

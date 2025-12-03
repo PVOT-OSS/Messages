@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose.editing
+package org.prauga.messages.feature.compose.editing
 
-import dev.danascape.messages.model.Contact
-import dev.danascape.messages.model.ContactGroup
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.PhoneNumber
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.ContactGroup
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.PhoneNumber
 import io.realm.RealmList
 
 sealed class ComposeItem {

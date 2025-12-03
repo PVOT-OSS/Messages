@@ -1,4 +1,4 @@
-package dev.danascape.messages.model
+package org.prauga.messages.model
 
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey

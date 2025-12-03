@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.interactor
+package org.prauga.messages.interactor
 
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.core.net.toUri
-import dev.danascape.messages.extensions.getName
-import dev.danascape.messages.repository.ScheduledMessageRepository
+import org.prauga.messages.extensions.getName
+import org.prauga.messages.repository.ScheduledMessageRepository
 import io.reactivex.Flowable
 import io.realm.RealmList
 import java.io.File

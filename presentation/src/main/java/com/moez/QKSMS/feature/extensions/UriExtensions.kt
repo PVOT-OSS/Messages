@@ -1,4 +1,4 @@
-package dev.danascape.messages.feature.extensions
+package org.prauga.messages.feature.extensions
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -7,12 +7,12 @@ import android.net.Uri
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
-import dev.danascape.messages.R
-import dev.danascape.messages.extensions.getDefaultActivityIconForMimeType
-import dev.danascape.messages.extensions.isAudio
-import dev.danascape.messages.extensions.isImage
-import dev.danascape.messages.extensions.isVideo
-import dev.danascape.messages.extensions.resourceExists
+import org.prauga.messages.R
+import org.prauga.messages.extensions.getDefaultActivityIconForMimeType
+import org.prauga.messages.extensions.isAudio
+import org.prauga.messages.extensions.isImage
+import org.prauga.messages.extensions.isVideo
+import org.prauga.messages.extensions.resourceExists
 
 enum class LoadBestIconIntoImageView {
     Missing,

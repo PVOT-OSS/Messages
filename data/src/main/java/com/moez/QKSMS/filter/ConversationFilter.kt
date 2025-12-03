@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.filter
+package org.prauga.messages.filter
 
-import dev.danascape.messages.model.Conversation
+import org.prauga.messages.model.Conversation
 import javax.inject.Inject
 
 class ConversationFilter @Inject constructor(private val recipientFilter: RecipientFilter) : Filter<Conversation>() {

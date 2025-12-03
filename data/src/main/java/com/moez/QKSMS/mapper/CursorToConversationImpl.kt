@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.mapper
+package org.prauga.messages.mapper
 
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.Telephony.Threads
-import dev.danascape.messages.manager.PermissionManager
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.model.Recipient
+import org.prauga.messages.manager.PermissionManager
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.Recipient
 import javax.inject.Inject
 
 class CursorToConversationImpl @Inject constructor(

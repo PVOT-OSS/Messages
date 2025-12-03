@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.content.ComponentName
 import android.content.IntentFilter
@@ -24,13 +24,13 @@ import android.graphics.drawable.Icon
 import android.service.chooser.ChooserTarget
 import android.service.chooser.ChooserTargetService
 import androidx.core.os.bundleOf
-import dev.danascape.messages.R
-import dev.danascape.messages.feature.compose.ComposeActivity
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.model.Conversation
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.util.GlideApp
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.R
+import org.prauga.messages.feature.compose.ComposeActivity
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.util.GlideApp
+import org.prauga.messages.util.tryOrNull
 import javax.inject.Inject
 
 class QkChooserTargetService : ChooserTargetService() {

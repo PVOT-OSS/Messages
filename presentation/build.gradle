@@ -26,7 +26,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId 'dev.danascape.messages'
+        applicationId 'org.prauga.messages'
         minSdkVersion 23
         targetSdkVersion 33
         versionCode 2231
@@ -86,7 +86,7 @@ android {
     lint {
         abortOnError false
     }
-    namespace 'dev.danascape.messages'
+    namespace 'org.prauga.messages'
     buildFeatures {
         buildConfig true
         viewBinding true

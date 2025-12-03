@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.experiment
+package org.prauga.messages.experiment
 
 import android.content.Context
 import android.preference.PreferenceManager

@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.injection.android
+package org.prauga.messages.injection.android
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
-import dev.danascape.messages.feature.backup.RestoreBackupService
-import dev.danascape.messages.injection.scope.ActivityScope
-import dev.danascape.messages.receiver.SendSmsReceiver
-import dev.danascape.messages.service.AutoDeleteService
-import dev.danascape.messages.service.HeadlessSmsSendService
+import org.prauga.messages.feature.backup.RestoreBackupService
+import org.prauga.messages.injection.scope.ActivityScope
+import org.prauga.messages.receiver.SendSmsReceiver
+import org.prauga.messages.service.AutoDeleteService
+import org.prauga.messages.service.HeadlessSmsSendService
 
 @Module
 abstract class ServiceBuilderModule {

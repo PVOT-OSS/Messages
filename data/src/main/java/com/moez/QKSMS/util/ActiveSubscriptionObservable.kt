@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.util
+package org.prauga.messages.util
 
-import dev.danascape.messages.compat.SubscriptionInfoCompat
-import dev.danascape.messages.compat.SubscriptionManagerCompat
+import org.prauga.messages.compat.SubscriptionInfoCompat
+import org.prauga.messages.compat.SubscriptionManagerCompat
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable

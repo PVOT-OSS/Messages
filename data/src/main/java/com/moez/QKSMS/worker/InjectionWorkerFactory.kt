@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.worker
+package org.prauga.messages.worker
 
 import android.content.Context
 import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
-import dev.danascape.messages.interactor.ReceiveSms
-import dev.danascape.messages.repository.ScheduledMessageRepository
+import org.prauga.messages.interactor.ReceiveSms
+import org.prauga.messages.repository.ScheduledMessageRepository
 import javax.inject.Inject
 
 class InjectionWorkerFactory @Inject constructor(

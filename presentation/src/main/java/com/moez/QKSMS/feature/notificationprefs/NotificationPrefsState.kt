@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.notificationprefs
+package org.prauga.messages.feature.notificationprefs
 
 import android.os.Build
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.util.Preferences
 
 data class NotificationPrefsState(
     val threadId: Long = 0,

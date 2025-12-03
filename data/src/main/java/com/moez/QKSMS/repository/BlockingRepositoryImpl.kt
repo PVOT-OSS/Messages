@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
-import dev.danascape.messages.extensions.anyOf
-import dev.danascape.messages.model.BlockedNumber
-import dev.danascape.messages.util.PhoneNumberUtils
+import org.prauga.messages.extensions.anyOf
+import org.prauga.messages.model.BlockedNumber
+import org.prauga.messages.util.PhoneNumberUtils
 import io.realm.Realm
 import io.realm.RealmResults
 import javax.inject.Inject

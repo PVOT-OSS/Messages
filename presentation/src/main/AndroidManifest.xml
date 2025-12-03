@@ -207,7 +207,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="dev.danascape.messages.intent.action.ACTION_NOTIFY_DATASET_CHANGED" />
+                <action android:name="org.prauga.messages.intent.action.ACTION_NOTIFY_DATASET_CHANGED" />
             </intent-filter>
 
             <meta-data

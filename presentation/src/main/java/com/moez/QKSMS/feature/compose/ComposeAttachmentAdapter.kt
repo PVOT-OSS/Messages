@@ -16,21 +16,21 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose
+package org.prauga.messages.feature.compose
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import dev.danascape.messages.R
-import dev.danascape.messages.common.base.QkAdapter
-import dev.danascape.messages.common.base.QkViewHolder
-import dev.danascape.messages.common.util.extensions.getDisplayName
-import dev.danascape.messages.extensions.getName
-import dev.danascape.messages.feature.extensions.LoadBestIconIntoImageView
-import dev.danascape.messages.feature.extensions.loadBestIconIntoImageView
-import dev.danascape.messages.model.Attachment
+import org.prauga.messages.R
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.common.util.extensions.getDisplayName
+import org.prauga.messages.extensions.getName
+import org.prauga.messages.feature.extensions.LoadBestIconIntoImageView
+import org.prauga.messages.feature.extensions.loadBestIconIntoImageView
+import org.prauga.messages.model.Attachment
 import ezvcard.Ezvcard
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject

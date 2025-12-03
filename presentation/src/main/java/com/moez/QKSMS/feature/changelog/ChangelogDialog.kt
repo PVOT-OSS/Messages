@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.changelog
+package org.prauga.messages.feature.changelog
 
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
-import dev.danascape.messages.BuildConfig
-import dev.danascape.messages.R
-import dev.danascape.messages.databinding.ChangelogDialogBinding
-import dev.danascape.messages.feature.main.MainActivity
-import dev.danascape.messages.manager.ChangelogManager
+import org.prauga.messages.BuildConfig
+import org.prauga.messages.R
+import org.prauga.messages.databinding.ChangelogDialogBinding
+import org.prauga.messages.feature.main.MainActivity
+import org.prauga.messages.manager.ChangelogManager
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 

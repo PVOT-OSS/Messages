@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.app.Activity
 import android.view.LayoutInflater
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
-import dev.danascape.messages.common.base.QkAdapter
-import dev.danascape.messages.databinding.QkDialogBinding
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.databinding.QkDialogBinding
 
 class QkDialog(private val context: Activity) : AlertDialog(context) {
 

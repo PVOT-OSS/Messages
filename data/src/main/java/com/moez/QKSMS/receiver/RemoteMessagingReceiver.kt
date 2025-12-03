@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.receiver
+package org.prauga.messages.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.RemoteInput
 import dagger.android.AndroidInjection
-import dev.danascape.messages.compat.SubscriptionManagerCompat
-import dev.danascape.messages.interactor.MarkRead
-import dev.danascape.messages.interactor.SendMessage
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.repository.MessageRepository
+import org.prauga.messages.compat.SubscriptionManagerCompat
+import org.prauga.messages.interactor.MarkRead
+import org.prauga.messages.interactor.SendMessage
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
 import javax.inject.Inject
 
 class RemoteMessagingReceiver : BroadcastReceiver() {

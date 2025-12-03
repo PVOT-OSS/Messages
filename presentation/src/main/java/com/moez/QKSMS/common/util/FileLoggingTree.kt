@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import dev.danascape.messages.util.FileUtils
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.util.FileUtils
+import org.prauga.messages.util.Preferences
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.io.FileNotFoundException

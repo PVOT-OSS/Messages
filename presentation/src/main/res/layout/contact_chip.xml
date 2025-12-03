@@ -33,12 +33,12 @@
         android:backgroundTint="?attr/bubbleColor"
         android:orientation="horizontal">
 
-        <dev.danascape.messages.common.widget.AvatarView
+        <org.prauga.messages.common.widget.AvatarView
             android:id="@+id/avatar"
             android:layout_width="36dp"
             android:layout_height="36dp" />
 
-        <dev.danascape.messages.common.widget.QkTextView
+        <org.prauga.messages.common.widget.QkTextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

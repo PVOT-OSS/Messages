@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -25,12 +25,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.extensions.resolveThemeAttribute
-import dev.danascape.messages.common.util.extensions.resolveThemeColorStateList
-import dev.danascape.messages.common.util.extensions.setVisible
-import dev.danascape.messages.databinding.PreferenceViewBinding
-import dev.danascape.messages.injection.appComponent
+import org.prauga.messages.R
+import org.prauga.messages.common.util.extensions.resolveThemeAttribute
+import org.prauga.messages.common.util.extensions.resolveThemeColorStateList
+import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.databinding.PreferenceViewBinding
+import org.prauga.messages.injection.appComponent
 
 class PreferenceView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null

@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
-import dev.danascape.messages.model.Message
+import org.prauga.messages.model.Message
 import io.realm.Realm
 
 data class ParsedEmojiReaction(val emoji: String, val originalMessage: String, val isRemoval: Boolean = false)

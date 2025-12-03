@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import dev.danascape.messages.model.BackupFile
+import org.prauga.messages.model.BackupFile
 import io.reactivex.Observable
 
 interface BackupRepository {

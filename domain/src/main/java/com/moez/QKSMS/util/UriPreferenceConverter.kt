@@ -1,4 +1,4 @@
-package dev.danascape.messages.util
+package org.prauga.messages.util
 
 import android.net.Uri
 import com.f2prateek.rx.preferences2.Preference.Converter

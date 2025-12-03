@@ -1,4 +1,4 @@
-package dev.danascape.messages.util
+package org.prauga.messages.util
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass

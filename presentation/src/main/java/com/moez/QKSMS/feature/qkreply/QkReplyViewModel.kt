@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.qkreply
+package org.prauga.messages.feature.qkreply
 
 import android.telephony.SmsMessage
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkViewModel
-import dev.danascape.messages.compat.SubscriptionManagerCompat
-import dev.danascape.messages.extensions.asObservable
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.interactor.DeleteMessages
-import dev.danascape.messages.interactor.MarkRead
-import dev.danascape.messages.interactor.SendMessage
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.repository.MessageRepository
-import dev.danascape.messages.util.ActiveSubscriptionObservable
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkViewModel
+import org.prauga.messages.compat.SubscriptionManagerCompat
+import org.prauga.messages.extensions.asObservable
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.interactor.DeleteMessages
+import org.prauga.messages.interactor.MarkRead
+import org.prauga.messages.interactor.SendMessage
+import org.prauga.messages.model.Message
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
+import org.prauga.messages.util.ActiveSubscriptionObservable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.withLatestFrom

@@ -16,12 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.migration
+package org.prauga.messages.migration
 
 import android.annotation.SuppressLint
-import dev.danascape.messages.extensions.map
-import dev.danascape.messages.mapper.CursorToContactImpl
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.extensions.map
+import org.prauga.messages.mapper.CursorToContactImpl
+import org.prauga.messages.util.Preferences
 import io.realm.DynamicRealm
 import io.realm.DynamicRealmObject
 import io.realm.FieldAttribute

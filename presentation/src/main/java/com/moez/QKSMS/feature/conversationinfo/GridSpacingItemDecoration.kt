@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.conversationinfo
+package org.prauga.messages.feature.conversationinfo
 
 import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import dev.danascape.messages.common.util.extensions.dpToPx
-import dev.danascape.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoMedia
-import dev.danascape.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoRecipient
+import org.prauga.messages.common.util.extensions.dpToPx
+import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoMedia
+import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoRecipient
 
 class GridSpacingItemDecoration(
     private val adapter: ConversationInfoAdapter,

@@ -28,9 +28,9 @@
         android:shortcutShortLabel="@string/shortcut_compose_short_label">
 
         <intent
-            android:action="dev.danascape.messages.START"
-            android:targetClass="dev.danascape.messages.feature.compose.ComposeActivity"
-            android:targetPackage="dev.danascape.messages" />
+            android:action="org.prauga.messages.START"
+            android:targetClass="org.prauga.messages.feature.compose.ComposeActivity"
+            android:targetPackage="org.prauga.messages" />
 
         <categories android:name="android.shortcut.conversation" />
 

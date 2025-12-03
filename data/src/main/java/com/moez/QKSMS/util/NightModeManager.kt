@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.util
+package org.prauga.messages.util
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatDelegate
-import dev.danascape.messages.manager.WidgetManager
-import dev.danascape.messages.receiver.NightModeReceiver
+import org.prauga.messages.manager.WidgetManager
+import org.prauga.messages.receiver.NightModeReceiver
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

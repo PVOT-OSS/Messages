@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.contacts
+package org.prauga.messages.feature.contacts
 
-import dev.danascape.messages.feature.compose.editing.ComposeItem
-import dev.danascape.messages.model.Contact
+import org.prauga.messages.feature.compose.editing.ComposeItem
+import org.prauga.messages.model.Contact
 
 data class ContactsState(
     val query: String = "",

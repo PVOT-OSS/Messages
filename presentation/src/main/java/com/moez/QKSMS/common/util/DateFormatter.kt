@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.util
+package org.prauga.messages.common.util
 
 import android.content.Context
 import android.text.format.DateFormat
-import dev.danascape.messages.common.util.extensions.isSameDay
-import dev.danascape.messages.common.util.extensions.isSameWeek
-import dev.danascape.messages.common.util.extensions.isSameYear
+import org.prauga.messages.common.util.extensions.isSameDay
+import org.prauga.messages.common.util.extensions.isSameWeek
+import org.prauga.messages.common.util.extensions.isSameYear
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

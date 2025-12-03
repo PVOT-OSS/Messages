@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.base
+package org.prauga.messages.common.base
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
@@ -28,16 +28,16 @@ import androidx.core.view.iterator
 import androidx.lifecycle.Lifecycle
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.resolveThemeBoolean
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.extensions.Optional
-import dev.danascape.messages.extensions.asObservable
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.repository.ConversationRepository
-import dev.danascape.messages.repository.MessageRepository
-import dev.danascape.messages.util.PhoneNumberUtils
+import org.prauga.messages.R
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.resolveThemeBoolean
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.extensions.Optional
+import org.prauga.messages.extensions.asObservable
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
+import org.prauga.messages.util.PhoneNumberUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables

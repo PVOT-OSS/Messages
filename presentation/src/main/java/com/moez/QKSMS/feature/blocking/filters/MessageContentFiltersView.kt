@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.filters
+package org.prauga.messages.feature.blocking.filters
 
-import dev.danascape.messages.common.base.QkViewContract
-import dev.danascape.messages.model.MessageContentFilterData
+import org.prauga.messages.common.base.QkViewContract
+import org.prauga.messages.model.MessageContentFilterData
 import io.reactivex.Observable
 
 interface MessageContentFiltersView : QkViewContract<MessageContentFiltersState> {

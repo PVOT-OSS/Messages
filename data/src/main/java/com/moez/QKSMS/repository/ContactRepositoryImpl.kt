@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
 import android.content.Context
 import android.net.Uri
@@ -24,12 +24,12 @@ import android.provider.BaseColumns
 import android.provider.ContactsContract
 import android.provider.ContactsContract.CommonDataKinds.Email
 import android.provider.ContactsContract.CommonDataKinds.Phone
-import dev.danascape.messages.extensions.asFlowable
-import dev.danascape.messages.extensions.asObservable
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.model.Contact
-import dev.danascape.messages.model.ContactGroup
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.extensions.asFlowable
+import org.prauga.messages.extensions.asObservable
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.ContactGroup
+import org.prauga.messages.util.Preferences
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Single

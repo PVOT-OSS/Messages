@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -28,10 +28,10 @@ import androidx.core.content.contentValuesOf
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import com.squareup.moshi.Moshi
-import dev.danascape.messages.common.util.extensions.now
-import dev.danascape.messages.model.BackupFile
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.common.util.extensions.now
+import org.prauga.messages.model.BackupFile
+import org.prauga.messages.model.Message
+import org.prauga.messages.util.Preferences
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject

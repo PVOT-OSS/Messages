@@ -1,4 +1,4 @@
-package dev.danascape.messages.feature.blocking.manager
+package org.prauga.messages.feature.blocking.manager
 
 data class BlockingManagerState(
     val blockingManager: Int = 0,

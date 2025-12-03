@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.compat
+package org.prauga.messages.compat
 
 import android.content.Context
 import android.telephony.SubscriptionManager
-import dev.danascape.messages.manager.PermissionManager
+import org.prauga.messages.manager.PermissionManager
 import javax.inject.Inject
 
 class SubscriptionManagerCompat @Inject constructor(context: Context, private val permissions: PermissionManager) {

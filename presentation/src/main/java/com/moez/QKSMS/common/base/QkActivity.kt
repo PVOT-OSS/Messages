@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.base
+package org.prauga.messages.common.base
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -25,7 +25,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.util.Preferences
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import kotlinx.android.synthetic.main.toolbar.*

@@ -16,15 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.repository
+package org.prauga.messages.repository
 
 import android.content.Context
 import com.squareup.moshi.Moshi
-import dev.danascape.messages.extensions.insertOrUpdate
-import dev.danascape.messages.manager.KeyManager
-import dev.danascape.messages.model.EmojiReaction
-import dev.danascape.messages.model.Message
-import dev.danascape.messages.util.EmojiPatternStrings
+import org.prauga.messages.extensions.insertOrUpdate
+import org.prauga.messages.manager.KeyManager
+import org.prauga.messages.model.EmojiReaction
+import org.prauga.messages.model.Message
+import org.prauga.messages.util.EmojiPatternStrings
 import io.realm.Realm
 import io.realm.Sort
 import timber.log.Timber

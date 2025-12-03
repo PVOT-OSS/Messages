@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.themepicker
+package org.prauga.messages.feature.themepicker
 
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
-import dev.danascape.messages.R
+import org.prauga.messages.R
 import javax.inject.Inject
 
 class ThemePagerAdapter @Inject constructor(private val context: Context) : PagerAdapter() {

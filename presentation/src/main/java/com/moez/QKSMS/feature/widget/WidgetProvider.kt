@@ -17,7 +17,7 @@
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package dev.danascape.messages.feature.widget
+package org.prauga.messages.feature.widget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -29,14 +29,14 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.RemoteViews
 import dagger.android.AndroidInjection
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.getColorCompat
-import dev.danascape.messages.feature.compose.ComposeActivity
-import dev.danascape.messages.feature.main.MainActivity
-import dev.danascape.messages.manager.WidgetManager
-import dev.danascape.messages.receiver.StartActivityFromWidgetReceiver
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.R
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.getColorCompat
+import org.prauga.messages.feature.compose.ComposeActivity
+import org.prauga.messages.feature.main.MainActivity
+import org.prauga.messages.manager.WidgetManager
+import org.prauga.messages.receiver.StartActivityFromWidgetReceiver
+import org.prauga.messages.util.Preferences
 import timber.log.Timber
 import javax.inject.Inject
 import androidx.core.net.toUri

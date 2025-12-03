@@ -16,25 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.settings
+package org.prauga.messages.feature.settings
 
 import android.content.Context
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkPresenter
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.DateFormatter
-import dev.danascape.messages.common.util.extensions.makeToast
-import dev.danascape.messages.interactor.DeleteOldMessages
-import dev.danascape.messages.interactor.SyncMessages
-import dev.danascape.messages.manager.BillingManager
-import dev.danascape.messages.repository.MessageRepository
-import dev.danascape.messages.repository.SyncRepository
-import dev.danascape.messages.service.AutoDeleteService
-import dev.danascape.messages.util.NightModeManager
-import dev.danascape.messages.util.Preferences
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkPresenter
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.extensions.makeToast
+import org.prauga.messages.interactor.DeleteOldMessages
+import org.prauga.messages.interactor.SyncMessages
+import org.prauga.messages.manager.BillingManager
+import org.prauga.messages.repository.MessageRepository
+import org.prauga.messages.repository.SyncRepository
+import org.prauga.messages.service.AutoDeleteService
+import org.prauga.messages.util.NightModeManager
+import org.prauga.messages.util.Preferences
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking

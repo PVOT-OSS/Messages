@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.interactor
+package org.prauga.messages.interactor
 
 import android.content.Context
 import android.net.Uri
-import dev.danascape.messages.compat.TelephonyCompat
-import dev.danascape.messages.extensions.mapNotNull
-import dev.danascape.messages.model.Attachment
-import dev.danascape.messages.repository.ScheduledMessageRepository
+import org.prauga.messages.compat.TelephonyCompat
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.model.Attachment
+import org.prauga.messages.repository.ScheduledMessageRepository
 import io.reactivex.Flowable
 import io.reactivex.rxkotlin.toFlowable
 import io.realm.RealmList

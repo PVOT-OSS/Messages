@@ -16,14 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.blocking.numbers
+package org.prauga.messages.feature.blocking.numbers
 
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.common.base.QkPresenter
-import dev.danascape.messages.interactor.MarkUnblocked
-import dev.danascape.messages.repository.BlockingRepository
-import dev.danascape.messages.repository.ConversationRepository
+import org.prauga.messages.common.base.QkPresenter
+import org.prauga.messages.interactor.MarkUnblocked
+import org.prauga.messages.repository.BlockingRepository
+import org.prauga.messages.repository.ConversationRepository
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 

@@ -1,16 +1,16 @@
-package dev.danascape.messages.feature.scheduled
+package org.prauga.messages.feature.scheduled
 
 import android.content.Context
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.R
-import dev.danascape.messages.common.Navigator
-import dev.danascape.messages.common.base.QkViewModel
-import dev.danascape.messages.common.util.ClipboardUtils
-import dev.danascape.messages.interactor.DeleteScheduledMessages
-import dev.danascape.messages.interactor.SendScheduledMessage
-import dev.danascape.messages.manager.BillingManager
-import dev.danascape.messages.repository.ScheduledMessageRepository
+import org.prauga.messages.R
+import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.base.QkViewModel
+import org.prauga.messages.common.util.ClipboardUtils
+import org.prauga.messages.interactor.DeleteScheduledMessages
+import org.prauga.messages.interactor.SendScheduledMessage
+import org.prauga.messages.manager.BillingManager
+import org.prauga.messages.repository.ScheduledMessageRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers

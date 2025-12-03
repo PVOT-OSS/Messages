@@ -16,18 +16,18 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.compose.editing
+package org.prauga.messages.feature.compose.editing
 
 import android.content.Context
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.RelativeLayout
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.setBackgroundTint
-import dev.danascape.messages.common.util.extensions.setTint
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.model.Recipient
+import org.prauga.messages.R
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.setBackgroundTint
+import org.prauga.messages.common.util.extensions.setTint
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.model.Recipient
 import kotlinx.android.synthetic.main.contact_chip_detailed.view.*
 import javax.inject.Inject
 

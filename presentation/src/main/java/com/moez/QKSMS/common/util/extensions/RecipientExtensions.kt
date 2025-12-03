@@ -1,4 +1,4 @@
-package dev.danascape.messages.common.util.extensions
+package org.prauga.messages.common.util.extensions
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -17,12 +17,12 @@ import androidx.core.app.Person
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.widget.TextViewCompat
-import dev.danascape.messages.R
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.widget.QkTextView
-import dev.danascape.messages.model.Recipient
-import dev.danascape.messages.util.GlideApp
-import dev.danascape.messages.util.tryOrNull
+import org.prauga.messages.R
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.widget.QkTextView
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.util.GlideApp
+import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
 
 

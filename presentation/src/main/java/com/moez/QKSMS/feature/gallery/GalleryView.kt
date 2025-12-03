@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.gallery
+package org.prauga.messages.feature.gallery
 
-import dev.danascape.messages.common.base.QkView
-import dev.danascape.messages.model.MmsPart
+import org.prauga.messages.common.base.QkView
+import org.prauga.messages.model.MmsPart
 import io.reactivex.Observable
 
 interface GalleryView : QkView<GalleryState> {

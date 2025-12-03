@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.feature.plus
+package org.prauga.messages.feature.plus
 
-import dev.danascape.messages.common.base.QkView
-import dev.danascape.messages.manager.BillingManager
+import org.prauga.messages.common.base.QkView
+import org.prauga.messages.manager.BillingManager
 import io.reactivex.Observable
 
 interface PlusView : QkView<PlusState> {

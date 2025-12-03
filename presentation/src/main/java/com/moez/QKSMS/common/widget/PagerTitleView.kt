@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common.widget
+package org.prauga.messages.common.widget
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -27,13 +27,13 @@ import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.autoDisposable
-import dev.danascape.messages.common.util.Colors
-import dev.danascape.messages.common.util.extensions.forEach
-import dev.danascape.messages.common.util.extensions.resolveThemeColor
-import dev.danascape.messages.databinding.TabViewBinding
-import dev.danascape.messages.extensions.Optional
-import dev.danascape.messages.injection.appComponent
-import dev.danascape.messages.repository.ConversationRepository
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.extensions.forEach
+import org.prauga.messages.common.util.extensions.resolveThemeColor
+import org.prauga.messages.databinding.TabViewBinding
+import org.prauga.messages.extensions.Optional
+import org.prauga.messages.injection.appComponent
+import org.prauga.messages.repository.ConversationRepository
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject

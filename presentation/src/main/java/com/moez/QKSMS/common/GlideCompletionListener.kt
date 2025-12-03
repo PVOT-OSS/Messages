@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package dev.danascape.messages.common
+package org.prauga.messages.common
 
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
