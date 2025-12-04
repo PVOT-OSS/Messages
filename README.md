@@ -23,7 +23,7 @@ Messages is available to download from the official [github releases page](https
 alt="Download from GitHub releases" height="100" /></a>
 
 ## Chat
-You can chat with the community over at [@danascapeprojects:telegram](https://t.me/danascapeprojects)
+You can chat with the community over at [@Pvot_OS:telegram](https://t.me/pvot_os)
 
 ## Reporting bugs
 
