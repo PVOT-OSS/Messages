@@ -33,7 +33,7 @@ class FontProvider @Inject constructor(context: Context) {
     private val pendingCallbacks = ArrayList<(Typeface) -> Unit>()
 
     init {
-        ResourcesCompat.getFont(context, R.font.lato, object : ResourcesCompat.FontCallback() {
+        ResourcesCompat.getFont(context, R.font.sora, object : ResourcesCompat.FontCallback() {
             override fun onFontRetrievalFailed(reason: Int) {
                 Timber.w("Font retrieval failed: $reason")
             }
