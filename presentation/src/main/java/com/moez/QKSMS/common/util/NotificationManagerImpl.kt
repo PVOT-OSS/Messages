@@ -344,7 +344,7 @@ class NotificationManagerImpl @Inject constructor(
                 )
                 val copyOtpAction = NotificationCompat.Action.Builder(
                     R.drawable.ic_check_white_24dp,
-                    context.getString(R.string.notification_action_copy_otp),
+                    context.getString(R.string.notification_action_copy_otp, otpResult.code),
                     copyOtpPI
                 ).build()
 
