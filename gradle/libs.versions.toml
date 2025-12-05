@@ -29,6 +29,7 @@ okhttp-version = "4.10.0"
 photoview = "2.1.4"
 realm-android-adapters = "3.1.0"
 realm-annotations = "10.19.0"
+robolectric = "4.10.3"
 runner = "1.1.0-alpha3"
 rx-preferences = "2.0.0-RC3"
 rxandroid = "2.0.1"
@@ -106,6 +107,7 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 # Tests
 androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
 junit = { module = "junit:junit", version.ref = "junit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

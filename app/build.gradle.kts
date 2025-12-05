@@ -17,6 +17,10 @@ android {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
 }
 
 dependencies {
@@ -28,6 +32,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.androidx.runner)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.runner)
     androidTestImplementation(libs.mockito.android)
 }
