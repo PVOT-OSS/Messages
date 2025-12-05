@@ -70,6 +70,7 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
                         else -> "${"%.1f".format(bytes / 1000000000f)} GB"
                     }
                 }
+                .onErrorReturn { context.getString(R.string.compose_file_size_unavailable) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { size -> binding.size.text = size }

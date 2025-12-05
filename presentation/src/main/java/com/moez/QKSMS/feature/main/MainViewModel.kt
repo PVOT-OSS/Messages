@@ -172,15 +172,23 @@ class MainViewModel @Inject constructor(
             .autoDisposable(view.scope())
             .subscribe()
 
-        // If the default SMS state changes, reflect it in the State
         view.activityResumedIntent
             .filter { resumed -> resumed }
             .observeOn(Schedulers.io())
             .map { permissionManager.isDefaultSms() }
             .distinctUntilChanged()
-            .doOnNext { defaultSms -> newState { copy(defaultSms = defaultSms) } }
-            .autoDisposable(view.scope())
-            .subscribe()
+            .skip(1) // Skip initial state
+            .filter { it } // Only when becoming default (true)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { view.restartActivity() }
+
+        // Update state on every resume
+        view.activityResumedIntent
+            .filter { resumed -> resumed }
+            .observeOn(Schedulers.io())
+            .map { permissionManager.isDefaultSms() }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { defaultSms -> newState { copy(defaultSms = defaultSms) } }
 
         // If the SMS Permission state changes, reflect it in the State
         view.activityResumedIntent

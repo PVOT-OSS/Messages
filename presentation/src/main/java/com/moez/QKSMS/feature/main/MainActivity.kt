@@ -174,6 +174,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             }
         }
 
+        binding.changeDefaultSmsButton.setOnClickListener {
+            requestDefaultSms()
+        }
+
         toggle.syncState()
         title = ""
         binding.toolbar.setNavigationOnClickListener {
@@ -277,6 +281,17 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         if (state.hasError) {
             finish()
             return
+        }
+
+        if (!state.defaultSms) {
+            binding.notDefaultSmsView.setVisible(true)
+            binding.recyclerView.setVisible(false)
+            binding.empty.setVisible(false)
+            binding.searchPill.setVisible(false)
+            binding.compose.setVisible(false)
+            return
+        } else {
+            binding.notDefaultSmsView.setVisible(false)
         }
 
         val addContact = when (state.page) {
@@ -503,6 +518,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
     override fun requestDefaultSms() =
         navigator.showDefaultSmsDialog(this)
+
+    override fun restartActivity() {
+        finish()
+        startActivity(intent)
+    }
 
     override fun requestPermissions() {
         val permissions = mutableListOf(

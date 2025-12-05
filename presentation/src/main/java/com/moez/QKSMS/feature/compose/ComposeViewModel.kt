@@ -292,6 +292,12 @@ class ComposeViewModel @Inject constructor(
     override fun bindView(view: ComposeView) {
         super.bindView(view)
 
+        if (threadId != 0L && !permissionManager.isDefaultSms()) {
+            view.requestDefaultSms()
+            newState { copy(hasError = true) }
+            return
+        }
+
         val sharing = (sharedText.isNotEmpty() || sharedAttachments.isNotEmpty())
         if (shouldShowContacts) {
             shouldShowContacts = false
