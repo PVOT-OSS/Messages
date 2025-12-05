@@ -23,4 +23,11 @@ dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+
+    // Test dependencies
+    testImplementation(libs.junit)
+    testImplementation(libs.androidx.runner)
+    testImplementation(libs.mockito.core)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.mockito.android)
 }
