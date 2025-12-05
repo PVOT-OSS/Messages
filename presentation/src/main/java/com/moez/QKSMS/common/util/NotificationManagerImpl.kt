@@ -47,6 +47,7 @@ import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.manager.ShortcutManager
 import org.prauga.messages.mapper.CursorToPartImpl
 import org.prauga.messages.receiver.BlockThreadReceiver
+import org.prauga.messages.app.receiver.CopyOtpReceiver
 import org.prauga.messages.receiver.DeleteMessagesReceiver
 import org.prauga.messages.receiver.MarkArchivedReceiver
 import org.prauga.messages.receiver.MarkReadReceiver
@@ -324,6 +325,32 @@ class NotificationManagerImpl @Inject constructor(
                     }
                 }
                 .forEach { notification.addAction(it) }
+
+        // Detect OTP in the latest message and add copy button if found
+        val latestMessage = messages.lastOrNull()
+        if (latestMessage != null) {
+            val messageText = latestMessage.getText()
+            val otpDetector = OtpDetector()
+            val otpResult = otpDetector.detect(messageText)
+
+            if (otpResult.isOtp && otpResult.code != null) {
+                val copyOtpIntent = Intent(context, CopyOtpReceiver::class.java)
+                    .putExtra("otpCode", otpResult.code)
+                val copyOtpPI = PendingIntent.getBroadcast(
+                    context,
+                    threadId.toInt() + 1000,
+                    copyOtpIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                val copyOtpAction = NotificationCompat.Action.Builder(
+                    R.drawable.ic_check_white_24dp,
+                    context.getString(R.string.notification_action_copy_otp),
+                    copyOtpPI
+                ).build()
+
+                notification.addAction(copyOtpAction)
+            }
+        }
 
         if (prefs.qkreply.get()) {
             notification.priority = NotificationCompat.PRIORITY_DEFAULT
