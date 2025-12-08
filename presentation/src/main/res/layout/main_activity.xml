@@ -32,9 +32,8 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="@style/Toolbar.Frosted"
+            style="@style/Toolbar"
             android:animateLayoutChanges="true"
-            android:background="@drawable/bg_toolbar_frost"
             android:clickable="true"
             android:elevation="8dp"
             android:focusable="true"
@@ -231,8 +230,9 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:clipChildren="false"
-            android:clipToPadding="false"
+            android:clipToPadding="true"
             android:paddingTop="?attr/actionBarSize"
             android:paddingBottom="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
