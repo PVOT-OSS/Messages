@@ -16,7 +16,7 @@ When reporting a bug, please make sure to provide the following information:
 To do this, navigate to the release tab in this repository and click on releases. There are two types of releases in Messages. The first is the `Latest Release`.  This is the version that is distributed over the app stores. The other type is `Pre-Release`, which contains the latest features and may have bugs. To install this, download the apk from the release tab and install it on your phone. (Instructions can be found in the wiki for a more detailed explanation).
 Once you have done this, simply use the app as normal, and report any bugs you come across.
 ## Translate
-To translate this app join our [Weblate project](https://hosted.weblate.org/engage/quik/). From here you can begin editing strings on the web. We have a few guidelines for translations: 
+To translate this app join our [Weblate project](https://hosted.weblate.org/engage/pvot-messages/). From here you can begin editing strings on the web. We have a few guidelines for translations: 
 * Insert a backslash `\` before any apostrophe `'` or quotes `"`.
 * Use `` ` `` instead of single quotes.
 * Follow the punctuation in the English strings as much as possible. For example don't add a `.` when there is none in the original strings.
