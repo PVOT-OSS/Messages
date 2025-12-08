@@ -5,20 +5,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
-import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.ConversationInfoSettingsBinding
 import org.prauga.messages.databinding.ConversationMediaListItemBinding
 import org.prauga.messages.databinding.ConversationRecipientListItemBinding
 import org.prauga.messages.extensions.isVideo
-import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.*
+import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoMedia
+import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoRecipient
+import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoSettings
 import org.prauga.messages.util.GlideApp
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import javax.inject.Inject
 
 class ConversationInfoAdapter @Inject constructor(
@@ -52,11 +53,6 @@ class ConversationInfoAdapter @Inject constructor(
                         val item = getItem(adapterPosition) as? ConversationInfoRecipient
                         item?.value?.id?.run(recipientLongClicks::onNext)
                         true
-                    }
-
-                    binding.theme.setOnClickListener {
-                        val item = getItem(adapterPosition) as? ConversationInfoRecipient
-                        item?.value?.id?.run(themeClicks::onNext)
                     }
                 }
             }
@@ -100,9 +96,6 @@ class ConversationInfoAdapter @Inject constructor(
                 binding.address.setVisible(recipient.contact != null)
 
                 binding.add.setVisible(recipient.contact == null)
-
-                val theme = colors.theme(recipient)
-                binding.theme.setTint(theme.theme)
             }
 
             is ConversationInfoSettings -> {
