@@ -553,7 +553,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     }
 
     override fun showDeleteDialog(conversations: List<Long>) {
-        AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
             .setTitle(R.string.dialog_delete_title)
             .setMessage(
                 resources.getQuantityString(
@@ -568,7 +568,16 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 )
             }
             .setNegativeButton(R.string.button_cancel, null)
-            .show()
+            .create()
+
+        dialog.show()
+
+        theme.take(1)
+            .autoDisposable(scope())
+            .subscribe { theme ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+            }
     }
 
     override fun showRenameDialog(conversationName: String) =

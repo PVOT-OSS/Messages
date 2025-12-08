@@ -54,6 +54,7 @@
         <item name="bubbleColor">@color/bubbleDark</item>
         <item name="colorPrimary">@color/backgroundDark</item>
         <item name="colorPrimaryDark">@color/backgroundDark</item>
+        <item name="colorAccent">@color/tools_theme</item>
         <item name="selectableItemBackground">@drawable/ripple_dark</item>
         <item name="windowActionBar">false</item>
     </style>
