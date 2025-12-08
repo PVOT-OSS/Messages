@@ -94,7 +94,8 @@ class MainViewModel @Inject constructor(
                 onlyUnread = false
             )
         ),
-        currentFilter = ALL
+        currentFilter = ALL,
+        activeChip = MessageCategory.ALL
     )
 ) {
     private var lastArchivedThreadIds = listOf<Long>(0)
@@ -307,15 +308,33 @@ class MainViewModel @Inject constructor(
 
         view.filterSelectedIntent
             .distinctUntilChanged()
-            .withLatestFrom(state) { filter, state -> Pair(filter, state.page) }
             .autoDisposable(view.scope())
-            .subscribe { (filter, page) ->
-                val updatedPage = when (page) {
-                    is Inbox -> page.copy(data = inboxData(filter))
-                    is Archived -> page.copy(data = archivedData(filter))
-                    else -> page
+            .subscribe { chip ->
+                when (chip) {
+                    MessageCategory.ALL -> newState {
+                        copy(
+                            activeChip = chip,
+                            currentFilter = ALL,
+                            page = Inbox(data = inboxData(ALL))
+                        )
+                    }
+
+                    MessageCategory.UNREAD -> newState {
+                        copy(
+                            activeChip = chip,
+                            currentFilter = UNREAD,
+                            page = Inbox(data = inboxData(UNREAD))
+                        )
+                    }
+
+                    MessageCategory.ARCHIVED -> newState {
+                        copy(
+                            activeChip = chip,
+                            currentFilter = ALL,
+                            page = Archived(data = archivedData(ALL))
+                        )
+                    }
                 }
-                newState { copy(currentFilter = filter, page = updatedPage) }
             }
 
         view.activityResumedIntent
@@ -367,7 +386,12 @@ class MainViewModel @Inject constructor(
                             state.page is Inbox && state.page.selected > 0 -> view.clearSelection()
                             state.page is Archived && state.page.selected > 0 -> view.clearSelection()
                             state.page !is Inbox -> {
-                                newState { copy(page = Inbox(data = inboxData(currentFilter))) }
+                                newState {
+                                    copy(
+                                        page = Inbox(data = inboxData(currentFilter)),
+                                        activeChip = if (currentFilter == UNREAD) MessageCategory.UNREAD else MessageCategory.ALL
+                                    )
+                                }
                             }
                             else -> newState { copy(hasError = true) }
                         }
@@ -385,8 +409,20 @@ class MainViewModel @Inject constructor(
                 .distinctUntilChanged()
                 .doOnNext { drawerItem ->
                     when (drawerItem) {
-                        NavItem.INBOX -> newState { copy(page = Inbox(data = inboxData(currentFilter))) }
-                        NavItem.ARCHIVED -> newState { copy(page = Archived(data = archivedData(currentFilter))) }
+                        NavItem.INBOX -> newState {
+                            copy(
+                                page = Inbox(data = inboxData(currentFilter)),
+                                activeChip = if (currentFilter == UNREAD) MessageCategory.UNREAD else MessageCategory.ALL
+                            )
+                        }
+
+                        NavItem.ARCHIVED -> newState {
+                            copy(
+                                page = Archived(data = archivedData(ALL)),
+                                currentFilter = ALL,
+                                activeChip = MessageCategory.ARCHIVED
+                            )
+                        }
                         else -> Unit
                     }
                 }

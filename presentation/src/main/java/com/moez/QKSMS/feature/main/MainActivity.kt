@@ -107,8 +107,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override val composeIntent by lazy { binding.compose.clicks() }
     override val filterSelectedIntent by lazy {
         Observable.merge(
-            binding.filterAll.clicks().map { ConversationFilterType.ALL },
-            binding.filterUnread.clicks().map { ConversationFilterType.UNREAD }
+            binding.filterAll.clicks().map { MessageCategory.ALL },
+            binding.filterUnread.clicks().map { MessageCategory.UNREAD },
+            binding.filterArchived.clicks().map { MessageCategory.ARCHIVED }
         )
     }
     override val drawerToggledIntent: Observable<Boolean> by lazy {
@@ -422,8 +423,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             }
         }
 
-        binding.filterAll.isChecked = state.currentFilter == ConversationFilterType.ALL
-        binding.filterUnread.isChecked = state.currentFilter == ConversationFilterType.UNREAD
+        binding.filterAll.isChecked = state.activeChip == MessageCategory.ALL
+        binding.filterUnread.isChecked = state.activeChip == MessageCategory.UNREAD
+        binding.filterArchived.isChecked = state.activeChip == MessageCategory.ARCHIVED
 
         binding.drawer.inbox.isActivated = state.page is Inbox
         binding.drawer.archived.isActivated = state.page is Archived
@@ -704,16 +706,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_inbox -> {
-                    backPressedSubject.onNext(NavItem.INBOX)
-                    true
-                }
-
-                R.id.menu_archived -> {
-                    backPressedSubject.onNext(NavItem.ARCHIVED)
-                    true
-                }
-
                 R.id.menu_backup -> {
                     backPressedSubject.onNext(NavItem.BACKUP)
                     true

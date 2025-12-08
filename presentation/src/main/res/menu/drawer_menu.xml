@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_inbox"
-        android:icon="@drawable/ic_inbox_black_24dp"
-        android:title="@string/drawer_inbox" />
-
-    <item
-        android:id="@+id/menu_archived"
-        android:icon="@drawable/ic_archive_white_24dp"
-        android:title="@string/drawer_archived" />
-
-    <item
         android:id="@+id/menu_backup"
         android:icon="@drawable/ic_import_export_black_24dp"
         android:title="@string/backup_title" />

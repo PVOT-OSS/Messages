@@ -266,6 +266,18 @@
                 app:chipStrokeColor="@color/md_theme_outline"
                 app:chipStrokeWidth="1dp" />
 
+            <com.google.android.material.chip.Chip
+                android:id="@+id/filterArchived"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/drawer_archived"
+                android:textColor="@color/filter_chip_text"
+                app:chipBackgroundColor="@color/filter_chip_background"
+                app:chipCornerRadius="18dp"
+                app:chipStrokeColor="@color/md_theme_outline"
+                app:chipStrokeWidth="1dp" />
+
         </com.google.android.material.chip.ChipGroup>
 
         <androidx.recyclerview.widget.RecyclerView

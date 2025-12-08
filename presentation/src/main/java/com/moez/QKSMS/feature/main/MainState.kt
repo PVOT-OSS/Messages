@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.prauga.messages.feature.main
 
 import org.prauga.messages.model.Conversation
@@ -35,6 +36,7 @@ data class MainState(
     val contactPermission: Boolean = true,
     val notificationPermission: Boolean = true,
     val currentFilter: ConversationFilterType = ConversationFilterType.ALL,
+    val activeChip: MessageCategory = MessageCategory.ALL
 )
 
 sealed class MainPage
@@ -61,3 +63,4 @@ data class Archived(
 ) : MainPage()
 
 enum class ConversationFilterType { ALL, UNREAD }
+enum class MessageCategory { ALL, UNREAD, ARCHIVED }
