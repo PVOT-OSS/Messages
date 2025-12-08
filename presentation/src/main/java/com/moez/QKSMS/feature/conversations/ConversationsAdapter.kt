@@ -59,10 +59,10 @@ class ConversationsAdapter @Inject constructor(
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = ConversationListItemBinding.inflate(layoutInflater, parent, false)
 
+        binding.title.setTypeface(binding.title.typeface, Typeface.BOLD)
+
         if (viewType == 1) {
             val textColorPrimary = parent.context.resolveThemeColor(android.R.attr.textColorPrimary)
-
-            binding.title.setTypeface(binding.title.typeface, Typeface.BOLD)
 
             binding.snippet.setTypeface(binding.snippet.typeface, Typeface.BOLD)
             binding.snippet.setTextColor(textColorPrimary)
