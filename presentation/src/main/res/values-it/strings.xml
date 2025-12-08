@@ -409,4 +409,5 @@
         <item>LOL</item>
         <item>Va bene</item>
     </string-array>
+    <string name="menu_mms_part_share">Condividi</string>
 </resources>
