@@ -35,6 +35,11 @@
     <color name="ic_launcher">#ffffff</color>
     <color name="ic_launcher_background">#0A84FF</color>
 
+    <!-- Main Activity -->
+    <color name="home_filter_chip_selected">#6b5cee</color>
+    <color name="home_filter_chip_background">@android:color/white </color>
+    <color name="home_filter_chip_text_unselected">#1a1a1a</color>
+
     <!-- Swipe action color -->
     <color name="swipe_delete">#E53935</color>
 </resources>

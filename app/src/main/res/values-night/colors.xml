@@ -33,4 +33,9 @@
 
     <color name="ic_launcher">#1976e7</color>
     <color name="ic_launcher_background">#191919</color>
+
+    <!-- Main Activity -->
+    <color name="home_filter_chip_selected">#6b5cee</color>
+    <color name="home_filter_chip_background">#313131</color>
+    <color name="home_filter_chip_text_unselected">@android:color/white</color>
 </resources>
