@@ -24,7 +24,7 @@
     <string name="title_settings">پیکربندی</string>
     <string name="title_notification_prefs">آگاهنده‌ها</string>
     <string name="title_theme">پوسته</string>
-    <string name="title_conversations">جستجو در دریافتی …</string>
+    <string name="title_conversations">"جستجو در دریافتی "</string>
     <string name="title_compose">نام یا شماره‌ای را اندر نشانید</string>
     <string name="setup_skip">رد شدن</string>
     <string name="setup_next">ادامه</string>

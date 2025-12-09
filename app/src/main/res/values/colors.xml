@@ -29,8 +29,8 @@
     <color name="accent_highlight">#D6ECFF</color>
     <color name="ripple_color">#330A84FF</color>
 
-    <color name="frost_surface">#CCFFFFFF</color>
-    <color name="frost_stroke">#4DFFFFFF</color>
+    <color name="frost_surface">#ffffff</color>
+    <color name="frost_stroke">#e0e0e0</color>
 
     <color name="ic_launcher">#ffffff</color>
     <color name="ic_launcher_background">#0A84FF</color>

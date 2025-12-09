@@ -24,7 +24,7 @@
     <string name="title_settings">Configuración</string>
     <string name="title_notification_prefs">Notificaciones</string>
     <string name="title_theme">Tema</string>
-    <string name="title_conversations">Buscar mensaje…</string>
+    <string name="title_conversations">Buscar mensaje</string>
     <string name="title_compose">Escriba un nombre o número</string>
     <string name="setup_skip">Omitir</string>
     <string name="setup_next">Continuar</string>

@@ -28,8 +28,8 @@
     <color name="accent_highlight">#15324D</color>
     <color name="ripple_color">#226FB7FF</color>
 
-    <color name="frost_surface">#D012151A</color>
-    <color name="frost_stroke">#33FFFFFF</color>
+    <color name="frost_surface">#242424</color>
+    <color name="frost_stroke">#242424</color>
 
     <color name="ic_launcher">#1976e7</color>
     <color name="ic_launcher_background">#191919</color>

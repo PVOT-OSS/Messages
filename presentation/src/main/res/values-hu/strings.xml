@@ -24,7 +24,7 @@
     <string name="title_settings">Beállítások</string>
     <string name="title_notification_prefs">Értesítések</string>
     <string name="title_theme">Téma</string>
-    <string name="title_conversations">Keresés az üzenetek között…</string>
+    <string name="title_conversations">Keresés az üzenetek között</string>
     <string name="title_compose">Adj meg egy nevet vagy telefonszámot</string>
     <string name="setup_skip">Kihagy</string>
     <string name="setup_next">Tovább</string>

@@ -24,7 +24,7 @@
     <string name="title_settings">설정</string>
     <string name="title_notification_prefs">알림</string>
     <string name="title_theme">테마</string>
-    <string name="title_conversations">수신함에서 찾기...</string>
+    <string name="title_conversations">수신함에서 찾기</string>
     <string name="title_compose">이름 또는 전화번호 입력</string>
     <string name="setup_skip">건너뛰기</string>
     <string name="setup_next">계속</string>

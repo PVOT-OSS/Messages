@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
   ~
   ~ This file is part of QKSMS.
@@ -238,9 +237,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cVTopBar2"
+            app:selectionRequired="true"
             app:singleLine="true"
-            app:singleSelection="true"
-            app:selectionRequired="true">
+            app:singleSelection="true">
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/filterAll"
@@ -320,8 +319,10 @@
                     android:id="@+id/searchIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_marginStart="10dp"
                     android:contentDescription="@string/title_conversations"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/toolbarSearch"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_search"
@@ -335,6 +336,7 @@
                     android:hint="@string/title_conversations"
                     android:maxLines="1"
                     android:paddingStart="8dp"
+                    android:paddingEnd="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/searchIcon"

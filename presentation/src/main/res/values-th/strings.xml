@@ -24,7 +24,7 @@
     <string name="title_settings">การตั้งค่า</string>
     <string name="title_notification_prefs">การแจ้งเตือน</string>
     <string name="title_theme">รูปแบบการแสดงผล</string>
-    <string name="title_conversations">ค้นหากล่องขาเข้า…</string>
+    <string name="title_conversations">ค้นหากล่องขาเข้า</string>
     <string name="title_compose">พิมพ์ชื่อหรือหมายเลข</string>
     <string name="setup_skip">ข้าม</string>
     <string name="setup_next">ทำต่อ</string>

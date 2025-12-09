@@ -24,7 +24,7 @@
     <string name="title_settings">Paramètres</string>
     <string name="title_notification_prefs">Notifications</string>
     <string name="title_theme">Thème</string>
-    <string name="title_conversations">Rechercher dans les conversations…</string>
+    <string name="title_conversations">Rechercher dans les conversations</string>
     <string name="title_compose">Entrer un nom ou un numéro</string>
     <string name="title_qksms_plus" translatable="false">If you see this, send in an issue please!</string>
     <string name="setup_skip">Ignorer</string>
