@@ -133,7 +133,6 @@ class ConversationsAdapter @Inject constructor(
         disposables.add(disposable)
 
         binding.pinned.isVisible = conversation.pinned
-        binding.unread.setTint(theme)
     }
 
     override fun getItemId(position: Int): Long {

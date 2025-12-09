@@ -40,6 +40,8 @@
     <color name="home_filter_chip_background">@android:color/white </color>
     <color name="home_filter_chip_text_unselected">#1a1a1a</color>
 
+    <color name="unread_view_color">#3478f6</color>
+
     <!-- Swipe action color -->
     <color name="swipe_delete">#E53935</color>
 </resources>

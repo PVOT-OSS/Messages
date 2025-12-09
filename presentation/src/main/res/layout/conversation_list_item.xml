@@ -26,18 +26,18 @@
     android:nextFocusRight="@+id/compose"
     android:orientation="horizontal"
     android:paddingStart="12dp"
-    android:paddingTop="5dp"
+    android:paddingTop="8dp"
     android:paddingEnd="16dp"
     android:paddingBottom="0dp">
 
     <org.prauga.messages.common.widget.GroupAvatarView
         android:id="@+id/avatars"
-        android:layout_width="54dp"
-        android:layout_height="55dp"
+        android:layout_width="57dp"
+        android:layout_height="58dp"
         android:layout_gravity="top"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/unread"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
 
@@ -110,11 +110,12 @@
         android:paddingStart="8dp"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
+        android:translationX="-14dp"
+        android:translationY="-2dp"
         android:src="@drawable/circle"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/avatars"
+        app:layout_constraintTop_toTopOf="@id/avatars"
         tools:tint="@color/tools_theme"
         tools:visibility="visible" />
 
