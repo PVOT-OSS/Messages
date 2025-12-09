@@ -192,12 +192,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             homeIntent.onNext(Unit)
         }
 
-        binding.cVTopBar1.clicks()
-            .autoDisposable(scope())
-            .subscribe {
-                showEditMenu()
-            }
-
         binding.cVTopBar3.clicks()
             .autoDisposable(scope())
             .subscribe {
@@ -215,12 +209,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     // Hide
                     val translationY =
                         -binding.cVTopBar2.height.toFloat() - 8f * resources.displayMetrics.density
-                    binding.cVTopBar1.animate().translationY(translationY).setDuration(200).start()
                     binding.cVTopBar2.animate().translationY(translationY).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(translationY).setDuration(200).start()
                 } else if (dy < 0 && binding.cVTopBar2.translationY != 0f) {
                     // Show
-                    binding.cVTopBar1.animate().translationY(0f).setDuration(200).start()
                     binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
                     binding.cVTopBar3.animate().translationY(0f).setDuration(200).start()
                 }
@@ -270,7 +262,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 binding.toolbarSearch.setTextColor(primaryTextColor)
                 binding.toolbarSearch.setHintTextColor(secondaryTextColor)
 
-                binding.editText.setTextColor(primaryTextColor)
                 binding.messagesText.setTextColor(primaryTextColor)
                 binding.menuIcon.setTint(primaryTextColor)
 
@@ -329,7 +320,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         val hasSelection = selectedConversations > 0
         binding.toolbar.setVisible(hasSelection)
 
-        binding.cVTopBar1.setVisible(!hasSelection)
         binding.cVTopBar2.setVisible(!hasSelection)
         binding.cVTopBar3.setVisible(!hasSelection)
 
@@ -647,40 +637,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 binding.drawer.inbox.requestFocus()
         } else
             binding.toolbarSearch.requestFocus()
-    }
-
-    private fun showEditMenu() {
-        val popup = PopupMenu(this, binding.cVTopBar1, Gravity.START, 0, R.style.DrawerPopupMenu)
-        popup.menuInflater.inflate(R.menu.edit_menu, popup.menu)
-
-        try {
-            val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
-            fieldMPopup.isAccessible = true
-            val mPopup = fieldMPopup.get(popup)
-            mPopup.javaClass
-                .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-                .invoke(mPopup, true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val iconColor = resolveThemeColor(android.R.attr.textColorPrimary)
-        for (i in 0 until popup.menu.size) {
-            val menuItem = popup.menu[i]
-            menuItem.icon?.setTint(iconColor)
-        }
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_select_messages -> {
-                     conversationsAdapter.startSelectionMode()
-                    true
-                }
-                else -> false
-            }
-        }
-
-        popup.show()
     }
 
     private fun showDrawerMenu() {

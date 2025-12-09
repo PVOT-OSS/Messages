@@ -115,48 +115,10 @@
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cVTopBar1"
-            android:layout_width="60dp"
+            android:id="@+id/cVTopBar2"
+            android:layout_width="wrap_content"
             android:layout_height="52dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardBackgroundColor="@color/frost_surface"
-            app:cardCornerRadius="26dp"
-            app:cardElevation="6dp"
-            app:cardUseCompatPadding="false"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:strokeWidth="1dp">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <org.prauga.messages.common.widget.QkTextView
-                    android:id="@+id/editText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:text="Edit"
-                    android:textAlignment="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cVTopBar2"
-            android:layout_width="100dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:clickable="true"
@@ -165,7 +127,9 @@
             app:cardCornerRadius="26dp"
             app:cardUseCompatPadding="false"
             app:layout_constraintEnd_toStartOf="@id/cVTopBar3"
-            app:layout_constraintStart_toEndOf="@id/cVTopBar1"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:strokeWidth="0dp">
 
@@ -175,12 +139,12 @@
 
                 <org.prauga.messages.common.widget.QkTextView
                     android:id="@+id/messagesText"
-                    style="@style/TextPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:text="@string/app_name"
                     android:textAlignment="center"
+                    android:textSize="27sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
