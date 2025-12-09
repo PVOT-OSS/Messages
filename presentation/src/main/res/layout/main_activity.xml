@@ -252,7 +252,7 @@
             android:paddingTop="0dp"
             android:paddingBottom="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintBottom_toTopOf="@id/searchPill"
             app:layout_constraintTop_toBottomOf="@id/filterGroup"
             tools:listitem="@layout/conversation_list_item" />
 
