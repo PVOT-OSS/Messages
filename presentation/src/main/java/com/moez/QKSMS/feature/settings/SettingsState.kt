@@ -34,8 +34,6 @@ data class SettingsState(
     val deliveryEnabled: Boolean = false,
     val unreadAtTopEnabled: Boolean = false,
     val signature: String = "",
-    val textSizeSummary: String = "",
-    val textSizeId: Int = Preferences.TEXT_SIZE_NORMAL,
     val systemFontEnabled: Boolean = false,
     val showStt: Boolean = true,
     val showSttOffsetX: Float = Float.MIN_VALUE,

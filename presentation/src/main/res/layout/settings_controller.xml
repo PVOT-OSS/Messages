@@ -70,13 +70,6 @@
             tools:summary="9:00AM" />
 
         <org.prauga.messages.common.widget.PreferenceView
-            android:id="@+id/textSize"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/ic_format_size_black_24dp"
-            app:title="@string/settings_text_size_title" />
-
-        <org.prauga.messages.common.widget.PreferenceView
             android:id="@+id/systemFont"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

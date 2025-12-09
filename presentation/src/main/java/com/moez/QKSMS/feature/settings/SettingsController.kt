@@ -69,7 +69,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     @Inject lateinit var context: Context
     @Inject lateinit var colors: Colors
     @Inject lateinit var nightModeDialog: QkDialog
-    @Inject lateinit var textSizeDialog: QkDialog
     @Inject lateinit var sendDelayDialog: QkDialog
     @Inject lateinit var mmsSizeDialog: QkDialog
     @Inject lateinit var messageLinkHandlingDialog: QkDialog
@@ -88,7 +87,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private lateinit var delivery: PreferenceView
     private lateinit var unreadAtTop: PreferenceView
     private lateinit var signature: PreferenceView
-    private lateinit var textSize: PreferenceView
     private lateinit var systemFont: PreferenceView
     private lateinit var showStt: PreferenceView
     private lateinit var unicode: PreferenceView
@@ -148,7 +146,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         delivery = view.findViewById(R.id.delivery)
         unreadAtTop = view.findViewById(R.id.unreadAtTop)
         signature = view.findViewById(R.id.signature)
-        textSize = view.findViewById(R.id.textSize)
         systemFont = view.findViewById(R.id.systemFont)
         showStt = view.findViewById(R.id.showStt)
         unicode = view.findViewById(R.id.unicode)
@@ -170,7 +167,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
                     .mapIndexed { index, title -> MenuItem(title, index) }
                     .drop(1)
         }
-        textSizeDialog.adapter.setData(R.array.text_sizes)
         sendDelayDialog.adapter.setData(R.array.delayed_sending_labels)
         mmsSizeDialog.adapter.setData(R.array.mms_sizes, R.array.mms_sizes_ids)
         messageLinkHandlingDialog.adapter.setData(R.array.messageLinkHandlings, R.array.messageLinkHandling_ids)
@@ -200,8 +196,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     override fun nightStartSelected(): Observable<Pair<Int, Int>> = startTimeSelectedSubject
 
     override fun nightEndSelected(): Observable<Pair<Int, Int>> = endTimeSelectedSubject
-
-    override fun textSizeSelected(): Observable<Int> = textSizeDialog.adapter.menuItemClicks
 
     override fun sendDelaySelected(): Observable<Int> = sendDelayDialog.adapter.menuItemClicks
 
@@ -235,9 +229,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
         signature.summary = state.signature.takeIf { it.isNotBlank() }
                 ?: context.getString(R.string.settings_signature_summary)
-
-        textSize.summary = state.textSizeSummary
-        textSizeDialog.adapter.selectedItem = state.textSizeId
 
         systemFont.checkbox()?.isChecked = state.systemFontEnabled
 
@@ -298,8 +289,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
             endTimeSelectedSubject.onNext(Pair(newHour, newMinute))
         }, hour, minute, DateFormat.is24HourFormat(activity)).show()
     }
-
-    override fun showTextSizePicker() = textSizeDialog.show(activity!!)
 
     override fun showDelayDurationDialog() = sendDelayDialog.show(activity!!)
 

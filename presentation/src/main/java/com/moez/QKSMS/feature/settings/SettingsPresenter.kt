@@ -100,12 +100,6 @@ class SettingsPresenter @Inject constructor(
         disposables += prefs.signature.asObservable()
                 .subscribe { signature -> newState { copy(signature = signature) } }
 
-        val textSizeLabels = context.resources.getStringArray(R.array.text_sizes)
-        disposables += prefs.textSize.asObservable()
-                .subscribe { textSize ->
-                    newState { copy(textSizeSummary = textSizeLabels[textSize], textSizeId = textSize) }
-                }
-
         disposables += prefs.systemFont.asObservable()
             .subscribe { enabled -> newState { copy(systemFontEnabled = enabled) } }
 
@@ -192,8 +186,6 @@ class SettingsPresenter @Inject constructor(
 
                         R.id.signature -> view.showSignatureDialog(prefs.signature.get())
 
-                        R.id.textSize -> view.showTextSizePicker()
-
                         R.id.systemFont -> prefs.systemFont.set(!prefs.systemFont.get())
 
                         R.id.showStt -> {
@@ -255,10 +247,6 @@ class SettingsPresenter @Inject constructor(
         view.nightEndSelected()
                 .autoDisposable(view.scope())
                 .subscribe { nightModeManager.setNightEnd(it.first, it.second) }
-
-        view.textSizeSelected()
-                .autoDisposable(view.scope())
-                .subscribe(prefs.textSize::set)
 
         view.sendDelaySelected()
                 .withLatestFrom(billingManager.upgradeStatus) { duration, upgraded ->
