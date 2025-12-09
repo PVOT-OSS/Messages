@@ -22,7 +22,7 @@ import android.net.Uri
 import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.SyncRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class SyncMessage @Inject constructor(

@@ -19,8 +19,8 @@
 package org.prauga.messages.feature.qkreply
 
 import android.telephony.SmsMessage
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -34,12 +34,12 @@ import org.prauga.messages.model.Message
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.ActiveSubscriptionObservable
-import io.reactivex.rxkotlin.Observables
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.withLatestFrom
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.kotlin.Observables
+import io.reactivex.rxjava3.kotlin.plusAssign
+import io.reactivex.rxjava3.kotlin.withLatestFrom
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import io.realm.RealmResults
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -107,13 +107,13 @@ class QkReplyViewModel @Inject constructor(
             .take(1)  // only update saved draft to ui once
             .map { conversation -> conversation.draft }
             .distinctUntilChanged()
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { draft -> view.setDraft(draft) }
 
         // Mark read
         view.menuItemIntent
                 .filter { id -> id == R.id.read }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe {
                     markRead.execute(listOf(threadId)) { newState { copy(hasError = true) } }
                 }
@@ -127,7 +127,7 @@ class QkReplyViewModel @Inject constructor(
                     ?: conversation.recipients.firstOrNull()?.address  // first recipient in convo
             }
             .doOnNext { navigator.makePhoneCall(it) }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { newState { copy(hasError = true) } }
 
         // Show all messages
@@ -135,7 +135,7 @@ class QkReplyViewModel @Inject constructor(
                 .filter { id -> id == R.id.expand }
                 .map { messageRepo.getMessages(threadId) }
                 .doOnNext(messages::onNext)
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { newState { copy(expanded = true) } }
 
         // Show unread messages only
@@ -143,7 +143,7 @@ class QkReplyViewModel @Inject constructor(
                 .filter { id -> id == R.id.collapse }
                 .map { messageRepo.getUnreadMessages(threadId) }
                 .doOnNext(messages::onNext)
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { newState { copy(expanded = false) } }
 
         // Delete new messages
@@ -152,21 +152,21 @@ class QkReplyViewModel @Inject constructor(
                 .observeOn(Schedulers.io())
                 .map { messageRepo.getUnreadMessages(threadId).map { it.id } }
                 .map { messages -> DeleteMessages.Params(messages, threadId) }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { deleteMessages.execute(it) { newState { copy(hasError = true) } } }
 
         // View conversation
         view.menuItemIntent
                 .filter { id -> id == R.id.view }
                 .doOnNext { navigator.showConversation(threadId) }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { newState { copy(hasError = true) } }
 
         // Enable the send button when there is text input into the new message body or there's
         // an attachment, disable otherwise
         view.textChangedIntent
                 .map { text -> text.isNotBlank() }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { canSend -> newState { copy(canSend = canSend) } }
 
         // Show the remaining character counter when necessary
@@ -184,7 +184,7 @@ class QkReplyViewModel @Inject constructor(
                     }
                 }
                 .distinctUntilChanged()
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { remaining -> newState { copy(remaining = remaining) } }
 
         // Update the draft whenever the text is changed
@@ -192,7 +192,7 @@ class QkReplyViewModel @Inject constructor(
                 .debounce(100, TimeUnit.MILLISECONDS)
                 .map { draft -> draft.toString() }
                 .observeOn(Schedulers.io())
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { draft -> conversationRepo.saveDraft(threadId, draft) }
 
         // Toggle to the next sim slot
@@ -207,7 +207,7 @@ class QkReplyViewModel @Inject constructor(
                     }
                     newState { copy(subscription = subscription) }
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe()
 
         // Send a message when the send button is clicked, and disable editing mode if it's enabled
@@ -223,7 +223,7 @@ class QkReplyViewModel @Inject constructor(
                 .doOnNext {
                     markRead.execute(listOf(threadId)) { newState { copy(hasError = true) } }
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe()
     }
 

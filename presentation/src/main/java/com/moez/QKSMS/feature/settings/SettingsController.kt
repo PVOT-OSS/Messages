@@ -28,10 +28,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.RouterTransaction
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.view.longClicks
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.view.longClicks
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.BuildConfig
 import org.prauga.messages.R
 import org.prauga.messages.common.MenuItem
@@ -51,9 +51,9 @@ import org.prauga.messages.feature.themepicker.ThemePickerController
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.SyncRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -126,7 +126,7 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         layoutRes = R.layout.settings_controller
 
         colors.themeObservable()
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe { activity?.recreate() }
     }
 

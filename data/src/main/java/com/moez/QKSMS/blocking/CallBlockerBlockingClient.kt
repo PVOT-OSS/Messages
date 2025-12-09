@@ -25,8 +25,8 @@ import android.net.Uri
 import androidx.core.database.getStringOrNull
 import org.prauga.messages.common.util.extensions.isInstalled
 import org.prauga.messages.extensions.map
-import io.reactivex.Completable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
 import timber.log.Timber
 import javax.inject.Inject
 

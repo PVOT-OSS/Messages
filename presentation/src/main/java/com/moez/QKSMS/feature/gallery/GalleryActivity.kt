@@ -37,9 +37,9 @@ import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.GalleryActivityBinding
 import org.prauga.messages.model.MmsPart
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate),

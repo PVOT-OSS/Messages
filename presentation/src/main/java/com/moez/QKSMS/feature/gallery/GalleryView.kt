@@ -20,7 +20,7 @@ package org.prauga.messages.feature.gallery
 
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.model.MmsPart
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface GalleryView : QkView<GalleryState> {
 

@@ -20,7 +20,7 @@ package org.prauga.messages.common.util.extensions
 
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.Subject
 
 fun AlertDialog.Builder.setPositiveButton(@StringRes textId: Int, subject: Subject<Unit>): AlertDialog.Builder {
     return setPositiveButton(textId) { _, _ -> subject.onNext(Unit) }

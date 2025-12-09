@@ -31,11 +31,6 @@ android {
         version = release(36)
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
     defaultConfig {
         minSdk = 23
     }
@@ -62,11 +57,10 @@ dependencies {
 
     // coroutines
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.rx2)
+    implementation(libs.kotlinx.coroutines.rx3)
     implementation(libs.kotlinx.coroutines.reactive)
 
     implementation(libs.androidx.ktx)
-    implementation(libs.rx.preferences)
     implementation(libs.timber)
     implementation(libs.kotlin.stdlib)
 

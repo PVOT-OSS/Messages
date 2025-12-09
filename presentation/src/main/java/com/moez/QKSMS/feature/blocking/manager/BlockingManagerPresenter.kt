@@ -1,8 +1,8 @@
 package org.prauga.messages.feature.blocking.manager
 
 import android.content.Context
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.blocking.CallBlockerBlockingClient
@@ -13,10 +13,10 @@ import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkPresenter
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.plusAssign
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class BlockingManagerPresenter @Inject constructor(
@@ -46,26 +46,26 @@ class BlockingManagerPresenter @Inject constructor(
         view.activityResumed()
                 .map { callBlocker.isAvailable() }
                 .distinctUntilChanged()
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { available -> newState { copy(callBlockerInstalled = available) } }
 
         view.activityResumed()
                 .map { callControl.isAvailable() }
                 .distinctUntilChanged()
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { available -> newState { copy(callControlInstalled = available) } }
 
         view.activityResumed()
                 .map { shouldIAnswer.isAvailable() }
                 .distinctUntilChanged()
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { available -> newState { copy(siaInstalled = available) } }
 
         view.qksmsClicked()
                 .observeOn(Schedulers.io())
                 .map { getAddressesToBlock(qksms) }
                 .switchMap { numbers -> qksms.block(numbers).andThen(Observable.just(Unit)) } // Hack
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe {
                     prefs.blockingManager.set(Preferences.BLOCKING_MANAGER_QKSMS)
                 }
@@ -80,7 +80,7 @@ class BlockingManagerPresenter @Inject constructor(
                     val enabled = prefs.blockingManager.get() == Preferences.BLOCKING_MANAGER_CB
                     installed && !enabled
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe {
                     prefs.blockingManager.set(Preferences.BLOCKING_MANAGER_CB)
                 }
@@ -110,7 +110,7 @@ class BlockingManagerPresenter @Inject constructor(
                 .observeOn(Schedulers.io())
                 .map { getAddressesToBlock(callControl) } // This sucks. Can't wait to use coroutines
                 .switchMap { numbers -> callControl.block(numbers).andThen(Observable.just(Unit)) } // Hack
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe {
                     callControl.shouldBlock("callcontrol").blockingGet()
                     prefs.blockingManager.set(Preferences.BLOCKING_MANAGER_CC)
@@ -126,7 +126,7 @@ class BlockingManagerPresenter @Inject constructor(
                     val enabled = prefs.blockingManager.get() == Preferences.BLOCKING_MANAGER_SIA
                     installed && !enabled
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe {
                     prefs.blockingManager.set(Preferences.BLOCKING_MANAGER_SIA)
                 }

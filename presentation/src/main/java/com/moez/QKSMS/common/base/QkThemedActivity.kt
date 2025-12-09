@@ -30,8 +30,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.iterator
 import androidx.lifecycle.Lifecycle
 import androidx.viewbinding.ViewBinding
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.resolveThemeBoolean
@@ -42,11 +42,11 @@ import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.PhoneNumberUtils
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.Observables
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.Observables
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -120,7 +120,7 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
         Observable.merge(triggers.map { it.asObservable().skip(1) })
             .debounce(400, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { recreate() }
 
         // We can only set light nav bar on API 27 in attrs, but we can do it in API 26 here
@@ -160,7 +160,7 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
 
                 menuItem.icon = menuItem.icon?.apply { setTint(tint) }
             }
-        }.autoDisposable(scope(Lifecycle.Event.ON_DESTROY)).subscribe()
+        }.autoDispose(scope(Lifecycle.Event.ON_DESTROY)).subscribe()
     }
 
     open fun getColoredMenuItems(): List<Int> {

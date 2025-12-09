@@ -24,9 +24,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProviders
-import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.editorActions
-import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.widget.editorActions
+import com.jakewharton.rxbinding4.widget.textChanges
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.ViewModelFactory
@@ -40,9 +40,9 @@ import org.prauga.messages.feature.compose.editing.ComposeItem
 import org.prauga.messages.feature.compose.editing.ComposeItemAdapter
 import org.prauga.messages.feature.compose.editing.PhoneNumberAction
 import org.prauga.messages.feature.compose.editing.PhoneNumberPickerAdapter
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class ContactsActivity :

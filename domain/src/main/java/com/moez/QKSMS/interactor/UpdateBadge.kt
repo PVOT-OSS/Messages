@@ -20,7 +20,7 @@ package org.prauga.messages.interactor
 
 import org.prauga.messages.manager.ShortcutManager
 import org.prauga.messages.manager.WidgetManager
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class UpdateBadge @Inject constructor(

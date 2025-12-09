@@ -51,12 +51,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.widget.textChanges
 import com.moez.QKSMS.common.QkMediaPlayer
-import com.uber.autodispose.ObservableSubscribeProxy
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.ObservableSubscribeProxy
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
@@ -78,12 +78,12 @@ import org.prauga.messages.feature.compose.editing.ChipsAdapter
 import org.prauga.messages.feature.contacts.ContactsActivity
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -162,7 +162,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         return Observable.interval(500, TimeUnit.MILLISECONDS)
             .subscribeOn(Schedulers.single())
             .observeOn(AndroidSchedulers.mainThread())
-            .autoDisposable(scope())
+            .autoDispose(scope())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -219,13 +219,13 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
                     messageAdapter.theme = it
                 }
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe()
 
             // context menu registration for message parts
             messagePartContextMenuRegistrar
                 .mapNotNull { it }
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe { registerForContextMenu(it) }
 
             // start/stop audio message recording
@@ -236,7 +236,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             recordAudioChronometer
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe {
                     if (it) {
                         binding.audioMsgDuration.base = SystemClock.elapsedRealtime()
@@ -256,7 +256,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             recordAudioMsgRecordVisible
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe {
                     binding.audioMsgRecord.isVisible = it
                     binding.audioMsgDuration.isVisible =
@@ -267,7 +267,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             recordAudioPlayerVisible
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe {
                     binding.audioMsgPlayerBackground.isVisible = it
                     recordAudioPlayerConfigUI.onNext(QkMediaPlayer.PlayingState.Stopped)
@@ -276,7 +276,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             recordAudioPlayerConfigUI
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe {
                     when (it) {
                         QkMediaPlayer.PlayingState.Playing -> {

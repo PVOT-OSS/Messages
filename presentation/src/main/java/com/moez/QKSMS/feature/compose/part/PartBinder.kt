@@ -22,8 +22,8 @@ import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 
 abstract class PartBinder {
 

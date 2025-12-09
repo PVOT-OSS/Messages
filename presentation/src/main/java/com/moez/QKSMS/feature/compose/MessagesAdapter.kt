@@ -38,7 +38,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.net.toUri
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import com.moez.QKSMS.common.QkMediaPlayer
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
@@ -70,9 +70,9 @@ import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
 import org.prauga.messages.databinding.MessageListItemInBinding
 import org.prauga.messages.databinding.MessageListItemOutBinding
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import io.realm.RealmResults
 import java.util.*
 import java.util.concurrent.TimeUnit

@@ -1,8 +1,8 @@
 package org.prauga.messages.feature.scheduled
 
 import android.content.Context
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -11,9 +11,9 @@ import org.prauga.messages.interactor.DeleteScheduledMessages
 import org.prauga.messages.interactor.SendScheduledMessage
 import org.prauga.messages.manager.BillingManager
 import org.prauga.messages.repository.ScheduledMessageRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.kotlin.plusAssign
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -42,13 +42,13 @@ class ScheduledViewModel @Inject constructor(
         // update the state when the message selected count changes
         view.messagesSelectedIntent
             .map { selection -> selection.size }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { newState { copy(selectedMessages = it) } }
 
         // toggle select all / select none
         view.optionsItemIntent
             .filter { it == R.id.select_all }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.toggleSelectAll() }
 
         // show the delete message dialog if one or more messages selected
@@ -56,7 +56,7 @@ class ScheduledViewModel @Inject constructor(
             .filter { it == R.id.delete }
             .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages ->
                 selectedMessages }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 val ids = it.mapNotNull(scheduledMessageRepo::getScheduledMessage)
                     .map { it.id }
@@ -69,7 +69,7 @@ class ScheduledViewModel @Inject constructor(
             .filter { it == R.id.copy }
             .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages ->
                 selectedMessages }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 val messages = it
                     .mapNotNull(scheduledMessageRepo::getScheduledMessage)
@@ -91,7 +91,7 @@ class ScheduledViewModel @Inject constructor(
             .filter { it == R.id.send_now }
             .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages ->
                 selectedMessages }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.showSendNowDialog(it) }
 
         // edit message menu item selected
@@ -99,14 +99,14 @@ class ScheduledViewModel @Inject constructor(
             .filter { it == R.id.edit_message }
             .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessage ->
                 selectedMessage.first() }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.showEditMessageDialog(it) }
 
         // delete message(s) (fired after the confirmation dialog has been shown)
         view.deleteScheduledMessages
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 deleteScheduledMessagesInteractor.execute(it)
                 view.clearSelection()
@@ -116,7 +116,7 @@ class ScheduledViewModel @Inject constructor(
         view.sendScheduledMessages
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 it.forEach { sendScheduledMessageInteractor.execute(it) }
                 view.clearSelection()
@@ -127,7 +127,7 @@ class ScheduledViewModel @Inject constructor(
         view.editScheduledMessage
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 scheduledMessageRepo.getScheduledMessage(it)?.let {
                     navigator.showCompose(it)
@@ -142,7 +142,7 @@ class ScheduledViewModel @Inject constructor(
             .map { }
             .mergeWith(view.backPressedIntent)
             .withLatestFrom(state) { _, state -> state }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 when {
                     (it.selectedMessages > 0) -> view.clearSelection()
@@ -151,14 +151,14 @@ class ScheduledViewModel @Inject constructor(
             }
 
         view.composeIntent
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 navigator.showCompose(mode = "scheduling")
                 view.clearSelection()
             }
 
         view.upgradeIntent
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { navigator.showQksmsPlusActivity("schedule_fab") }
     }
 

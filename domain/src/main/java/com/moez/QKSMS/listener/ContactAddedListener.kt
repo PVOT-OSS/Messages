@@ -18,7 +18,7 @@
  */
 package org.prauga.messages.listener
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface ContactAddedListener {
 

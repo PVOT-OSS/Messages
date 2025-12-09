@@ -39,8 +39,8 @@ import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.util.GlideApp
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import java.util.*
 import javax.inject.Inject
 

@@ -27,7 +27,7 @@ import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.interactor.MarkBlocked
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 

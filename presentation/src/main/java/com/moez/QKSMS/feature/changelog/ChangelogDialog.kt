@@ -25,8 +25,8 @@ import org.prauga.messages.R
 import org.prauga.messages.databinding.ChangelogDialogBinding
 import org.prauga.messages.feature.main.MainActivity
 import org.prauga.messages.manager.ChangelogManager
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 
 class ChangelogDialog(activity: MainActivity) {
 

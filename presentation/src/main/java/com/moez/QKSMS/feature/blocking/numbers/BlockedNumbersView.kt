@@ -19,7 +19,7 @@
 package org.prauga.messages.feature.blocking.numbers
 
 import org.prauga.messages.common.base.QkViewContract
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface BlockedNumbersView : QkViewContract<BlockedNumbersState> {
 

@@ -19,7 +19,7 @@
 package org.prauga.messages.interactor
 
 import org.prauga.messages.repository.MessageRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class MarkSeen @Inject constructor(private val messageRepo: MessageRepository) : Interactor<Long>() {

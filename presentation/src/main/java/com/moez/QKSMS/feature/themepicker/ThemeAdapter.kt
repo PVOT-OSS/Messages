@@ -35,8 +35,8 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.ThemeListItemBinding
 import org.prauga.messages.databinding.ThemePaletteListItemBinding
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class ThemeAdapter @Inject constructor(

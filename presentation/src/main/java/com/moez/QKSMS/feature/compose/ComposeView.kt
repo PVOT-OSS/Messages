@@ -28,8 +28,8 @@ import org.prauga.messages.common.base.QkView
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
-import io.reactivex.Observable
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.Subject
 
 interface ComposeView : QkView<ComposeState> {
 

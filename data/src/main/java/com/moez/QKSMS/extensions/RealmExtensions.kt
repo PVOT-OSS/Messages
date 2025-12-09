@@ -18,7 +18,8 @@
  */
 package org.prauga.messages.extensions
 
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
+import io.realm.RealmChangeListener
 import io.realm.Realm
 import io.realm.RealmModel
 import io.realm.RealmObject
@@ -37,13 +38,29 @@ fun <T : RealmModel> Collection<T>.insertOrUpdate() {
     realm.close()
 }
 
-fun <T : RealmObject> T.asObservable(): Observable<T> {
-    return asFlowable<T>().toObservable()
-}
+fun <T : RealmObject> T.asObservable(): Observable<T> =
+    Observable.create { emitter ->
+        val listener = RealmChangeListener<T> { updated ->
+            if (!emitter.isDisposed) {
+                emitter.onNext(updated)
+            }
+        }
+        addChangeListener(listener)
+        emitter.setCancellable { removeChangeListener(listener) }
+        emitter.onNext(this)
+    }
 
-fun <T : RealmObject> RealmResults<T>.asObservable(): Observable<RealmResults<T>> {
-    return asFlowable().toObservable()
-}
+fun <T : RealmObject> RealmResults<T>.asObservable(): Observable<RealmResults<T>> =
+    Observable.create { emitter ->
+        val listener = RealmChangeListener<RealmResults<T>> { results ->
+            if (!emitter.isDisposed) {
+                emitter.onNext(results)
+            }
+        }
+        addChangeListener(listener)
+        emitter.setCancellable { removeChangeListener(listener) }
+        emitter.onNext(this)
+    }
 
 fun <T : RealmObject> RealmQuery<T>.anyOf(fieldName: String, values: LongArray): RealmQuery<T> {
     return when (values.isEmpty()) {

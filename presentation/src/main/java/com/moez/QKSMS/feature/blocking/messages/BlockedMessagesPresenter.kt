@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.blocking.messages
 
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.common.Navigator
@@ -41,7 +41,7 @@ class BlockedMessagesPresenter @Inject constructor(
         super.bindIntents(view)
 
         view.menuReadyIntent
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { newState { copy() } }
 
         view.optionsItemIntent
@@ -57,22 +57,22 @@ class BlockedMessagesPresenter @Inject constructor(
                     }
 
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe()
 
         view.confirmDeleteIntent
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { conversations ->
                     deleteConversations.execute(conversations)
                     view.clearSelection()
                 }
 
         view.conversationClicks
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { threadId -> navigator.showConversation(threadId) }
 
         view.selectionChanges
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { selection -> newState { copy(selected = selection.size) } }
 
         view.backClicked
@@ -82,7 +82,7 @@ class BlockedMessagesPresenter @Inject constructor(
                         else -> view.clearSelection()
                     }
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe()
     }
 

@@ -30,8 +30,8 @@ import dagger.android.AndroidInjection
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.worker.ReceiveSmsWorker
 import org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 

@@ -26,15 +26,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.ScheduledActivityBinding
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 

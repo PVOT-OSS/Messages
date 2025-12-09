@@ -33,8 +33,8 @@ import com.google.android.mms.ContentType
 import org.prauga.messages.common.util.TextViewStyler
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.util.tryOrNull
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 

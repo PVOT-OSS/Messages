@@ -23,6 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutManager
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import androidx.core.app.Person
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -50,14 +52,16 @@ class ShortcutManagerImpl @Inject constructor(
 
     override fun updateShortcuts() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            val shortcutManager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
-            if (shortcutManager.isRateLimitingActive) return
+            Handler(Looper.getMainLooper()).post {
+                val shortcutManager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
+                if (shortcutManager.isRateLimitingActive) return@post
 
-            val shortcuts: List<ShortcutInfoCompat> = conversationRepo.getTopConversations()
-                    .take(shortcutManager.maxShortcutCountPerActivity - shortcutManager.manifestShortcuts.size)
-                    .map { conversation -> createShortcutForConversation(conversation) }
+                val shortcuts: List<ShortcutInfoCompat> = conversationRepo.getTopConversations()
+                        .take(shortcutManager.maxShortcutCountPerActivity - shortcutManager.manifestShortcuts.size)
+                        .map { conversation -> createShortcutForConversation(conversation) }
 
-            ShortcutManagerCompat.setDynamicShortcuts(context, shortcuts)
+                ShortcutManagerCompat.setDynamicShortcuts(context, shortcuts)
+            }
         }
     }
 

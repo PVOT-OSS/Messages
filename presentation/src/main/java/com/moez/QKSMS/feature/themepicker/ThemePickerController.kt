@@ -23,7 +23,7 @@ import android.view.View
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
@@ -32,9 +32,9 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.feature.themepicker.injection.ThemePickerModule
 import org.prauga.messages.injection.appComponent
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager

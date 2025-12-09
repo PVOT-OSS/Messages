@@ -20,7 +20,7 @@ package org.prauga.messages.interactor
 
 import android.net.Uri
 import org.prauga.messages.repository.BackupRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class PerformRestore @Inject constructor(

@@ -20,7 +20,7 @@ package org.prauga.messages.feature.settings
 
 import org.prauga.messages.common.base.QkViewContract
 import org.prauga.messages.common.widget.PreferenceView
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface SettingsView : QkViewContract<SettingsState> {
     fun preferenceClicks(): Observable<PreferenceView>

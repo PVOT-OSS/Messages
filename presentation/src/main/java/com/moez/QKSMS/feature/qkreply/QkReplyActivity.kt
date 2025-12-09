@@ -36,8 +36,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.textChanges
+import com.jakewharton.rxbinding4.view.clicks
+import com.jakewharton.rxbinding4.widget.textChanges
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
@@ -47,8 +47,8 @@ import org.prauga.messages.common.util.extensions.showKeyboard
 import org.prauga.messages.common.widget.QkEditText
 import org.prauga.messages.databinding.QkreplyActivityBinding
 import org.prauga.messages.feature.compose.MessagesAdapter
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivityBinding::inflate),

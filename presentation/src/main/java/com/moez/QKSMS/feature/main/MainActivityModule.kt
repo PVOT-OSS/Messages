@@ -24,7 +24,7 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import org.prauga.messages.injection.ViewModelKey
 import org.prauga.messages.injection.scope.ActivityScope
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 @Module
 class MainActivityModule {

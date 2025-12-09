@@ -28,9 +28,9 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.jakewharton.rxbinding2.view.clicks
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.jakewharton.rxbinding4.view.clicks
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
@@ -39,9 +39,9 @@ import org.prauga.messages.common.util.extensions.animateLayoutChanges
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.databinding.NotificationPrefsActivityBinding
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBinding>(
@@ -92,7 +92,7 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
             .let { Observable.merge(it) }
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe(preferenceClickIntent)
     }
 

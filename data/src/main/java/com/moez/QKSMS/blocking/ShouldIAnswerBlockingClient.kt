@@ -30,9 +30,9 @@ import android.os.Messenger
 import androidx.core.os.bundleOf
 import org.prauga.messages.common.util.extensions.isInstalled
 import org.prauga.messages.util.tryOrNull
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.subjects.SingleSubject
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.subjects.SingleSubject
 import javax.inject.Inject
 
 class ShouldIAnswerBlockingClient @Inject constructor(

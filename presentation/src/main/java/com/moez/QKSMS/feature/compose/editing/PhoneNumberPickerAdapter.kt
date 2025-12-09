@@ -28,8 +28,8 @@ import org.prauga.messages.common.util.extensions.forwardTouches
 import org.prauga.messages.databinding.PhoneNumberListItemBinding
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.model.PhoneNumber
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class PhoneNumberPickerAdapter @Inject constructor(

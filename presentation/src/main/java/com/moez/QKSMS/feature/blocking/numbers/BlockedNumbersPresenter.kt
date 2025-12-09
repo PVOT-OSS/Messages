@@ -18,13 +18,13 @@
  */
 package org.prauga.messages.feature.blocking.numbers
 
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.common.base.QkPresenter
 import org.prauga.messages.interactor.MarkUnblocked
 import org.prauga.messages.repository.BlockingRepository
 import org.prauga.messages.repository.ConversationRepository
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class BlockedNumbersPresenter @Inject constructor(
@@ -47,17 +47,17 @@ class BlockedNumbersPresenter @Inject constructor(
             }
             .doOnNext(blockingRepo::unblockNumber)
             .subscribeOn(Schedulers.io())
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe()
 
         view.addAddress()
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.showAddDialog() }
 
         view.saveAddress()
             .observeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { address -> blockingRepo.blockNumber(address) }
     }
 

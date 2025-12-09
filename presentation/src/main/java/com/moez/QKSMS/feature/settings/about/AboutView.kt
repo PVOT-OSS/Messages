@@ -20,7 +20,7 @@ package org.prauga.messages.feature.settings.about
 
 import org.prauga.messages.common.base.QkViewContract
 import org.prauga.messages.common.widget.PreferenceView
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface AboutView : QkViewContract<Unit> {
 

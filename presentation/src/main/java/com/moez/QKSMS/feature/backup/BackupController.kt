@@ -28,7 +28,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.core.view.isVisible
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.QkActivityResultContracts
@@ -41,9 +41,9 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.BackupRepository
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar

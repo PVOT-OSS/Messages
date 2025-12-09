@@ -28,7 +28,7 @@ import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.common.util.extensions.dpToPx
 import org.prauga.messages.databinding.ContactChipBinding
 import org.prauga.messages.model.Recipient
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 import javax.inject.Inject
 
 class ChipsAdapter @Inject constructor() : QkAdapter<Recipient, QkBindingViewHolder<ContactChipBinding>>() {

@@ -34,8 +34,8 @@ import org.prauga.messages.feature.extensions.LoadBestIconIntoImageView
 import org.prauga.messages.feature.extensions.loadBestIconIntoImageView
 import org.prauga.messages.model.Attachment
 import ezvcard.Ezvcard
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 

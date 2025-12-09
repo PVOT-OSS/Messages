@@ -5,16 +5,16 @@ import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.view.View
 import androidx.core.view.isInvisible
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.util.Preferences
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.subjects.PublishSubject
 import android.widget.ImageView
 import javax.inject.Inject
 

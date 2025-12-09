@@ -21,17 +21,17 @@ package org.prauga.messages.feature.notificationprefs
 import android.content.Context
 import android.media.RingtoneManager
 import android.net.Uri
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
 import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.kotlin.plusAssign
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -104,7 +104,7 @@ class NotificationPrefsViewModel @Inject constructor(
         super.bindView(view)
 
         view.preferenceClickIntent
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe {
                     when (it.id) {
                         R.id.notificationsO -> navigator.showNotificationChannel(threadId)
@@ -134,11 +134,11 @@ class NotificationPrefsViewModel @Inject constructor(
                 }
 
         view.previewModeSelectedIntent
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { previews.set(it) }
 
         view.ringtoneSelectedIntent
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { ringtone -> this.ringtone.set(ringtone) }
 
         view.actionsSelectedIntent
@@ -149,7 +149,7 @@ class NotificationPrefsViewModel @Inject constructor(
                         R.id.action3 -> prefs.notifAction3.set(action)
                     }
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe()
     }
 }

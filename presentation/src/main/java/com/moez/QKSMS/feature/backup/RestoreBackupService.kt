@@ -30,8 +30,8 @@ import dagger.android.AndroidInjection
 import org.prauga.messages.common.util.extensions.getLabel
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.repository.BackupRepository
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

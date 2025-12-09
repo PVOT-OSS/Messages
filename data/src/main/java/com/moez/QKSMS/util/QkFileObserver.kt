@@ -19,8 +19,8 @@
 package org.prauga.messages.util
 
 import android.os.FileObserver
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import java.io.File
 
 class QkFileObserver(path: String) : FileObserver(path, CREATE or DELETE or MODIFY) {

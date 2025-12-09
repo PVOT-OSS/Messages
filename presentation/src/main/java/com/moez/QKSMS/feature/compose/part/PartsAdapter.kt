@@ -31,7 +31,7 @@ import org.prauga.messages.feature.compose.BubbleUtils.canGroup
 import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 

@@ -22,7 +22,7 @@ import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.model.Message
 import org.prauga.messages.repository.MessageRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class RetrySending @Inject constructor(

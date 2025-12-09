@@ -23,7 +23,7 @@ import android.os.Bundle
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity

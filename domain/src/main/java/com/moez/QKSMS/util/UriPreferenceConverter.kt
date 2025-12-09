@@ -1,9 +1,9 @@
 package org.prauga.messages.util
 
 import android.net.Uri
-import com.f2prateek.rx.preferences2.Preference.Converter
+import org.prauga.messages.util.Preference.Serializer
 
-class UriPreferenceConverter : Converter<Uri> {
+class UriPreferenceConverter : Serializer<Uri> {
 
     override fun deserialize(serialized: String): Uri {
         return Uri.parse(serialized)

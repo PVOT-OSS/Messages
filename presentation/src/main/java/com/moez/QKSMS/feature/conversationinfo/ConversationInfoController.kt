@@ -22,8 +22,8 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bluelinelabs.conductor.RouterTransaction
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.QkChangeHandler
@@ -34,9 +34,9 @@ import org.prauga.messages.feature.blocking.BlockingDialog
 import org.prauga.messages.feature.conversationinfo.injection.ConversationInfoModule
 import org.prauga.messages.feature.themepicker.ThemePickerController
 import org.prauga.messages.injection.appComponent
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 
@@ -84,7 +84,7 @@ class ConversationInfoController(
         }
 
         themedActivity?.theme
-                ?.autoDisposable(scope())
+                ?.autoDispose(scope())
                 ?.subscribe { recyclerView.scrapViews() }
     }
 
@@ -144,7 +144,7 @@ class ConversationInfoController(
         dialog.show()
 
         themedActivity?.theme?.take(1)
-                ?.autoDisposable(scope())
+                ?.autoDispose(scope())
                 ?.subscribe { theme ->
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)

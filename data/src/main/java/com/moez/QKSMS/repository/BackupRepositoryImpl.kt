@@ -32,9 +32,9 @@ import org.prauga.messages.common.util.extensions.now
 import org.prauga.messages.model.BackupFile
 import org.prauga.messages.model.Message
 import org.prauga.messages.util.Preferences
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import io.realm.Realm
 import okio.buffer
 import okio.source

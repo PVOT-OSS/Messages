@@ -24,8 +24,8 @@ import org.prauga.messages.compat.TelephonyCompat
 import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.repository.ScheduledMessageRepository
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.toFlowable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.kotlin.toFlowable
 import io.realm.RealmList
 import javax.inject.Inject
 

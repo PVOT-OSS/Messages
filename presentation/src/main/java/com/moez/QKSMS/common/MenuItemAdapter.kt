@@ -30,9 +30,9 @@ import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.MenuListItemBinding
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 data class MenuItem(val title: String, val actionId: Int)

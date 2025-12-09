@@ -18,22 +18,22 @@
  */
 package org.prauga.messages.mapper
 
-import com.f2prateek.rx.preferences2.RxSharedPreferences
+import io.reactivex.rxjava3.kotlin.Observables
 import org.prauga.messages.manager.RatingManager
-import io.reactivex.rxkotlin.Observables
+import org.prauga.messages.util.Preferences
 import javax.inject.Inject
 
 class RatingManagerImpl @Inject constructor(
-    rxPrefs: RxSharedPreferences,
+    private val prefs: Preferences,
 ) : RatingManager {
 
     companion object {
         private const val RATING_THRESHOLD = 10
     }
 
-    private val sessions = rxPrefs.getInteger("sessions", 0)
-    private val rated = rxPrefs.getBoolean("rated", false)
-    private val dismissed = rxPrefs.getBoolean("dismissed", false)
+    private val sessions = prefs.preferential("sessions", 0)
+    private val rated = prefs.preferential("rated", false)
+    private val dismissed = prefs.preferential("dismissed", false)
 
     override val shouldShowRating = Observables.combineLatest(
             sessions.asObservable(),

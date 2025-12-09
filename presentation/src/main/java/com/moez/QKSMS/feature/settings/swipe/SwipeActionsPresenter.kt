@@ -20,12 +20,12 @@ package org.prauga.messages.feature.settings.swipe
 
 import android.content.Context
 import androidx.annotation.DrawableRes
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkPresenter
 import org.prauga.messages.util.Preferences
-import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxjava3.kotlin.plusAssign
 import javax.inject.Inject
 
 class SwipeActionsPresenter @Inject constructor(
@@ -53,7 +53,7 @@ class SwipeActionsPresenter @Inject constructor(
                         SwipeActionsView.Action.LEFT -> prefs.swipeLeft.get()
                     }
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe(view::showSwipeActions)
 
         view.actionSelected()
@@ -63,7 +63,7 @@ class SwipeActionsPresenter @Inject constructor(
                         SwipeActionsView.Action.LEFT -> prefs.swipeLeft.set(actionId)
                     }
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe()
     }
 

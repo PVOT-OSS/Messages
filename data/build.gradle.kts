@@ -30,11 +30,6 @@ android {
         version = release(36)
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
     defaultConfig {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -77,11 +72,10 @@ dependencies {
 
     // coroutines
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.kotlinx.coroutines.rx2)
+    implementation(libs.kotlinx.coroutines.rx3)
     implementation(libs.kotlinx.coroutines.reactive)
 
     implementation(libs.datashare)
-    implementation(libs.rx.preferences)
     implementation(libs.timber)
     implementation(libs.moshi)
     kapt(libs.moshi.kotlin.codegen)
@@ -91,7 +85,6 @@ dependencies {
 
     // work manager
     implementation(libs.androidx.work.runtime.ktx)
-    implementation(libs.androidx.work.rxjava2)
 
     implementation(project(":android-smsmms"))
     implementation(project(":common"))

@@ -30,8 +30,8 @@ import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.feature.blocking.BlockingDialog
 import org.prauga.messages.injection.appComponent
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject

@@ -21,7 +21,7 @@ package org.prauga.messages.repository
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
 import org.prauga.messages.model.BackupFile
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface BackupRepository {
 

@@ -25,8 +25,8 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
-import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.android.ViewScopeProvider
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.forEach
 import org.prauga.messages.common.util.extensions.resolveThemeColor
@@ -34,8 +34,8 @@ import org.prauga.messages.databinding.TabViewBinding
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.ConversationRepository
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class PagerTitleView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
@@ -100,7 +100,7 @@ class PagerTitleView @JvmOverloads constructor(context: Context, attrs: Attribut
                     val textSecondary = context.resolveThemeColor(android.R.attr.textColorSecondary)
                     ColorStateList(states, intArrayOf(theme.theme, textSecondary))
                 }
-                .autoDisposable(ViewScopeProvider.from(this))
+                .autoDispose(ViewScopeProvider.from(this))
                 .subscribe { colorStateList ->
                     childCount.forEach { index ->
                         (getChildAt(index) as? TextView)?.setTextColor(colorStateList)

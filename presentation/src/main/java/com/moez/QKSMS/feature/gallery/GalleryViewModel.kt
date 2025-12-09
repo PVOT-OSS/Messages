@@ -20,8 +20,8 @@ package org.prauga.messages.feature.gallery
 
 import android.content.Context
 import com.moez.QKSMS.contentproviders.MmsPartProvider
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -31,8 +31,8 @@ import org.prauga.messages.interactor.SaveImage
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.kotlin.plusAssign
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -69,7 +69,7 @@ class GalleryViewModel @Inject constructor(
         view.screenTouched()
                 .withLatestFrom(state) { _, state -> state.navigationVisible }
                 .map { navigationVisible -> !navigationVisible }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { navigationVisible -> newState { copy(navigationVisible = navigationVisible) } }
 
         // Save image to device
@@ -77,14 +77,14 @@ class GalleryViewModel @Inject constructor(
                 .filter { it == R.id.save }
                 .filter { permissions.hasStorage().also { if (!it) view.requestStoragePermission() } }
                 .withLatestFrom(view.pageChanged()) { _, part -> part.id }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { partId -> saveImage.execute(partId) { context.makeToast(R.string.gallery_toast_saved) } }
 
         // Share image externally
         view.optionsItemSelected()
                 .filter { it == R.id.share }
                 .withLatestFrom(view.pageChanged()) { _, part -> part }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe {
                     navigator.shareFile(
                         MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),
@@ -96,14 +96,14 @@ class GalleryViewModel @Inject constructor(
         view.optionsItemSelected()
             .filter { it == R.id.forward }
             .withLatestFrom(view.pageChanged()) { _, part -> part }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { navigator.showCompose("", listOf(it.getUri())) }
 
         // message part context menu item selected - open externally
         view.optionsItemSelected()
             .filter { it == R.id.openExternally }
             .withLatestFrom(view.pageChanged()) { _, part -> part }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 navigator.viewFile(
                     MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),

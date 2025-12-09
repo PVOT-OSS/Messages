@@ -20,7 +20,7 @@ package org.prauga.messages.interactor
 
 import org.prauga.messages.manager.AlarmManager
 import org.prauga.messages.repository.ScheduledMessageRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class UpdateScheduledMessageAlarms @Inject constructor(

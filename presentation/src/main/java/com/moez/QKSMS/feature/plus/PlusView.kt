@@ -20,7 +20,7 @@ package org.prauga.messages.feature.plus
 
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.manager.BillingManager
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface PlusView : QkView<PlusState> {
 

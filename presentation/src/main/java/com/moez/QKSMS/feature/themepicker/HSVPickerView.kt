@@ -31,8 +31,8 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.within
 import org.prauga.messages.databinding.HsvPickerViewBinding
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 
 @SuppressLint("ClickableViewAccessibility")
 class HSVPickerView @JvmOverloads constructor(

@@ -21,7 +21,7 @@ package org.prauga.messages.interactor
 import android.annotation.SuppressLint
 import android.content.Context
 import org.prauga.messages.repository.ScheduledMessageRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject

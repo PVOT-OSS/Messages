@@ -19,19 +19,21 @@
 
 package org.prauga.messages.extensions
 
-import io.reactivex.Flowable
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
 
-data class Optional<out T>(val value: T?) {
+data class Optional<out T : Any>(val value: T?) {
     fun notNull() = value != null
 }
 
-fun <T, R> Flowable<T>.mapNotNull(mapper: (T) -> R?): Flowable<R> = map { input -> Optional(mapper(input)) }
+fun <T : Any, R : Any> Flowable<T>.mapNotNull(mapper: (T) -> R?): Flowable<R> =
+    map { input -> Optional(mapper(input)) }
         .filter { optional -> optional.notNull() }
-        .map { optional -> optional.value }
+        .map { optional -> optional.value!! }
 
-fun <T, R> Observable<T>.mapNotNull(mapper: (T) -> R?): Observable<R> = map { input -> Optional(mapper(input)) }
+fun <T : Any, R : Any> Observable<T>.mapNotNull(mapper: (T) -> R?): Observable<R> =
+    map { input -> Optional(mapper(input)) }
         .filter { optional -> optional.notNull() }
-        .map { optional -> optional.value }
+        .map { optional -> optional.value!! }
 
-fun <T> Observable<T>.toFlowable(): Flowable<T> = this.toFlowable(io.reactivex.BackpressureStrategy.BUFFER)
+fun <T : Any> Observable<T>.toFlowable(): Flowable<T> = this.toFlowable(io.reactivex.rxjava3.core.BackpressureStrategy.BUFFER)

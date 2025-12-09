@@ -19,7 +19,7 @@
 package org.prauga.messages.interactor
 
 import org.prauga.messages.repository.SyncRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

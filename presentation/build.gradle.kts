@@ -83,16 +83,6 @@ android {
         includeInBundle = false
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    // kotlinOptions inside android block (Kotlin DSL)
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
     lint {
         abortOnError = false
     }
@@ -102,11 +92,14 @@ dependencies {
     // lifecycle
     implementation(libs.androidx.lifecycle.extensions)
     implementation(libs.androidx.lifecycle.common.java8)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
     // androidx
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.emoji2.bundled)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.documentfile)
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.viewpager2)
     implementation(libs.material)
@@ -127,12 +120,11 @@ dependencies {
     }
 
     // rxbinding
-    implementation(libs.rxbinding.kotlin)
-    implementation(libs.rxbinding.support.v4.kotlin)
+    implementation(libs.rxbinding3)
 
     // autodispose
-    implementation(libs.autodispose.android.archcomponents)
-    implementation(libs.autodispose.android.archcomponents.test)
+    implementation(libs.autodispose.androidx.lifecycle)
+    implementation(libs.autodispose.androidx.lifecycle.test)
     implementation(libs.autodispose.android)
     implementation(libs.autodispose)
     implementation(libs.autodispose.lifecycle)
@@ -161,8 +153,6 @@ dependencies {
     implementation(libs.rxandroid)
     implementation(libs.rxjava)
     implementation(libs.rxkotlin)
-    implementation(libs.rxdogtag)
-    implementation(libs.rxdogtag.autodispose)
 
     // testing
     androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha3") {
@@ -181,11 +171,10 @@ dependencies {
     // coroutines
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.kotlinx.coroutines.rx2)
+    implementation(libs.kotlinx.coroutines.rx3)
     implementation(libs.kotlinx.coroutines.reactive)
 
     implementation(libs.photoview)
-    implementation(libs.rx.preferences)
     implementation(libs.flexbox)
     implementation(libs.timber)
     implementation(libs.moshi.kotlin)

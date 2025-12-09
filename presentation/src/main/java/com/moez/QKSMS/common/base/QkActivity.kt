@@ -32,8 +32,8 @@ import androidx.viewbinding.ViewBinding
 import org.prauga.messages.R
 import org.prauga.messages.app.BaseViewBindingActivity
 import org.prauga.messages.util.Preferences
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 abstract class QkActivity<Vb : ViewBinding>(

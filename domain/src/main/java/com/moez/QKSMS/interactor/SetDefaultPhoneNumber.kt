@@ -19,7 +19,7 @@
 package org.prauga.messages.interactor
 
 import org.prauga.messages.repository.ContactRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import javax.inject.Inject
 
 class SetDefaultPhoneNumber @Inject constructor(

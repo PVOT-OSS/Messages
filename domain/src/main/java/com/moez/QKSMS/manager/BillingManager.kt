@@ -20,7 +20,7 @@
 package org.prauga.messages.manager
 
 import android.app.Activity
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface BillingManager {
 

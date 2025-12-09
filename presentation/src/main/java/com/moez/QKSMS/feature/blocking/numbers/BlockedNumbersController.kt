@@ -21,7 +21,7 @@ package org.prauga.messages.feature.blocking.numbers
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
@@ -29,9 +29,9 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.util.PhoneNumberUtils
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView

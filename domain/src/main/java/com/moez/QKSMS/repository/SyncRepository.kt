@@ -20,7 +20,7 @@ package org.prauga.messages.repository
 
 import android.net.Uri
 import org.prauga.messages.model.Message
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface SyncRepository {
 

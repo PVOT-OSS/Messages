@@ -21,8 +21,8 @@ package org.prauga.messages.feature.notificationprefs
 import android.net.Uri
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.common.widget.PreferenceView
-import io.reactivex.Observable
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.Subject
 
 interface NotificationPrefsView : QkView<NotificationPrefsState> {
 

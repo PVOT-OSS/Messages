@@ -20,7 +20,7 @@ package org.prauga.messages.feature.blocking.filters
 
 import org.prauga.messages.common.base.QkViewContract
 import org.prauga.messages.model.MessageContentFilterData
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface MessageContentFiltersView : QkViewContract<MessageContentFiltersState> {
 

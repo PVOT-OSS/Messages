@@ -24,8 +24,8 @@ import org.prauga.messages.R
 import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.model.BlockedNumber
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import org.prauga.messages.databinding.BlockedNumberListItemBinding
 
 class BlockedNumbersAdapter : QkRealmAdapter<BlockedNumber, QkBindingViewHolder<BlockedNumberListItemBinding>>() {

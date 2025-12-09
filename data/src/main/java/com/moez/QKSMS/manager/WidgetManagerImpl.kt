@@ -24,8 +24,8 @@ import android.content.Context
 import android.content.Intent
 import com.klinker.android.send_message.BroadcastUtils
 import org.prauga.messages.util.Preferences
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject

@@ -23,7 +23,7 @@ import android.content.Context
 import androidx.core.net.toUri
 import org.prauga.messages.extensions.getName
 import org.prauga.messages.repository.ScheduledMessageRepository
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import io.realm.RealmList
 import java.io.File
 import java.util.UUID

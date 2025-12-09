@@ -21,9 +21,9 @@ package org.prauga.messages.feature.blocking.filters
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import com.jakewharton.rxbinding2.view.clicks
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.jakewharton.rxbinding4.view.clicks
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
@@ -32,9 +32,9 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.model.MessageContentFilterData
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -104,7 +104,7 @@ class MessageContentFiltersController : QkController<MessageContentFiltersView, 
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
             .let { Observable.merge(it) }
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe {
                 it.findViewById<CompoundButton>(R.id.checkbox)?.let { checkbox ->
                     checkbox.isChecked = !checkbox.isChecked

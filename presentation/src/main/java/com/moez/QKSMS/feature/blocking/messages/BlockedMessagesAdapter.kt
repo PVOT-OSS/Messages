@@ -31,7 +31,7 @@ import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.databinding.BlockedListItemBinding
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.util.Preferences
-import io.reactivex.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.PublishSubject
 import javax.inject.Inject
 
 class BlockedMessagesAdapter @Inject constructor(

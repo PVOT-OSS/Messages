@@ -22,8 +22,8 @@ import com.moez.QKSMS.manager.SpeakManager
 import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
-import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
 
 class SpeakThreads @Inject constructor(

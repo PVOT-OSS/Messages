@@ -21,8 +21,8 @@ package org.prauga.messages.repository
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SearchResult
-import io.reactivex.Completable
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Observable
 import io.realm.RealmResults
 
 interface ConversationRepository {

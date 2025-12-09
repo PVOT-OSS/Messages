@@ -23,7 +23,7 @@ import android.net.Uri
 import android.util.Log
 import org.prauga.messages.util.FileUtils
 import org.prauga.messages.util.Preferences
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat

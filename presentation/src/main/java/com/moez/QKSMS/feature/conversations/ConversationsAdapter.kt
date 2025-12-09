@@ -37,7 +37,7 @@ import org.prauga.messages.databinding.ConversationListItemBinding
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.repository.ScheduledMessageRepository
 import org.prauga.messages.util.PhoneNumberUtils
-import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class ConversationsAdapter @Inject constructor(

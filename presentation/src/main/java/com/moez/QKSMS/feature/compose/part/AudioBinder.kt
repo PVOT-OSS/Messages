@@ -41,9 +41,9 @@ import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.util.GlideApp
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 

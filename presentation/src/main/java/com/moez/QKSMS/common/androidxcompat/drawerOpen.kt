@@ -22,9 +22,9 @@ package org.prauga.messages.common.androidxcompat
 
 import androidx.annotation.CheckResult
 import androidx.drawerlayout.widget.DrawerLayout
-import com.jakewharton.rxbinding2.InitialValueObservable
-import com.jakewharton.rxbinding2.support.v4.widget.RxDrawerLayout
-import io.reactivex.functions.Consumer
+import com.jakewharton.rxbinding4.InitialValueObservable
+import io.reactivex.rxjava3.core.Observer
+import io.reactivex.rxjava3.functions.Consumer
 
 /**
  * Create an observable of the open state of the drawer of `view`.
@@ -35,7 +35,9 @@ import io.reactivex.functions.Consumer
  * *Note:* A value will be emitted immediately on subscribe.
  */
 @CheckResult
-inline fun DrawerLayout.drawerOpen(gravity: Int): InitialValueObservable<Boolean> = RxDrawerLayout.drawerOpen(this, gravity)
+fun DrawerLayout.drawerOpen(gravity: Int): InitialValueObservable<Boolean> {
+    return DrawerOpenObservable(this, gravity)
+}
 
 /**
  * An action which sets whether the drawer with `gravity` of `view` is open.
@@ -44,4 +46,59 @@ inline fun DrawerLayout.drawerOpen(gravity: Int): InitialValueObservable<Boolean
  * to free this reference.
  */
 @CheckResult
-inline fun DrawerLayout.open(gravity: Int): Consumer<in Boolean> = RxDrawerLayout.open(this, gravity)
+fun DrawerLayout.open(gravity: Int): Consumer<in Boolean> {
+    return Consumer { open ->
+        if (open) {
+            openDrawer(gravity)
+        } else {
+            closeDrawer(gravity)
+        }
+    }
+}
+
+private class DrawerOpenObservable(
+    private val view: DrawerLayout,
+    private val gravity: Int
+) : InitialValueObservable<Boolean>() {
+    override fun subscribeListener(observer: Observer<in Boolean>) {
+        val listener = Listener(view, gravity, observer)
+        observer.onSubscribe(listener)
+        view.addDrawerListener(listener)
+    }
+
+    override val initialValue: Boolean
+        get() = view.isDrawerOpen(gravity)
+
+    private class Listener(
+        private val view: DrawerLayout,
+        private val gravity: Int,
+        private val observer: Observer<in Boolean>
+    ) : DrawerLayout.DrawerListener, io.reactivex.rxjava3.disposables.Disposable {
+        private var disposed = false
+
+        override fun onDrawerSlide(drawerView: android.view.View, slideOffset: Float) {}
+
+        override fun onDrawerOpened(drawerView: android.view.View) {
+            if (!disposed && view.isDrawerOpen(gravity)) {
+                observer.onNext(true)
+            }
+        }
+
+        override fun onDrawerClosed(drawerView: android.view.View) {
+            if (!disposed && !view.isDrawerOpen(gravity)) {
+                observer.onNext(false)
+            }
+        }
+
+        override fun onDrawerStateChanged(newState: Int) {}
+
+        override fun dispose() {
+            if (!disposed) {
+                disposed = true
+                view.removeDrawerListener(this)
+            }
+        }
+
+        override fun isDisposed(): Boolean = disposed
+    }
+}

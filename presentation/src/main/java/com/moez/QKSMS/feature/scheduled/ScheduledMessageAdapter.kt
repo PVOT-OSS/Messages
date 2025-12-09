@@ -34,8 +34,8 @@ import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.ScheduledMessage
 import org.prauga.messages.repository.ContactRepository
 import org.prauga.messages.util.PhoneNumberUtils
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import javax.inject.Inject
 
 class ScheduledMessageAdapter @Inject constructor(

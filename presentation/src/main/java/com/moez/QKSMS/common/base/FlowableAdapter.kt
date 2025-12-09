@@ -20,8 +20,8 @@ package org.prauga.messages.common.base
 
 import androidx.annotation.CallSuper
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.Flowable
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.disposables.Disposable
 
 /**
  * Base RecyclerView.Adapter that provides some convenience when creating a new Adapter, such as

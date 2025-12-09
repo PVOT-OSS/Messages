@@ -20,7 +20,7 @@ package org.prauga.messages.feature.blocking
 
 import android.view.View
 import com.bluelinelabs.conductor.RouterTransaction
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import org.prauga.messages.R
 import org.prauga.messages.common.QkChangeHandler
 import org.prauga.messages.common.base.QkController

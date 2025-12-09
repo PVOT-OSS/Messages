@@ -24,7 +24,7 @@ import android.net.Uri
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.Telephony
-import com.f2prateek.rx.preferences2.RxSharedPreferences
+import org.prauga.messages.util.Preference
 import org.prauga.messages.extensions.forEach
 import org.prauga.messages.extensions.insertOrUpdate
 import org.prauga.messages.extensions.map
@@ -47,8 +47,8 @@ import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SyncLog
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.tryOrNull
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.subjects.BehaviorSubject
+import io.reactivex.rxjava3.subjects.Subject
 import io.realm.Realm
 import io.realm.RealmList
 import io.realm.Sort
@@ -69,16 +69,16 @@ class SyncRepositoryImpl @Inject constructor(
     private val cursorToContactGroupMember: CursorToContactGroupMember,
     private val keys: KeyManager,
     private val phoneNumberUtils: PhoneNumberUtils,
-    private val rxPrefs: RxSharedPreferences,
+    sharedPreferences: android.content.SharedPreferences,
     private val reactions: EmojiReactionRepository,
 ) : SyncRepository {
 
     override val syncProgress: Subject<SyncRepository.SyncProgress> =
             BehaviorSubject.createDefault(SyncRepository.SyncProgress.Idle)
 
-    override fun syncMessages() {
+    private val oldBlockedSenders = Preference(sharedPreferences, "pref_key_blocked_senders", emptySet<String>())
 
-        val oldBlockedSenders = rxPrefs.getStringSet("pref_key_blocked_senders")
+    override fun syncMessages() {
 
         // If the sync is already running, don't try to do another one
         if (syncProgress.blockingFirst() is SyncRepository.SyncProgress.Running) return

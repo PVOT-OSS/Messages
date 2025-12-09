@@ -19,14 +19,14 @@
 package org.prauga.messages.feature.settings.about
 
 import android.view.View
-import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding4.view.clicks
 import org.prauga.messages.BuildConfig
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.databinding.AboutControllerBinding
 import org.prauga.messages.injection.appComponent
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class AboutController : QkController<AboutView, Unit, AboutPresenter>(), AboutView {

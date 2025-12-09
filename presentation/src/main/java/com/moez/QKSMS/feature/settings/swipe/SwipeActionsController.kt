@@ -21,9 +21,9 @@ package org.prauga.messages.feature.settings.swipe
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import com.jakewharton.rxbinding2.view.clicks
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.jakewharton.rxbinding4.view.clicks
+import com.uber.autodispose2.androidx.lifecycle.scope
+import com.uber.autodispose2.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
 import org.prauga.messages.common.base.QkController
@@ -32,9 +32,9 @@ import org.prauga.messages.common.util.extensions.animateLayoutChanges
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.injection.appComponent
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import android.widget.ImageView
 import android.widget.TextView
 import javax.inject.Inject
@@ -89,7 +89,7 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
         Observable.merge(
                 right.clicks().map { SwipeActionsView.Action.RIGHT },
                 left.clicks().map { SwipeActionsView.Action.LEFT })
-                .autoDisposable(scope())
+                .autoDispose(scope())
                 .subscribe(actionClicks)
     }
 

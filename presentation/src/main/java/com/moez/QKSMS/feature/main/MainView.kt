@@ -21,7 +21,7 @@ package org.prauga.messages.feature.main
 import android.content.Intent
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.manager.ChangelogManager
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 
 interface MainView : QkView<MainState> {
 

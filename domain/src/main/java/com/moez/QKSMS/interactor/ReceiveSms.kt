@@ -27,7 +27,7 @@ import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageContentFilterRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Flowable
+import io.reactivex.rxjava3.core.Flowable
 import timber.log.Timber
 import javax.inject.Inject
 

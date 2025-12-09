@@ -4,9 +4,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import com.jakewharton.rxbinding4.view.clicks
+import io.reactivex.rxjava3.subjects.PublishSubject
+import io.reactivex.rxjava3.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder

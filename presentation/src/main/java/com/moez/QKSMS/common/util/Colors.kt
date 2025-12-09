@@ -26,7 +26,7 @@ import org.prauga.messages.common.util.extensions.getColorCompat
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
-import io.reactivex.Observable
+import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.absoluteValue
