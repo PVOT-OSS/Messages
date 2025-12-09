@@ -90,7 +90,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private lateinit var unreadAtTop: PreferenceView
     private lateinit var signature: PreferenceView
     private lateinit var textSize: PreferenceView
-    private lateinit var autoColor: PreferenceView
     private lateinit var systemFont: PreferenceView
     private lateinit var showStt: PreferenceView
     private lateinit var unicode: PreferenceView
@@ -152,7 +151,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         unreadAtTop = view.findViewById(R.id.unreadAtTop)
         signature = view.findViewById(R.id.signature)
         textSize = view.findViewById(R.id.textSize)
-        autoColor = view.findViewById(R.id.autoColor)
         systemFont = view.findViewById(R.id.systemFont)
         showStt = view.findViewById(R.id.showStt)
         unicode = view.findViewById(R.id.unicode)
@@ -245,8 +243,6 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
         textSize.summary = state.textSizeSummary
         textSizeDialog.adapter.selectedItem = state.textSizeId
-
-        autoColor.checkbox()?.isChecked = state.autoColor
 
         systemFont.checkbox()?.isChecked = state.systemFontEnabled
 

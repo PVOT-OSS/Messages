@@ -81,17 +81,17 @@ class Colors @Inject constructor(
     fun theme(recipient: Recipient? = null): Theme {
         val pref = prefs.theme(recipient?.id ?: 0)
         val color = when {
-            recipient == null || !prefs.autoColor.get() || pref.isSet -> pref.get()
-            else -> generateColor(recipient)
+            pref.isSet -> pref.get()
+            recipient != null -> generateColor(recipient)
+            else -> pref.get()
         }
         return Theme(color, this)
     }
 
     fun themeObservable(recipient: Recipient? = null): Observable<Theme> {
-        val pref = when {
-            recipient == null -> prefs.theme()
-            prefs.autoColor.get() -> prefs.theme(recipient.id, generateColor(recipient))
-            else -> prefs.theme(recipient.id, prefs.theme().get())
+        val pref = when (recipient) {
+            null -> prefs.theme()
+            else -> prefs.theme(recipient.id, generateColor(recipient))
         }
         return pref.asObservable()
                 .map { color -> Theme(color, this) }

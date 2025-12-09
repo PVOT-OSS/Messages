@@ -109,9 +109,6 @@ class SettingsPresenter @Inject constructor(
                     newState { copy(textSizeSummary = textSizeLabels[textSize], textSizeId = textSize) }
                 }
 
-        disposables += prefs.autoColor.asObservable()
-                .subscribe { autoColor -> newState { copy(autoColor = autoColor) } }
-
         disposables += prefs.systemFont.asObservable()
             .subscribe { enabled -> newState { copy(systemFontEnabled = enabled) } }
 
@@ -201,10 +198,6 @@ class SettingsPresenter @Inject constructor(
                         R.id.signature -> view.showSignatureDialog(prefs.signature.get())
 
                         R.id.textSize -> view.showTextSizePicker()
-
-                        R.id.autoColor -> {
-                            prefs.autoColor.set(!prefs.autoColor.get())
-                        }
 
                         R.id.systemFont -> prefs.systemFont.set(!prefs.systemFont.get())
 
