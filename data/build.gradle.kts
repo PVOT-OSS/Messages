@@ -58,8 +58,6 @@ dependencies {
     kapt(libs.dagger.android.processor)
     kapt(libs.dagger.compiler)
 
-    // Resolve jdk8+ Generation Annotations - javax annotation does not exist
-    implementation(libs.jdk9.deps)
     implementation(libs.javax.annotation.api)
 
     // rxjava

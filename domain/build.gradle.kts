@@ -49,8 +49,6 @@ dependencies {
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
 
-    // Fix for javax annotations missing on jdk8+
-    implementation(libs.jdk9.deps)
     implementation(libs.javax.annotation.api)
 
     // realm

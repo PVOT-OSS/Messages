@@ -143,8 +143,6 @@ dependencies {
     kapt(libs.dagger.compiler)
     kapt(libs.dagger.android.processor)
 
-    // Resolve jdk8+ Generation Annotations - javax annotation does not exist
-    implementation(libs.jdk9.deps)
     implementation(libs.javax.annotation.api)
 
     // ezvcard (multiple excludes)
