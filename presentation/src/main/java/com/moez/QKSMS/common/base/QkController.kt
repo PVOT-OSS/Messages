@@ -18,6 +18,7 @@
  */
 package org.prauga.messages.common.base
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,7 +44,7 @@ abstract class QkController<ViewContract : QkViewContract<State>, State, Present
     @LayoutRes
     var layoutRes: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         return inflater.inflate(layoutRes, container, false).also {
             containerView = it
             onViewCreated()
