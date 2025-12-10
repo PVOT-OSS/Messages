@@ -41,6 +41,7 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.withLatestFrom
@@ -256,9 +257,9 @@ class ComposeViewModel @Inject constructor(
                 newState { copy(validRecipientNumbers = validRecipientNumbers) }
             }
 
-        disposables += Observables.combineLatest(
+        disposables += Observables.combineLatest<Long, List<Message>, Unit>(
             searchSelection,
-            searchResults
+            searchResults,
         ) { selected, messages ->
             if (selected == -1L) {
                 messages.lastOrNull()?.let { message -> searchSelection.onNext(message.id) }
@@ -266,6 +267,7 @@ class ComposeViewModel @Inject constructor(
                 val position = messages.indexOfFirst { it.id == selected } + 1
                 newState { copy(searchSelectionPosition = position, searchResults = messages.size) }
             }
+            Unit
         }.subscribe()
 
         val latestSubId = messages
@@ -512,16 +514,24 @@ class ComposeViewModel @Inject constructor(
         // Forward the message
         view.optionsItemIntent
             .filter { it == R.id.forward }
-            .withLatestFrom(view.messagesSelectedIntent) { _, messages ->
-                messages?.firstOrNull()?.let { messageRepo.getMessage(it) }?.let { message ->
-                    navigator.showCompose(
-                        message.getText(),
-                        message.parts.filter { !it.isSmil() }.mapNotNull { it.getUri() }
-                    )
+            .withLatestFrom(view.messagesSelectedIntent,
+                BiFunction<Int, List<Long>, Pair<Int, List<Long>>> { action, messages ->
+                    action to messages
+                }
+            )
+            .autoDispose(view.scope())
+            .subscribe { pair ->
+                val messages = pair?.second
+                messages?.firstOrNull()?.let { id ->
+                    messageRepo.getMessage(id)?.let { message ->
+                        navigator.showCompose(
+                            message.getText(),
+                            message.parts.filter { !it.isSmil() }.mapNotNull { it.getUri() }
+                        )
+                        view.clearSelection()
+                    }
                 }
             }
-            .autoDispose(view.scope())
-            .subscribe { view.clearSelection() }
 
         // expand message to show additional info
         view.optionsItemIntent
