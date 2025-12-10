@@ -33,7 +33,15 @@ class OtpDetector {
         "transaction code",
         "confirm code",
         "confirmation code",
-        "code"
+        "code",
+        "验证码",
+        "校验码",
+        "确认码",
+        "登录码",
+        "安全码",
+        "动态密码",
+        "一次性密码",
+        "临时密码"
     ).map { it.lowercase() }
 
     private val safetyKeywords = listOf(
@@ -46,12 +54,24 @@ class OtpDetector {
         "valid for",
         "expires in",
         "expires within",
-        "expires after"
+        "expires after",
+        "请勿分享",
+        "不要分享",
+        "切勿分享",
+        "请勿泄露",
+        "请勿转发",
+        "保密此代码",
+        "有效期为",
+        "有效期",
+        "过期时间",
+        "将过期"
     ).map { it.lowercase() }
 
     private val moneyIndicators = listOf(
         "rs", "inr", "usd", "eur", "gbp", "₹", "$", "€", "£", "balance",
-        "amount", "debited", "credited", "txn", "transaction id", "order id"
+        "amount", "debited", "credited", "txn", "transaction id", "order id",
+        "余额", "金额", "支出", "收入", "转账", "交易", "订单", "支付",
+        "充值", "提现", "消费", "汇款", "交易号", "订单号", "流水号", "账单"
     ).map { it.lowercase() }
 
     fun detect(rawMessage: String): OtpDetectionResult {
