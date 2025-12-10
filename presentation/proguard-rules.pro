@@ -1,7 +1,4 @@
--dontobfuscate
-
 # android-smsmms
-# -keep class android.net.** { *; }
 -dontwarn android.net.ConnectivityManager
 -dontwarn android.net.LinkProperties
 
@@ -45,8 +42,10 @@
 -dontwarn org.slf4j.Logger
 -dontwarn org.slf4j.LoggerFactory
 
+# Keep @FromJson/@ToJson adapters
 -keepclasseswithmembers class * {
-    @com.squareup.moshi.* <methods>;
+    @com.squareup.moshi.FromJson <methods>;
+    @com.squareup.moshi.ToJson <methods>;
 }
 
 -keep @com.squareup.moshi.JsonQualifier interface *
@@ -106,24 +105,27 @@
     <init>(...);
     <fields>;
 }
-# Dagger
-# This is to allow the restore functionality to work
+
+# Dagger 2
 -keep class dagger.** { *; }
--keep class * extends dagger.Module { *; }
--keep class * extends dagger.Component { *; }
--keep class * extends dagger.Subcomponent { *; }
--keep class * {
+
+-keep @dagger.Module class * { *; }
+-keep @dagger.Subcomponent interface * { *; }
+-keep @dagger.Component interface * { *; }
+
+-keepclassmembers class * {
     @dagger.Provides <methods>;
 }
+
+# RxJava
 -keep class io.reactivex.** { *; }
 -keep class io.reactivex.subjects.** { *; }
 -keep class androidx.activity.result.** { *; }
 -keep class org.prauga.messages.** { *; }
 
--keep class io.realm.annotations.RealmModule
+# Realm
 -keep @io.realm.annotations.RealmModule class *
 -keep @interface io.realm.annotations.RealmModule { *; }
--keep class io.realm.annotations.RealmModule { *; }
 
 -keep class io.realm.internal.Keep
 -keep @io.realm.internal.Keep class * { *; }
@@ -131,7 +133,6 @@
 -keep class io.realm.internal.KeepMember
 -keep @io.realm.internal.KeepMember class * { @io.realm.internal.KeepMember *; }
 
--dontwarn javax.**
 -dontwarn io.realm.**
 -dontwarn io.reactivex.android.**
 
