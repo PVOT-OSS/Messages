@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
  *
  * This file is part of QKSMS.
  *
@@ -16,20 +17,20 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.prauga.messages.feature.notificationprefs
 
 import android.net.Uri
+import kotlinx.coroutines.flow.Flow
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.common.widget.PreferenceView
-import io.reactivex.Observable
-import io.reactivex.subjects.Subject
 
 interface NotificationPrefsView : QkView<NotificationPrefsState> {
 
-    val preferenceClickIntent: Subject<PreferenceView>
-    val previewModeSelectedIntent: Subject<Int>
-    val ringtoneSelectedIntent: Observable<String>
-    val actionsSelectedIntent: Subject<Int>
+    val preferenceClickIntent: Flow<PreferenceView>
+    val previewModeSelectedIntent: Flow<Int>
+    val ringtoneSelectedIntent: Flow<String>
+    val actionsSelectedIntent: Flow<Int>
 
     fun showPreviewModeDialog()
     fun showRingtonePicker(default: Uri?)

@@ -25,8 +25,9 @@ import android.os.Build
 import android.provider.Settings
 import com.f2prateek.rx.preferences2.Preference
 import com.f2prateek.rx.preferences2.RxSharedPreferences
-import org.prauga.messages.common.util.extensions.versionCode
+import com.moez.QKSMS.util.FlowPreference
 import io.reactivex.Observable
+import org.prauga.messages.common.util.extensions.versionCode
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -92,17 +93,21 @@ class Preferences @Inject constructor(
     val canUseSubId = rxPrefs.getBoolean("canUseSubId", true)
     val version = rxPrefs.getInteger("version", context.versionCode)
     val changelogVersion = rxPrefs.getInteger("changelogVersion", context.versionCode)
-    val hasAskedForNotificationPermission = rxPrefs.getBoolean("hasAskedForNotificationPermission", false)
+    val hasAskedForNotificationPermission =
+        rxPrefs.getBoolean("hasAskedForNotificationPermission", false)
     val backupDirectory = rxPrefs.getObject("backupDirectory", Uri.EMPTY, UriPreferenceConverter())
+
     @Deprecated("This should only be accessed when migrating to @blockingManager")
     val sia = rxPrefs.getBoolean("sia", false)
 
     // User configurable
     val sendAsGroup = rxPrefs.getBoolean("sendAsGroup", true)
-    val nightMode = rxPrefs.getInteger("nightMode", when (Build.VERSION.SDK_INT >= 29) {
-        true -> NIGHT_MODE_SYSTEM
-        false -> NIGHT_MODE_OFF
-    })
+    val nightMode = rxPrefs.getInteger(
+        "nightMode", when (Build.VERSION.SDK_INT >= 29) {
+            true -> NIGHT_MODE_SYSTEM
+            false -> NIGHT_MODE_OFF
+        }
+    )
     val nightStart = rxPrefs.getString("nightStart", "18:00")
     val nightEnd = rxPrefs.getString("nightEnd", "6:00")
     val systemFont = rxPrefs.getBoolean("systemFont", false)
@@ -135,12 +140,14 @@ class Preferences @Inject constructor(
         // Migrate from old night mode preference to new one, now that we support android Q night mode
         val nightModeSummary = rxPrefs.getInteger("nightModeSummary")
         if (nightModeSummary.isSet) {
-            nightMode.set(when (nightModeSummary.get()) {
-                0 -> NIGHT_MODE_OFF
-                1 -> NIGHT_MODE_ON
-                2 -> NIGHT_MODE_AUTO
-                else -> NIGHT_MODE_OFF
-            })
+            nightMode.set(
+                when (nightModeSummary.get()) {
+                    0 -> NIGHT_MODE_OFF
+                    1 -> NIGHT_MODE_ON
+                    2 -> NIGHT_MODE_AUTO
+                    else -> NIGHT_MODE_OFF
+                }
+            )
             nightModeSummary.delete()
         }
     }
@@ -172,13 +179,14 @@ class Preferences @Inject constructor(
         }
     }
 
-    fun notifications(threadId: Long = 0): Preference<Boolean> {
+    fun notifications(threadId: Long = 0): FlowPreference<Boolean> {
         val default = rxPrefs.getBoolean("notifications", true)
 
-        return when (threadId) {
+        val pref = when (threadId) {
             0L -> default
             else -> rxPrefs.getBoolean("notifications_$threadId", default.get())
         }
+        return FlowPreference(pref)
     }
 
     fun notificationPreviews(threadId: Long = 0): Preference<Int> {
@@ -209,7 +217,8 @@ class Preferences @Inject constructor(
     }
 
     fun ringtone(threadId: Long = 0): Preference<String> {
-        val default = rxPrefs.getString("ringtone", Settings.System.DEFAULT_NOTIFICATION_URI.toString())
+        val default =
+            rxPrefs.getString("ringtone", Settings.System.DEFAULT_NOTIFICATION_URI.toString())
 
         return when (threadId) {
             0L -> default
