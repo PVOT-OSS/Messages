@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
  *
  * This file is part of QKSMS.
  *
@@ -16,18 +17,17 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.prauga.messages.feature.gallery
 
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.model.MmsPart
 
 interface GalleryView : QkView<GalleryState> {
 
-    fun optionsItemSelected(): Observable<Int>
-    fun screenTouched(): Observable<*>
-    fun pageChanged(): Observable<MmsPart>
-
+    fun optionsItemSelected(): Flow<Int>
+    fun screenTouched(): Flow<Unit>
+    fun pageChanged(): Flow<MmsPart>
     fun requestStoragePermission()
-
 }

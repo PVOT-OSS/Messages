@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
  *
  * This file is part of QKSMS.
  *
@@ -16,21 +17,24 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.prauga.messages.feature.gallery
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
+import com.moez.QKSMS.common.base.PvotViewModel
 import com.moez.QKSMS.contentproviders.MmsPartProvider
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.plusAssign
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
-import org.prauga.messages.common.base.QkViewModel
 import org.prauga.messages.common.util.extensions.makeToast
-import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.interactor.SaveImage
 import org.prauga.messages.manager.PermissionManager
+import org.prauga.messages.model.MmsPart
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import javax.inject.Inject
@@ -44,80 +48,103 @@ class GalleryViewModel @Inject constructor(
     private val navigator: Navigator,
     private val saveImage: SaveImage,
     private val permissions: PermissionManager
-) : QkViewModel<GalleryView, GalleryState>(GalleryState()) {
+) : PvotViewModel<GalleryState>(GalleryState()) {
+
     companion object {
         const val DEFAULT_SHARE_FILENAME = "quik-media-attachment.jpg"
     }
 
+    private var latestPart: MmsPart? = null
+
     init {
-        disposables += Flowable.just(partId)
-            .mapNotNull(messageRepo::getMessageForPart)
-            .mapNotNull { message -> message.threadId }
-            .doOnNext { threadId ->
-                newState {
-                    copy(
-                        parts = messageRepo.getPartsForConversation(
-                            threadId
-                        )
-                    )
-                }
-            }
-            .doOnNext { threadId ->
-                newState {
-                    copy(title = conversationRepo.getConversation(threadId)?.getTitle())
-                }
-            }
-            .subscribe()
+        viewModelScope.launch {
+            val message = messageRepo.getMessageForPart(partId) ?: return@launch
+            val threadId = message.threadId ?: return@launch
+            val parts = messageRepo.getPartsForConversation(threadId)
+            val title = conversationRepo.getConversation(threadId)?.getTitle()
+
+            newState { copy(parts = parts) }
+            newState { copy(title = title) }
+        }
     }
 
-    override fun bindView(view: GalleryView) {
+    fun bindView(view: GalleryView) {
         super.bindView(view)
 
+        // share options menu stream
+        val optionsFlow: SharedFlow<Int> =
+            view.optionsItemSelected()
+                .shareIn(viewModelScope, started = SharingStarted.Eagerly, replay = 0)
+
+        viewModelScope.launch {
+            view.pageChanged()
+                .collect { part ->
+                    latestPart = part
+                }
+        }
+
         // When the screen is touched, toggle the visibility of the navigation UI
-        view.screenTouched()
-            .withLatestFrom(state) { _, state -> state.navigationVisible }
-            .map { navigationVisible -> !navigationVisible }
-            .autoDispose(view.scope())
-            .subscribe { navigationVisible -> newState { copy(navigationVisible = navigationVisible) } }
+        viewModelScope.launch {
+            view.screenTouched()
+                .collect {
+                    val current = state.value
+                    newState { copy(navigationVisible = !current.navigationVisible) }
+                }
+        }
 
         // Save image to device
-        view.optionsItemSelected()
-            .filter { it == R.id.save }
-            .filter { permissions.hasStorage().also { if (!it) view.requestStoragePermission() } }
-            .withLatestFrom(view.pageChanged()) { _, part -> part.id }
-            .autoDispose(view.scope())
-            .subscribe { partId -> saveImage.execute(partId) { context.makeToast(R.string.gallery_toast_saved) } }
+        viewModelScope.launch {
+            optionsFlow
+                .filter { it == R.id.save }
+                .collect {
+                    val part = latestPart ?: return@collect
+
+                    if (!permissions.hasStorage()) {
+                        view.requestStoragePermission()
+                        return@collect
+                    }
+                    saveImage.execute(part.id) {
+                        context.makeToast(R.string.gallery_toast_saved)
+                    }
+                }
+        }
 
         // Share image externally
-        view.optionsItemSelected()
-            .filter { it == R.id.share }
-            .withLatestFrom(view.pageChanged()) { _, part -> part }
-            .autoDispose(view.scope())
-            .subscribe {
-                navigator.shareFile(
-                    MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),
-                    it.type
-                )
-            }
+        viewModelScope.launch {
+            optionsFlow
+                .filter { it == R.id.share }
+                .collect {
+                    val part = latestPart ?: return@collect
+
+                    navigator.shareFile(
+                        MmsPartProvider.getUriForMmsPartId(part.id, part.getBestFilename()),
+                        part.type
+                    )
+                }
+        }
 
         // message part context menu item selected - forward
-        view.optionsItemSelected()
-            .filter { it == R.id.forward }
-            .withLatestFrom(view.pageChanged()) { _, part -> part }
-            .autoDispose(view.scope())
-            .subscribe { navigator.showCompose("", listOf(it.getUri())) }
+        viewModelScope.launch {
+            optionsFlow
+                .filter { it == R.id.forward }
+                .collect {
+                    val part = latestPart ?: return@collect
+                    navigator.showCompose("", listOf(part.getUri()))
+                }
+        }
 
         // message part context menu item selected - open externally
-        view.optionsItemSelected()
-            .filter { it == R.id.openExternally }
-            .withLatestFrom(view.pageChanged()) { _, part -> part }
-            .autoDispose(view.scope())
-            .subscribe {
-                navigator.viewFile(
-                    MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),
-                    it.type
-                )
-            }
-    }
+        viewModelScope.launch {
+            optionsFlow
+                .filter { it == R.id.openExternally }
+                .collect {
+                    val part = latestPart ?: return@collect
 
+                    navigator.viewFile(
+                        MmsPartProvider.getUriForMmsPartId(part.id, part.getBestFilename()),
+                        part.type
+                    )
+                }
+        }
+    }
 }

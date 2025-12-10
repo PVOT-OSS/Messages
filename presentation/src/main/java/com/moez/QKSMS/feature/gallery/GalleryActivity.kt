@@ -28,12 +28,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import dagger.android.AndroidInjection
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.asFlow
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkActivity
 import org.prauga.messages.common.util.DateFormatter
@@ -42,7 +44,8 @@ import org.prauga.messages.databinding.GalleryActivityBinding
 import org.prauga.messages.model.MmsPart
 import javax.inject.Inject
 
-class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate),
+class GalleryActivity :
+    QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate),
     GalleryView {
 
     @Inject
@@ -56,8 +59,10 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
 
     val partId by lazy { intent.getLongExtra("partId", 0L) }
 
-    private val optionsItemSubject: Subject<Int> = PublishSubject.create()
-    private val pageChangedSubject: Subject<MmsPart> = PublishSubject.create()
+    private val _optionsItemSelected = MutableSharedFlow<Int>(extraBufferCapacity = 1)
+    private val _pageChanged = MutableSharedFlow<MmsPart>(extraBufferCapacity = 1)
+    private val _screenTouched = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
     private val viewModel by lazy {
         ViewModelProviders.of(
             this,
@@ -91,14 +96,28 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
                     }
             }
         })
+
+        lifecycleScope.launch {
+            pagerAdapter.clicks
+                .asFlow()
+                .collect {
+                    _screenTouched.emit(Unit)
+                }
+        }
     }
 
     fun onPageSelected(position: Int) {
+        val part = pagerAdapter.getItem(position)
+
         binding.toolbarSubtitle.text = pagerAdapter.getItem(position)?.messages?.firstOrNull()?.date
             ?.let(dateFormatter::getDetailedTimestamp)
         binding.toolbarSubtitle.isVisible = binding.toolbarTitle.text.isNotBlank()
 
-        pagerAdapter.getItem(position)?.run(pageChangedSubject::onNext)
+        if (part != null) {
+            lifecycleScope.launch {
+                _pageChanged.emit(part)
+            }
+        }
     }
 
     override fun render(state: GalleryState) {
@@ -108,11 +127,9 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
         pagerAdapter.updateData(state.parts)
     }
 
-    override fun optionsItemSelected(): Observable<Int> = optionsItemSubject
-
-    override fun screenTouched(): Observable<*> = pagerAdapter.clicks
-
-    override fun pageChanged(): Observable<MmsPart> = pageChangedSubject
+    override fun optionsItemSelected(): Flow<Int> = _optionsItemSelected
+    override fun screenTouched(): Flow<Unit> = _screenTouched
+    override fun pageChanged(): Flow<MmsPart> = _pageChanged
 
     override fun requestStoragePermission() {
         ActivityCompat.requestPermissions(
@@ -130,7 +147,9 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> onBackPressed()
-            else -> optionsItemSubject.onNext(item.itemId)
+            else -> lifecycleScope.launch {
+                _optionsItemSelected.emit(item.itemId)
+            }
         }
         return true
     }

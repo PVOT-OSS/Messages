@@ -22,7 +22,7 @@ abstract class PvotViewModel<State : Any>(
     init {
         viewModelScope.launch {
             reducers
-                .scan(initialState) { current, reduucer -> reduucer(current) }
+                .scan(initialState) { current, reducer -> reducer(current) }
                 .collect { newState -> _state.value = newState }
         }
     }
