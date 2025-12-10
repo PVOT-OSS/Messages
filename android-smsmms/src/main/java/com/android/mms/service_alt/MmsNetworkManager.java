@@ -23,7 +23,6 @@ import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.net.SSLCertificateSocketFactory;
-import android.os.Build;
 import android.os.SystemClock;
 import com.android.mms.service_alt.exception.MmsNetworkException;
 import com.squareup.okhttp.ConnectionPool;
@@ -32,7 +31,7 @@ import timber.log.Timber;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class MmsNetworkManager implements com.squareup.okhttp.internal.Network {
+public class MmsNetworkManager {
 
     // Timeout used to call ConnectivityManager.requestNetwork
     private static final int NETWORK_REQUEST_TIMEOUT_MILLIS = 60 * 1000;
@@ -236,7 +235,6 @@ public class MmsNetworkManager implements com.squareup.okhttp.internal.Network {
 
     private static final InetAddress[] EMPTY_ADDRESS_ARRAY = new InetAddress[0];
 
-    @Override
     public InetAddress[] resolveInetAddresses(String host) throws UnknownHostException {
         Network network = null;
         synchronized (this) {

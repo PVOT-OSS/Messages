@@ -22,8 +22,8 @@ lifecycle-extensions = "2.1.0"
 material = "1.13.0"
 mockito-android = "5.7.0"
 moshi = "1.15.2"
-okhttp = "2.5.0"
-okhttp-version = "4.10.0"
+okhttp2 = "2.7.5"
+okhttp3 = "4.12.0"
 photoview = "2.1.4"
 realm-android-adapters = "3.1.0"
 realm-annotations = "10.19.0"
@@ -83,9 +83,9 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito-and
 moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
 moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "moshi" }
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
-okhttp = { module = "com.squareup.okhttp:okhttp", version.ref = "okhttp" }
-okhttp-urlconnection = { module = "com.squareup.okhttp:okhttp-urlconnection", version.ref = "okhttp" }
-okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp-version" }
+okhttp = { module = "com.squareup.okhttp:okhttp", version.ref = "okhttp2" }
+okhttp-urlconnection = { module = "com.squareup.okhttp:okhttp-urlconnection", version.ref = "okhttp2" }
+okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 photoview = { module = "com.github.chrisbanes:photoview", version.ref = "photoview" }
 realm-android-adapters = { module = "com.github.realm:realm-android-adapters", version.ref = "realm-android-adapters" }
 realm-android-library = { module = "io.realm:realm-android-library", version.ref = "realm-annotations" }

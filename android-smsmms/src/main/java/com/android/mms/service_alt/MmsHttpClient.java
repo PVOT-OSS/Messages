@@ -18,21 +18,24 @@ package com.android.mms.service_alt;
 
 import android.content.Context;
 import android.text.TextUtils;
+
 import com.android.mms.service_alt.exception.MmsHttpException;
 import com.squareup.okhttp.ConnectionPool;
 import com.squareup.okhttp.ConnectionSpec;
+import com.squareup.okhttp.Dns;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Protocol;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.Internal;
 import com.squareup.okhttp.internal.huc.HttpURLConnectionImpl;
 import com.squareup.okhttp.internal.huc.HttpsURLConnectionImpl;
+
 import timber.log.Timber;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -40,6 +43,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -48,6 +52,7 @@ import java.net.ProxySelector;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -86,13 +91,13 @@ public class MmsHttpClient {
     /**
      * Constructor
      *
-     * @param context The Context object
-     * @param socketFactory The socket factory for creating an OKHttp client
-     * @param hostResolver The host name resolver for creating an OKHttp client
+     * @param context        The Context object
+     * @param socketFactory  The socket factory for creating an OKHttp client
+     * @param hostResolver   The host name resolver for creating an OKHttp client
      * @param connectionPool The connection pool for creating an OKHttp client
      */
     public MmsHttpClient(Context context, SocketFactory socketFactory, MmsNetworkManager hostResolver,
-            ConnectionPool connectionPool) {
+                         ConnectionPool connectionPool) {
         mContext = context;
         mSocketFactory = socketFactory;
         mHostResolver = hostResolver;
@@ -102,19 +107,19 @@ public class MmsHttpClient {
     /**
      * Execute an MMS HTTP request, either a POST (sending) or a GET (downloading)
      *
-     * @param urlString The request URL, for sending it is usually the MMSC, and for downloading
-     *                  it is the message URL
-     * @param pdu For POST (sending) only, the PDU to send
-     * @param method HTTP method, POST for sending and GET for downloading
+     * @param urlString  The request URL, for sending it is usually the MMSC, and for downloading
+     *                   it is the message URL
+     * @param pdu        For POST (sending) only, the PDU to send
+     * @param method     HTTP method, POST for sending and GET for downloading
      * @param isProxySet Is there a proxy for the MMSC
-     * @param proxyHost The proxy host
-     * @param proxyPort The proxy port
-     * @param mmsConfig The MMS config to use
+     * @param proxyHost  The proxy host
+     * @param proxyPort  The proxy port
+     * @param mmsConfig  The MMS config to use
      * @return The HTTP response body
      * @throws MmsHttpException For any failures
      */
     public byte[] execute(String urlString, byte[] pdu, String method, boolean isProxySet,
-            String proxyHost, int proxyPort, MmsConfig.Overridden mmsConfig)
+                          String proxyHost, int proxyPort, MmsConfig.Overridden mmsConfig)
             throws MmsHttpException {
         Timber.d("HTTP: " + method + " " + urlString
                 + (isProxySet ? (", proxy=" + proxyHost + ":" + proxyPort) : "")
@@ -214,13 +219,13 @@ public class MmsHttpClient {
 
     /**
      * Open an HTTP connection
-     *
+     * <p>
      * TODO: The following code is borrowed from android.net.Network.openConnection
      * Once that method supports proxy, we should use that instead
      * Also we should remove the associated HostResolver and ConnectionPool from
      * MmsNetworkManager
      *
-     * @param url The URL to connect to
+     * @param url   The URL to connect to
      * @param proxy The proxy to use
      * @return The opened HttpURLConnection
      * @throws MalformedURLException If URL is malformed
@@ -228,6 +233,26 @@ public class MmsHttpClient {
     private HttpURLConnection openConnection(URL url, final Proxy proxy) throws MalformedURLException {
         final String protocol = url.getProtocol();
         OkHttpClient okHttpClient;
+
+        Dns resolverDns = new Dns() {
+            @Override
+            public List<InetAddress> lookup(String hostname) throws UnknownHostException {
+                try {
+                    InetAddress[] addrs = mHostResolver.resolveInetAddresses(hostname);
+                    if (addrs == null || addrs.length == 0) {
+                        throw new UnknownHostException("No addresses for " + hostname);
+                    }
+                    return Arrays.asList(addrs);
+                } catch (UnknownHostException e) {
+                    throw e;
+                } catch (Exception e) {
+                    UnknownHostException uhe = new UnknownHostException("Failed to resolve " + hostname);
+                    uhe.initCause(e);
+                    throw uhe;
+                }
+            }
+        };
+
         if (protocol.equals("http")) {
             okHttpClient = new OkHttpClient();
             okHttpClient.setFollowRedirects(false);
@@ -260,8 +285,14 @@ public class MmsHttpClient {
             });
             okHttpClient.setConnectionSpecs(Arrays.asList(ConnectionSpec.CLEARTEXT));
             okHttpClient.setConnectionPool(new ConnectionPool(3, 60000));
-            okHttpClient.setSocketFactory(SocketFactory.getDefault());
-            Internal.instance.setNetwork(okHttpClient, mHostResolver);
+
+            okHttpClient.setDns(resolverDns);
+
+            if (mSocketFactory != null) {
+                okHttpClient.setSocketFactory(mSocketFactory);
+            } else {
+                okHttpClient.setSocketFactory(SocketFactory.getDefault());
+            }
 
             if (proxy != null) {
                 okHttpClient.setProxy(proxy);
@@ -298,7 +329,8 @@ public class MmsHttpClient {
             });
             okHttpClient.setConnectionSpecs(Arrays.asList(ConnectionSpec.CLEARTEXT));
             okHttpClient.setConnectionPool(new ConnectionPool(3, 60000));
-            Internal.instance.setNetwork(okHttpClient, mHostResolver);
+
+            okHttpClient.setDns(resolverDns);
 
             return new HttpsURLConnectionImpl(url, okHttpClient);
         } else {
@@ -385,6 +417,7 @@ public class MmsHttpClient {
     }
 
     private static final Pattern MACRO_P = Pattern.compile("##(\\S+)##");
+
     /**
      * Resolve the macro in HTTP param value text
      * For example, "something##LINE1##something" is resolved to "something9139531419something"
@@ -393,7 +426,7 @@ public class MmsHttpClient {
      * @return The HTTP param with macro resolved to real value
      */
     private static String resolveMacro(Context context, String value,
-            MmsConfig.Overridden mmsConfig) {
+                                       MmsConfig.Overridden mmsConfig) {
         if (TextUtils.isEmpty(value)) {
             return value;
         }
@@ -429,7 +462,7 @@ public class MmsHttpClient {
      * macros like "##LINE1##" or "##NAI##" which is resolved with methods in this class
      *
      * @param connection The HttpURLConnection that we add headers to
-     * @param mmsConfig The MmsConfig object
+     * @param mmsConfig  The MmsConfig object
      */
     private void addExtraHeaders(HttpURLConnection connection, MmsConfig.Overridden mmsConfig) {
         final String extraHttpParams = mmsConfig.getHttpParams();
