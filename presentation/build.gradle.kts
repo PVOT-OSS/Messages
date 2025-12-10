@@ -83,16 +83,6 @@ android {
         includeInBundle = false
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    // kotlinOptions inside android block (Kotlin DSL)
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
     lint {
         abortOnError = false
     }
