@@ -29,7 +29,8 @@ open class QkTextView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : AppCompatTextView(context, attrs) {
 
-    @Inject lateinit var textViewStyler: TextViewStyler
+    @Inject
+    lateinit var textViewStyler: TextViewStyler
 
     /**
      * Collapse a multiline list of strings into a single line
@@ -59,15 +60,15 @@ open class QkTextView @JvmOverloads constructor(
 
         if (collapseEnabled) {
             layout
-                    ?.takeIf { layout -> layout.lineCount > 0 }
-                    ?.let { layout -> layout.getEllipsisCount(layout.lineCount - 1) }
-                    ?.takeIf { ellipsisCount -> ellipsisCount > 0 }
-                    ?.let { ellipsisCount -> text.dropLast(ellipsisCount).lastIndexOf(',') }
-                    ?.takeIf { lastComma -> lastComma >= 0 }
-                    ?.let { lastComma ->
-                        val remainingNames = text.drop(lastComma).count { c -> c == ',' }
-                        text = "${text.take(lastComma)}, +$remainingNames"
-                    }
+                ?.takeIf { layout -> layout.lineCount > 0 }
+                ?.let { layout -> layout.getEllipsisCount(layout.lineCount - 1) }
+                ?.takeIf { ellipsisCount -> ellipsisCount > 0 }
+                ?.let { ellipsisCount -> text.dropLast(ellipsisCount).lastIndexOf(',') }
+                ?.takeIf { lastComma -> lastComma >= 0 }
+                ?.let { lastComma ->
+                    val remainingNames = text.drop(lastComma).count { c -> c == ',' }
+                    text = "${text.take(lastComma)}, +$remainingNames"
+                }
         }
     }
 

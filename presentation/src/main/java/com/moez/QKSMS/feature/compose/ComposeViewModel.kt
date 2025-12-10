@@ -38,7 +38,16 @@ import com.moez.QKSMS.manager.MediaRecorderManager.AUDIO_FILE_PREFIX
 import com.moez.QKSMS.manager.MediaRecorderManager.AUDIO_FILE_SUFFIX
 import com.moez.QKSMS.util.Constants.Companion.SAVED_MESSAGE_TEXT_FILE_PREFIX
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.Observables
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.rxkotlin.withLatestFrom
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -78,15 +87,6 @@ import org.prauga.messages.util.FileUtils
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
 import org.prauga.messages.util.tryOrNull
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.Observables
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.rxkotlin.withLatestFrom
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -124,12 +124,15 @@ class ComposeViewModel @Inject constructor(
     private val sendMessage: SendMessage,
     private val subscriptionManager: SubscriptionManagerCompat,
     private val saveImage: SaveImage,
-) : QkViewModel<ComposeView, ComposeState>(ComposeState(
+) : QkViewModel<ComposeView, ComposeState>(
+    ComposeState(
         editingMode = threadId == 0L && addresses.isEmpty(),
         threadId = threadId,
-        query = query)
+        query = query
+    )
 ) {
-    private val chipsReducer: Subject<(List<Recipient>) -> List<Recipient>> = PublishSubject.create()
+    private val chipsReducer: Subject<(List<Recipient>) -> List<Recipient>> =
+        PublishSubject.create()
     private val conversation: Subject<Conversation> = BehaviorSubject.create()
     private val messages: Subject<List<Message>> = BehaviorSubject.create()
     private val selectedChips: Subject<List<Recipient>> = BehaviorSubject.createDefault(listOf())
@@ -145,11 +148,11 @@ class ComposeViewModel @Inject constructor(
         // set shared subscription into state if set
         subscriptionManager.activeSubscriptionInfoList.firstOrNull {
             it.subscriptionId == sharedSubscriptionId
-        }?.let { newState { copy(subscription = it)} }
+        }?.let { newState { copy(subscription = it) } }
 
         // set shared scheduled datetime into state if set
         if (sharedScheduledDateTime != 0L)
-            newState { copy (scheduled = sharedScheduledDateTime) }
+            newState { copy(scheduled = sharedScheduledDateTime) }
 
         // set shared sendAsGroup into state if set
         if (sharedSendAsGroup != null)
@@ -179,7 +182,7 @@ class ComposeViewModel @Inject constructor(
                     .switchMap { conversationId ->
                         conversationRepo.getConversationAsync(conversationId).asObservable()
                     }
-                }
+            }
 
         // Merges two potential conversation sources (constructor threadId and contact selection)
         // into a single stream of conversations. If the conversation was deleted, notify the
@@ -194,42 +197,47 @@ class ComposeViewModel @Inject constructor(
             selectedChips.onNext(addresses.map { address -> Recipient(address = address) })
 
         disposables += chipsReducer
-                .scan(listOf<Recipient>()) { previousState, reducer -> reducer(previousState) }
-                .doOnNext { chips -> newState { copy(selectedChips = chips) } }
-                .skipUntil(state.filter { state -> state.editingMode })
-                .takeUntil(state.filter { state -> !state.editingMode })
-                .subscribe(selectedChips::onNext)
+            .scan(listOf<Recipient>()) { previousState, reducer -> reducer(previousState) }
+            .doOnNext { chips -> newState { copy(selectedChips = chips) } }
+            .skipUntil(state.filter { state -> state.editingMode })
+            .takeUntil(state.filter { state -> !state.editingMode })
+            .subscribe(selectedChips::onNext)
 
         // When the conversation changes, mark read, and update the recipientId and the messages for the adapter
         disposables += conversation
-                .distinctUntilChanged { conversation -> conversation.id }
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { conversation ->
-                    val messages = messageRepo.getMessages(conversation.id)
-                    newState { copy(threadId = conversation.id, messages = Pair(conversation, messages)) }
-                    messages
+            .distinctUntilChanged { conversation -> conversation.id }
+            .observeOn(AndroidSchedulers.mainThread())
+            .map { conversation ->
+                val messages = messageRepo.getMessages(conversation.id)
+                newState {
+                    copy(
+                        threadId = conversation.id,
+                        messages = Pair(conversation, messages)
+                    )
                 }
-                .switchMap { messages -> messages.asObservable() }
-                .subscribe(messages::onNext)
+                messages
+            }
+            .switchMap { messages -> messages.asObservable() }
+            .subscribe(messages::onNext)
 
         disposables += conversation
-                .map { conversation -> conversation.getTitle() }
-                .distinctUntilChanged()
-                .subscribe { title -> newState { copy(conversationtitle = title) } }
+            .map { conversation -> conversation.getTitle() }
+            .distinctUntilChanged()
+            .subscribe { title -> newState { copy(conversationtitle = title) } }
 
         disposables += prefs.sendAsGroup.asObservable()
-                .distinctUntilChanged()
-                .subscribe { enabled -> newState { copy(sendAsGroup = enabled) } }
+            .distinctUntilChanged()
+            .subscribe { enabled -> newState { copy(sendAsGroup = enabled) } }
 
         disposables += conversation
-                .map { conversation -> conversation.id }
-                .distinctUntilChanged()
-                .withLatestFrom(state) { id, state -> messageRepo.getMessages(id, state.query) }
-                .switchMap { messages -> messages.asObservable() }
-                .takeUntil(state.map { it.query }.filter { it.isEmpty() })
-                .filter { messages -> messages.isLoaded }
-                .filter { messages -> messages.isValid }
-                .subscribe(searchResults::onNext)
+            .map { conversation -> conversation.id }
+            .distinctUntilChanged()
+            .withLatestFrom(state) { id, state -> messageRepo.getMessages(id, state.query) }
+            .switchMap { messages -> messages.asObservable() }
+            .takeUntil(state.map { it.query }.filter { it.isEmpty() })
+            .filter { messages -> messages.isLoaded }
+            .filter { messages -> messages.isValid }
+            .subscribe(searchResults::onNext)
 
         // on conversation change/init, work out how many non-me participants of the conversation
         // have a valid address (subscriber number) for replying/sending to
@@ -248,7 +256,10 @@ class ComposeViewModel @Inject constructor(
                 newState { copy(validRecipientNumbers = validRecipientNumbers) }
             }
 
-        disposables += Observables.combineLatest(searchSelection, searchResults) { selected, messages ->
+        disposables += Observables.combineLatest(
+            searchSelection,
+            searchResults
+        ) { selected, messages ->
             if (selected == -1L) {
                 messages.lastOrNull()?.let { message -> searchSelection.onNext(message.id) }
             } else {
@@ -258,12 +269,13 @@ class ComposeViewModel @Inject constructor(
         }.subscribe()
 
         val latestSubId = messages
-                .map { messages -> messages.lastOrNull()?.subId ?: -1 }
-                .distinctUntilChanged()
+            .map { messages -> messages.lastOrNull()?.subId ?: -1 }
+            .distinctUntilChanged()
 
         val subscriptions = ActiveSubscriptionObservable(subscriptionManager)
         disposables += Observables.combineLatest(latestSubId, subscriptions) { subId, subs ->
-            val sub = if (subs.size > 1) subs.firstOrNull { it.subscriptionId == subId } ?: subs[0] else null
+            val sub = if (subs.size > 1) subs.firstOrNull { it.subscriptionId == subId }
+                ?: subs[0] else null
             newState { copy(subscription = sub) }
         }.subscribe()
 
@@ -305,63 +317,69 @@ class ComposeViewModel @Inject constructor(
         }
 
         view.chipsSelectedIntent
-                .withLatestFrom(selectedChips) { hashmap, chips ->
-                    // Filter out any numbers that are already selected
-                    hashmap.filter { (address) ->
-                        chips.none { recipient -> phoneNumberUtils.compare(address, recipient.address) }
-                    }
+            .withLatestFrom(selectedChips) { hashmap, chips ->
+                // Filter out any numbers that are already selected
+                hashmap.filter { (address) ->
+                    chips.none { recipient -> phoneNumberUtils.compare(address, recipient.address) }
                 }
-                .filter { hashmap -> hashmap.isNotEmpty() }
-                .map { hashmap ->
-                    hashmap.map { (address, lookupKey) ->
-                        conversationRepo.getRecipients()
-                                .asSequence()
-                                .filter { recipient -> recipient.contact?.lookupKey == lookupKey }
-                                .firstOrNull { recipient -> phoneNumberUtils.compare(recipient.address, address) }
-                                ?: Recipient(
-                                        address = address,
-                                        contact = lookupKey?.let(contactRepo::getUnmanagedContact))
-                    }
+            }
+            .filter { hashmap -> hashmap.isNotEmpty() }
+            .map { hashmap ->
+                hashmap.map { (address, lookupKey) ->
+                    conversationRepo.getRecipients()
+                        .asSequence()
+                        .filter { recipient -> recipient.contact?.lookupKey == lookupKey }
+                        .firstOrNull { recipient ->
+                            phoneNumberUtils.compare(
+                                recipient.address,
+                                address
+                            )
+                        }
+                        ?: Recipient(
+                            address = address,
+                            contact = lookupKey?.let(contactRepo::getUnmanagedContact)
+                        )
                 }
-                .autoDisposable(view.scope())
-                .subscribe { chips ->
-                    chipsReducer.onNext { list -> list + chips }
-                    view.showKeyboard()
-                }
+            }
+            .autoDispose(view.scope())
+            .subscribe { chips ->
+                chipsReducer.onNext { list -> list + chips }
+                view.showKeyboard()
+            }
 
         // Set the contact suggestions list to visible when the add button is pressed
         view.optionsItemIntent
-                .filter { it == R.id.add }
-                .withLatestFrom(selectedChips) { _, chips ->
-                    newState { copy(saveDraft = false) }  // do not save draft on next activity invisibility
-                    view.showContacts(sharing, chips)
-                }
-                .autoDisposable(view.scope())
-                .subscribe()
+            .filter { it == R.id.add }
+            .withLatestFrom(selectedChips) { _, chips ->
+                newState { copy(saveDraft = false) }  // do not save draft on next activity invisibility
+                view.showContacts(sharing, chips)
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         // Update the list of selected contacts when a new contact is selected or an existing one is deselected
         view.chipDeletedIntent
-                .autoDisposable(view.scope())
-                .subscribe { contact ->
-                    chipsReducer.onNext { contacts ->
-                        val result = contacts.filterNot { it == contact }
-                        if (result.isEmpty()) {
-                            view.showContacts(sharing, result)
-                        }
-                        result
+            .autoDispose(view.scope())
+            .subscribe { contact ->
+                chipsReducer.onNext { contacts ->
+                    val result = contacts.filterNot { it == contact }
+                    if (result.isEmpty()) {
+                        view.showContacts(sharing, result)
                     }
+                    result
                 }
+            }
 
         // When the menu is loaded, trigger a new state so that the menu options can be rendered correctly
         view.menuReadyIntent
-                .autoDisposable(view.scope())
-                .subscribe { newState { copy() } }
+            .autoDispose(view.scope())
+            .subscribe { newState { copy() } }
 
         // Show scheduled messages
         view.optionsItemIntent
-            .filter {it == R.id.viewScheduledMessages}
+            .filter { it == R.id.viewScheduledMessages }
             .withLatestFrom(state, conversation)
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { (_, _, conversation) ->
                 navigator.showScheduled(conversation.id)
             }
@@ -369,7 +387,7 @@ class ComposeViewModel @Inject constructor(
         // toggle select all / select none
         view.optionsItemIntent
             .filter { it == R.id.select_all }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.toggleSelectAll() }
 
         // Open the phone dialer if the call button is clicked
@@ -380,30 +398,30 @@ class ComposeViewModel @Inject constructor(
                 state.messages?.second?.lastOrNull { !it.isMe() }?.address // most recent non-me msg address
                     ?: conversation.recipients.firstOrNull()?.address  // first recipient in convo
             }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { navigator.makePhoneCall(it) }
 
         // Open the conversation settings if info button is clicked
         view.optionsItemIntent
-                .filter { it == R.id.info }
-                .withLatestFrom(conversation) { _, conversation -> conversation }
-                .autoDisposable(view.scope())
-                .subscribe { conversation -> navigator.showConversationInfo(conversation.id) }
+            .filter { it == R.id.info }
+            .withLatestFrom(conversation) { _, conversation -> conversation }
+            .autoDispose(view.scope())
+            .subscribe { conversation -> navigator.showConversationInfo(conversation.id) }
 
         // Copy the message contents
         view.optionsItemIntent
-                .filter { it == R.id.copy }
-                .withLatestFrom(view.messagesSelectedIntent) { _, messageIds ->
-                    ClipboardUtils.copy(
-                        context,
-                        messageIds
-                            .mapNotNull(messageRepo::getMessage)
-                            .sortedBy { it.date }
-                            .getText()
-                    )
-                }
-                .autoDisposable(view.scope())
-                .subscribe { view.clearSelection() }
+            .filter { it == R.id.copy }
+            .withLatestFrom(view.messagesSelectedIntent) { _, messageIds ->
+                ClipboardUtils.copy(
+                    context,
+                    messageIds
+                        .mapNotNull(messageRepo::getMessage)
+                        .sortedBy { it.date }
+                        .getText()
+                )
+            }
+            .autoDispose(view.scope())
+            .subscribe { view.clearSelection() }
 
         // share the message text contents
         view.optionsItemIntent
@@ -415,22 +433,23 @@ class ComposeViewModel @Inject constructor(
                     SimpleDateFormat(
                         "yyyy-MM-dd-HH-mm-ss",
                         Locale.getDefault()
-                    ).format(System.currentTimeMillis())}.txt"
+                    ).format(System.currentTimeMillis())
+                }.txt"
 
                 val mimeType = "${MimeTypes.BASE_TYPE_TEXT}/plain"
 
                 // save all messages text to a file in cache
                 val (uri, e) = FileUtils.createAndWrite(
-                        context,
-                        FileUtils.Companion.Location.Cache,
-                        filename,
-                        mimeType,
-                        messageIds
-                            .mapNotNull(messageRepo::getMessage)
-                            .sortedBy { it.date }
-                            .getText()
-                            .toByteArray()
-                    )
+                    context,
+                    FileUtils.Companion.Location.Cache,
+                    filename,
+                    mimeType,
+                    messageIds
+                        .mapNotNull(messageRepo::getMessage)
+                        .sortedBy { it.date }
+                        .getText()
+                        .toByteArray()
+                )
 
                 if (e is Exception)
                     Pair(filename, e)
@@ -461,25 +480,25 @@ class ComposeViewModel @Inject constructor(
                 else
                     Timber.d("Created and shared messages text file: $filename", e)
             }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.clearSelection() }
 
         // Show the message details
         view.optionsItemIntent
-                .filter { it == R.id.details }
-                .withLatestFrom(view.messagesSelectedIntent) { _, messages -> messages }
-                .mapNotNull { messages -> messages.firstOrNull().also { view.clearSelection() } }
-                .mapNotNull(messageRepo::getMessage)
-                .map(messageDetailsFormatter::format)
-                .autoDisposable(view.scope())
-                .subscribe { view.showDetails(it) }
+            .filter { it == R.id.details }
+            .withLatestFrom(view.messagesSelectedIntent) { _, messages -> messages }
+            .mapNotNull { messages -> messages.firstOrNull().also { view.clearSelection() } }
+            .mapNotNull(messageRepo::getMessage)
+            .map(messageDetailsFormatter::format)
+            .autoDispose(view.scope())
+            .subscribe { view.showDetails(it) }
 
         // Show the delete message dialog if one or more messages selected
         view.optionsItemIntent
             .filter { it == R.id.delete }
             .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages -> selectedMessages }
             .filter { permissionManager.isDefaultSms().also { if (!it) view.requestDefaultSms() } }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.showDeleteDialog(it) }
 
         // show the clear current message dialog if no messages selected
@@ -487,7 +506,7 @@ class ComposeViewModel @Inject constructor(
             .filter { it == R.id.delete }
             .withLatestFrom(state) { _, state -> state }
             .filter { it.selectedMessages == 0 }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.showClearCurrentMessageDialog() }
 
         // Forward the message
@@ -501,14 +520,14 @@ class ComposeViewModel @Inject constructor(
                     )
                 }
             }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.clearSelection() }
 
         // expand message to show additional info
         view.optionsItemIntent
             .filter { it == R.id.show_status }
             .withLatestFrom(view.messagesSelectedIntent) { _, messages -> messages }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { messageIds ->
                 view.expandMessages(messageIds, true)
                 view.clearSelection()
@@ -516,41 +535,44 @@ class ComposeViewModel @Inject constructor(
 
         // Show the previous search result
         view.optionsItemIntent
-                .filter { it == R.id.previous }
-                .withLatestFrom(searchSelection, searchResults) { _, selection, messages ->
-                    val currentPosition = messages.indexOfFirst { it.id == selection }
-                    if (currentPosition <= 0L) messages.lastOrNull()?.id ?: -1
-                    else messages.getOrNull(currentPosition - 1)?.id ?: -1
-                }
-                .filter { id -> id != -1L }
-                .autoDisposable(view.scope())
-                .subscribe(searchSelection)
+            .filter { it == R.id.previous }
+            .withLatestFrom(searchSelection, searchResults) { _, selection, messages ->
+                val currentPosition = messages.indexOfFirst { it.id == selection }
+                if (currentPosition <= 0L) messages.lastOrNull()?.id ?: -1
+                else messages.getOrNull(currentPosition - 1)?.id ?: -1
+            }
+            .filter { id -> id != -1L }
+            .autoDispose(view.scope())
+            .subscribe(searchSelection)
 
         // Show the next search result
         view.optionsItemIntent
-                .filter { it == R.id.next }
-                .withLatestFrom(searchSelection, searchResults) { _, selection, messages ->
-                    val currentPosition = messages.indexOfFirst { it.id == selection }
-                    if (currentPosition >= messages.size - 1) messages.firstOrNull()?.id ?: -1
-                    else messages.getOrNull(currentPosition + 1)?.id ?: -1
-                }
-                .filter { id -> id != -1L }
-                .autoDisposable(view.scope())
-                .subscribe(searchSelection)
+            .filter { it == R.id.next }
+            .withLatestFrom(searchSelection, searchResults) { _, selection, messages ->
+                val currentPosition = messages.indexOfFirst { it.id == selection }
+                if (currentPosition >= messages.size - 1) messages.firstOrNull()?.id ?: -1
+                else messages.getOrNull(currentPosition + 1)?.id ?: -1
+            }
+            .filter { id -> id != -1L }
+            .autoDispose(view.scope())
+            .subscribe(searchSelection)
 
         // Clear the search
         view.optionsItemIntent
-                .filter { it == R.id.clear }
-                .autoDisposable(view.scope())
-                .subscribe { newState { copy(query = "", searchSelectionId = -1) } }
+            .filter { it == R.id.clear }
+            .autoDispose(view.scope())
+            .subscribe { newState { copy(query = "", searchSelectionId = -1) } }
 
         // message part context menu item selected - save
         view.contextItemIntent
             .filter { it.itemId == R.id.save }
-            .filter { permissionManager.hasStorage().also { if (!it) view.requestStoragePermission() } }
-            .autoDisposable(view.scope())
+            .filter {
+                permissionManager.hasStorage().also { if (!it) view.requestStoragePermission() }
+            }
+            .autoDispose(view.scope())
             .subscribe {
-                val menuInfo = it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
+                val menuInfo =
+                    it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
                 if (menuInfo.viewHolderValue != null)
                     saveImage.execute(menuInfo.viewHolderValue.id) {
                         context.makeToast(R.string.gallery_toast_saved)
@@ -560,9 +582,10 @@ class ComposeViewModel @Inject constructor(
         // message part context menu item selected - share
         view.contextItemIntent
             .filter { it.itemId == R.id.share }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
-                val menuInfo = it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
+                val menuInfo =
+                    it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
                 if (menuInfo.viewHolderValue != null)
                     navigator.shareFile(
                         MmsPartProvider.getUriForMmsPartId(
@@ -576,9 +599,10 @@ class ComposeViewModel @Inject constructor(
         // message part context menu item selected - forward
         view.contextItemIntent
             .filter { it.itemId == R.id.forward }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
-                val menuInfo = it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
+                val menuInfo =
+                    it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
                 if (menuInfo.viewHolderValue != null)
                     navigator.showCompose("", listOf(menuInfo.viewHolderValue.getUri()))
             }
@@ -586,9 +610,10 @@ class ComposeViewModel @Inject constructor(
         // message part context menu item selected - open externally
         view.contextItemIntent
             .filter { it.itemId == R.id.openExternally }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
-                val menuInfo = it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
+                val menuInfo =
+                    it.menuInfo as QkContextMenuRecyclerView.ContextMenuInfo<Long, MmsPart>
                 if (menuInfo.viewHolderValue != null)
                     navigator.viewFile(
                         MmsPartProvider.getUriForMmsPartId(
@@ -601,78 +626,81 @@ class ComposeViewModel @Inject constructor(
 
         // Toggle the group sending mode
         view.sendAsGroupIntent
-                .autoDisposable(view.scope())
-                .subscribe { prefs.sendAsGroup.set(!prefs.sendAsGroup.get()) }
+            .autoDispose(view.scope())
+            .subscribe { prefs.sendAsGroup.set(!prefs.sendAsGroup.get()) }
 
         // Scroll to search position
         searchSelection
-                .filter { id -> id != -1L }
-                .doOnNext { id -> newState { copy(searchSelectionId = id) } }
-                .autoDisposable(view.scope())
-                .subscribe(view::scrollToMessage)
+            .filter { id -> id != -1L }
+            .doOnNext { id -> newState { copy(searchSelectionId = id) } }
+            .autoDispose(view.scope())
+            .subscribe(view::scrollToMessage)
 
         // Theme changes
         prefs.keyChanges
-                .filter { key -> key.contains("theme") }
-                .doOnNext { view.themeChanged() }
-                .autoDisposable(view.scope())
-                .subscribe()
+            .filter { key -> key.contains("theme") }
+            .doOnNext { view.themeChanged() }
+            .autoDispose(view.scope())
+            .subscribe()
 
         // Media attachment clicks
         view.messagePartClickIntent
-                .mapNotNull(messageRepo::getPart)
-                .filter { part -> part.isImage() || part.isVideo() }
-                .autoDisposable(view.scope())
-                .subscribe { part -> navigator.showMedia(part.id) }
+            .mapNotNull(messageRepo::getPart)
+            .filter { part -> part.isImage() || part.isVideo() }
+            .autoDispose(view.scope())
+            .subscribe { part -> navigator.showMedia(part.id) }
 
         // Non-media attachment clicks
         view.messagePartClickIntent
-                .mapNotNull(messageRepo::getPart)
-                .filter { part -> !part.isImage() && !part.isVideo() }
-                .autoDisposable(view.scope())
-                .subscribe {
-                    navigator.viewFile(
-                        MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),
-                        it.type
-                    )
-                }
+            .mapNotNull(messageRepo::getPart)
+            .filter { part -> !part.isImage() && !part.isVideo() }
+            .autoDispose(view.scope())
+            .subscribe {
+                navigator.viewFile(
+                    MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),
+                    it.type
+                )
+            }
 
         // Update the State when the message selected count changes
         view.messagesSelectedIntent
-                .map {
-                    Pair(
-                        it.size,
-                        it.any { messageRepo.getMessage(it)?.hasNonWhitespaceText() ?: false }
+            .map {
+                Pair(
+                    it.size,
+                    it.any { messageRepo.getMessage(it)?.hasNonWhitespaceText() ?: false }
+                )
+            }
+            .autoDispose(view.scope())
+            .subscribe {
+                newState {
+                    copy(
+                        selectedMessages = it.first,
+                        selectedMessagesHaveText = it.second,
+                        editingMode = false
                     )
                 }
-                .autoDisposable(view.scope())
-                .subscribe {
-                    newState {
-                        copy(
-                            selectedMessages = it.first,
-                            selectedMessagesHaveText = it.second,
-                            editingMode = false
-                        )
-                    }
-                }
+            }
 
         // Cancel sending a message
         view.cancelSendingIntent
-                .mapNotNull(messageRepo::getMessage)
-                .doOnNext { message -> view.setDraft(message.getText(false)) }
-                .autoDisposable(view.scope())
-                .subscribe { message ->
-                    cancelMessage.execute(CancelDelayedMessage.Params(message.id, message.threadId))
-                }
+            .mapNotNull(messageRepo::getMessage)
+            .doOnNext { message -> view.setDraft(message.getText(false)) }
+            .autoDispose(view.scope())
+            .subscribe { message ->
+                cancelMessage.execute(CancelDelayedMessage.Params(message.id, message.threadId))
+            }
 
         // send a delayed message now
         view.sendNowIntent
             .mapNotNull(messageRepo::getMessage)
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { message ->
                 cancelMessage.execute(CancelDelayedMessage.Params(message.id, message.threadId))
-                val address = listOf(conversationRepo
-                    .getConversation(threadId)?.recipients?.firstOrNull()?.address ?: message.address)
+                val address = listOf(
+                    conversationRepo
+                        .getConversation(threadId)?.recipients?.firstOrNull()?.address
+                        ?: message.address
+                )
                 sendMessage.execute(
                     SendMessage.Params(
                         message.subId,
@@ -690,164 +718,170 @@ class ComposeViewModel @Inject constructor(
             .mapNotNull(messageRepo::getMessage)
             .filter { message -> message.isFailedMessage() }
             .doOnNext { message -> retrySending.execute(message.id) }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe()
 
         // Show the message details
         view.messageLinkAskIntent
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.showMessageLinkAskDialog(it) }
 
         // Set the current conversation
         Observables
-                .combineLatest(
-                        view.activityVisibleIntent.distinctUntilChanged(),
-                        conversation.mapNotNull { conversation ->
-                            conversation.takeIf { it.isValid }?.id
-                        }.distinctUntilChanged())
-                { visible, threadId ->
-                    when (visible) {
-                        true -> {
-                            activeConversationManager.setActiveConversation(threadId)
-                            markRead.execute(listOf(threadId))
-                        }
-
-                        false -> activeConversationManager.setActiveConversation(null)
+            .combineLatest(
+                view.activityVisibleIntent.distinctUntilChanged(),
+                conversation.mapNotNull { conversation ->
+                    conversation.takeIf { it.isValid }?.id
+                }.distinctUntilChanged()
+            )
+            { visible, threadId ->
+                when (visible) {
+                    true -> {
+                        activeConversationManager.setActiveConversation(threadId)
+                        markRead.execute(listOf(threadId))
                     }
+
+                    false -> activeConversationManager.setActiveConversation(null)
                 }
-                .autoDisposable(view.scope())
-                .subscribe()
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         // Save draft when the activity goes into the background
         view.activityVisibleIntent
-                .filter { visible -> !visible }
-                .withLatestFrom(conversation) { _, conversation -> conversation }
-                .mapNotNull { conversation -> conversation.takeIf { it.isValid }?.id }
-                .observeOn(Schedulers.io())
-                .withLatestFrom(view.textChangedIntent, state) { threadId, draftText, state ->
-                    if (state.saveDraft)
-                        conversationRepo.saveDraft(
-                            threadId,
-                            if (draftText.isNotBlank()) draftText.toString()
-                            else ""
-                        )
+            .filter { visible -> !visible }
+            .withLatestFrom(conversation) { _, conversation -> conversation }
+            .mapNotNull { conversation -> conversation.takeIf { it.isValid }?.id }
+            .observeOn(Schedulers.io())
+            .withLatestFrom(view.textChangedIntent, state) { threadId, draftText, state ->
+                if (state.saveDraft)
+                    conversationRepo.saveDraft(
+                        threadId,
+                        if (draftText.isNotBlank()) draftText.toString()
+                        else ""
+                    )
 
-                    // remove attachments
-                    state.attachments.forEach { it.removeCacheFile() }
+                // remove attachments
+                state.attachments.forEach { it.removeCacheFile() }
 
-                    newState { copy(saveDraft = true) }
-                }
-                .autoDisposable(view.scope())
-                .subscribe()
+                newState { copy(saveDraft = true) }
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         // Open the attachment options
         view.attachIntent
-                .autoDisposable(view.scope())
-                .subscribe { newState { copy(attaching = !attaching) } }
+            .autoDispose(view.scope())
+            .subscribe { newState { copy(attaching = !attaching) } }
 
         // Attach a photo from camera
         view.cameraIntent
-                .autoDisposable(view.scope())
-                .subscribe {
-                    newState { copy(attaching = false) }
-                    view.requestCamera()
-                }
+            .autoDispose(view.scope())
+            .subscribe {
+                newState { copy(attaching = false) }
+                view.requestCamera()
+            }
 
         // pick a photo (specifically) from image provider apps
         view.attachImageFileIntent
             .doOnNext { newState { copy(attaching = false) } }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.requestGallery("image/*", ComposeView.AttachAFileRequestCode) }
 
         // pick any file from any provider apps
         view.attachAnyFileIntent
             .doOnNext { newState { copy(attaching = false) } }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.requestGallery("*/*", ComposeView.AttachAFileRequestCode) }
 
         // Choose a time to schedule the message
         view.scheduleIntent
-                .doOnNext { newState { copy(attaching = false) } }
-                .withLatestFrom(billingManager.upgradeStatus) { _, upgraded -> upgraded }
-                .filter { upgraded ->
-                    upgraded.also { if (!upgraded) view.showQksmsPlusSnackbar(R.string.compose_scheduled_plus) }
-                }
-                .autoDisposable(view.scope())
-                .subscribe { view.requestDatePicker() }
+            .doOnNext { newState { copy(attaching = false) } }
+            .withLatestFrom(billingManager.upgradeStatus) { _, upgraded -> upgraded }
+            .filter { upgraded ->
+                upgraded.also { if (!upgraded) view.showQksmsPlusSnackbar(R.string.compose_scheduled_plus) }
+            }
+            .autoDispose(view.scope())
+            .subscribe { view.requestDatePicker() }
 
         view.scheduleAction
             .take(1)
-            .doOnNext{ newState { copy(scheduling = false) } }
-            .autoDisposable(view.scope())
+            .doOnNext { newState { copy(scheduling = false) } }
+            .autoDispose(view.scope())
             .subscribe { view.requestDatePicker() }
 
         // an attachment was picked by the user
         Observable.merge(
             view.attachAnyFileSelectedIntent.map { uri -> Attachment(context, uri) },
-            view.inputContentIntent.map { inputContent -> Attachment(context, inputContent = inputContent) }
+            view.inputContentIntent.map { inputContent ->
+                Attachment(
+                    context,
+                    inputContent = inputContent
+                )
+            }
         )
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 newState { copy(attachments = attachments + it, attaching = false) }
             }
 
         // Set the scheduled time
         view.scheduleSelectedIntent
-                .filter { scheduled ->
-                    (scheduled > System.currentTimeMillis()).also { future ->
-                        if (!future) context.makeToast(R.string.compose_scheduled_future)
-                    }
+            .filter { scheduled ->
+                (scheduled > System.currentTimeMillis()).also { future ->
+                    if (!future) context.makeToast(R.string.compose_scheduled_future)
                 }
-                .autoDisposable(view.scope())
-                .subscribe { scheduled -> newState { copy(scheduled = scheduled) } }
+            }
+            .autoDispose(view.scope())
+            .subscribe { scheduled -> newState { copy(scheduled = scheduled) } }
 
         // Attach a contact
         view.attachContactIntent
-                .doOnNext { newState { copy(attaching = false) } }
-                .autoDisposable(view.scope())
-                .subscribe { view.requestContact() }
+            .doOnNext { newState { copy(attaching = false) } }
+            .autoDispose(view.scope())
+            .subscribe { view.requestContact() }
 
         // Contact was selected for attachment
         view.contactSelectedIntent
-                .subscribeOn(Schedulers.io())
-                .autoDisposable(view.scope())
-                .subscribe(
-                    {
-                        newState {
-                            copy(attachments = attachments + Attachment(context, uri = it))
-                        }
+            .subscribeOn(Schedulers.io())
+            .autoDispose(view.scope())
+            .subscribe(
+                {
+                    newState {
+                        copy(attachments = attachments + Attachment(context, uri = it))
                     }
-                ) { error ->
-                    context.makeToast(R.string.compose_contact_error)
-                    Timber.w(error)
                 }
+            ) { error ->
+                context.makeToast(R.string.compose_contact_error)
+                Timber.w(error)
+            }
 
         // Detach an attachment
         view.attachmentDeletedIntent
-                .autoDisposable(view.scope())
-                .subscribe {
-                    newState { copy(attachments = attachments - it) }
+            .autoDispose(view.scope())
+            .subscribe {
+                newState { copy(attachments = attachments - it) }
 
-                    // if the attachment is backed by a local file, delete the file
-                    it.removeCacheFile()
-                }
+                // if the attachment is backed by a local file, delete the file
+                it.removeCacheFile()
+            }
 
         conversation
-                .map { conversation -> conversation.draft }
-                .distinctUntilChanged()
-                .autoDisposable(view.scope())
-                .subscribe { draft ->
+            .map { conversation -> conversation.draft }
+            .distinctUntilChanged()
+            .autoDispose(view.scope())
+            .subscribe { draft ->
 
-                    // If text was shared into the conversation, it should take priority over the
-                    // existing draft
-                    //
-                    // TODO: Show dialog warning user about overwriting draft
-                    if (sharedText.isNotBlank()) {
-                        view.setDraft(sharedText)
-                    } else {
-                        view.setDraft(draft)
-                    }
+                // If text was shared into the conversation, it should take priority over the
+                // existing draft
+                //
+                // TODO: Show dialog warning user about overwriting draft
+                if (sharedText.isNotBlank()) {
+                    view.setDraft(sharedText)
+                } else {
+                    view.setDraft(draft)
                 }
+            }
 
         // set canSend state depending on if there is text input, an attachment or a schedule set
         Observables.combineLatest(
@@ -858,7 +892,7 @@ class ComposeViewModel @Inject constructor(
             state.distinctUntilChanged { state -> state.scheduled }    // schedule set or not
                 .map { it.scheduled }
         )
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 newState {
                     copy(
@@ -870,59 +904,71 @@ class ComposeViewModel @Inject constructor(
 
         // Show the remaining character counter when necessary
         view.textChangedIntent
-                .observeOn(Schedulers.computation())
-                .mapNotNull { draft -> tryOrNull { SmsMessage.calculateLength(draft, prefs.unicode.get()) } }
-                .map { array ->
-                    val messages = array[0]
-                    val remaining = array[2]
-
-                    when {
-                        messages <= 1 && remaining > 10 -> ""
-                        messages <= 1 && remaining <= 10 -> "$remaining"
-                        else -> "$remaining / $messages"
-                    }
+            .observeOn(Schedulers.computation())
+            .mapNotNull { draft ->
+                tryOrNull {
+                    SmsMessage.calculateLength(
+                        draft,
+                        prefs.unicode.get()
+                    )
                 }
-                .distinctUntilChanged()
-                .autoDisposable(view.scope())
-                .subscribe { remaining -> newState { copy(remaining = remaining) } }
+            }
+            .map { array ->
+                val messages = array[0]
+                val remaining = array[2]
+
+                when {
+                    messages <= 1 && remaining > 10 -> ""
+                    messages <= 1 && remaining <= 10 -> "$remaining"
+                    else -> "$remaining / $messages"
+                }
+            }
+            .distinctUntilChanged()
+            .autoDispose(view.scope())
+            .subscribe { remaining -> newState { copy(remaining = remaining) } }
 
         // Cancel the scheduled time
         view.scheduleCancelIntent
-                .autoDisposable(view.scope())
-                .subscribe { newState { copy(scheduled = 0) } }
+            .autoDispose(view.scope())
+            .subscribe { newState { copy(scheduled = 0) } }
 
         // Toggle to the next sim slot
         view.changeSimIntent
-                .withLatestFrom(state) { _, state ->
-                    val subs = subscriptionManager.activeSubscriptionInfoList
-                    val subIndex = subs.indexOfFirst { it.subscriptionId == state.subscription?.subscriptionId }
-                    val subscription = when {
-                        subIndex == -1 -> null
-                        subIndex < subs.size - 1 -> subs[subIndex + 1]
-                        else -> subs[0]
-                    }
-
-                    if (subscription != null) {
-                        context.getSystemService<Vibrator>()?.vibrate(40)
-                        context.makeToast(context.getString(R.string.compose_sim_changed_toast,
-                                subscription.simSlotIndex + 1, subscription.displayName))
-                    }
-
-                    newState { copy(subscription = subscription) }
+            .withLatestFrom(state) { _, state ->
+                val subs = subscriptionManager.activeSubscriptionInfoList
+                val subIndex =
+                    subs.indexOfFirst { it.subscriptionId == state.subscription?.subscriptionId }
+                val subscription = when {
+                    subIndex == -1 -> null
+                    subIndex < subs.size - 1 -> subs[subIndex + 1]
+                    else -> subs[0]
                 }
-                .autoDisposable(view.scope())
-                .subscribe()
+
+                if (subscription != null) {
+                    context.getSystemService<Vibrator>()?.vibrate(40)
+                    context.makeToast(
+                        context.getString(
+                            R.string.compose_sim_changed_toast,
+                            subscription.simSlotIndex + 1, subscription.displayName
+                        )
+                    )
+                }
+
+                newState { copy(subscription = subscription) }
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         // shade clicked
         view.shadeIntent
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { newState { copy(attaching = false) } }
 
         // starting or stopping (change state) of audio message ui
         state
             .distinctUntilChanged { state -> state.audioMsgRecording }
             .skip(1)    // skip initial value
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 // stop any audio playback (ie from mms attachment or audio recorder)
                 QkMediaPlayer.reset()
@@ -937,7 +983,7 @@ class ComposeViewModel @Inject constructor(
 
         // starting or stopping the recording of audio
         view.recordAudioStartStopRecording
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 // if start recording
                 if (it == true) {
@@ -945,8 +991,8 @@ class ComposeViewModel @Inject constructor(
 
                     // check have permissions to record audio
                     if (permissionManager.hasRecordAudio().also {
-                        if (!it) view.requestRecordAudioPermission()
-                    }) {
+                            if (!it) view.requestRecordAudioPermission()
+                        }) {
                         // create bluetooth mic device manager
                         bluetoothMicManager?.close()
                         bluetoothMicManager = BluetoothMicManager(
@@ -956,17 +1002,22 @@ class ComposeViewModel @Inject constructor(
                                     // no bluetooth sco device found, use built-in mic
                                     this.onConnected(null)
                                 }
+
                                 override fun onDeviceFound(device: AudioDeviceInfo?) {
                                     // show bluetooth placeholder until bluetooth connected
                                     view.recordAudioMsgRecordVisible.onNext(false)
                                 }
-                                override fun onConnecting(device: AudioDeviceInfo?) { /* nothing */ }
+
+                                override fun onConnecting(device: AudioDeviceInfo?) { /* nothing */
+                                }
+
                                 override fun onConnected(device: AudioDeviceInfo?) {
                                     // show record button and chronometer, hide bluetooth placeholder
                                     view.recordAudioMsgRecordVisible.onNext(true)
                                     view.recordAudioChronometer.onNext(true)  // start chronometer
                                     MediaRecorderManager.startRecording(context, device)
                                 }
+
                                 override fun onDisconnected(device: AudioDeviceInfo?) {
                                     // if bluetooth disconnects, stop recording
                                     if (device != null) {
@@ -989,21 +1040,21 @@ class ComposeViewModel @Inject constructor(
 
         // record an audio message menu item or main mic icon
         view.recordAnAudioMessage
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 view.recordAudioStartStopRecording.onNext(true)  // start recording
-                newState { copy( attaching = false, audioMsgRecording = true) }
+                newState { copy(attaching = false, audioMsgRecording = true) }
             }
 
         // abort recording audio message button
         view.recordAudioAbort
             .observeOn(Schedulers.io())
-            .autoDisposable(view.scope())
-            .subscribe { newState { copy( audioMsgRecording = false) } }
+            .autoDispose(view.scope())
+            .subscribe { newState { copy(audioMsgRecording = false) } }
 
         // main record/stop recording audio message button
         view.recordAudioRecord
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 if (it == MicInputCloudView.ViewState.PAUSED_STATE) {
                     view.recordAudioStartStopRecording.onNext(false)  // stop recording
@@ -1016,7 +1067,7 @@ class ComposeViewModel @Inject constructor(
 
         // attach recorded audio message button
         view.recordAudioAttach
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 MediaRecorderManager.stopRecording()
 
@@ -1042,23 +1093,25 @@ class ComposeViewModel @Inject constructor(
                             attachments = attachments + Attachment(context, newUri)
                         )
                     }
+                } catch (e: Exception) { /* nothing */
                 }
-                catch (e: Exception) { /* nothing */ }
             }
 
         // audio recording player play/pause button
         view.recordAudioPlayerPlayPause
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 when (it) {
                     QkMediaPlayer.PlayingState.Paused ->
                         view.recordAudioPlayerConfigUI.onNext(
                             QkMediaPlayer.PlayingState.Playing
                         )
+
                     QkMediaPlayer.PlayingState.Playing ->
                         view.recordAudioPlayerConfigUI.onNext(
                             QkMediaPlayer.PlayingState.Paused
                         )
+
                     else -> {
                         if (MediaRecorderManager.uri != Uri.EMPTY) {
                             QkMediaPlayer.setOnPreparedListener {
@@ -1129,7 +1182,7 @@ class ComposeViewModel @Inject constructor(
                 }
                 val sendAsGroup = ((addresses.size > 1) &&  // if more than one address to send to
                         (!state.editingMode ||    // and is not a new convo (group msg or not is already set)
-                            state.sendAsGroup))  // or (is a new convo and) send as group is selected
+                                state.sendAsGroup))  // or (is a new convo and) send as group is selected
 
                 when {
                     // Scheduling a message
@@ -1144,7 +1197,7 @@ class ComposeViewModel @Inject constructor(
                             conversationId
                         )
                     ).also {
-                        newState { copy(scheduled = 0, hasScheduledMessages = true ) }
+                        newState { copy(scheduled = 0, hasScheduledMessages = true) }
                         showScheduledToast = true
                     }
 
@@ -1191,34 +1244,34 @@ class ComposeViewModel @Inject constructor(
                     showScheduledToast = false
                 }
             }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe()
 
         // View QKSMS+
         view.viewQksmsPlusIntent
-                .autoDisposable(view.scope())
-                .subscribe { navigator.showQksmsPlusActivity("compose_schedule") }
+            .autoDispose(view.scope())
+            .subscribe { navigator.showQksmsPlusActivity("compose_schedule") }
 
         // Navigate back
         view.optionsItemIntent
-                .filter { it == android.R.id.home }
-                .map { Unit }
-                .mergeWith(view.backPressedIntent)
-                .withLatestFrom(state) { _, state ->
-                    when {
-                        state.selectedMessages > 0 -> view.clearSelection()
-                        else -> newState { copy(hasError = true) }
-                    }
+            .filter { it == android.R.id.home }
+            .map { }
+            .mergeWith(view.backPressedIntent)
+            .withLatestFrom(state) { _, state ->
+                when {
+                    state.selectedMessages > 0 -> view.clearSelection()
+                    else -> newState { copy(hasError = true) }
                 }
-                .autoDisposable(view.scope())
-                .subscribe()
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         // Delete the message
         view.confirmDeleteIntent
                 .withLatestFrom(view.messagesSelectedIntent, conversation, state) { _, messages, conversation, state ->
                     Triple(messages, conversation, state)
                 }
-                .autoDisposable(view.scope())
+                .autoDispose(view.scope())
                 .subscribe { (messages, conversation, state) ->
                     val remainingMessages = state.messages?.second?.size ?: 0
                     val deletingLastMessage = remainingMessages > 0 && remainingMessages <= messages.size
@@ -1242,7 +1295,7 @@ class ComposeViewModel @Inject constructor(
                 state.attachments.forEach { it.removeCacheFile() }
                 hasError
             }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 view.setDraft("")
                 newState {

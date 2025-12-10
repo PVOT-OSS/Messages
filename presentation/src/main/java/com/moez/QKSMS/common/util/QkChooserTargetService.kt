@@ -35,17 +35,21 @@ import javax.inject.Inject
 
 class QkChooserTargetService : ChooserTargetService() {
 
-    @Inject lateinit var conversationRepo: ConversationRepository
+    @Inject
+    lateinit var conversationRepo: ConversationRepository
 
     override fun onCreate() {
         appComponent.inject(this)
         super.onCreate()
     }
 
-    override fun onGetChooserTargets(targetActivityName: ComponentName?, matchedFilter: IntentFilter?): List<ChooserTarget> {
+    override fun onGetChooserTargets(
+        targetActivityName: ComponentName?,
+        matchedFilter: IntentFilter?
+    ): List<ChooserTarget> {
         return conversationRepo.getTopConversations()
-                .take(3)
-                .map(this::createShortcutForConversation)
+            .take(3)
+            .map(this::createShortcutForConversation)
     }
 
     private fun createShortcutForConversation(conversation: Conversation): ChooserTarget {
@@ -53,10 +57,10 @@ class QkChooserTargetService : ChooserTargetService() {
             1 -> {
                 val photoUri = conversation.recipients.first()?.contact?.photoUri
                 val request = GlideApp.with(this)
-                        .asBitmap()
-                        .circleCrop()
-                        .load(photoUri)
-                        .submit()
+                    .asBitmap()
+                    .circleCrop()
+                    .load(photoUri)
+                    .submit()
                 val bitmap = tryOrNull(false) { request.get() }
 
                 if (bitmap != null) Icon.createWithBitmap(bitmap)
@@ -68,7 +72,13 @@ class QkChooserTargetService : ChooserTargetService() {
 
         val componentName = ComponentName(this, ComposeActivity::class.java)
 
-        return ChooserTarget(conversation.getTitle(), icon, 1f, componentName, bundleOf("threadId" to conversation.id))
+        return ChooserTarget(
+            conversation.getTitle(),
+            icon,
+            1f,
+            componentName,
+            bundleOf("threadId" to conversation.id)
+        )
     }
 
 }

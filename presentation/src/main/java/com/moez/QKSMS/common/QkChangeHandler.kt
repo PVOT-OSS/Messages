@@ -45,21 +45,47 @@ class QkChangeHandler : AnimatorChangeHandler(250, true) {
 
         if (isPush) {
             if (from != null) {
-                animatorSet.play(ObjectAnimator.ofFloat(from, View.TRANSLATION_X, -from.width.toFloat() / 4))
+                animatorSet.play(
+                    ObjectAnimator.ofFloat(
+                        from,
+                        View.TRANSLATION_X,
+                        -from.width.toFloat() / 4
+                    )
+                )
             }
             if (to != null) {
                 to.translationZ = 8.dpToPx(to.context).toFloat()
-                animatorSet.play(ObjectAnimator.ofFloat(to, View.TRANSLATION_X, to.width.toFloat(), 0f))
+                animatorSet.play(
+                    ObjectAnimator.ofFloat(
+                        to,
+                        View.TRANSLATION_X,
+                        to.width.toFloat(),
+                        0f
+                    )
+                )
             }
         } else {
             if (from != null) {
                 from.translationZ = 8.dpToPx(from.context).toFloat()
-                animatorSet.play(ObjectAnimator.ofFloat(from, View.TRANSLATION_X, from.width.toFloat()))
+                animatorSet.play(
+                    ObjectAnimator.ofFloat(
+                        from,
+                        View.TRANSLATION_X,
+                        from.width.toFloat()
+                    )
+                )
             }
             if (to != null) {
                 // Allow this to have a nice transition when coming off an aborted push animation
                 val fromLeft = from?.translationX ?: 0f
-                animatorSet.play(ObjectAnimator.ofFloat(to, View.TRANSLATION_X, fromLeft - to.width / 4, 0f))
+                animatorSet.play(
+                    ObjectAnimator.ofFloat(
+                        to,
+                        View.TRANSLATION_X,
+                        fromLeft - to.width / 4,
+                        0f
+                    )
+                )
             }
         }
 

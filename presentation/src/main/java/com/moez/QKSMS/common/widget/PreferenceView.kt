@@ -77,7 +77,8 @@ class PreferenceView @JvmOverloads constructor(
         orientation = HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
 
-        layout.icon.imageTintList = context.resolveThemeColorStateList(android.R.attr.textColorSecondary)
+        layout.icon.imageTintList =
+            context.resolveThemeColorStateList(android.R.attr.textColorSecondary)
 
         context.obtainStyledAttributes(attrs, R.styleable.PreferenceView).run {
             title = getString(R.styleable.PreferenceView_title)

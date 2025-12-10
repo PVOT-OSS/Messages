@@ -23,6 +23,6 @@ import ezvcard.VCard
 
 fun VCard.getDisplayName(): String? {
     return formattedName?.value
-            ?: telephoneNumbers?.firstOrNull()?.text
-            ?: emails?.firstOrNull()?.value
+        ?: telephoneNumbers?.firstOrNull()?.text
+        ?: emails?.firstOrNull()?.value
 }

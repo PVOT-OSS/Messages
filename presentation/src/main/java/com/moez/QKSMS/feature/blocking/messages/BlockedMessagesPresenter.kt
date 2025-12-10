@@ -19,7 +19,7 @@
 package org.prauga.messages.feature.blocking.messages
 
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.common.Navigator
@@ -41,49 +41,50 @@ class BlockedMessagesPresenter @Inject constructor(
         super.bindIntents(view)
 
         view.menuReadyIntent
-                .autoDisposable(view.scope())
-                .subscribe { newState { copy() } }
+            .autoDispose(view.scope())
+            .subscribe { newState { copy() } }
 
         view.optionsItemIntent
-                .withLatestFrom(view.selectionChanges) { itemId, conversations ->
-                    when (itemId) {
-                        R.id.block -> {
-                            view.showBlockingDialog(conversations, false)
-                            view.clearSelection()
-                        }
-                        R.id.delete -> {
-                            view.showDeleteDialog(conversations)
-                        }
+            .withLatestFrom(view.selectionChanges) { itemId, conversations ->
+                when (itemId) {
+                    R.id.block -> {
+                        view.showBlockingDialog(conversations, false)
+                        view.clearSelection()
                     }
 
+                    R.id.delete -> {
+                        view.showDeleteDialog(conversations)
+                    }
                 }
-                .autoDisposable(view.scope())
-                .subscribe()
+
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         view.confirmDeleteIntent
-                .autoDisposable(view.scope())
-                .subscribe { conversations ->
-                    deleteConversations.execute(conversations)
-                    view.clearSelection()
-                }
+            .autoDispose(view.scope())
+            .subscribe { conversations ->
+                deleteConversations.execute(conversations)
+                view.clearSelection()
+            }
 
         view.conversationClicks
-                .autoDisposable(view.scope())
-                .subscribe { threadId -> navigator.showConversation(threadId) }
+            .autoDispose(view.scope())
+            .subscribe { threadId -> navigator.showConversation(threadId) }
 
         view.selectionChanges
-                .autoDisposable(view.scope())
-                .subscribe { selection -> newState { copy(selected = selection.size) } }
+            .autoDispose(view.scope())
+            .subscribe { selection -> newState { copy(selected = selection.size) } }
 
         view.backClicked
-                .withLatestFrom(state) { _, state ->
-                    when (state.selected) {
-                        0 -> view.goBack()
-                        else -> view.clearSelection()
-                    }
+            .withLatestFrom(state) { _, state ->
+                when (state.selected) {
+                    0 -> view.goBack()
+                    else -> view.clearSelection()
                 }
-                .autoDisposable(view.scope())
-                .subscribe()
+            }
+            .autoDispose(view.scope())
+            .subscribe()
     }
 
 }

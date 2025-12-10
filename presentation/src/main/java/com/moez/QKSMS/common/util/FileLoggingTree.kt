@@ -21,9 +21,9 @@ package org.prauga.messages.common.util
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import io.reactivex.schedulers.Schedulers
 import org.prauga.messages.util.FileUtils
 import org.prauga.messages.util.Preferences
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat

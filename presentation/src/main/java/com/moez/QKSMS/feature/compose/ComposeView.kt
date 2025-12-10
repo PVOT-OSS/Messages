@@ -24,12 +24,12 @@ import android.view.View
 import androidx.annotation.StringRes
 import androidx.core.view.inputmethod.InputContentInfoCompat
 import com.moez.QKSMS.common.QkMediaPlayer
+import io.reactivex.Observable
+import io.reactivex.subjects.Subject
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
-import io.reactivex.Observable
-import io.reactivex.subjects.Subject
 
 interface ComposeView : QkView<ComposeState> {
 
@@ -107,7 +107,7 @@ interface ComposeView : QkView<ComposeState> {
     fun setDraft(draft: String)
     fun scrollToMessage(id: Long)
     fun showQksmsPlusSnackbar(@StringRes message: Int)
-    fun showDeleteDialog( messages: List<Long>)
+    fun showDeleteDialog(messages: List<Long>)
     fun showClearCurrentMessageDialog()
     fun focusMessage()
 }

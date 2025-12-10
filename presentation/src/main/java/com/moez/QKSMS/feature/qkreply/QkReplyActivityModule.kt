@@ -30,7 +30,8 @@ class QkReplyActivityModule {
 
     @Provides
     @Named("threadId")
-    fun provideThreadId(activity: QkReplyActivity): Long = activity.intent.extras?.getLong("threadId") ?: 0L
+    fun provideThreadId(activity: QkReplyActivity): Long =
+        activity.intent.extras?.getLong("threadId") ?: 0L
 
     @Provides
     @IntoMap

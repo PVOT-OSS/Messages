@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.gallery
 
-import org.prauga.messages.model.MmsPart
 import io.realm.RealmResults
+import org.prauga.messages.model.MmsPart
 
 data class GalleryState(
     val navigationVisible: Boolean = true,

@@ -36,10 +36,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.core.net.toUri
 import com.jakewharton.rxbinding2.view.clicks
 import com.moez.QKSMS.common.QkMediaPlayer
+import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import io.realm.RealmResults
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkRealmAdapter
@@ -54,6 +57,8 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.util.extensions.withAlpha
 import org.prauga.messages.compat.SubscriptionManagerCompat
+import org.prauga.messages.databinding.MessageListItemInBinding
+import org.prauga.messages.databinding.MessageListItemOutBinding
 import org.prauga.messages.extensions.isSmil
 import org.prauga.messages.extensions.isText
 import org.prauga.messages.extensions.joinTo
@@ -68,13 +73,6 @@ import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
-import org.prauga.messages.databinding.MessageListItemInBinding
-import org.prauga.messages.databinding.MessageListItemOutBinding
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import io.realm.RealmResults
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
@@ -117,7 +115,8 @@ class MessagesAdapter @Inject constructor(
     }
 
     // Wrapper for MessageListItemOutBinding
-    private class OutBindingWrapper(private val binding: MessageListItemOutBinding) : MessageBinding {
+    private class OutBindingWrapper(private val binding: MessageListItemOutBinding) :
+        MessageBinding {
         override val timestamp = binding.timestamp
         override val sim = binding.sim
         override val simIndex = binding.simIndex
@@ -340,10 +339,10 @@ class MessagesAdapter @Inject constructor(
         binding.timestamp.apply {
             text = dateFormatter.getMessageTimestamp(message.date)
             setVisible(
-                    ((message.date - (previous?.date ?: 0))
-                        .millisecondsToMinutes() >= BubbleUtils.TIMESTAMP_THRESHOLD) ||
-                            (message.subId != previous?.subId) &&
-                            (subscription != null)
+                ((message.date - (previous?.date ?: 0))
+                    .millisecondsToMinutes() >= BubbleUtils.TIMESTAMP_THRESHOLD) ||
+                        (message.subId != previous?.subId) &&
+                        (subscription != null)
             )
         }
 
@@ -430,6 +429,7 @@ class MessagesAdapter @Inject constructor(
                     }
                 }
             }
+
             else -> binding.body.movementMethod = LinkMovementMethod.getInstance()
         }
 
@@ -513,12 +513,15 @@ class MessagesAdapter @Inject constructor(
                     R.string.message_status_delivered,
                     dateFormatter.getTimestamp(message.dateSent)
                 )
+
                 message.isFailedMessage() -> context.getString(R.string.message_status_failed)
                 bodyTextTruncated -> context.getString(R.string.message_body_too_long_to_display)
                 (!message.isMe() && (conversation?.recipients?.size ?: 0) > 1) ->
                     // incoming group message
                     "${contactCache[message.address]?.getDisplayName()} • ${
-                        dateFormatter.getTimestamp(message.date)}"
+                        dateFormatter.getTimestamp(message.date)
+                    }"
+
                 else -> dateFormatter.getTimestamp(message.date)
             }
 
@@ -535,6 +538,7 @@ class MessagesAdapter @Inject constructor(
                     expanded[message.id] == false -> false
                     ((conversation?.recipients?.size ?: 0) > 1) &&
                             !message.isMe() && next?.compareSender(message) != true -> true
+
                     (message.isDelivered() &&
                             (next?.isDelivered() != true) &&
                             (age <= BubbleUtils.TIMESTAMP_THRESHOLD)) -> true

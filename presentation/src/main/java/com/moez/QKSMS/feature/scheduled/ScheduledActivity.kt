@@ -28,7 +28,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -132,7 +132,7 @@ class ScheduledActivity :
         dialog.show()
 
         theme.take(1)
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { theme ->
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
@@ -155,7 +155,7 @@ class ScheduledActivity :
         dialog.show()
 
         theme.take(1)
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { theme ->
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
@@ -175,7 +175,7 @@ class ScheduledActivity :
         dialog.show()
 
         theme.take(1)
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { theme ->
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)

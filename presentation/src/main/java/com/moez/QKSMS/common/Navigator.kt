@@ -145,8 +145,8 @@ class Navigator @Inject constructor(
 
     fun showConversation(threadId: Long, query: String? = null) {
         val intent = Intent(context, ComposeActivity::class.java)
-                .putExtra("threadId", threadId)
-                .putExtra("query", query)
+            .putExtra("threadId", threadId)
+            .putExtra("query", query)
         startActivity(intent)
     }
 
@@ -188,12 +188,16 @@ class Navigator @Inject constructor(
     }
 
     fun showChangelog() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages/releases"))
+        val intent =
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages/releases"))
         startActivityExternal(intent)
     }
 
     fun showLicense() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages/blob/master/LICENSE"))
+        val intent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse("https://github.com/danascape/Messages/blob/master/LICENSE")
+        )
         startActivityExternal(intent)
     }
 
@@ -215,9 +219,11 @@ class Navigator @Inject constructor(
 
     fun showRating() {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages"))
-                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY
+            .addFlags(
+                Intent.FLAG_ACTIVITY_NO_HISTORY
                         or Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                        or Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
+                        or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+            )
 
         try {
             startActivityExternal(intent)
@@ -240,7 +246,8 @@ class Navigator @Inject constructor(
      * Launch the Play Store and display the Call Control listing
      */
     fun installCallControl() {
-        val url = "https://play.google.com/store/apps/details?id=com.flexaspect.android.everycallcontrol"
+        val url =
+            "https://play.google.com/store/apps/details?id=com.flexaspect.android.everycallcontrol"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivityExternal(intent)
     }
@@ -259,56 +266,58 @@ class Navigator @Inject constructor(
         intent.data = Uri.parse("mailto:")
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("saalim.priv@gmail.com"))
         intent.putExtra(Intent.EXTRA_SUBJECT, "Messages Support")
-        intent.putExtra(Intent.EXTRA_TEXT, StringBuilder("\n\n")
-                .append("\n\n--- Please write your message above this line ---\n\n")
-                .append("Package: ${context.packageName}\n")
-                .append("Version: ${BuildConfig.VERSION_NAME}\n")
-                .append("Device: ${Build.BRAND} ${Build.MODEL}\n")
-                .append("SDK: ${Build.VERSION.SDK_INT}\n")
-                .append("Upgraded"
-                        .takeIf { billingManager.upgradeStatus.blockingFirst() } ?: "")
-                .toString())
+        intent.putExtra(
+            Intent.EXTRA_TEXT, StringBuilder("\n\n")
+            .append("\n\n--- Please write your message above this line ---\n\n")
+            .append("Package: ${context.packageName}\n")
+            .append("Version: ${BuildConfig.VERSION_NAME}\n")
+            .append("Device: ${Build.BRAND} ${Build.MODEL}\n")
+            .append("SDK: ${Build.VERSION.SDK_INT}\n")
+            .append(
+                "Upgraded"
+                .takeIf { billingManager.upgradeStatus.blockingFirst() } ?: "")
+            .toString())
         startActivityExternal(intent)
     }
 
     fun showInvite() {
         Intent(Intent.ACTION_SEND)
-                .setType("text/plain")
-                .putExtra(Intent.EXTRA_TEXT, "https://github.com/danascape/Messages/releases/latest")
-                .let { Intent.createChooser(it, null) }
-                .let(::startActivityExternal)
+            .setType("text/plain")
+            .putExtra(Intent.EXTRA_TEXT, "https://github.com/danascape/Messages/releases/latest")
+            .let { Intent.createChooser(it, null) }
+            .let(::startActivityExternal)
     }
 
     fun addContact(address: String) {
         val intent = Intent(Intent.ACTION_INSERT)
-                .setType(ContactsContract.Contacts.CONTENT_TYPE)
-                .putExtra(ContactsContract.Intents.Insert.PHONE, address)
+            .setType(ContactsContract.Contacts.CONTENT_TYPE)
+            .putExtra(ContactsContract.Intents.Insert.PHONE, address)
 
         startActivityExternal(intent)
     }
 
     fun showContact(lookupKey: String) {
         val intent = Intent(Intent.ACTION_VIEW)
-                .setData(Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey))
+            .setData(Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey))
 
         startActivityExternal(intent)
     }
 
     fun viewFile(uri: Uri, mimeType: String) {
         val intent = Intent(Intent.ACTION_VIEW)
-                .setDataAndType(uri, mimeType.lowercase())
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                .let { Intent.createChooser(it, null) }
+            .setDataAndType(uri, mimeType.lowercase())
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            .let { Intent.createChooser(it, null) }
 
         startActivityExternal(intent)
     }
 
     fun shareFile(uri: Uri, mimeType: String) {
         val intent = Intent(Intent.ACTION_SEND)
-                .setType(mimeType.lowercase())
-                .putExtra(Intent.EXTRA_STREAM, uri)
-                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                .let { Intent.createChooser(it, null) }
+            .setType(mimeType.lowercase())
+            .putExtra(Intent.EXTRA_STREAM, uri)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            .let { Intent.createChooser(it, null) }
 
         startActivityExternal(intent)
     }
@@ -335,8 +344,8 @@ class Navigator @Inject constructor(
 
             val channelId = notificationManager.buildNotificationChannelId(threadId)
             val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-                    .putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
-                    .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                .putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
             startActivity(intent)
         }
     }
@@ -344,7 +353,7 @@ class Navigator @Inject constructor(
     fun showExactAlarmsSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                    .setData(Uri.parse("package:${context.packageName}"))
+                .setData(Uri.parse("package:${context.packageName}"))
             startActivity(intent)
         }
     }

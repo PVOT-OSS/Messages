@@ -18,6 +18,7 @@
  */
 package org.prauga.messages.common.widget
 
+import android.R
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
@@ -26,7 +27,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.viewpager.widget.ViewPager
 import com.uber.autodispose.android.ViewScopeProvider
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.forEach
 import org.prauga.messages.common.util.extensions.resolveThemeColor
@@ -34,14 +37,15 @@ import org.prauga.messages.databinding.TabViewBinding
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.ConversationRepository
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
 import javax.inject.Inject
 
-class PagerTitleView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : LinearLayout(context, attrs) {
+class PagerTitleView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    LinearLayout(context, attrs) {
 
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var conversationRepo: ConversationRepository
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    lateinit var conversationRepo: ConversationRepository
 
     private val recipientId: Subject<Long> = BehaviorSubject.create()
 
@@ -89,23 +93,24 @@ class PagerTitleView @JvmOverloads constructor(context: Context, attrs: Attribut
         super.onAttachedToWindow()
 
         val states = arrayOf(
-                intArrayOf(android.R.attr.state_activated),
-                intArrayOf(-android.R.attr.state_activated))
+            intArrayOf(android.R.attr.state_activated),
+            intArrayOf(-android.R.attr.state_activated)
+        )
 
         recipientId
-                .distinctUntilChanged()
-                .map { recipientId -> Optional(conversationRepo.getRecipient(recipientId)) }
-                .switchMap { recipient -> colors.themeObservable(recipient.value) }
-                .map { theme ->
-                    val textSecondary = context.resolveThemeColor(android.R.attr.textColorSecondary)
-                    ColorStateList(states, intArrayOf(theme.theme, textSecondary))
+            .distinctUntilChanged()
+            .map { recipientId -> Optional(conversationRepo.getRecipient(recipientId)) }
+            .switchMap { recipient -> colors.themeObservable(recipient.value) }
+            .map { theme ->
+                val textSecondary = context.resolveThemeColor(R.attr.textColorSecondary)
+                ColorStateList(states, intArrayOf(theme.theme, textSecondary))
+            }
+            .autoDispose(ViewScopeProvider.from(this))
+            .subscribe { colorStateList ->
+                childCount.forEach { index ->
+                    (getChildAt(index) as? TextView)?.setTextColor(colorStateList)
                 }
-                .autoDisposable(ViewScopeProvider.from(this))
-                .subscribe { colorStateList ->
-                    childCount.forEach { index ->
-                        (getChildAt(index) as? TextView)?.setTextColor(colorStateList)
-                    }
-                }
+            }
     }
 
 }

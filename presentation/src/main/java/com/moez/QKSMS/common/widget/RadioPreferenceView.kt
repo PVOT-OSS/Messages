@@ -39,7 +39,8 @@ class RadioPreferenceView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : ConstraintLayout(context, attrs) {
 
-    @Inject lateinit var colors: Colors
+    @Inject
+    lateinit var colors: Colors
     private var layout: RadioPreferenceViewBinding
 
     val radioButton get() = layout.radioButton
@@ -82,15 +83,17 @@ class RadioPreferenceView @JvmOverloads constructor(
         setBackgroundResource(context.resolveThemeAttribute(R.attr.selectableItemBackground))
 
         val states = arrayOf(
-                intArrayOf(android.R.attr.state_checked),
-                intArrayOf(-android.R.attr.state_checked))
+            intArrayOf(android.R.attr.state_checked),
+            intArrayOf(-android.R.attr.state_checked)
+        )
 
         val themeColor = when (isInEditMode) {
             true -> context.resources.getColor(R.color.tools_theme)
             false -> colors.theme().theme
         }
         val textSecondary = context.resolveThemeColor(android.R.attr.textColorTertiary)
-        layout.radioButton.buttonTintList = ColorStateList(states, intArrayOf(themeColor, textSecondary))
+        layout.radioButton.buttonTintList =
+            ColorStateList(states, intArrayOf(themeColor, textSecondary))
         layout.radioButton.forwardTouches(this)
 
         context.obtainStyledAttributes(attrs, R.styleable.RadioPreferenceView)?.run {
@@ -98,9 +101,10 @@ class RadioPreferenceView @JvmOverloads constructor(
             summary = getString(R.styleable.RadioPreferenceView_summary)
 
             // If there's a custom view used for the preference's widget, inflate it
-            getResourceId(R.styleable.RadioPreferenceView_widget, -1).takeIf { it != -1 }?.let { id ->
-                View.inflate(context, id, layout.widgetFrame)
-            }
+            getResourceId(R.styleable.RadioPreferenceView_widget, -1).takeIf { it != -1 }
+                ?.let { id ->
+                    View.inflate(context, id, layout.widgetFrame)
+                }
 
             recycle()
         }

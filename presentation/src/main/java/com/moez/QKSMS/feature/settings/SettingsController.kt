@@ -32,7 +32,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.longClicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
 import org.prauga.messages.BuildConfig
 import org.prauga.messages.R
 import org.prauga.messages.common.MenuItem
@@ -60,6 +59,7 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.ScrollView
+import com.uber.autodispose.autoDispose
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -128,8 +128,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         layoutRes = R.layout.settings_controller
 
         colors.themeObservable()
-                .autoDisposable(scope())
-                .subscribe { activity?.recreate() }
+            .autoDispose(scope())
+            .subscribe { activity?.recreate() }
     }
 
     override fun onViewCreated() {
@@ -313,11 +313,11 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
             dialog.show()
 
             themedActivity?.theme?.take(1)
-                    ?.autoDisposable(scope())
-                    ?.subscribe { theme ->
-                        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-                    }
+                ?.autoDispose(scope())
+                ?.subscribe { theme ->
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+                }
         }
     }
 

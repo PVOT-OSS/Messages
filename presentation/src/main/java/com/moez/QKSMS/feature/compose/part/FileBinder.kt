@@ -20,6 +20,9 @@ package org.prauga.messages.feature.compose.part
 
 import android.annotation.SuppressLint
 import android.content.Context
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewHolder
@@ -31,14 +34,12 @@ import org.prauga.messages.databinding.MmsFileListItemBinding
 import org.prauga.messages.feature.compose.BubbleUtils
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class FileBinder @Inject constructor(colors: Colors, private val context: Context) : PartBinder() {
 
-    @Inject lateinit var navigator: Navigator
+    @Inject
+    lateinit var navigator: Navigator
 
     override val partLayout = R.layout.mms_file_list_item
     override var theme = colors.theme()
@@ -57,23 +58,23 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
         val binding = MmsFileListItemBinding.bind(holder.containerView)
 
         BubbleUtils.getBubble(false, canGroupWithPrevious, canGroupWithNext, message.isMe())
-                .let(binding.fileBackground::setBackgroundResource)
+            .let(binding.fileBackground::setBackgroundResource)
 
         Observable.just(part.getUri())
-                .map(context.contentResolver::openInputStream)
-                .map { inputStream -> inputStream.use { it.available() } }
-                .map { bytes ->
-                    when (bytes) {
-                        in 0..999 -> "$bytes B"
-                        in 1000..999999 -> "${"%.1f".format(bytes / 1000f)} KB"
-                        in 1000000..9999999 -> "${"%.1f".format(bytes / 1000000f)} MB"
-                        else -> "${"%.1f".format(bytes / 1000000000f)} GB"
-                    }
+            .map(context.contentResolver::openInputStream)
+            .map { inputStream -> inputStream.use { it.available() } }
+            .map { bytes ->
+                when (bytes) {
+                    in 0..999 -> "$bytes B"
+                    in 1000..999999 -> "${"%.1f".format(bytes / 1000f)} KB"
+                    in 1000000..9999999 -> "${"%.1f".format(bytes / 1000000f)} MB"
+                    else -> "${"%.1f".format(bytes / 1000000000f)} GB"
                 }
-                .onErrorReturn { context.getString(R.string.compose_file_size_unavailable) }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { size -> binding.size.text = size }
+            }
+            .onErrorReturn { context.getString(R.string.compose_file_size_unavailable) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { size -> binding.size.text = size }
 
         binding.filename.text = part.name
 
@@ -83,7 +84,11 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
             binding.filename.setTextColor(theme.textPrimary)
             binding.size.setTextColor(theme.textTertiary)
         } else {
-            binding.fileBackground.setBackgroundTint(holder.containerView.context.resolveThemeColor(R.attr.bubbleColor))
+            binding.fileBackground.setBackgroundTint(
+                holder.containerView.context.resolveThemeColor(
+                    R.attr.bubbleColor
+                )
+            )
             binding.icon.setTint(holder.containerView.context.resolveThemeColor(android.R.attr.textColorSecondary))
             binding.filename.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary))
             binding.size.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorTertiary))

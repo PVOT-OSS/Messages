@@ -11,21 +11,24 @@ import org.prauga.messages.model.MmsPart
 
 open class QkContextMenuRecyclerView<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE> : RecyclerView {
     class ViewHolder<VIEW_HOLDER_VALUE_TYPE>(view: View) : QkViewHolder(view) {
-        init { itemView.isLongClickable = true }
+        init {
+            itemView.isLongClickable = true
+        }
+
         var contextMenuValue: VIEW_HOLDER_VALUE_TYPE? = null
     }
 
     abstract class Adapter<
-                ADAPTER_VALUE_TYPE,
-                T,
-                VHT : RecyclerView.ViewHolder
+            ADAPTER_VALUE_TYPE,
+            T,
+            VHT : RecyclerView.ViewHolder
             > : QkAdapter<T, VHT>() {
         var contextMenuValue: ADAPTER_VALUE_TYPE? = null
     }
 
     private var contextMenuInfo: ContextMenuInfo<
-                ADAPTER_VALUE_TYPE,
-                VIEW_HOLDER_VALUE_TYPE
+            ADAPTER_VALUE_TYPE,
+            VIEW_HOLDER_VALUE_TYPE
             >? = null
 
     constructor(context: Context) : super(context)

@@ -22,9 +22,9 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import org.prauga.messages.common.util.extensions.setVisible
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import org.prauga.messages.common.util.extensions.setVisible
 
 /**
  * Base RecyclerView.Adapter that provides some convenience when creating a new Adapter, such as
@@ -103,10 +103,10 @@ abstract class QkAdapter<T, VHT : RecyclerView.ViewHolder> : RecyclerView.Adapte
     private fun getDiffUtilCallback(oldData: List<T>, newData: List<T>): DiffUtil.Callback {
         return object : DiffUtil.Callback() {
             override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    areItemsTheSame(oldData[oldItemPosition], newData[newItemPosition])
+                areItemsTheSame(oldData[oldItemPosition], newData[newItemPosition])
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                    areContentsTheSame(oldData[oldItemPosition], newData[newItemPosition])
+                areContentsTheSame(oldData[oldItemPosition], newData[newItemPosition])
 
             override fun getOldListSize() = oldData.size
 

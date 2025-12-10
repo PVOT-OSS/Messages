@@ -18,9 +18,9 @@
  */
 package org.prauga.messages.feature.gallery
 
+import io.reactivex.Observable
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.model.MmsPart
-import io.reactivex.Observable
 
 interface GalleryView : QkView<GalleryState> {
 

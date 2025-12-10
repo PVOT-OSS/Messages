@@ -23,20 +23,24 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.subjects.PublishSubject
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.common.util.extensions.dpToPx
 import org.prauga.messages.databinding.ContactChipBinding
 import org.prauga.messages.model.Recipient
-import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
-class ChipsAdapter @Inject constructor() : QkAdapter<Recipient, QkBindingViewHolder<ContactChipBinding>>() {
+class ChipsAdapter @Inject constructor() :
+    QkAdapter<Recipient, QkBindingViewHolder<ContactChipBinding>>() {
 
     var view: RecyclerView? = null
     val chipDeleted: PublishSubject<Recipient> = PublishSubject.create<Recipient>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkBindingViewHolder<ContactChipBinding> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): QkBindingViewHolder<ContactChipBinding> {
         val binding = ContactChipBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             binding.root.setOnClickListener {
@@ -50,7 +54,8 @@ class ChipsAdapter @Inject constructor() : QkAdapter<Recipient, QkBindingViewHol
         val recipient = getItem(position)
 
         holder.binding.avatar.setRecipient(recipient)
-        holder.binding.name.text = recipient.contact?.name?.takeIf { it.isNotBlank() } ?: recipient.address
+        holder.binding.name.text =
+            recipient.contact?.name?.takeIf { it.isNotBlank() } ?: recipient.address
     }
 
     /**
@@ -63,8 +68,9 @@ class ChipsAdapter @Inject constructor() : QkAdapter<Recipient, QkBindingViewHol
         val rootView = view?.rootView as ViewGroup
 
         val layoutParams = RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT)
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
 
         layoutParams.topMargin = 24.dpToPx(context)
         layoutParams.marginStart = 56.dpToPx(context)

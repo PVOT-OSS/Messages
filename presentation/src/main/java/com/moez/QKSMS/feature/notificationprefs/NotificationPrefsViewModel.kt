@@ -22,7 +22,7 @@ import android.content.Context
 import android.media.RingtoneManager
 import android.net.Uri
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -104,52 +104,54 @@ class NotificationPrefsViewModel @Inject constructor(
         super.bindView(view)
 
         view.preferenceClickIntent
-                .autoDisposable(view.scope())
-                .subscribe {
-                    when (it.id) {
-                        R.id.notificationsO -> navigator.showNotificationChannel(threadId)
+            .autoDispose(view.scope())
+            .subscribe {
+                when (it.id) {
+                    R.id.notificationsO -> navigator.showNotificationChannel(threadId)
 
-                        R.id.notifications -> notifications.set(!notifications.get())
+                    R.id.notifications -> notifications.set(!notifications.get())
 
-                        R.id.previews -> view.showPreviewModeDialog()
+                    R.id.previews -> view.showPreviewModeDialog()
 
-                        R.id.wake -> wake.set(!wake.get())
+                    R.id.wake -> wake.set(!wake.get())
 
-                        R.id.silentNotContact -> prefs.silentNotContact.set(!prefs.silentNotContact.get())
+                    R.id.silentNotContact -> prefs.silentNotContact.set(!prefs.silentNotContact.get())
 
-                        R.id.vibration -> vibration.set(!vibration.get())
+                    R.id.vibration -> vibration.set(!vibration.get())
 
-                        R.id.ringtone -> view.showRingtonePicker(ringtone.get().takeIf { it.isNotEmpty() }?.let(Uri::parse))
+                    R.id.ringtone -> view.showRingtonePicker(
+                        ringtone.get().takeIf { it.isNotEmpty() }?.let(Uri::parse)
+                    )
 
-                        R.id.action1 -> view.showActionDialog(prefs.notifAction1.get())
+                    R.id.action1 -> view.showActionDialog(prefs.notifAction1.get())
 
-                        R.id.action2 -> view.showActionDialog(prefs.notifAction2.get())
+                    R.id.action2 -> view.showActionDialog(prefs.notifAction2.get())
 
-                        R.id.action3 -> view.showActionDialog(prefs.notifAction3.get())
+                    R.id.action3 -> view.showActionDialog(prefs.notifAction3.get())
 
-                        R.id.qkreply -> prefs.qkreply.set(!prefs.qkreply.get())
+                    R.id.qkreply -> prefs.qkreply.set(!prefs.qkreply.get())
 
-                        R.id.qkreplyTapDismiss -> prefs.qkreplyTapDismiss.set(!prefs.qkreplyTapDismiss.get())
-                    }
+                    R.id.qkreplyTapDismiss -> prefs.qkreplyTapDismiss.set(!prefs.qkreplyTapDismiss.get())
                 }
+            }
 
         view.previewModeSelectedIntent
-                .autoDisposable(view.scope())
-                .subscribe { previews.set(it) }
+            .autoDispose(view.scope())
+            .subscribe { previews.set(it) }
 
         view.ringtoneSelectedIntent
-                .autoDisposable(view.scope())
-                .subscribe { ringtone -> this.ringtone.set(ringtone) }
+            .autoDispose(view.scope())
+            .subscribe { ringtone -> this.ringtone.set(ringtone) }
 
         view.actionsSelectedIntent
-                .withLatestFrom(view.preferenceClickIntent) { action, preference ->
-                    when (preference.id) {
-                        R.id.action1 -> prefs.notifAction1.set(action)
-                        R.id.action2 -> prefs.notifAction2.set(action)
-                        R.id.action3 -> prefs.notifAction3.set(action)
-                    }
+            .withLatestFrom(view.preferenceClickIntent) { action, preference ->
+                when (preference.id) {
+                    R.id.action1 -> prefs.notifAction1.set(action)
+                    R.id.action2 -> prefs.notifAction2.set(action)
+                    R.id.action3 -> prefs.notifAction3.set(action)
                 }
-                .autoDisposable(view.scope())
-                .subscribe()
+            }
+            .autoDispose(view.scope())
+            .subscribe()
     }
 }

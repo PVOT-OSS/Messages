@@ -29,11 +29,11 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.viewbinding.ViewBinding
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.app.BaseViewBindingActivity
 import org.prauga.messages.util.Preferences
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
 import javax.inject.Inject
 
 abstract class QkActivity<Vb : ViewBinding>(

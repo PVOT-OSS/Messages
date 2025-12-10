@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.qkreply
 
-import org.prauga.messages.common.base.QkView
 import io.reactivex.Observable
+import org.prauga.messages.common.base.QkView
 
 interface QkReplyView : QkView<QkReplyState> {
 

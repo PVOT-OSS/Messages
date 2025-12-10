@@ -18,8 +18,8 @@ class QkActivityResultContracts {
     class OpenDocument : ActivityResultContract<OpenDocumentParams, Uri>() {
         override fun createIntent(context: Context, input: OpenDocumentParams): Intent {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                    .putExtra(Intent.EXTRA_MIME_TYPES, input.mimeTypes.toTypedArray())
-                    .setType("*/*")
+                .putExtra(Intent.EXTRA_MIME_TYPES, input.mimeTypes.toTypedArray())
+                .setType("*/*")
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, input.initialUri)

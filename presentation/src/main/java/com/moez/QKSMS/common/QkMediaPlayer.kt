@@ -14,6 +14,7 @@ object QkMediaPlayer : MediaPlayer() {
         Playing,
         Paused
     }
+
     private var playingState = PlayingState.Stopped
 
     override fun start() {

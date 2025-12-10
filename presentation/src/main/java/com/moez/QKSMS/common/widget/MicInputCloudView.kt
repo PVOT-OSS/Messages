@@ -351,7 +351,7 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
         invalidate()
     }
 
-    fun getState() : ViewState {
+    fun getState(): ViewState {
         return state
     }
 

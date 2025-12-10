@@ -30,10 +30,13 @@ import org.prauga.messages.injection.appComponent
 import org.prauga.messages.util.Preferences
 import javax.inject.Inject
 
-class QkSwitch @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : SwitchCompat(context, attrs) {
+class QkSwitch @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    SwitchCompat(context, attrs) {
 
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var prefs: Preferences
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    lateinit var prefs: Preferences
 
     init {
         if (!isInEditMode) {
@@ -46,19 +49,26 @@ class QkSwitch @JvmOverloads constructor(context: Context, attrs: AttributeSet? 
 
         if (!isInEditMode) {
             val states = arrayOf(
-                    intArrayOf(-android.R.attr.state_enabled),
-                    intArrayOf(android.R.attr.state_checked),
-                    intArrayOf())
+                intArrayOf(-android.R.attr.state_enabled),
+                intArrayOf(android.R.attr.state_checked),
+                intArrayOf()
+            )
 
-            thumbTintList = ColorStateList(states, intArrayOf(
+            thumbTintList = ColorStateList(
+                states, intArrayOf(
                     context.resolveThemeColor(R.attr.switchThumbDisabled),
                     colors.theme().theme,
-                    context.resolveThemeColor(R.attr.switchThumbEnabled)))
+                    context.resolveThemeColor(R.attr.switchThumbEnabled)
+                )
+            )
 
-            trackTintList = ColorStateList(states, intArrayOf(
+            trackTintList = ColorStateList(
+                states, intArrayOf(
                     context.resolveThemeColor(R.attr.switchTrackDisabled),
                     colors.theme().theme.withAlpha(0x4D),
-                    context.resolveThemeColor(R.attr.switchTrackEnabled)))
+                    context.resolveThemeColor(R.attr.switchTrackEnabled)
+                )
+            )
         }
     }
 }

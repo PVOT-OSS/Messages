@@ -30,7 +30,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
@@ -92,7 +92,7 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
             .let { Observable.merge(it) }
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe(preferenceClickIntent)
     }
 

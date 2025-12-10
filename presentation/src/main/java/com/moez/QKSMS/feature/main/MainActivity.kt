@@ -48,7 +48,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -170,7 +170,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         (binding.snackbar as? ViewStub)?.setOnInflateListener { _, inflated ->
             inflated.findViewById<View>(R.id.snackbarButton).clicks()
-                .autoDisposable(scope(Lifecycle.Event.ON_DESTROY))
+                .autoDispose(scope(Lifecycle.Event.ON_DESTROY))
                 .subscribe(snackbarButtonIntent)
         }
 
@@ -186,11 +186,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         }
 
         binding.clearSearch.clicks()
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { clearSearch() }
 
         binding.toolbarSearch.textChanges()
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { text ->
                 binding.clearSearch.isVisible = text.isNotEmpty()
             }
@@ -203,7 +203,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         }
 
         binding.cVTopBar3.clicks()
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe {
                 showDrawerMenu()
             }
@@ -236,11 +236,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         })
 
         // Don't allow clicks to pass through the drawer layout
-        binding.drawer.root.clicks().autoDisposable(scope()).subscribe()
+        binding.drawer.root.clicks().autoDispose(scope()).subscribe()
 
         // Set the theme color tint to the recyclerView, progressbar, and FAB
         theme
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { theme ->
                 // Set the color for the drawer icons
                 val states = arrayOf(
@@ -594,7 +594,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         dialog.show()
 
         theme.take(1)
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe { theme ->
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)

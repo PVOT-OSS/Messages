@@ -50,14 +50,21 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         private const val MAX_CONVERSATIONS_COUNT = 25
     }
 
-    @Inject lateinit var context: Context
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var conversationRepo: ConversationRepository
-    @Inject lateinit var dateFormatter: DateFormatter
-    @Inject lateinit var prefs: Preferences
+    @Inject
+    lateinit var context: Context
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    lateinit var conversationRepo: ConversationRepository
+    @Inject
+    lateinit var dateFormatter: DateFormatter
+    @Inject
+    lateinit var prefs: Preferences
 
-    private val appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID)
+    private val appWidgetId = intent.getIntExtra(
+        AppWidgetManager.EXTRA_APPWIDGET_ID,
+        AppWidgetManager.INVALID_APPWIDGET_ID
+    )
     private val smallWidget = intent.getBooleanExtra("small_widget", false)
     private var conversations: List<Conversation> = listOf()
     private val appWidgetManager by lazy { AppWidgetManager.getInstance(context) }
@@ -114,7 +121,11 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         remoteViews.setInt(R.id.avatarMask, "setColorFilter", background)
 
         val contact = conversation.recipients.map { recipient ->
-            recipient.contact ?: Contact().apply { numbers.add(PhoneNumber().apply { address = recipient.address }) }
+            recipient.contact ?: Contact().apply {
+                numbers.add(PhoneNumber().apply {
+                    address = recipient.address
+                })
+            }
         }.firstOrNull()
 
         // Use the icon if there's no name, otherwise show an initial
@@ -128,9 +139,9 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
         remoteViews.setImageViewBitmap(R.id.photo, null)
         val futureGet = GlideApp.with(context)
-                .asBitmap()
-                .load(contact?.photoUri)
-                .submit(48.dpToPx(context), 48.dpToPx(context))
+            .asBitmap()
+            .load(contact?.photoUri)
+            .submit(48.dpToPx(context), 48.dpToPx(context))
         tryOrNull(false) { remoteViews.setImageViewBitmap(R.id.photo, futureGet.get()) }
 
         // Name
@@ -140,7 +151,8 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         }, conversation.unread))
 
         // Date
-        val timestamp = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
+        val timestamp =
+            conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
         remoteViews.setTextColor(R.id.date, if (conversation.unread) textPrimary else textTertiary)
         remoteViews.setTextViewText(R.id.date, boldText(timestamp, conversation.unread))
 
@@ -154,9 +166,15 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
             conversation.me -> context.getString(R.string.main_sender_you, conversation.snippet)
             else -> conversation.snippet
         }
-        remoteViews.setTextColor(R.id.snippet, if (conversation.unread) textPrimary else textTertiary)
+        remoteViews.setTextColor(
+            R.id.snippet,
+            if (conversation.unread) textPrimary else textTertiary
+        )
         remoteViews.setTextViewText(R.id.snippet, boldText(snippet, conversation.unread))
-        remoteViews.setTextViewText(R.id.snippet, italicText(snippet, conversation.draft.isNotEmpty()))
+        remoteViews.setTextViewText(
+            R.id.snippet,
+            italicText(snippet, conversation.draft.isNotEmpty())
+        )
 
         // set fill-in intent to be used for current item
         remoteViews.setOnClickFillInIntent(
@@ -183,13 +201,15 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
     private fun boldText(text: CharSequence?, shouldBold: Boolean): CharSequence? = when {
         shouldBold -> SpannableStringBuilder()
-                .bold { append(text) }
+            .bold { append(text) }
+
         else -> text
     }
 
     private fun italicText(text: CharSequence?, shouldBold: Boolean): CharSequence? = when {
         shouldBold -> SpannableStringBuilder()
-        .italic { append(text) }
+            .italic { append(text) }
+
         else -> text
     }
 

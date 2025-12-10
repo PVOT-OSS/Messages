@@ -19,7 +19,7 @@
 package org.prauga.messages.feature.settings.about
 
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkPresenter
@@ -33,20 +33,20 @@ class AboutPresenter @Inject constructor(
         super.bindIntents(view)
 
         view.preferenceClicks()
-                .autoDisposable(view.scope())
-                .subscribe { preference ->
-                    when (preference.id) {
-                        R.id.developer -> navigator.showDeveloper()
+            .autoDispose(view.scope())
+            .subscribe { preference ->
+                when (preference.id) {
+                    R.id.developer -> navigator.showDeveloper()
 
-                        R.id.source -> navigator.showSourceCode()
+                    R.id.source -> navigator.showSourceCode()
 
-                        R.id.changelog -> navigator.showChangelog()
+                    R.id.changelog -> navigator.showChangelog()
 
-                        R.id.contact -> navigator.showSupport()
+                    R.id.contact -> navigator.showSupport()
 
-                        R.id.license -> navigator.showLicense()
-                    }
+                    R.id.license -> navigator.showLicense()
                 }
+            }
     }
 
 }

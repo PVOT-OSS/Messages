@@ -19,8 +19,8 @@
 package org.prauga.messages.feature.backup
 
 import android.net.Uri
-import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
+import org.prauga.messages.common.base.QkViewContract
 
 interface BackupView : QkViewContract<BackupState> {
     fun setBackupLocationClicks(): Observable<*>

@@ -21,6 +21,7 @@ package org.prauga.messages.feature.compose.part
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import io.reactivex.Observable
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
@@ -31,7 +32,6 @@ import org.prauga.messages.feature.compose.BubbleUtils.canGroup
 import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import io.reactivex.Observable
 import javax.inject.Inject
 
 
@@ -69,19 +69,23 @@ class PartsAdapter @Inject constructor(
         this.message = message
         this.previous = previous
         this.next = next
-        this.bodyVisible = holder.containerView.findViewById<View>(R.id.body)?.visibility == View.VISIBLE
+        this.bodyVisible =
+            holder.containerView.findViewById<View>(R.id.body)?.visibility == View.VISIBLE
         this.data = message.parts.filter { !it.isSmil() && !it.isText() }
         this.audioState = audioState
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-        : QkContextMenuRecyclerView.ViewHolder<MmsPart> {
+            : QkContextMenuRecyclerView.ViewHolder<MmsPart> {
         val layout = partBinders.getOrNull(viewType)?.partLayout ?: 0
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return QkContextMenuRecyclerView.ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: QkContextMenuRecyclerView.ViewHolder<MmsPart>, position: Int) {
+    override fun onBindViewHolder(
+        holder: QkContextMenuRecyclerView.ViewHolder<MmsPart>,
+        position: Int
+    ) {
         val part = data[position]
 
         holder.contextMenuValue = part

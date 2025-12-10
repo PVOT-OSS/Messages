@@ -20,20 +20,27 @@ package org.prauga.messages.feature.compose.editing
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.databinding.ContactNumberListItemBinding
 import org.prauga.messages.model.PhoneNumber
 
-class PhoneNumberAdapter : QkAdapter<PhoneNumber, QkBindingViewHolder<ContactNumberListItemBinding>>() {
+class PhoneNumberAdapter :
+    QkAdapter<PhoneNumber, QkBindingViewHolder<ContactNumberListItemBinding>>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkBindingViewHolder<ContactNumberListItemBinding> {
-        val binding = ContactNumberListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): QkBindingViewHolder<ContactNumberListItemBinding> {
+        val binding =
+            ContactNumberListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: QkBindingViewHolder<ContactNumberListItemBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: QkBindingViewHolder<ContactNumberListItemBinding>,
+        position: Int
+    ) {
         val number = getItem(position)
 
         holder.binding.address.text = number.address

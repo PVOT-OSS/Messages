@@ -28,6 +28,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.RemoteViews
+import androidx.core.net.toUri
 import dagger.android.AndroidInjection
 import org.prauga.messages.R
 import org.prauga.messages.common.util.Colors
@@ -39,12 +40,13 @@ import org.prauga.messages.receiver.StartActivityFromWidgetReceiver
 import org.prauga.messages.util.Preferences
 import timber.log.Timber
 import javax.inject.Inject
-import androidx.core.net.toUri
 
 class WidgetProvider : AppWidgetProvider() {
 
-    @Inject lateinit var colors: Colors
-    @Inject lateinit var prefs: Preferences
+    @Inject
+    lateinit var colors: Colors
+    @Inject
+    lateinit var prefs: Preferences
 
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
@@ -58,7 +60,11 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Update all widgets in the list
      */
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
         updateData(context)
@@ -72,7 +78,8 @@ class WidgetProvider : AppWidgetProvider() {
      */
     private fun updateData(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
-        val appWidgetIds = appWidgetManager.getAppWidgetIds(ComponentName(context, WidgetProvider::class.java))
+        val appWidgetIds =
+            appWidgetManager.getAppWidgetIds(ComponentName(context, WidgetProvider::class.java))
 
         // We need to update all Mms appwidgets on the home screen.
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.conversations)
@@ -81,7 +88,12 @@ class WidgetProvider : AppWidgetProvider() {
     /**
      * Update widget when widget size changes
      */
-    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int, newOptions: Bundle) {
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: Bundle
+    ) {
         updateWidget(context, appWidgetId, isSmallWidget(appWidgetManager, appWidgetId))
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
@@ -110,25 +122,38 @@ class WidgetProvider : AppWidgetProvider() {
         Timber.v("updateWidget appWidgetId: $appWidgetId")
         val remoteViews = RemoteViews(context.packageName, R.layout.widget)
 
-        val nightModeFlags = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val nightModeFlags =
+            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         val isNightMode = nightModeFlags == Configuration.UI_MODE_NIGHT_YES
 
         // Apply colors from theme
         val night = prefs.night.get() || isNightMode
 
-        remoteViews.setInt(R.id.background, "setColorFilter", context.getColorCompat(if (night) R.color.backgroundDark else R.color.white))
+        remoteViews.setInt(
+            R.id.background,
+            "setColorFilter",
+            context.getColorCompat(if (night) R.color.backgroundDark else R.color.white)
+        )
 
-        remoteViews.setInt(R.id.toolbar, "setColorFilter", context.getColorCompat(if (night) R.color.backgroundDark else R.color.backgroundLight))
+        remoteViews.setInt(
+            R.id.toolbar,
+            "setColorFilter",
+            context.getColorCompat(if (night) R.color.backgroundDark else R.color.backgroundLight)
+        )
 
-        remoteViews.setTextColor(R.id.title, context.getColorCompat(when (night) {
-            true -> R.color.textPrimaryDark
-            false -> R.color.textPrimary
-        }))
+        remoteViews.setTextColor(
+            R.id.title, context.getColorCompat(
+                when (night) {
+                    true -> R.color.textPrimaryDark
+                    false -> R.color.textPrimary
+                }
+            )
+        )
 
         // Set adapter for conversations
         val intent = Intent(context, WidgetService::class.java)
-                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-                .putExtra("small_widget", smallWidget)
+            .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            .putExtra("small_widget", smallWidget)
         intent.data = intent.toUri(Intent.URI_INTENT_SCHEME).toUri()
         remoteViews.setRemoteAdapter(R.id.conversations, intent)
 

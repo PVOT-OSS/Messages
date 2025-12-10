@@ -21,7 +21,9 @@ package org.prauga.messages.feature.gallery
 import android.content.Context
 import com.moez.QKSMS.contentproviders.MmsPartProvider
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
+import io.reactivex.Flowable
+import io.reactivex.rxkotlin.plusAssign
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -31,8 +33,6 @@ import org.prauga.messages.interactor.SaveImage
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
-import io.reactivex.Flowable
-import io.reactivex.rxkotlin.plusAssign
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -51,15 +51,23 @@ class GalleryViewModel @Inject constructor(
 
     init {
         disposables += Flowable.just(partId)
-                .mapNotNull(messageRepo::getMessageForPart)
-                .mapNotNull { message -> message.threadId }
-                .doOnNext { threadId -> newState { copy(parts = messageRepo.getPartsForConversation(threadId)) } }
-                .doOnNext { threadId ->
-                    newState {
-                        copy(title = conversationRepo.getConversation(threadId)?.getTitle())
-                    }
+            .mapNotNull(messageRepo::getMessageForPart)
+            .mapNotNull { message -> message.threadId }
+            .doOnNext { threadId ->
+                newState {
+                    copy(
+                        parts = messageRepo.getPartsForConversation(
+                            threadId
+                        )
+                    )
                 }
-                .subscribe()
+            }
+            .doOnNext { threadId ->
+                newState {
+                    copy(title = conversationRepo.getConversation(threadId)?.getTitle())
+                }
+            }
+            .subscribe()
     }
 
     override fun bindView(view: GalleryView) {
@@ -67,43 +75,43 @@ class GalleryViewModel @Inject constructor(
 
         // When the screen is touched, toggle the visibility of the navigation UI
         view.screenTouched()
-                .withLatestFrom(state) { _, state -> state.navigationVisible }
-                .map { navigationVisible -> !navigationVisible }
-                .autoDisposable(view.scope())
-                .subscribe { navigationVisible -> newState { copy(navigationVisible = navigationVisible) } }
+            .withLatestFrom(state) { _, state -> state.navigationVisible }
+            .map { navigationVisible -> !navigationVisible }
+            .autoDispose(view.scope())
+            .subscribe { navigationVisible -> newState { copy(navigationVisible = navigationVisible) } }
 
         // Save image to device
         view.optionsItemSelected()
-                .filter { it == R.id.save }
-                .filter { permissions.hasStorage().also { if (!it) view.requestStoragePermission() } }
-                .withLatestFrom(view.pageChanged()) { _, part -> part.id }
-                .autoDisposable(view.scope())
-                .subscribe { partId -> saveImage.execute(partId) { context.makeToast(R.string.gallery_toast_saved) } }
+            .filter { it == R.id.save }
+            .filter { permissions.hasStorage().also { if (!it) view.requestStoragePermission() } }
+            .withLatestFrom(view.pageChanged()) { _, part -> part.id }
+            .autoDispose(view.scope())
+            .subscribe { partId -> saveImage.execute(partId) { context.makeToast(R.string.gallery_toast_saved) } }
 
         // Share image externally
         view.optionsItemSelected()
-                .filter { it == R.id.share }
-                .withLatestFrom(view.pageChanged()) { _, part -> part }
-                .autoDisposable(view.scope())
-                .subscribe {
-                    navigator.shareFile(
-                        MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),
-                        it.type
-                    )
-                }
+            .filter { it == R.id.share }
+            .withLatestFrom(view.pageChanged()) { _, part -> part }
+            .autoDispose(view.scope())
+            .subscribe {
+                navigator.shareFile(
+                    MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),
+                    it.type
+                )
+            }
 
         // message part context menu item selected - forward
         view.optionsItemSelected()
             .filter { it == R.id.forward }
             .withLatestFrom(view.pageChanged()) { _, part -> part }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { navigator.showCompose("", listOf(it.getUri())) }
 
         // message part context menu item selected - open externally
         view.optionsItemSelected()
             .filter { it == R.id.openExternally }
             .withLatestFrom(view.pageChanged()) { _, part -> part }
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe {
                 navigator.viewFile(
                     MmsPartProvider.getUriForMmsPartId(it.id, it.getBestFilename()),

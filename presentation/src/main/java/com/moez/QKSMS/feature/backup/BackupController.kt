@@ -23,12 +23,19 @@ import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.net.Uri
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.QkActivityResultContracts
@@ -41,18 +48,12 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.BackupRepository
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import javax.inject.Inject
 
 class BackupController : QkController<BackupView, BackupState, BackupPresenter>(), BackupView {
 
-    @Inject override lateinit var presenter: BackupPresenter
+    @Inject
+    override lateinit var presenter: BackupPresenter
 
     private lateinit var linearLayout: LinearLayout
     private lateinit var location: PreferenceView
@@ -83,40 +84,40 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
 
     private val stopRestoreDialog by lazy {
         AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-                .setTitle(R.string.backup_restore_stop_title)
-                .setMessage(R.string.backup_restore_stop_message)
-                .setPositiveButton(R.string.button_stop, stopRestoreConfirmSubject)
-                .setNegativeButton(R.string.button_cancel, stopRestoreCancelSubject)
-                .setCancelable(false)
-                .create()
+            .setTitle(R.string.backup_restore_stop_title)
+            .setMessage(R.string.backup_restore_stop_message)
+            .setPositiveButton(R.string.button_stop, stopRestoreConfirmSubject)
+            .setNegativeButton(R.string.button_cancel, stopRestoreCancelSubject)
+            .setCancelable(false)
+            .create()
     }
 
     private val selectLocationRationaleDialog by lazy {
         AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-                .setTitle(R.string.backup_select_location_rationale_title)
-                .setMessage(R.string.backup_select_location_rationale_message)
-                .setPositiveButton(R.string.button_continue, selectFolderConfirmSubject)
-                .setNegativeButton(R.string.button_cancel, selectFolderCancelSubject)
-                .setCancelable(false)
-                .create()
+            .setTitle(R.string.backup_select_location_rationale_title)
+            .setMessage(R.string.backup_select_location_rationale_message)
+            .setPositiveButton(R.string.button_continue, selectFolderConfirmSubject)
+            .setNegativeButton(R.string.button_cancel, selectFolderCancelSubject)
+            .setCancelable(false)
+            .create()
     }
 
     private val selectedBackupErrorDialog by lazy {
         AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-                .setTitle(R.string.backup_selected_backup_error_title)
-                .setMessage(R.string.backup_selected_backup_error_message)
-                .setPositiveButton(R.string.button_continue, restoreErrorConfirmSubject)
-                .setCancelable(false)
-                .create()
+            .setTitle(R.string.backup_selected_backup_error_title)
+            .setMessage(R.string.backup_selected_backup_error_message)
+            .setPositiveButton(R.string.button_continue, restoreErrorConfirmSubject)
+            .setCancelable(false)
+            .create()
     }
 
     private val selectedBackupDetailsDialog by lazy {
         AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-                .setTitle(R.string.backup_selected_backup_details_title)
-                .setPositiveButton(R.string.backup_restore_title, confirmRestoreConfirmSubject)
-                .setNegativeButton(R.string.button_cancel, confirmRestoreCancelSubject)
-                .setCancelable(false)
-                .create()
+            .setTitle(R.string.backup_selected_backup_details_title)
+            .setPositiveButton(R.string.backup_restore_title, confirmRestoreConfirmSubject)
+            .setNegativeButton(R.string.button_cancel, confirmRestoreCancelSubject)
+            .setCancelable(false)
+            .create()
     }
 
     private lateinit var openDirectory: ActivityResultLauncher<Uri?>
@@ -175,9 +176,9 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
 
         // Make the list titles bold
         linearLayout.children
-                .mapNotNull { it as? PreferenceView }
-                .map { it.findViewById<TextView>(R.id.titleView) }
-                .forEach { it.setTypeface(it.typeface, Typeface.BOLD) }
+            .mapNotNull { it as? PreferenceView }
+            .map { it.findViewById<TextView>(R.id.titleView) }
+            .forEach { it.setTypeface(it.typeface, Typeface.BOLD) }
     }
 
     override fun render(state: BackupState) {
@@ -227,15 +228,19 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
 
         stopRestoreDialog.setShowing(state.showStopRestoreDialog)
 
-        fabIcon.setImageResource(when (state.upgraded) {
-            true -> R.drawable.ic_file_upload_black_24dp
-            false -> R.drawable.ic_star_black_24dp
-        })
+        fabIcon.setImageResource(
+            when (state.upgraded) {
+                true -> R.drawable.ic_file_upload_black_24dp
+                false -> R.drawable.ic_star_black_24dp
+            }
+        )
 
-        fabLabel.setText(when (state.upgraded) {
-            true -> R.string.backup_now
-            false -> R.string.title_qksms_plus
-        })
+        fabLabel.setText(
+            when (state.upgraded) {
+                true -> R.string.backup_now
+                false -> R.string.title_qksms_plus
+            }
+        )
     }
 
     override fun setBackupLocationClicks(): Observable<*> = location.clicks()
@@ -269,9 +274,12 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
     }
 
     override fun selectFile(initialUri: Uri) {
-        openDocument.launch(QkActivityResultContracts.OpenDocumentParams(
+        openDocument.launch(
+            QkActivityResultContracts.OpenDocumentParams(
                 mimeTypes = listOf("application/json", "application/octet-stream"),
-                initialUri = initialUri))
+                initialUri = initialUri
+            )
+        )
     }
 
 }

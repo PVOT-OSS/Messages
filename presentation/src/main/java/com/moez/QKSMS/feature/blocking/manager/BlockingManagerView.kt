@@ -1,8 +1,8 @@
 package org.prauga.messages.feature.blocking.manager
 
-import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
 import io.reactivex.Single
+import org.prauga.messages.common.base.QkViewContract
 
 interface BlockingManagerView : QkViewContract<BlockingManagerState> {
 
