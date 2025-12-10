@@ -28,7 +28,9 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 
-abstract class QkPresenter<View : QkViewContract<State>, State>(initialState: State) {
+abstract class QkPresenter<View, State : Any>(
+    initialState: State
+) where View : QkViewContract<State> {
 
     protected val disposables = CompositeDisposable()
     protected val state: Subject<State> = BehaviorSubject.createDefault(initialState)
@@ -41,7 +43,9 @@ abstract class QkPresenter<View : QkViewContract<State>, State>(initialState: St
         disposables += stateReducer
             .observeOn(AndroidSchedulers.mainThread())
             .scan(initialState) { state, reducer -> reducer(state) }
-            .subscribe(state::onNext)
+            .subscribe { newState ->
+                state.onNext(newState)
+            }
     }
 
     @CallSuper

@@ -28,7 +28,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import org.prauga.messages.R
 
-abstract class QkController<ViewContract : QkViewContract<State>, State, Presenter : QkPresenter<ViewContract, State>> :
+abstract class QkController<
+        ViewContract : QkViewContract<State>,
+        State : Any,
+        Presenter : QkPresenter<ViewContract, State>> :
     LifecycleController() {
 
     abstract var presenter: Presenter
@@ -75,5 +78,4 @@ abstract class QkController<ViewContract : QkViewContract<State>, State, Present
         super.onDestroy()
         presenter.onCleared()
     }
-
 }
