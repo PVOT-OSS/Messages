@@ -123,7 +123,7 @@ fun Recipient.getThemedIcon(
             return IconCompat.createWithResource(context, R.mipmap.ic_shortcut_person)
         }
     }
-    return icon
+    return icon ?: IconCompat.createWithResource(context, R.mipmap.ic_shortcut_person)
 }
 
 @TargetApi(29)
