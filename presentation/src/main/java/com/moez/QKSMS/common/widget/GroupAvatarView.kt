@@ -52,10 +52,12 @@ class GroupAvatarView @JvmOverloads constructor(
     }
 
     private fun updateView() {
-        layout.avatar1Frame.setBackgroundTint(when (recipients.size > 1) {
-            true -> context.resolveThemeColor(android.R.attr.windowBackground)
-            false -> context.getColorCompat(android.R.color.transparent)
-        })
+        layout.avatar1Frame.setBackgroundTint(
+            when (recipients.size > 1) {
+                true -> context.resolveThemeColor(android.R.attr.windowBackground)
+                false -> context.getColorCompat(android.R.color.transparent)
+            }
+        )
         layout.avatar1Frame.updateLayoutParams<LayoutParams> {
             matchConstraintPercentWidth = if (recipients.size > 1) 0.75f else 1.0f
         }

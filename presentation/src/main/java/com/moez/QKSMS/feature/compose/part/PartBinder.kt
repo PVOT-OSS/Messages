@@ -18,12 +18,12 @@
  */
 package org.prauga.messages.feature.compose.part
 
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 
 abstract class PartBinder {
 

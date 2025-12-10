@@ -20,7 +20,7 @@ package org.prauga.messages.feature.settings
 
 import android.content.Context
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkPresenter
@@ -150,144 +150,152 @@ class SettingsPresenter @Inject constructor(
         super.bindIntents(view)
 
         view.preferenceClicks()
-                .autoDisposable(view.scope())
-                .subscribe {
-                    Timber.v("Preference click: ${context.resources.getResourceName(it.id)}")
+            .autoDispose(view.scope())
+            .subscribe {
+                Timber.v("Preference click: ${context.resources.getResourceName(it.id)}")
 
-                    when (it.id) {
-                        R.id.theme -> view.showThemePicker()
+                when (it.id) {
+                    R.id.theme -> view.showThemePicker()
 
-                        R.id.night -> view.showNightModeDialog()
+                    R.id.night -> view.showNightModeDialog()
 
-                        R.id.nightStart -> {
-                            val date = nightModeManager.parseTime(prefs.nightStart.get())
-                            view.showStartTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE))
-                        }
-
-                        R.id.nightEnd -> {
-                            val date = nightModeManager.parseTime(prefs.nightEnd.get())
-                            view.showEndTimePicker(date.get(Calendar.HOUR_OF_DAY), date.get(Calendar.MINUTE))
-                        }
-
-                        R.id.autoEmoji -> prefs.autoEmoji.set(!prefs.autoEmoji.get())
-
-                        R.id.notifications -> navigator.showNotificationSettings()
-
-                        R.id.swipeActions -> view.showSwipeActions()
-
-                        R.id.delayed -> view.showDelayDurationDialog()
-
-                        R.id.delivery -> prefs.delivery.set(!prefs.delivery.get())
-
-                        R.id.unreadAtTop -> prefs.unreadAtTop.set(!prefs.unreadAtTop.get())
-
-                        R.id.signature -> view.showSignatureDialog(prefs.signature.get())
-
-                        R.id.systemFont -> prefs.systemFont.set(!prefs.systemFont.get())
-
-                        R.id.unicode -> prefs.unicode.set(!prefs.unicode.get())
-
-                        R.id.mobileOnly -> prefs.mobileOnly.set(!prefs.mobileOnly.get())
-
-                        R.id.autoDelete -> view.showAutoDeleteDialog(prefs.autoDelete.get())
-
-                        R.id.longAsMms -> prefs.longAsMms.set(!prefs.longAsMms.get())
-
-                        R.id.mmsSize -> view.showMmsSizePicker()
-
-                        R.id.messsageLinkHandling -> view.showMessageLinkHandlingDialogPicker()
-
-                        R.id.disableScreenshots -> prefs.disableScreenshots.set(!prefs.disableScreenshots.get())
-
-                        R.id.sync -> syncMessages.execute(Unit)
-
-                        R.id.about -> view.showAbout()
+                    R.id.nightStart -> {
+                        val date = nightModeManager.parseTime(prefs.nightStart.get())
+                        view.showStartTimePicker(
+                            date.get(Calendar.HOUR_OF_DAY),
+                            date.get(Calendar.MINUTE)
+                        )
                     }
+
+                    R.id.nightEnd -> {
+                        val date = nightModeManager.parseTime(prefs.nightEnd.get())
+                        view.showEndTimePicker(
+                            date.get(Calendar.HOUR_OF_DAY),
+                            date.get(Calendar.MINUTE)
+                        )
+                    }
+
+                    R.id.autoEmoji -> prefs.autoEmoji.set(!prefs.autoEmoji.get())
+
+                    R.id.notifications -> navigator.showNotificationSettings()
+
+                    R.id.swipeActions -> view.showSwipeActions()
+
+                    R.id.delayed -> view.showDelayDurationDialog()
+
+                    R.id.delivery -> prefs.delivery.set(!prefs.delivery.get())
+
+                    R.id.unreadAtTop -> prefs.unreadAtTop.set(!prefs.unreadAtTop.get())
+
+                    R.id.signature -> view.showSignatureDialog(prefs.signature.get())
+
+                    R.id.systemFont -> prefs.systemFont.set(!prefs.systemFont.get())
+
+                    R.id.unicode -> prefs.unicode.set(!prefs.unicode.get())
+
+                    R.id.mobileOnly -> prefs.mobileOnly.set(!prefs.mobileOnly.get())
+
+                    R.id.autoDelete -> view.showAutoDeleteDialog(prefs.autoDelete.get())
+
+                    R.id.longAsMms -> prefs.longAsMms.set(!prefs.longAsMms.get())
+
+                    R.id.mmsSize -> view.showMmsSizePicker()
+
+                    R.id.messsageLinkHandling -> view.showMessageLinkHandlingDialogPicker()
+
+                    R.id.disableScreenshots -> prefs.disableScreenshots.set(!prefs.disableScreenshots.get())
+
+                    R.id.sync -> syncMessages.execute(Unit)
+
+                    R.id.about -> view.showAbout()
                 }
+            }
 
         view.aboutLongClicks()
-                .map { !prefs.logging.get() }
-                .doOnNext { enabled -> prefs.logging.set(enabled) }
-                .autoDisposable(view.scope())
-                .subscribe { enabled ->
-                    context.makeToast(when (enabled) {
+            .map { !prefs.logging.get() }
+            .doOnNext { enabled -> prefs.logging.set(enabled) }
+            .autoDispose(view.scope())
+            .subscribe { enabled ->
+                context.makeToast(
+                    when (enabled) {
                         true -> R.string.settings_logging_enabled
                         false -> R.string.settings_logging_disabled
-                    })
-                }
+                    }
+                )
+            }
 
         view.nightModeSelected()
-                .withLatestFrom(billingManager.upgradeStatus) { mode, upgraded ->
-//                    if (!upgraded && mode == Preferences.NIGHT_MODE_AUTO) {
-//                        view.showQksmsPlusSnackbar()
-//                    } else {
-                        nightModeManager.updateNightMode(mode)
-//                    }
-                }
-                .autoDisposable(view.scope())
-                .subscribe()
+            .withLatestFrom(billingManager.upgradeStatus) { mode, upgraded ->
+                //                    if (!upgraded && mode == Preferences.NIGHT_MODE_AUTO) {
+                //                        view.showQksmsPlusSnackbar()
+                //                    } else {
+                nightModeManager.updateNightMode(mode)
+                //                    }
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         view.viewQksmsPlusClicks()
-                .autoDisposable(view.scope())
-                .subscribe { navigator.showQksmsPlusActivity("settings_night") }
+            .autoDispose(view.scope())
+            .subscribe { navigator.showQksmsPlusActivity("settings_night") }
 
         view.nightStartSelected()
-                .autoDisposable(view.scope())
-                .subscribe { nightModeManager.setNightStart(it.first, it.second) }
+            .autoDispose(view.scope())
+            .subscribe { nightModeManager.setNightStart(it.first, it.second) }
 
         view.nightEndSelected()
-                .autoDisposable(view.scope())
-                .subscribe { nightModeManager.setNightEnd(it.first, it.second) }
+            .autoDispose(view.scope())
+            .subscribe { nightModeManager.setNightEnd(it.first, it.second) }
 
         view.sendDelaySelected()
-                .withLatestFrom(billingManager.upgradeStatus) { duration, upgraded ->
-//                    if (!upgraded && duration != 0) {
-//                        view.showQksmsPlusSnackbar()
-//                    } else {
-                        prefs.sendDelay.set(duration)
-//                    }
-                }
-                .autoDisposable(view.scope())
-                .subscribe()
+            .withLatestFrom(billingManager.upgradeStatus) { duration, upgraded ->
+                //                    if (!upgraded && duration != 0) {
+                //                        view.showQksmsPlusSnackbar()
+                //                    } else {
+                prefs.sendDelay.set(duration)
+                //                    }
+            }
+            .autoDispose(view.scope())
+            .subscribe()
 
         view.signatureChanged()
-                .doOnNext(prefs.signature::set)
-                .autoDisposable(view.scope())
-                .subscribe()
+            .doOnNext(prefs.signature::set)
+            .autoDispose(view.scope())
+            .subscribe()
 
         view.autoDeleteChanged()
-                .observeOn(Schedulers.io())
-                .filter { maxAge ->
-                    if (maxAge == 0) {
-                        return@filter true
-                    }
-
-                    val counts = messageRepo.getOldMessageCounts(maxAge)
-                    if (counts.values.sum() == 0) {
-                        return@filter true
-                    }
-
-                    runBlocking { view.showAutoDeleteWarningDialog(counts.values.sum()) }
+            .observeOn(Schedulers.io())
+            .filter { maxAge ->
+                if (maxAge == 0) {
+                    return@filter true
                 }
-                .doOnNext { maxAge ->
-                    when (maxAge == 0) {
-                        true -> AutoDeleteService.cancelJob(context)
-                        false -> {
-                            AutoDeleteService.scheduleJob(context)
-                            deleteOldMessages.execute(Unit)
-                        }
+
+                val counts = messageRepo.getOldMessageCounts(maxAge)
+                if (counts.values.sum() == 0) {
+                    return@filter true
+                }
+
+                runBlocking { view.showAutoDeleteWarningDialog(counts.values.sum()) }
+            }
+            .doOnNext { maxAge ->
+                when (maxAge == 0) {
+                    true -> AutoDeleteService.cancelJob(context)
+                    false -> {
+                        AutoDeleteService.scheduleJob(context)
+                        deleteOldMessages.execute(Unit)
                     }
                 }
-                .doOnNext(prefs.autoDelete::set)
-                .autoDisposable(view.scope())
-                .subscribe()
+            }
+            .doOnNext(prefs.autoDelete::set)
+            .autoDispose(view.scope())
+            .subscribe()
 
         view.mmsSizeSelected()
-                .autoDisposable(view.scope())
-                .subscribe(prefs.mmsSize::set)
+            .autoDispose(view.scope())
+            .subscribe(prefs.mmsSize::set)
 
         view.messageLinkHandlingSelected()
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe(prefs.messageLinkHandling::set)
     }
 

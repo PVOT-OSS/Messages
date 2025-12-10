@@ -39,6 +39,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
 import dagger.android.AndroidInjection
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.autoScrollToStart
@@ -47,8 +49,6 @@ import org.prauga.messages.common.util.extensions.showKeyboard
 import org.prauga.messages.common.widget.QkEditText
 import org.prauga.messages.databinding.QkreplyActivityBinding
 import org.prauga.messages.feature.compose.MessagesAdapter
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import javax.inject.Inject
 
 class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivityBinding::inflate),
@@ -56,6 +56,7 @@ class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivity
 
     @Inject
     lateinit var adapter: MessagesAdapter
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 

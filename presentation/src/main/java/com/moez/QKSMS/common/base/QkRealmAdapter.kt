@@ -20,7 +20,6 @@ package org.prauga.messages.common.base
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import org.prauga.messages.common.util.extensions.setVisible
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.OrderedRealmCollection
@@ -28,9 +27,11 @@ import io.realm.RealmList
 import io.realm.RealmModel
 import io.realm.RealmRecyclerViewAdapter
 import io.realm.RealmResults
+import org.prauga.messages.common.util.extensions.setVisible
 import timber.log.Timber
 
-abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> : RealmRecyclerViewAdapter<T, VH>(null, true) {
+abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
+    RealmRecyclerViewAdapter<T, VH>(null, true) {
 
     /**
      * This view can be set, and the adapter will automatically control the visibility of this view
@@ -100,7 +101,7 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> : RealmRecycler
         if (needToSelectAll) {
             for (position in 0 until itemCount)
                 selection += getItemId(position)
-            }
+        }
 
         // fire a single change event now
         selectionChanges.onNext(selection)

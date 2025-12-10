@@ -18,11 +18,11 @@
  */
 package org.prauga.messages.feature.compose.editing
 
+import io.realm.RealmList
 import org.prauga.messages.model.Contact
 import org.prauga.messages.model.ContactGroup
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.PhoneNumber
-import io.realm.RealmList
 
 sealed class ComposeItem {
 
@@ -34,7 +34,8 @@ sealed class ComposeItem {
 
     data class Recent(val value: Conversation) : ComposeItem() {
         override fun getContacts(): List<Contact> = value.recipients.map { recipient ->
-            recipient.contact ?: Contact(numbers = RealmList(PhoneNumber(address = recipient.address)))
+            recipient.contact
+                ?: Contact(numbers = RealmList(PhoneNumber(address = recipient.address)))
         }
     }
 

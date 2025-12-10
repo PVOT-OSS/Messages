@@ -20,10 +20,7 @@ package org.prauga.messages.common
 
 import android.app.Activity
 import android.app.Application
-import android.app.Service
-import android.content.BroadcastReceiver
 import android.os.Bundle
-import android.view.View
 import androidx.emoji2.bundled.BundledEmojiCompatConfig
 import androidx.emoji2.text.EmojiCompat
 import androidx.work.Configuration
@@ -32,10 +29,14 @@ import androidx.work.WorkerFactory
 import com.moez.QKSMS.manager.SpeakManager
 import com.uber.rxdogtag.RxDogTag
 import com.uber.rxdogtag.autodispose.AutoDisposeConfigurer
-import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import io.realm.Realm
+import io.realm.RealmConfiguration
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.app.utils.AppUtil.applyEdgeToEdgeInsets
 import org.prauga.messages.common.util.FileLoggingTree
@@ -48,11 +49,6 @@ import org.prauga.messages.migration.QkMigration
 import org.prauga.messages.migration.QkRealmMigration
 import org.prauga.messages.util.NightModeManager
 import org.prauga.messages.worker.HousekeepingWorker
-import io.realm.Realm
-import io.realm.RealmConfiguration
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 

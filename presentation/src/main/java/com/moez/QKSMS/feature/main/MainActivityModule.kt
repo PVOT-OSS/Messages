@@ -22,9 +22,9 @@ import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import io.reactivex.disposables.CompositeDisposable
 import org.prauga.messages.injection.ViewModelKey
 import org.prauga.messages.injection.scope.ActivityScope
-import io.reactivex.disposables.CompositeDisposable
 
 @Module
 class MainActivityModule {

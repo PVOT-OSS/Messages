@@ -23,7 +23,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bluelinelabs.conductor.RouterTransaction
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.QkChangeHandler
@@ -38,6 +37,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import androidx.recyclerview.widget.RecyclerView
+import com.uber.autodispose.autoDispose
 import javax.inject.Inject
 
 class ConversationInfoController(
@@ -84,8 +84,8 @@ class ConversationInfoController(
         }
 
         themedActivity?.theme
-                ?.autoDisposable(scope())
-                ?.subscribe { recyclerView.scrapViews() }
+            ?.autoDispose(scope())
+            ?.subscribe { recyclerView.scrapViews() }
     }
 
     override fun onAttach(view: View) {
@@ -144,10 +144,10 @@ class ConversationInfoController(
         dialog.show()
 
         themedActivity?.theme?.take(1)
-                ?.autoDisposable(scope())
-                ?.subscribe { theme ->
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-                }
+            ?.autoDispose(scope())
+            ?.subscribe { theme ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+            }
     }
 }

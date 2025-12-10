@@ -20,7 +20,7 @@ package org.prauga.messages.feature.blocking
 
 import android.content.Context
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
 import org.prauga.messages.R
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.common.base.QkPresenter
@@ -55,31 +55,31 @@ class BlockingPresenter @Inject constructor(
         super.bindIntents(view)
 
         view.blockingManagerIntent
-                .autoDisposable(view.scope())
-                .subscribe { view.openBlockingManager() }
+            .autoDispose(view.scope())
+            .subscribe { view.openBlockingManager() }
 
         view.blockedNumbersIntent
-                .autoDisposable(view.scope())
-                .subscribe {
-                    if (prefs.blockingManager.get() == Preferences.BLOCKING_MANAGER_QKSMS) {
-                        // TODO: This is a hack, get rid of it once we implement AndroidX navigation
-                        view.openBlockedNumbers()
-                    } else {
-                        blockingClient.openSettings()
-                    }
+            .autoDispose(view.scope())
+            .subscribe {
+                if (prefs.blockingManager.get() == Preferences.BLOCKING_MANAGER_QKSMS) {
+                    // TODO: This is a hack, get rid of it once we implement AndroidX navigation
+                    view.openBlockedNumbers()
+                } else {
+                    blockingClient.openSettings()
                 }
+            }
 
         view.messageContentFiltersIntent
-                .autoDisposable(view.scope())
-                .subscribe { view.openMessageContentFilters() }
+            .autoDispose(view.scope())
+            .subscribe { view.openMessageContentFilters() }
 
         view.blockedMessagesIntent
-                .autoDisposable(view.scope())
-                .subscribe { view.openBlockedMessages() }
+            .autoDispose(view.scope())
+            .subscribe { view.openBlockedMessages() }
 
         view.dropClickedIntent
-                .autoDisposable(view.scope())
-                .subscribe { prefs.drop.set(!prefs.drop.get()) }
+            .autoDispose(view.scope())
+            .subscribe { prefs.drop.set(!prefs.drop.get()) }
     }
 
 }

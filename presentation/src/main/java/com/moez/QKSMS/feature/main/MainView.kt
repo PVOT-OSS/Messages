@@ -19,9 +19,9 @@
 package org.prauga.messages.feature.main
 
 import android.content.Intent
+import io.reactivex.Observable
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.manager.ChangelogManager
-import io.reactivex.Observable
 
 interface MainView : QkView<MainState> {
 
@@ -34,7 +34,8 @@ interface MainView : QkView<MainState> {
     val navigationIntent: Observable<NavItem>
     val optionsItemIntent: Observable<Int>
     val filterSelectedIntent: Observable<MessageCategory>
-//    val plusBannerIntent: Observable<*>
+
+    //    val plusBannerIntent: Observable<*>
     val dismissRatingIntent: Observable<*>
     val rateIntent: Observable<*>
     val conversationsSelectedIntent: Observable<List<Long>>

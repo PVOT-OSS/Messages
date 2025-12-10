@@ -34,7 +34,11 @@ class WidgetSpeakUnseenProvider : AppWidgetProvider() {
         super.onReceive(context, intent)
     }
 
-    override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
+    override fun onUpdate(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetIds: IntArray
+    ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
         for (appWidgetId in appWidgetIds)
@@ -54,8 +58,10 @@ class WidgetSpeakUnseenProvider : AppWidgetProvider() {
         // speak unseen intent
         val speakUnseenIntent = Intent(context, SpeakThreadsReceiver::class.java)
             .putExtra("threadId", -1L)
-        val speakUnseenPendingIntent = PendingIntent.getBroadcast(context,0,
-            speakUnseenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val speakUnseenPendingIntent = PendingIntent.getBroadcast(
+            context, 0,
+            speakUnseenIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
         remoteViews.setOnClickPendingIntent(R.id.speakUnseenImage, speakUnseenPendingIntent)
 
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, remoteViews)

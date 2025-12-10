@@ -27,11 +27,11 @@ import android.os.IBinder
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import dagger.android.AndroidInjection
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import org.prauga.messages.common.util.extensions.getLabel
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.repository.BackupRepository
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -48,15 +48,17 @@ class RestoreBackupService : Service() {
 
         fun start(context: Context, backupFile: Uri) {
             val intent = Intent(context, RestoreBackupService::class.java)
-                    .setAction(ACTION_START)
-                    .putExtra(EXTRA_FILE_URI, backupFile.toString())
+                .setAction(ACTION_START)
+                .putExtra(EXTRA_FILE_URI, backupFile.toString())
 
             ContextCompat.startForegroundService(context, intent)
         }
     }
 
-    @Inject lateinit var backupRepo: BackupRepository
-    @Inject lateinit var notificationManager: NotificationManager
+    @Inject
+    lateinit var backupRepo: BackupRepository
+    @Inject
+    lateinit var notificationManager: NotificationManager
 
     private val notification by lazy { notificationManager.getNotificationForBackup() }
 
@@ -81,30 +83,30 @@ class RestoreBackupService : Service() {
         startForeground(NOTIFICATION_ID, notification.build())
 
         backupRepo.getRestoreProgress()
-                .sample(200, TimeUnit.MILLISECONDS, true)
-                .subscribeOn(Schedulers.io())
-                .subscribe { progress ->
-                    when (progress) {
-                        is BackupRepository.Progress.Idle -> stop()
+            .sample(200, TimeUnit.MILLISECONDS, true)
+            .subscribeOn(Schedulers.io())
+            .subscribe { progress ->
+                when (progress) {
+                    is BackupRepository.Progress.Idle -> stop()
 
-                        is BackupRepository.Progress.Running -> notification
-                                .setProgress(progress.max, progress.count, progress.indeterminate)
-                                .setContentText(progress.getLabel(this))
-                                .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
+                    is BackupRepository.Progress.Running -> notification
+                        .setProgress(progress.max, progress.count, progress.indeterminate)
+                        .setContentText(progress.getLabel(this))
+                        .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
 
-                        else -> notification
-                                .setProgress(0, 0, progress.indeterminate)
-                                .setContentText(progress.getLabel(this))
-                                .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
-                    }
+                    else -> notification
+                        .setProgress(0, 0, progress.indeterminate)
+                        .setContentText(progress.getLabel(this))
+                        .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
                 }
+            }
 
         // Start the restore
         Observable.just(intent)
-                .map { Uri.parse(it.getStringExtra(EXTRA_FILE_URI)) }
-                .map(backupRepo::performRestore)
-                .subscribeOn(Schedulers.io())
-                .subscribe({}, Timber::w)
+            .map { Uri.parse(it.getStringExtra(EXTRA_FILE_URI)) }
+            .map(backupRepo::performRestore)
+            .subscribeOn(Schedulers.io())
+            .subscribe({}, Timber::w)
     }
 
     private fun stop() {

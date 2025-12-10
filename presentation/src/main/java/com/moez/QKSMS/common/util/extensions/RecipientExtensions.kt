@@ -26,9 +26,14 @@ import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
 
 
-fun Recipient.getThemedIcon(context: Context, theme: Colors.Theme, width: Int, height: Int): IconCompat {
-    var icon : IconCompat? = null
-    if(contact != null) {
+fun Recipient.getThemedIcon(
+    context: Context,
+    theme: Colors.Theme,
+    width: Int,
+    height: Int
+): IconCompat {
+    var icon: IconCompat? = null
+    if (contact != null) {
         val req = GlideApp.with(context)
             .asBitmap()
             .circleCrop()
@@ -41,7 +46,7 @@ fun Recipient.getThemedIcon(context: Context, theme: Colors.Theme, width: Int, h
         else
             icon = IconCompat.createWithBitmap(bitmap)
     }
-    if(icon == null) {
+    if (icon == null) {
         // If there is no contact or no photo, create the default icon using the avatar_view layout
         try {
             val inflater = LayoutInflater.from(context)
@@ -56,12 +61,17 @@ fun Recipient.getThemedIcon(context: Context, theme: Colors.Theme, width: Int, h
             view.setBackgroundColor(theme.theme)
             view.setBackgroundTint(theme.theme)
             textView.setTextColor(theme.textPrimary)
-            TextViewCompat.setAutoSizeTextTypeWithDefaults(textView, TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE)
+            TextViewCompat.setAutoSizeTextTypeWithDefaults(
+                textView,
+                TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+            )
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, height * 0.5f)
-            iconView.layoutParams = FrameLayout.LayoutParams((width * 0.5).toInt(), (height * 0.5).toInt(),
-                Gravity.CENTER)
+            iconView.layoutParams = FrameLayout.LayoutParams(
+                (width * 0.5).toInt(), (height * 0.5).toInt(),
+                Gravity.CENTER
+            )
 
-            if(contact != null) {
+            if (contact != null) {
                 val initials = contact!!.name
                     .substringBefore(',')
                     .split(" ")
@@ -77,8 +87,7 @@ fun Recipient.getThemedIcon(context: Context, theme: Colors.Theme, width: Int, h
                     textView.text = null
                     iconView.visibility = VISIBLE
                 }
-            }
-            else {
+            } else {
                 textView.visibility = GONE
                 iconView.visibility = VISIBLE
                 iconView.setTint(theme.textPrimary)
@@ -92,7 +101,11 @@ fun Recipient.getThemedIcon(context: Context, theme: Colors.Theme, width: Int, h
                 layout(0, 0, measuredWidth, measuredHeight)
             }
 
-            val bitmap = createBitmap(container.measuredWidth, container.measuredHeight, Bitmap.Config.ARGB_8888)
+            val bitmap = createBitmap(
+                container.measuredWidth,
+                container.measuredHeight,
+                Bitmap.Config.ARGB_8888
+            )
             val canvas = android.graphics.Canvas(bitmap)
             canvas.clipPath(Path().apply {
                 addCircle(
@@ -105,8 +118,7 @@ fun Recipient.getThemedIcon(context: Context, theme: Colors.Theme, width: Int, h
             container.draw(canvas)
 
             icon = IconCompat.createWithBitmap(bitmap)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
             return IconCompat.createWithResource(context, R.mipmap.ic_shortcut_person)
         }
@@ -136,7 +148,7 @@ fun Person.Builder.fromRecipient(
  * Return a Person object corresponding to this recipient
  */
 @TargetApi(29)
-fun Recipient.toPerson(context : Context, colors: Colors): Person {
+fun Recipient.toPerson(context: Context, colors: Colors): Person {
     val person = Person.Builder().fromRecipient(this, context, colors)
     return person.build()
 }

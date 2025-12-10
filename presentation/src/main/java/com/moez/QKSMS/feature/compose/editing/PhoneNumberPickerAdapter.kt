@@ -21,6 +21,8 @@ package org.prauga.messages.feature.compose.editing
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -28,8 +30,6 @@ import org.prauga.messages.common.util.extensions.forwardTouches
 import org.prauga.messages.databinding.PhoneNumberListItemBinding
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.model.PhoneNumber
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
 import javax.inject.Inject
 
 class PhoneNumberPickerAdapter @Inject constructor(
@@ -40,9 +40,11 @@ class PhoneNumberPickerAdapter @Inject constructor(
 
     private var selectedItem: Long? = null
         set(value) {
-            data.indexOfFirst { number -> number.id == field }.takeIf { it != -1 }?.run(::notifyItemChanged)
+            data.indexOfFirst { number -> number.id == field }.takeIf { it != -1 }
+                ?.run(::notifyItemChanged)
             field = value
-            data.indexOfFirst { number -> number.id == field }.takeIf { it != -1 }?.run(::notifyItemChanged)
+            data.indexOfFirst { number -> number.id == field }.takeIf { it != -1 }
+                ?.run(::notifyItemChanged)
             selectedItemChanges.onNext(Optional(value))
         }
 

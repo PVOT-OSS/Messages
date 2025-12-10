@@ -23,7 +23,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
 import org.prauga.messages.common.base.QkController
@@ -37,6 +36,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import android.widget.ImageView
 import android.widget.TextView
+import com.uber.autodispose.autoDispose
 import javax.inject.Inject
 
 class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState, SwipeActionsPresenter>(), SwipeActionsView {
@@ -87,10 +87,10 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
         left.postDelayed({ left.animateLayoutChanges = true }, 100)
 
         Observable.merge(
-                right.clicks().map { SwipeActionsView.Action.RIGHT },
-                left.clicks().map { SwipeActionsView.Action.LEFT })
-                .autoDisposable(scope())
-                .subscribe(actionClicks)
+            right.clicks().map { SwipeActionsView.Action.RIGHT },
+            left.clicks().map { SwipeActionsView.Action.LEFT })
+            .autoDispose(scope())
+            .subscribe(actionClicks)
     }
 
     override fun onAttach(view: View) {

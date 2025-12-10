@@ -31,9 +31,9 @@ import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.setVisible
+import org.prauga.messages.databinding.SearchListItemBinding
 import org.prauga.messages.extensions.removeAccents
 import org.prauga.messages.model.SearchResult
-import org.prauga.messages.databinding.SearchListItemBinding
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
@@ -47,17 +47,26 @@ class SearchAdapter @Inject constructor(
 
     private val highlightColor: Int by lazy { colors.theme().highlight }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkBindingViewHolder<SearchListItemBinding> {
-        val binding = SearchListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): QkBindingViewHolder<SearchListItemBinding> {
+        val binding =
+            SearchListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             itemView.setOnClickListener {
                 val result = getItem(adapterPosition)
-                navigator.showConversation(result.conversation.id, result.query.takeIf { result.messages > 0 })
+                navigator.showConversation(
+                    result.conversation.id,
+                    result.query.takeIf { result.messages > 0 })
             }
         }
     }
 
-    override fun onBindViewHolder(holder: QkBindingViewHolder<SearchListItemBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: QkBindingViewHolder<SearchListItemBinding>,
+        position: Int
+    ) {
         val previous = data.getOrNull(position - 1)
         val result = getItem(position)
 
@@ -81,7 +90,8 @@ class SearchAdapter @Inject constructor(
 
             false -> {
                 holder.binding.date.setVisible(false)
-                holder.binding.snippet.text = context.getString(R.string.main_message_results, result.messages)
+                holder.binding.snippet.text =
+                    context.getString(R.string.main_message_results, result.messages)
             }
         }
     }

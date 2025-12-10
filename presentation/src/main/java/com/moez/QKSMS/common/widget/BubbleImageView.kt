@@ -26,9 +26,15 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import org.prauga.messages.common.util.extensions.dpToPx
 
-class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : ImageView(context, attrs) {
+class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    ImageView(context, attrs) {
 
-    enum class Style(val topLeft: Boolean, val topRight: Boolean, val bottomRight: Boolean, val bottomLeft: Boolean) {
+    enum class Style(
+        val topLeft: Boolean,
+        val topRight: Boolean,
+        val bottomRight: Boolean,
+        val bottomLeft: Boolean
+    ) {
 
         ONLY(true, true, true, true),
         IN_FIRST(true, true, true, false),
@@ -69,8 +75,10 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         val width = width.toFloat()
         val height = height.toFloat()
 
-        val cornerRectSmall = RectF().apply { set(-radiusSmall, -radiusSmall, radiusSmall, radiusSmall) }
-        val cornerRectLarge = RectF().apply { set(-radiusLarge, -radiusLarge, radiusLarge, radiusLarge) }
+        val cornerRectSmall =
+            RectF().apply { set(-radiusSmall, -radiusSmall, radiusSmall, radiusSmall) }
+        val cornerRectLarge =
+            RectF().apply { set(-radiusLarge, -radiusLarge, radiusLarge, radiusLarge) }
 
         if (bubbleStyle.topLeft) {
             cornerRectLarge.offsetTo(0f, 0f)

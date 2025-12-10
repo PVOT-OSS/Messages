@@ -20,10 +20,18 @@ package org.prauga.messages.feature.blocking.filters
 
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
@@ -32,21 +40,16 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.model.MessageContentFilterData
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import android.widget.CompoundButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 
-class MessageContentFiltersController : QkController<MessageContentFiltersView, MessageContentFiltersState,
-        MessageContentFiltersPresenter>(), MessageContentFiltersView {
+class MessageContentFiltersController :
+    QkController<MessageContentFiltersView, MessageContentFiltersState,
+            MessageContentFiltersPresenter>(), MessageContentFiltersView {
 
-    @Inject override lateinit var presenter: MessageContentFiltersPresenter
-    @Inject lateinit var colors: Colors
+    @Inject
+    override lateinit var presenter: MessageContentFiltersPresenter
+    @Inject
+    lateinit var colors: Colors
 
     private lateinit var add: ImageView
     private lateinit var filters: RecyclerView
@@ -92,7 +95,8 @@ class MessageContentFiltersController : QkController<MessageContentFiltersView, 
     override fun saveFilter(): Observable<MessageContentFilterData> = saveFilterSubject
 
     override fun showAddDialog() {
-        val layout = LayoutInflater.from(activity).inflate(R.layout.message_content_filters_add_dialog, null)
+        val layout =
+            LayoutInflater.from(activity).inflate(R.layout.message_content_filters_add_dialog, null)
         val addDialog = layout.findViewById<LinearLayout>(R.id.add_dialog)
         val input = layout.findViewById<android.widget.EditText>(R.id.input)
         val caseSensitivity = layout.findViewById<PreferenceView>(R.id.caseSensitivity)
@@ -104,32 +108,36 @@ class MessageContentFiltersController : QkController<MessageContentFiltersView, 
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
             .let { Observable.merge(it) }
-            .autoDisposable(scope())
+            .autoDispose(scope())
             .subscribe {
                 it.findViewById<CompoundButton>(R.id.checkbox)?.let { checkbox ->
                     checkbox.isChecked = !checkbox.isChecked
                 }
-                caseSensitivity.isEnabled = !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false)
+                caseSensitivity.isEnabled =
+                    !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false)
             }
 
         val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-                .setView(layout)
-                .setPositiveButton(R.string.message_content_filters_dialog_create) { _, _ ->
-                    var text = input.text.toString();
-                    if (!text.isBlank()) {
-                        if (!(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false)) text = text.trim()
-                        saveFilterSubject.onNext(
-                            MessageContentFilterData(
-                                text,
-                                (caseSensitivity.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true) &&
-                                        !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false),
-                                regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true,
-                                contacts.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true
-                            )
+            .setView(layout)
+            .setPositiveButton(R.string.message_content_filters_dialog_create) { _, _ ->
+                var text = input.text.toString();
+                if (!text.isBlank()) {
+                    if (!(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked
+                            ?: false)
+                    ) text = text.trim()
+                    saveFilterSubject.onNext(
+                        MessageContentFilterData(
+                            text,
+                            (caseSensitivity.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true) &&
+                                    !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked
+                                        ?: false),
+                            regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true,
+                            contacts.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true
                         )
-                    }
+                    )
                 }
-                .setNegativeButton(R.string.button_cancel) { _, _ -> }
+            }
+            .setNegativeButton(R.string.button_cancel) { _, _ -> }
         dialog.show()
     }
 

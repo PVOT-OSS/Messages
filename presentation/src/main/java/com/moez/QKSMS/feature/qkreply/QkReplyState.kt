@@ -18,10 +18,10 @@
  */
 package org.prauga.messages.feature.qkreply
 
+import io.realm.RealmResults
 import org.prauga.messages.compat.SubscriptionInfoCompat
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
-import io.realm.RealmResults
 
 data class QkReplyState(
     val hasError: Boolean = false,

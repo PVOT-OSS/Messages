@@ -30,6 +30,8 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.mms.ContentType
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -39,12 +41,12 @@ import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.util.GlideApp
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import java.util.*
+import java.util.Collections
+import java.util.WeakHashMap
 import javax.inject.Inject
 
-class GalleryPagerAdapter @Inject constructor(private val context: Context) : QkRealmAdapter<MmsPart, QkViewHolder>() {
+class GalleryPagerAdapter @Inject constructor(private val context: Context) :
+    QkRealmAdapter<MmsPart, QkViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_INVALID = 0
@@ -59,7 +61,8 @@ class GalleryPagerAdapter @Inject constructor(private val context: Context) : Qk
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return QkViewHolder(when (viewType) {
+        return QkViewHolder(
+            when (viewType) {
             VIEW_TYPE_IMAGE -> {
                 val binding = GalleryImagePageBinding.inflate(inflater, parent, false)
                 // When calling the public setter, it doesn't allow the midscale to be the same as the
@@ -101,14 +104,14 @@ class GalleryPagerAdapter @Inject constructor(private val context: Context) : Qk
                 // We need to explicitly request a gif from glide for animations to work
                 when (part.getUri().let(contentResolver::getType)) {
                     ContentType.IMAGE_GIF -> GlideApp.with(context)
-                            .asGif()
-                            .load(part.getUri())
-                            .into(binding.image)
+                        .asGif()
+                        .load(part.getUri())
+                        .into(binding.image)
 
                     else -> GlideApp.with(context)
-                            .asBitmap()
-                            .load(part.getUri())
-                            .into(binding.image)
+                        .asBitmap()
+                        .load(part.getUri())
+                        .into(binding.image)
                 }
             }
 
@@ -120,8 +123,10 @@ class GalleryPagerAdapter @Inject constructor(private val context: Context) : Qk
                 binding.video.player = exoPlayer
                 exoPlayers.add(exoPlayer)
 
-                val dataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "QUIK"))
-                val videoSource = ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(part.getUri())
+                val dataSourceFactory =
+                    DefaultDataSourceFactory(context, Util.getUserAgent(context, "QUIK"))
+                val videoSource =
+                    ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(part.getUri())
                 exoPlayer?.prepare(videoSource)
             }
         }

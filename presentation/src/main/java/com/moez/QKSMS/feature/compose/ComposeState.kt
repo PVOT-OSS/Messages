@@ -18,12 +18,12 @@
  */
 package org.prauga.messages.feature.compose
 
+import io.realm.RealmResults
 import org.prauga.messages.compat.SubscriptionInfoCompat
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
-import io.realm.RealmResults
 
 data class ComposeState(
     val hasError: Boolean = false,

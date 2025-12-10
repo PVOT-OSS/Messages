@@ -19,16 +19,16 @@
 package org.prauga.messages.feature.blocking.filters
 
 import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDisposable
+import com.uber.autodispose.autoDispose
+import io.reactivex.schedulers.Schedulers
 import org.prauga.messages.common.base.QkPresenter
 import org.prauga.messages.repository.MessageContentFilterRepository
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MessageContentFiltersPresenter @Inject constructor(
     private val filterRepo: MessageContentFilterRepository,
 ) : QkPresenter<MessageContentFiltersView, MessageContentFiltersState>(
-        MessageContentFiltersState(filters = filterRepo.getMessageContentFilters())
+    MessageContentFiltersState(filters = filterRepo.getMessageContentFilters())
 ) {
 
     override fun bindIntents(view: MessageContentFiltersView) {
@@ -38,17 +38,17 @@ class MessageContentFiltersPresenter @Inject constructor(
             .observeOn(Schedulers.io())
             .doOnNext(filterRepo::removeFilter)
             .subscribeOn(Schedulers.io())
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe()
 
         view.addFilter()
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { view.showAddDialog() }
 
         view.saveFilter()
             .observeOn(Schedulers.io())
             .subscribeOn(Schedulers.io())
-            .autoDisposable(view.scope())
+            .autoDispose(view.scope())
             .subscribe { filterData -> filterRepo.createFilter(filterData) }
     }
 

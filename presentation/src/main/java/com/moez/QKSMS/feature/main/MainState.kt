@@ -19,10 +19,10 @@
 
 package org.prauga.messages.feature.main
 
+import io.realm.RealmResults
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.SearchResult
 import org.prauga.messages.repository.SyncRepository
-import io.realm.RealmResults
 
 data class MainState(
     val hasError: Boolean = false,

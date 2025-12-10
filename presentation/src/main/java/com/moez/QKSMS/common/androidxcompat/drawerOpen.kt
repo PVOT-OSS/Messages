@@ -35,7 +35,8 @@ import io.reactivex.functions.Consumer
  * *Note:* A value will be emitted immediately on subscribe.
  */
 @CheckResult
-inline fun DrawerLayout.drawerOpen(gravity: Int): InitialValueObservable<Boolean> = RxDrawerLayout.drawerOpen(this, gravity)
+inline fun DrawerLayout.drawerOpen(gravity: Int): InitialValueObservable<Boolean> =
+    RxDrawerLayout.drawerOpen(this, gravity)
 
 /**
  * An action which sets whether the drawer with `gravity` of `view` is open.
@@ -44,4 +45,5 @@ inline fun DrawerLayout.drawerOpen(gravity: Int): InitialValueObservable<Boolean
  * to free this reference.
  */
 @CheckResult
-inline fun DrawerLayout.open(gravity: Int): Consumer<in Boolean> = RxDrawerLayout.open(this, gravity)
+inline fun DrawerLayout.open(gravity: Int): Consumer<in Boolean> =
+    RxDrawerLayout.open(this, gravity)

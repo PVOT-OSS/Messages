@@ -25,6 +25,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.FontProvider
@@ -34,22 +37,28 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.widget.PreferenceView
+import org.prauga.messages.databinding.QksmsPlusActivityBinding
 import org.prauga.messages.feature.plus.experiment.UpgradeButtonExperiment
 import org.prauga.messages.manager.BillingManager
-import org.prauga.messages.databinding.QksmsPlusActivityBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
-class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivityBinding::inflate), PlusView {
+class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivityBinding::inflate),
+    PlusView {
 
-    @Inject lateinit var fontProvider: FontProvider
-    @Inject lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var fontProvider: FontProvider
+    @Inject
+    lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[PlusViewModel::class.java] }
+    private val viewModel by lazy {
+        ViewModelProviders.of(
+            this,
+            viewModelFactory
+        )[PlusViewModel::class.java]
+    }
 
     override val upgradeIntent get() = binding.upgrade.clicks()
     override val upgradeDonateIntent get() = binding.upgradeDonate.clicks()
@@ -94,9 +103,12 @@ class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivit
     }
 
     override fun render(state: PlusState) {
-        binding.description.text = getString(R.string.qksms_plus_description_summary, state.upgradePrice)
-        binding.upgrade.text = getString(upgradeButtonExperiment.variant, state.upgradePrice, state.currency)
-        binding.upgradeDonate.text = getString(R.string.qksms_plus_upgrade_donate, state.upgradeDonatePrice, state.currency)
+        binding.description.text =
+            getString(R.string.qksms_plus_description_summary, state.upgradePrice)
+        binding.upgrade.text =
+            getString(upgradeButtonExperiment.variant, state.upgradePrice, state.currency)
+        binding.upgradeDonate.text =
+            getString(R.string.qksms_plus_upgrade_donate, state.upgradeDonatePrice, state.currency)
 
         val fdroid = true
 

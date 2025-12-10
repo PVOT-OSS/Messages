@@ -23,12 +23,12 @@ import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import dagger.android.AndroidInjection
-import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.databinding.ContainerActivityBinding
 
 
-class BackupActivity : QkThemedActivity<ContainerActivityBinding>(ContainerActivityBinding::inflate) {
+class BackupActivity :
+    QkThemedActivity<ContainerActivityBinding>(ContainerActivityBinding::inflate) {
 
     private lateinit var router: Router
 

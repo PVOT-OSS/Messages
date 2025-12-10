@@ -25,6 +25,9 @@ import android.media.MediaMetadataRetriever
 import android.view.View
 import android.widget.SeekBar
 import com.moez.QKSMS.common.QkMediaPlayer
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewHolder
@@ -41,9 +44,6 @@ import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.util.GlideApp
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -55,7 +55,8 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
         const val DEFAULT_SHARE_FILENAME = "quik-audio-attachment.mp3"
     }
 
-    @Inject lateinit var navigator: Navigator
+    @Inject
+    lateinit var navigator: Navigator
 
     override val partLayout = R.layout.mms_audio_preview_list_item
     override var theme = colors.theme()
@@ -130,6 +131,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                         audioState.seekBarUpdater?.dispose()
                     }
                 }
+
                 QkMediaPlayer.PlayingState.Paused -> {
                     if (audioState.partId == part.id) {
                         QkMediaPlayer.start()
@@ -140,6 +142,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                         startSeekBarUpdateTimer()
                     }
                 }
+
                 else -> {
                     if (part.getUri().resourceExists(context)) {
                         QkMediaPlayer.reset() // make sure reset before trying to (re-)use
@@ -222,18 +225,24 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                     if (fromUser)
                         QkMediaPlayer.seekTo(progress)
                 }
-                override fun onStartTrackingTouch(p0: SeekBar?) { /* nothing */ }
-                override fun onStopTrackingTouch(p0: SeekBar?) { /* nothing */ }
+
+                override fun onStartTrackingTouch(p0: SeekBar?) { /* nothing */
+                }
+
+                override fun onStopTrackingTouch(p0: SeekBar?) { /* nothing */
+                }
             })
         }
 
         // playPause button
-        binding.playPause. apply {
+        binding.playPause.apply {
             if ((audioState.partId == part.id) &&
-                (audioState.state == QkMediaPlayer.PlayingState.Playing))
+                (audioState.state == QkMediaPlayer.PlayingState.Playing)
+            )
                 uiToPlaying(holder)
             else if ((audioState.partId == part.id) &&
-                (audioState.state == QkMediaPlayer.PlayingState.Paused))
+                (audioState.state == QkMediaPlayer.PlayingState.Paused)
+            )
                 uiToPaused(holder)
             else
                 uiToStopped(holder)
@@ -264,10 +273,13 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                 bubbleStyle = when {
                     !canGroupWithPrevious && canGroupWithNext ->
                         if (message.isMe()) BubbleImageView.Style.OUT_FIRST else BubbleImageView.Style.IN_FIRST
+
                     canGroupWithPrevious && canGroupWithNext ->
                         if (message.isMe()) BubbleImageView.Style.OUT_MIDDLE else BubbleImageView.Style.IN_MIDDLE
+
                     canGroupWithPrevious && !canGroupWithNext ->
                         if (message.isMe()) BubbleImageView.Style.OUT_LAST else BubbleImageView.Style.IN_LAST
+
                     else -> BubbleImageView.Style.ONLY
                 }
 

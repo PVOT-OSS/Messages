@@ -23,6 +23,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import ezvcard.Ezvcard
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -33,9 +36,6 @@ import org.prauga.messages.extensions.getName
 import org.prauga.messages.feature.extensions.LoadBestIconIntoImageView
 import org.prauga.messages.feature.extensions.loadBestIconIntoImageView
 import org.prauga.messages.model.Attachment
-import ezvcard.Ezvcard
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import javax.inject.Inject
 
 
@@ -96,6 +96,7 @@ class ComposeAttachmentAdapter @Inject constructor(
                 binding.fileName.text = context.getString(R.string.attachment_missing)
                 binding.fileName.visibility = View.VISIBLE
             }
+
             LoadBestIconIntoImageView.ActivityIcon,
             LoadBestIconIntoImageView.DefaultAudioIcon,
             LoadBestIconIntoImageView.GenericIcon -> {
@@ -103,6 +104,7 @@ class ComposeAttachmentAdapter @Inject constructor(
                 binding.fileName.text = attachment.uri.getName(context)
                 binding.fileName.visibility = View.VISIBLE
             }
+
             else -> binding.fileName.visibility = View.GONE
         }
     }

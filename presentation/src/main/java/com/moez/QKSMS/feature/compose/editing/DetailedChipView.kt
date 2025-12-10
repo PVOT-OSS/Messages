@@ -32,12 +32,17 @@ import javax.inject.Inject
 
 class DetailedChipView(context: Context) : RelativeLayout(context) {
 
-    @Inject lateinit var colors: Colors
+    @Inject
+    lateinit var colors: Colors
 
     private val binding: ContactChipDetailedBinding
 
     init {
-        binding = ContactChipDetailedBinding.inflate(android.view.LayoutInflater.from(context), this, true)
+        binding = ContactChipDetailedBinding.inflate(
+            android.view.LayoutInflater.from(context),
+            this,
+            true
+        )
         appComponent.inject(this)
 
         setOnClickListener { hide() }

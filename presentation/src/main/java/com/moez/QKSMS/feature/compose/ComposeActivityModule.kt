@@ -33,11 +33,13 @@ class ComposeActivityModule {
 
     @Provides
     @Named("query")
-    fun provideQuery(activity: ComposeActivity): String = activity.intent.extras?.getString("query") ?: ""
+    fun provideQuery(activity: ComposeActivity): String =
+        activity.intent.extras?.getString("query") ?: ""
 
     @Provides
     @Named("threadId")
-    fun provideThreadId(activity: ComposeActivity): Long = activity.intent.extras?.getLong("threadId") ?: 0L
+    fun provideThreadId(activity: ComposeActivity): Long =
+        activity.intent.extras?.getLong("threadId") ?: 0L
 
     @Provides
     @Named("addresses")
@@ -66,7 +68,8 @@ class ComposeActivityModule {
         retVal.append(
             activity.intent?.extras?.getString(Intent.EXTRA_TEXT)
                 ?: activity.intent?.extras?.getString("sms_body")
-                ?: "")
+                ?: ""
+        )
 
         // from body param value(s) if intent data uri is like
         // sms:12345678?body=hello%20there&body=goodbye

@@ -30,8 +30,9 @@ class DrawerBadgesExperiment @Inject constructor(
     override val key: String = "Drawer Badges"
 
     override val variants: List<Variant<Boolean>> = listOf(
-            Variant("variant_a", false),
-            Variant("variant_b", true))
+        Variant("variant_a", false),
+        Variant("variant_b", true)
+    )
 
     override val default: Boolean = false
 
