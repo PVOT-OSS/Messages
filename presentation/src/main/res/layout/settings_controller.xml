@@ -214,6 +214,57 @@
             android:layout_marginBottom="8dp"
             android:background="?android:attr/divider" />
 
+        <org.prauga.messages.common.widget.QkTextView
+            style="@style/PreferenceCategory"
+            android:text="@string/settings_category_parcel_code" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/parcelCodeEnabled"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_package_black_24dp"
+            app:title="@string/settings_parcel_code_enabled_title"
+            app:summary="@string/settings_parcel_code_enabled_summary"
+            app:widget="@layout/settings_switch_widget" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/parcelCodeAutoCopy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/settings_parcel_code_auto_copy_title"
+            app:summary="@string/settings_parcel_code_auto_copy_summary"
+            app:widget="@layout/settings_switch_widget" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/parcelCodeNotification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/settings_parcel_code_notification_title"
+            app:summary="@string/settings_parcel_code_notification_summary"
+            app:widget="@layout/settings_switch_widget" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/parcelCodeSaveHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/settings_parcel_code_save_history_title"
+            app:summary="@string/settings_parcel_code_save_history_summary"
+            app:widget="@layout/settings_switch_widget" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/parcelCodeManage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="@string/settings_parcel_code_manage_title"
+            app:summary="@string/settings_parcel_code_manage_summary" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="?android:attr/divider" />
+
         <org.prauga.messages.common.widget.PreferenceView
             android:id="@+id/sync"
             android:layout_width="match_parent"
