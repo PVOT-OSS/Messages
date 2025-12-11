@@ -144,6 +144,19 @@ class SettingsPresenter @Inject constructor(
                 .subscribe { syncProgress -> newState { copy(syncProgress = syncProgress) } }
 
         disposables += syncMessages
+
+        // 取件码相关设置
+        disposables += prefs.parcelCodeEnabled.asObservable()
+                .subscribe { enabled -> newState { copy(parcelCodeEnabled = enabled) } }
+
+        disposables += prefs.parcelCodeAutoCopyEnabled.asObservable()
+                .subscribe { enabled -> newState { copy(parcelCodeAutoCopyEnabled = enabled) } }
+
+        disposables += prefs.parcelCodeNotificationEnabled.asObservable()
+                .subscribe { enabled -> newState { copy(parcelCodeNotificationEnabled = enabled) } }
+
+        disposables += prefs.parcelCodeSaveHistoryEnabled.asObservable()
+                .subscribe { enabled -> newState { copy(parcelCodeSaveHistoryEnabled = enabled) } }
     }
 
     override fun bindIntents(view: SettingsView) {
@@ -202,6 +215,13 @@ class SettingsPresenter @Inject constructor(
                         R.id.sync -> syncMessages.execute(Unit)
 
                         R.id.about -> view.showAbout()
+
+                        // 取件码相关设置点击处理
+                        R.id.parcelCodeEnabled -> prefs.parcelCodeEnabled.set(!prefs.parcelCodeEnabled.get())
+                        R.id.parcelCodeAutoCopy -> prefs.parcelCodeAutoCopyEnabled.set(!prefs.parcelCodeAutoCopyEnabled.get())
+                        R.id.parcelCodeNotification -> prefs.parcelCodeNotificationEnabled.set(!prefs.parcelCodeNotificationEnabled.get())
+                        R.id.parcelCodeSaveHistory -> prefs.parcelCodeSaveHistoryEnabled.set(!prefs.parcelCodeSaveHistoryEnabled.get())
+                        R.id.parcelCodeManage -> TODO("Use router to navigate to ParcelCodeController")
                     }
                 }
 
