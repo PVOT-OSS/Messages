@@ -98,6 +98,12 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private lateinit var swipeActions: PreferenceView
     private lateinit var about: PreferenceView
     private lateinit var syncingProgress: ProgressBar
+    // 取件码设置
+    private lateinit var parcelCodeEnabled: PreferenceView
+    private lateinit var parcelCodeAutoCopy: PreferenceView
+    private lateinit var parcelCodeNotification: PreferenceView
+    private lateinit var parcelCodeSaveHistory: PreferenceView
+    private lateinit var parcelCodeManage: PreferenceView
 
     private val signatureDialog: TextInputDialog by lazy {
         TextInputDialog(activity!!, context.getString(R.string.settings_signature_title), signatureSubject::onNext)
@@ -156,6 +162,12 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         swipeActions = view.findViewById(R.id.swipeActions)
         about = view.findViewById(R.id.about)
         syncingProgress = view.findViewById(R.id.syncingProgress)
+        // 初始化取件码设置UI组件
+        parcelCodeEnabled = view.findViewById(R.id.parcelCodeEnabled)
+        parcelCodeAutoCopy = view.findViewById(R.id.parcelCodeAutoCopy)
+        parcelCodeNotification = view.findViewById(R.id.parcelCodeNotification)
+        parcelCodeSaveHistory = view.findViewById(R.id.parcelCodeSaveHistory)
+        parcelCodeManage = view.findViewById(R.id.parcelCodeManage)
 
         preferences.postDelayed({ preferences.animateLayoutChanges = true }, 100)
 
@@ -259,6 +271,18 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
                 syncingProgress.isIndeterminate = state.syncProgress.indeterminate
             }
         }
+        
+        // 更新取件码设置UI状态
+        parcelCodeEnabled.checkbox()?.isChecked = state.parcelCodeEnabled
+        parcelCodeAutoCopy.checkbox()?.isChecked = state.parcelCodeAutoCopyEnabled
+        parcelCodeNotification.checkbox()?.isChecked = state.parcelCodeNotificationEnabled
+        parcelCodeSaveHistory.checkbox()?.isChecked = state.parcelCodeSaveHistoryEnabled
+        // 根据取件码功能开关控制其他设置项的可见性
+        val parcelSettingsVisible = state.parcelCodeEnabled
+        parcelCodeAutoCopy.isVisible = parcelSettingsVisible
+        parcelCodeNotification.isVisible = parcelSettingsVisible
+        parcelCodeSaveHistory.isVisible = parcelSettingsVisible
+        parcelCodeManage.isVisible = parcelSettingsVisible
     }
 
     override fun showQksmsPlusSnackbar() {
