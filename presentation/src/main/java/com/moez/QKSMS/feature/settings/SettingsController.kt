@@ -294,13 +294,22 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
     override suspend fun showAutoDeleteWarningDialog(messages: Int): Boolean = withContext(Dispatchers.Main) {
         suspendCancellableCoroutine<Boolean> { cont ->
-            AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+            val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
                     .setTitle(R.string.settings_auto_delete_warning)
                     .setMessage(context.resources.getString(R.string.settings_auto_delete_warning_message, messages))
                     .setOnCancelListener { cont.resume(false) }
                     .setNegativeButton(R.string.button_cancel) { _, _ -> cont.resume(false) }
                     .setPositiveButton(R.string.button_yes) { _, _ -> cont.resume(true) }
-                    .show()
+                    .create()
+
+            dialog.show()
+
+            themedActivity?.theme?.take(1)
+                    ?.autoDisposable(scope())
+                    ?.subscribe { theme ->
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+                    }
         }
     }
 

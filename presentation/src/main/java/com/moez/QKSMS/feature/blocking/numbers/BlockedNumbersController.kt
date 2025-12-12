@@ -98,7 +98,16 @@ class BlockedNumbersController : QkController<BlockedNumbersView, BlockedNumbers
                 }
                 .setNegativeButton(R.string.button_cancel) { _, _ -> }
                 .setOnDismissListener { textWatcher.dispose() }
+                .create()
+
         dialog.show()
+
+        themedActivity?.theme?.take(1)
+                ?.autoDisposable(scope())
+                ?.subscribe { theme ->
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+                }
     }
 
 }

@@ -117,12 +117,21 @@ class BlockedMessagesController : QkController<BlockedMessagesView, BlockedMessa
 
     override fun showDeleteDialog(conversations: List<Long>) {
         val count = conversations.size
-        AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+        val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
                 .setTitle(R.string.dialog_delete_title)
                 .setMessage(resources?.getQuantityString(R.plurals.dialog_delete_message, count, count))
                 .setPositiveButton(R.string.button_delete) { _, _ -> confirmDeleteIntent.onNext(conversations) }
                 .setNegativeButton(R.string.button_cancel, null)
-                .show()
+                .create()
+
+        dialog.show()
+
+        themedActivity?.theme?.take(1)
+                ?.autoDisposable(scope())
+                ?.subscribe { theme ->
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+                }
     }
 
     override fun goBack() {

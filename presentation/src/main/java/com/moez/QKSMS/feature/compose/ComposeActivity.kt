@@ -478,15 +478,24 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     }
 
     override fun showDetails(details: String) {
-        AlertDialog.Builder(this, R.style.AppThemeDialog)
+        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
             .setTitle(R.string.compose_details_title)
             .setMessage(details)
             .setCancelable(true)
-            .show()
+            .create()
+
+        dialog.show()
+
+        theme.take(1)
+            .autoDisposable(scope())
+            .subscribe { theme ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+            }
     }
 
     override fun showMessageLinkAskDialog(uri: Uri) {
-        AlertDialog.Builder(this, R.style.AppThemeDialog)
+        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
             .setTitle(R.string.messageLinkHandling_dialog_title)
             .setMessage(getString(R.string.messageLinkHandling_dialog_body, uri.toString()))
             .setPositiveButton(
@@ -499,7 +508,16 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
                 )
             }
             .setNegativeButton(R.string.messageLinkHandling_dialog_negative) { _, _ -> { } }
-            .show()
+            .create()
+
+        dialog.show()
+
+        theme.take(1)
+            .autoDisposable(scope())
+            .subscribe { theme ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+            }
     }
 
     override fun requestDefaultSms() {
@@ -608,23 +626,41 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     override fun showDeleteDialog(messages: List<Long>) {
         val count = messages.size
-        AlertDialog.Builder(this, R.style.AppThemeDialog)
+        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
             .setTitle(R.string.dialog_delete_title)
             .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
             .setPositiveButton(R.string.button_delete) { _, _ -> confirmDeleteIntent.onNext(messages) }
             .setNegativeButton(R.string.button_cancel, null)
-            .show()
+            .create()
+
+        dialog.show()
+
+        theme.take(1)
+            .autoDisposable(scope())
+            .subscribe { theme ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+            }
     }
 
     override fun showClearCurrentMessageDialog() {
-        AlertDialog.Builder(this, R.style.AppThemeDialog)
+        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
             .setTitle(R.string.dialog_clear_compose_title)
             .setMessage(R.string.dialog_clear_compose)
             .setPositiveButton(R.string.button_clear) { _, _ ->
                 clearCurrentMessageIntent.onNext(false)
             }
             .setNegativeButton(R.string.button_cancel, null)
-            .show()
+            .create()
+
+        dialog.show()
+
+        theme.take(1)
+            .autoDisposable(scope())
+            .subscribe { theme ->
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
