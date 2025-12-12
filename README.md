@@ -26,6 +26,21 @@ alt="Download from GitHub releases" height="100" /></a>
 ## Chat
 You can chat with the community over at [@Pvot_OS:telegram](https://t.me/pvot_os)
 
+## How This App Differs from QKSMS and QUIK
+
+This project is built on original fork from QKSMS and QUIK, but it takes a different directions in several areas.
+
+- **Opinionated UX choices:** Instead of offering a large set of themes or layouts, the app prioritizes a single, consistent visual style to keep navigation predictable and distraction-free.
+- **Reduced dependency footprint:** Compared to QKSMS’s extensive use of libraries for animations and theming, this project aims to keep external dependencies to a minimum for better control and easier maintenance.
+- **Selective feature set:** Rather than replicating the full feature set of QKSMS (e.g., extensive theme packs, scheduled messages) or QUICK's rapid-action gestures, this app includes only the features necessary for a streamlined workflow.
+
+### Project Goals
+- Provide a messaging experience that stays fast over time.
+- Keep the codebase easy to understand and updated with latest Android trends.
+- Offer a consistent UI focused on clarity rather than personalization or speed tricks.
+
+This project is not intended as a clone or competitor to QKSMS or QUIK. Instead, it explores a different path for designing an SMS app with minimalism and maintainability at its core.
+
 ## Reporting bugs
 
 A great bug report contains a description of the problem and steps to reproduce the problem. We need to know what we're looking for and where to look for it.
