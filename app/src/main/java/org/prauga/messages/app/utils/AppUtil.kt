@@ -3,6 +3,7 @@
 package org.prauga.messages.app.utils
 
 import android.app.Activity
+import android.content.res.Configuration
 import android.os.Build
 import android.view.View
 import androidx.core.view.ViewCompat
@@ -14,18 +15,16 @@ object AppUtil {
     fun Activity.applyEdgeToEdgeInsets() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             val view = findViewById<View>(android.R.id.content)
+            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
             ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
                 val bars = windowInsets.getInsets(
                     WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout() or WindowInsetsCompat.Type.ime()
                 )
-                WindowCompat.getInsetsController(
-                    window,
-                    window.decorView
-                )?.isAppearanceLightStatusBars = true
-                WindowCompat.getInsetsController(
-                    window,
-                    window.decorView
-                )?.isAppearanceLightNavigationBars = true
+                val isNightMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+                insetsController?.isAppearanceLightStatusBars = !isNightMode
+                insetsController?.isAppearanceLightNavigationBars = !isNightMode
                 v.updatePadding(
                     left = bars.left,
                     top = bars.top,
