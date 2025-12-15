@@ -527,4 +527,11 @@
     </plurals>
     <string name="notification_message_failed_action">Wyślij ponownie</string>
     <string name="messages_text_share_file_error">Ups! Coś poszło nie tak podczas udostępniania</string>
+    <string name="main_filter_all">Wszystko</string>
+    <string name="main_filter_unread">Nieprzeczytane</string>
+    <string name="main_not_default_sms_message">Aby korzystać z aplikacji Wiadomości, ustaw ją jako domyślną aplikację do obsługi SMS</string>
+    <string name="main_change_default_app">Zmień domyślną aplikację</string>
+    <string name="compose_file_size_unavailable">Nieznane</string>
+    <string name="compose_not_default_sms_message">Aby korzystać z aplikacji Wiadomości, ustaw ją jako domyślną aplikację do obsługi SMS</string>
+    <string name="compose_change_default_app">Zmień domyślną aplikację</string>
 </resources>
