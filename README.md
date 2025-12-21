@@ -32,7 +32,7 @@ This project is built on original fork from QKSMS and QUIK, but it takes a diffe
 
 - **Opinionated UX choices:** Instead of offering a large set of themes or layouts, the app prioritizes a single, consistent visual style to keep navigation predictable and distraction-free.
 - **Reduced dependency footprint:** Compared to QKSMS’s extensive use of libraries for animations and theming, this project aims to keep external dependencies to a minimum for better control and easier maintenance.
-- **Selective feature set:** Rather than replicating the full feature set of QKSMS (e.g., extensive theme packs, scheduled messages) or QUIK's rapid-action gestures, this app includes only the features necessary for a streamlined workflow.
+- **Selective feature set:** Rather than replicating the full feature set of QKSMS (e.g., extensive theme packs) or QUIK's rapid-action gestures, this app includes only the features necessary for a streamlined workflow.
 
 ### Project Goals
 - Provide a messaging experience that stays fast over time.
