@@ -35,6 +35,8 @@ import org.prauga.messages.extensions.removeAccents
 import org.prauga.messages.model.SearchResult
 import org.prauga.messages.databinding.SearchListItemBinding
 import javax.inject.Inject
+import kotlin.math.abs
+import kotlin.math.min
 
 class SearchAdapter @Inject constructor(
     colors: Colors,
@@ -62,14 +64,7 @@ class SearchAdapter @Inject constructor(
         holder.binding.resultsHeader.setVisible(result.messages > 0 && previous?.messages == 0)
 
         val query = result.query
-        val title = SpannableString(result.conversation.getTitle())
-        var index = title.removeAccents().indexOf(query, ignoreCase = true)
-
-        while (index >= 0) {
-            title.setSpan(BackgroundColorSpan(highlightColor), index, index + query.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            index = title.indexOf(query, index + query.length, true)
-        }
-        holder.binding.title.text = title
+        holder.binding.title.text = highlightText(result.conversation.getTitle(), query)
 
         holder.binding.avatars.recipients = result.conversation.recipients
 
@@ -77,10 +72,11 @@ class SearchAdapter @Inject constructor(
             true -> {
                 holder.binding.date.setVisible(true)
                 holder.binding.date.text = dateFormatter.getConversationTimestamp(result.conversation.date)
-                holder.binding.snippet.text = when (result.conversation.me) {
+                val snippetText = when (result.conversation.me) {
                     true -> context.getString(R.string.main_sender_you, result.conversation.snippet)
                     false -> result.conversation.snippet
                 }
+                holder.binding.snippet.text = highlightText(snippetText ?: "", query)
             }
 
             false -> {
@@ -98,5 +94,84 @@ class SearchAdapter @Inject constructor(
         return old.query == new.query && // Queries are the same
                 old.conversation.id == new.conversation.id // Conversation id is the same
                 && old.messages == new.messages // Result count is the same
+    }
+
+    private fun highlightText(text: CharSequence, query: CharSequence): SpannableString {
+        if (query.isEmpty()) return SpannableString(text)
+
+        val original = text.toString()
+        val normalizedText = original.removeAccents()
+        val normalizedQuery = query.toString()
+        val lowerText = normalizedText.lowercase()
+        val lowerQuery = normalizedQuery.lowercase()
+        val spannable = SpannableString(original)
+
+        fun applySpan(start: Int, end: Int) {
+            if (start < 0 || end > spannable.length || start >= end) return
+            spannable.setSpan(
+                BackgroundColorSpan(highlightColor),
+                start,
+                end,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
+
+        var index = lowerText.indexOf(lowerQuery)
+        if (index >= 0) {
+            while (index >= 0) {
+                applySpan(index, index + lowerQuery.length)
+                index = lowerText.indexOf(lowerQuery, index + lowerQuery.length)
+            }
+            return spannable
+        }
+
+        // Fuzzy fallback: find the closest window of text roughly query-length.
+        val window = lowerQuery.length
+        var bestIndex = -1
+        var bestDistance = window + 1
+        for (i in 0..(lowerText.length - window).coerceAtLeast(0)) {
+            val candidate = lowerText.substring(i, min(lowerText.length, i + window))
+            val distance = levenshtein(candidate, lowerQuery, maxDistance = 2)
+            if (distance < bestDistance) {
+                bestDistance = distance
+                bestIndex = i
+                if (bestDistance == 0) break
+            }
+        }
+
+        if (bestIndex >= 0 && bestDistance <= 2) {
+            applySpan(bestIndex, bestIndex + window)
+        }
+
+        return spannable
+    }
+
+    private fun levenshtein(lhs: String, rhs: String, maxDistance: Int): Int {
+        if (lhs == rhs) return 0
+        if (abs(lhs.length - rhs.length) > maxDistance) return maxDistance + 1
+        if (lhs.isEmpty() || rhs.isEmpty()) return maxDistance + 1
+
+        val prev = IntArray(rhs.length + 1) { it }
+        val curr = IntArray(rhs.length + 1)
+
+        lhs.forEachIndexed { i, lChar ->
+            curr[0] = i + 1
+            var bestInRow = curr[0]
+            rhs.forEachIndexed { j, rChar ->
+                val cost = if (lChar == rChar) 0 else 1
+                curr[j + 1] = min(
+                    prev[j + 1] + 1, // deletion
+                    min(
+                        curr[j] + 1, // insertion
+                        prev[j] + cost // substitution
+                    )
+                )
+                bestInRow = min(bestInRow, curr[j + 1])
+            }
+            if (bestInRow > maxDistance) return maxDistance + 1
+            System.arraycopy(curr, 0, prev, 0, curr.size)
+        }
+
+        return prev[rhs.length]
     }
 }

@@ -18,6 +18,7 @@
  */
 package org.prauga.messages.filter
 
+import org.prauga.messages.extensions.fuzzyMatch
 import org.prauga.messages.extensions.removeAccents
 import org.prauga.messages.model.Conversation
 import javax.inject.Inject
@@ -26,7 +27,16 @@ class ConversationFilter @Inject constructor(private val recipientFilter: Recipi
     Filter<Conversation>() {
 
     override fun filter(item: Conversation, query: CharSequence): Boolean {
-        if (item.name.removeAccents().contains(query, ignoreCase = true)) {
+        val normalizedName = item.name.removeAccents()
+        if (normalizedName.contains(query, ignoreCase = true) || normalizedName.fuzzyMatch(query)) {
+            return true
+        }
+        val normalizedSnippet = item.snippet?.removeAccents().orEmpty()
+        if (normalizedSnippet.isNotEmpty() &&
+            (normalizedSnippet.contains(query, ignoreCase = true) || normalizedSnippet.fuzzyMatch(
+                query
+            ))
+        ) {
             return true
         }
         return item.recipients.any { recipient -> recipientFilter.filter(recipient, query) }

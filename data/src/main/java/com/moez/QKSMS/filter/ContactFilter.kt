@@ -18,15 +18,20 @@
  */
 package org.prauga.messages.filter
 
+import org.prauga.messages.extensions.fuzzyMatch
 import org.prauga.messages.extensions.removeAccents
 import org.prauga.messages.model.Contact
 import javax.inject.Inject
 
-class ContactFilter @Inject constructor(private val phoneNumberFilter: PhoneNumberFilter) : Filter<Contact>() {
+class ContactFilter @Inject constructor(private val phoneNumberFilter: PhoneNumberFilter) :
+    Filter<Contact>() {
 
     override fun filter(item: Contact, query: CharSequence): Boolean {
-        return item.name.removeAccents().contains(query, true) || // Name
-                item.numbers.map { it.address }.any { address -> phoneNumberFilter.filter(address, query) } // Number
+        val normalizedName = item.name.removeAccents()
+        return normalizedName.contains(query, true) || // exact/substring
+                normalizedName.fuzzyMatch(query) || // fuzzy
+                item.numbers.map { it.address }
+                    .any { address -> phoneNumberFilter.filter(address, query) } // Number
     }
 
 }

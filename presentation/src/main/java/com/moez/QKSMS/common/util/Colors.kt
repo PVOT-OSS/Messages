@@ -16,17 +16,19 @@
  * You should have received a copy of the GNU General Public License
  * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.prauga.messages.common.util
 
 import android.content.Context
 import android.graphics.Color
 import androidx.core.content.res.getColorOrThrow
+import androidx.core.graphics.ColorUtils
+import io.reactivex.Observable
 import org.prauga.messages.R
 import org.prauga.messages.common.util.extensions.getColorCompat
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
-import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.absoluteValue
@@ -64,19 +66,23 @@ class Colors @Inject constructor(
         R.array.material_deep_orange,
         R.array.material_brown,
         R.array.material_gray,
-        R.array.material_blue_gray)
-            .map { res -> context.resources.obtainTypedArray(res) }
-            .map { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
+        R.array.material_blue_gray
+    )
+        .map { res -> context.resources.obtainTypedArray(res) }
+        .map { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
 
     private val randomColors: List<Int> = context.resources.obtainTypedArray(R.array.random_colors)
-            .let { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
+        .let { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
 
     private val minimumContrastRatio = 2
 
     // Cache these values so they don't need to be recalculated
-    private val primaryTextLuminance = measureLuminance(context.getColorCompat(R.color.textPrimaryDark))
-    private val secondaryTextLuminance = measureLuminance(context.getColorCompat(R.color.textSecondaryDark))
-    private val tertiaryTextLuminance = measureLuminance(context.getColorCompat(R.color.textTertiaryDark))
+    private val primaryTextLuminance =
+        measureLuminance(context.getColorCompat(R.color.textPrimaryDark))
+    private val secondaryTextLuminance =
+        measureLuminance(context.getColorCompat(R.color.textSecondaryDark))
+    private val tertiaryTextLuminance =
+        measureLuminance(context.getColorCompat(R.color.textTertiaryDark))
 
     fun theme(recipient: Recipient? = null): Theme {
         val pref = prefs.theme(recipient?.id ?: 0)
@@ -94,34 +100,34 @@ class Colors @Inject constructor(
             else -> prefs.theme(recipient.id, generateColor(recipient))
         }
         return pref.asObservable()
-                .map { color -> Theme(color, this) }
+            .map { color -> Theme(color, this) }
     }
 
-    fun highlightColorForTheme(theme: Int): Int = FloatArray(3)
-            .apply { Color.colorToHSV(theme, this) }
-            .let { hsv -> hsv.apply { set(2, 0.75f) } } // 75% value
-            .let { hsv -> Color.HSVToColor(85, hsv) } // 33% alpha
+    fun highlightColorForTheme(theme: Int): Int {
+        val blended = ColorUtils.blendARGB(theme, Color.WHITE, 0.25f) // soften toward surface
+        return ColorUtils.setAlphaComponent(blended, 160) // readable overlay
+    }
 
     fun textPrimaryOnThemeForColor(color: Int): Int = color
-            .let { theme -> measureLuminance(theme) }
-            .let { themeLuminance -> primaryTextLuminance / themeLuminance }
-            .let { contrastRatio -> contrastRatio < minimumContrastRatio }
-            .let { contrastRatio -> if (contrastRatio) R.color.textPrimary else R.color.textPrimaryDark }
-            .let { res -> context.getColorCompat(res) }
+        .let { theme -> measureLuminance(theme) }
+        .let { themeLuminance -> primaryTextLuminance / themeLuminance }
+        .let { contrastRatio -> contrastRatio < minimumContrastRatio }
+        .let { contrastRatio -> if (contrastRatio) R.color.textPrimary else R.color.textPrimaryDark }
+        .let { res -> context.getColorCompat(res) }
 
     fun textSecondaryOnThemeForColor(color: Int): Int = color
-            .let { theme -> measureLuminance(theme) }
-            .let { themeLuminance -> secondaryTextLuminance / themeLuminance }
-            .let { contrastRatio -> contrastRatio < minimumContrastRatio }
-            .let { contrastRatio -> if (contrastRatio) R.color.textSecondary else R.color.textSecondaryDark }
-            .let { res -> context.getColorCompat(res) }
+        .let { theme -> measureLuminance(theme) }
+        .let { themeLuminance -> secondaryTextLuminance / themeLuminance }
+        .let { contrastRatio -> contrastRatio < minimumContrastRatio }
+        .let { contrastRatio -> if (contrastRatio) R.color.textSecondary else R.color.textSecondaryDark }
+        .let { res -> context.getColorCompat(res) }
 
     fun textTertiaryOnThemeForColor(color: Int): Int = color
-            .let { theme -> measureLuminance(theme) }
-            .let { themeLuminance -> tertiaryTextLuminance / themeLuminance }
-            .let { contrastRatio -> contrastRatio < minimumContrastRatio }
-            .let { contrastRatio -> if (contrastRatio) R.color.textTertiary else R.color.textTertiaryDark }
-            .let { res -> context.getColorCompat(res) }
+        .let { theme -> measureLuminance(theme) }
+        .let { themeLuminance -> tertiaryTextLuminance / themeLuminance }
+        .let { contrastRatio -> contrastRatio < minimumContrastRatio }
+        .let { contrastRatio -> if (contrastRatio) R.color.textTertiary else R.color.textTertiaryDark }
+        .let { res -> context.getColorCompat(res) }
 
     /**
      * Measures the luminance value of a color to be able to measure the contrast ratio between two materialColors
@@ -129,7 +135,7 @@ class Colors @Inject constructor(
      */
     private fun measureLuminance(color: Int): Double {
         val array = intArrayOf(Color.red(color), Color.green(color), Color.blue(color))
-                .map { if (it < 0.03928) it / 12.92 else Math.pow((it + 0.055) / 1.055, 2.4) }
+            .map { if (it < 0.03928) it / 12.92 else Math.pow((it + 0.055) / 1.055, 2.4) }
 
         return 0.2126 * array[0] + 0.7152 * array[1] + 0.0722 * array[2] + 0.05
     }
