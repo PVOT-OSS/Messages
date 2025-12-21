@@ -24,6 +24,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.net.Uri
@@ -71,6 +72,7 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.util.extensions.showKeyboard
+import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.databinding.ComposeActivityBinding
 import org.prauga.messages.extensions.mapNotNull
@@ -540,8 +542,8 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     override fun requestDatePicker() {
         val calendar = Calendar.getInstance()
-        DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, day ->
+            val timePicker = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
                 calendar.set(Calendar.YEAR, year)
                 calendar.set(Calendar.MONTH, month)
                 calendar.set(Calendar.DAY_OF_MONTH, day)
@@ -549,8 +551,11 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
                 calendar.set(Calendar.MINUTE, minute)
                 scheduleSelectedIntent.onNext(calendar.timeInMillis)
             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(this))
-                .show()
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+            tintDialogButtons(timePicker)
+            timePicker.show()
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        tintDialogButtons(datePicker)
+        datePicker.show()
 
         // On some devices, the keyboard can cover the date picker
         binding.message.hideKeyboard()
@@ -747,5 +752,18 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     override fun focusMessage() {
         binding.message.requestFocus()
+    }
+
+    private fun tintDialogButtons(dialog: android.app.AlertDialog) {
+        dialog.setOnShowListener {
+            val color = resolveThemeColor(android.R.attr.textColorPrimary, colors.theme().textPrimary)
+            listOf(
+                DialogInterface.BUTTON_POSITIVE,
+                DialogInterface.BUTTON_NEGATIVE,
+                DialogInterface.BUTTON_NEUTRAL
+            ).forEach { type ->
+                dialog.getButton(type)?.setTextColor(color)
+            }
+        }
     }
 }

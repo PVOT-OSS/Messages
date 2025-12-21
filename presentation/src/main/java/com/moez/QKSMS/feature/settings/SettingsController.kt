@@ -21,6 +21,7 @@ package org.prauga.messages.feature.settings
 import android.animation.ObjectAnimator
 import android.app.TimePickerDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Build
 import android.text.format.DateFormat
 import android.view.View
@@ -40,6 +41,7 @@ import org.prauga.messages.common.QkDialog
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.animateLayoutChanges
+import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.widget.PreferenceView
@@ -277,13 +279,19 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     override fun showStartTimePicker(hour: Int, minute: Int) {
         TimePickerDialog(activity, { _, newHour, newMinute ->
             startTimeSelectedSubject.onNext(Pair(newHour, newMinute))
-        }, hour, minute, DateFormat.is24HourFormat(activity)).show()
+        }, hour, minute, DateFormat.is24HourFormat(activity)).apply {
+            tintDialogButtons(this)
+            show()
+        }
     }
 
     override fun showEndTimePicker(hour: Int, minute: Int) {
         TimePickerDialog(activity, { _, newHour, newMinute ->
             endTimeSelectedSubject.onNext(Pair(newHour, newMinute))
-        }, hour, minute, DateFormat.is24HourFormat(activity)).show()
+        }, hour, minute, DateFormat.is24HourFormat(activity)).apply {
+            tintDialogButtons(this)
+            show()
+        }
     }
 
     override fun showDelayDurationDialog() = sendDelayDialog.show(activity!!)
@@ -335,4 +343,17 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
                 .popChangeHandler(QkChangeHandler()))
     }
 
+    private fun tintDialogButtons(dialog: android.app.TimePickerDialog) {
+        dialog.setOnShowListener {
+            val color = activity?.resolveThemeColor(android.R.attr.textColorPrimary, colors.theme().textPrimary)
+                ?: colors.theme().textPrimary
+            listOf(
+                DialogInterface.BUTTON_POSITIVE,
+                DialogInterface.BUTTON_NEGATIVE,
+                DialogInterface.BUTTON_NEUTRAL
+            ).forEach { type ->
+                dialog.getButton(type)?.setTextColor(color)
+            }
+        }
+    }
 }
