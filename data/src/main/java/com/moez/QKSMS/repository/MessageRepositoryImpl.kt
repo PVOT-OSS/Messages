@@ -34,13 +34,26 @@ import android.provider.Telephony.Sms
 import android.telephony.SmsManager
 import android.webkit.MimeTypeMap
 import androidx.core.content.contentValuesOf
+import com.android.mms.dom.smil.parser.SmilXmlSerializer
 import com.google.android.mms.ContentType
 import com.google.android.mms.MMSPart
+import com.google.android.mms.pdu_alt.CharacterSets
+import com.google.android.mms.pdu_alt.EncodedStringValue
 import com.google.android.mms.pdu_alt.MultimediaMessagePdu
+import com.google.android.mms.pdu_alt.PduBody
+import com.google.android.mms.pdu_alt.PduHeaders
+import com.google.android.mms.pdu_alt.PduPart
 import com.google.android.mms.pdu_alt.PduPersister
+import com.google.android.mms.pdu_alt.SendReq
+import com.google.android.mms.smil.SmilHelper
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.StripAccents
 import com.klinker.android.send_message.Transaction
+import com.klinker.android.send_message.Utils
+import io.realm.Case
+import io.realm.Realm
+import io.realm.RealmResults
+import io.realm.Sort
 import org.prauga.messages.common.util.extensions.now
 import org.prauga.messages.compat.TelephonyCompat
 import org.prauga.messages.extensions.anyOf
@@ -49,6 +62,7 @@ import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.extensions.resourceExists
 import org.prauga.messages.manager.ActiveConversationManager
 import org.prauga.messages.manager.KeyManager
+import org.prauga.messages.mapper.CursorToPart
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
@@ -60,11 +74,8 @@ import org.prauga.messages.util.ImageUtils
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
 import org.prauga.messages.util.tryOrNull
-import io.realm.Case
-import io.realm.Realm
-import io.realm.RealmResults
-import io.realm.Sort
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -74,6 +85,7 @@ import kotlin.math.sqrt
 open class MessageRepositoryImpl @Inject constructor(
     private val activeConversationManager: ActiveConversationManager,
     private val context: Context,
+    private val cursorToPart: CursorToPart,
     private val messageIds: KeyManager,
     private val phoneNumberUtils: PhoneNumberUtils,
     private val prefs: Preferences,
@@ -561,17 +573,21 @@ open class MessageRepositoryImpl @Inject constructor(
                 }
             }
 
+            val recipients = addresses.map(phoneNumberUtils::normalizeNumber)
+
+            // Pre-insert the MMS message
+            val (_, messageUri) = insertSentMms(subId, threadId, recipients, parts, null)
+
             // We need to strip the separators from outgoing MMS, or else they'll appear to have
             // sent and not go through
             val transaction = Transaction(context)
-            val recipients = addresses.map(phoneNumberUtils::normalizeNumber)
             transaction.sendNewMessage(
                 subId,
                 threadId,
                 recipients,
                 parts,
                 null,
-                null
+                messageUri
             )
         }
     }
@@ -721,6 +737,115 @@ open class MessageRepositoryImpl @Inject constructor(
             uri?.let(syncRepository::syncMessage)
 
         return message
+    }
+
+    /**
+     * Pre-insert a MMS message into both Realm and the system content provider before sending.
+     * This ensures the message appears as "Sending" immediately in the UI.
+     *
+     * @return Pair of the inserted Message and the content URI for use in Transaction.sendNewMessage()
+     */
+    private fun insertSentMms(
+        subId: Int,
+        threadId: Long,
+        addresses: List<String>,
+        parts: List<MMSPart>,
+        subject: String?
+    ): Pair<Message, Uri> {
+        val sendReq = buildSendReq(addresses, subject, parts)
+        val persister = PduPersister.getPduPersister(context)
+        val messageUri = persister.persist(sendReq, Uri.parse("content://mms/outbox"), threadId, true, true, null)
+
+        val contentId = messageUri.lastPathSegment?.toLongOrNull() ?: 0L
+
+        // Query parts from the content provider
+        val mmsParts = mutableListOf<MmsPart>()
+        cursorToPart.getPartsCursor(contentId)?.use { cursor ->
+            while (cursor.moveToNext()) {
+                mmsParts.add(cursorToPart.map(cursor))
+            }
+        }
+
+        // Insert the message to Realm
+        val message = Message().apply {
+            this.threadId = threadId
+            this.address = addresses.joinToString()
+            this.body = parts.find { it.mimeType == ContentType.TEXT_PLAIN }?.data?.let { String(it) } ?: ""
+            this.date = System.currentTimeMillis()
+            this.dateSent = System.currentTimeMillis()
+            this.subId = subId
+            this.subject = subject ?: ""
+
+            id = messageIds.newId()
+            this.contentId = contentId
+            boxId = Mms.MESSAGE_BOX_OUTBOX
+            type = "mms"
+            read = true
+            seen = true
+        }
+
+        Realm.getDefaultInstance().use { realm ->
+            realm.executeTransaction {
+                // Add parts to the message
+                mmsParts.forEach { part ->
+                    message.parts.add(realm.copyToRealmOrUpdate(part))
+                }
+                realm.copyToRealmOrUpdate(message)
+            }
+        }
+
+        return Pair(message, messageUri)
+    }
+
+    private fun buildSendReq(recipients: List<String>, subject: String?, parts: List<MMSPart>): SendReq {
+        val req = SendReq()
+
+        Utils.getMyPhoneNumber(context)?.takeIf(String::isNotEmpty)?.let(::EncodedStringValue)?.let(req::setFrom)
+        recipients.map(::EncodedStringValue).forEach(req::addTo)
+        subject?.takeIf(String::isNotEmpty)?.let(::EncodedStringValue)?.let(req::setSubject)
+
+        req.date = System.currentTimeMillis() / 1000
+        req.body = PduBody()
+
+        parts.map(this::partToPduPart).forEach { req.body.addPart(it) }
+
+        // SMIL document for compatibility
+        req.body.addPart(0, PduPart().apply {
+            contentId = "smil".toByteArray()
+            contentLocation = "smil.xml".toByteArray()
+            contentType = ContentType.APP_SMIL.toByteArray()
+            data = ByteArrayOutputStream()
+                .apply { SmilXmlSerializer.serialize(SmilHelper.createSmilDocument(req.body), this) }
+                .toByteArray()
+        })
+
+        req.messageSize = parts.mapNotNull { it.data?.size }.sum().toLong()
+        req.messageClass = PduHeaders.MESSAGE_CLASS_PERSONAL_STR.toByteArray()
+        req.expiry = Transaction.DEFAULT_EXPIRY_TIME
+
+        try {
+            req.priority = Transaction.DEFAULT_PRIORITY
+            req.deliveryReport = PduHeaders.VALUE_NO
+            req.readReport = PduHeaders.VALUE_NO
+        } catch (e: Exception) {
+            Timber.w(e)
+        }
+
+        return req
+    }
+
+    private fun partToPduPart(part: MMSPart): PduPart = PduPart().apply {
+        val filename = part.name
+
+        if (part.mimeType.startsWith("text")) {
+            charset = CharacterSets.UTF_8
+        }
+
+        contentType = part.mimeType.toByteArray()
+        contentLocation = filename.toByteArray()
+        val index = filename.lastIndexOf(".")
+        contentId = (if (index == -1) filename else filename.substring(0, index)).toByteArray()
+        data = part.data
     }
 
     override fun insertReceivedSms(
