@@ -25,6 +25,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.uber.autodispose.android.lifecycle.scope
@@ -122,7 +123,7 @@ class BlockedMessagesController :
     override fun clearSelection() = blockedMessagesAdapter.clearSelection()
 
     override fun showBlockingDialog(conversations: List<Long>, block: Boolean) {
-        blockingDialog.show(activity!!, conversations, block)
+        blockingDialog.show(activity!! as ComponentActivity, conversations, block)
     }
 
     override fun showDeleteDialog(conversations: List<Long>) {

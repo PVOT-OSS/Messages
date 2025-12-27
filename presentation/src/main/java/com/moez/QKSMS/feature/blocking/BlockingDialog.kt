@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.blocking
 
-import android.app.Activity
 import android.content.Context
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import org.prauga.messages.R
 import org.prauga.messages.blocking.BlockingClient
@@ -27,9 +27,10 @@ import org.prauga.messages.interactor.MarkBlocked
 import org.prauga.messages.interactor.MarkUnblocked
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -43,7 +44,7 @@ class BlockingDialog @Inject constructor(
     private val markUnblocked: MarkUnblocked
 ) {
 
-    fun show(activity: Activity, conversationIds: List<Long>, block: Boolean) = GlobalScope.launch {
+    fun show(activity: ComponentActivity, conversationIds: List<Long>, block: Boolean) = activity.lifecycleScope.launch {
         val addresses = conversationIds.toLongArray()
                 .let { conversationRepo.getConversations(*it) }
                 .flatMap { conversation -> conversation.recipients }
@@ -76,16 +77,16 @@ class BlockingDialog @Inject constructor(
         }
     }
 
-    private fun allBlocked(addresses: List<String>): Boolean = addresses.all { address ->
-        blockingManager.isBlacklisted(address).blockingGet() is BlockingClient.Action.Block
+    private suspend fun allBlocked(addresses: List<String>): Boolean = addresses.all { address ->
+        blockingManager.isBlacklisted(address).await() is BlockingClient.Action.Block
     }
 
     private suspend fun showDialog(
-        activity: Activity,
+        activity: ComponentActivity,
         conversationIds: List<Long>,
         addresses: List<String>,
         block: Boolean
-    ) = withContext(MainScope().coroutineContext) {
+    ) = withContext(Dispatchers.Main) {
         val res = when (block) {
             true -> R.plurals.blocking_block_external
             false -> R.plurals.blocking_unblock_external

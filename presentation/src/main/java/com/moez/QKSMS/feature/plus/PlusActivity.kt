@@ -25,8 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
@@ -124,7 +123,7 @@ class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivit
     }
 
     override fun initiatePurchaseFlow(billingManager: BillingManager, sku: String) {
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch {
             try {
                 billingManager.initiatePurchaseFlow(this@PlusActivity, sku)
             } catch (e: Exception) {

@@ -26,8 +26,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
@@ -270,7 +269,7 @@ class MainViewModel @Inject constructor(
         // Show changelog
         if (changelogManager.didUpdate()) {
             if (Locale.getDefault().language.startsWith("en")) {
-                GlobalScope.launch(Dispatchers.Main) {
+                viewModelScope.launch {
                     val changelog = changelogManager.getChangelog()
                     changelogManager.markChangelogSeen()
                     view.showChangelog(changelog)

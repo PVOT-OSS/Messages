@@ -19,6 +19,7 @@
 package org.prauga.messages.feature.conversationinfo
 
 import android.view.View
+import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bluelinelabs.conductor.RouterTransaction
@@ -126,7 +127,7 @@ class ConversationInfoController(
     }
 
     override fun showBlockingDialog(conversations: List<Long>, block: Boolean) {
-        blockingDialog.show(activity!!, conversations, block)
+        blockingDialog.show(activity!! as ComponentActivity, conversations, block)
     }
 
     override fun requestDefaultSms() {

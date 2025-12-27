@@ -23,8 +23,8 @@ import org.prauga.messages.blocking.QksmsBlockingClient
 import org.prauga.messages.common.util.extensions.versionCode
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class QkMigration @Inject constructor(
@@ -34,16 +34,14 @@ class QkMigration @Inject constructor(
     private val qksmsBlockingClient: QksmsBlockingClient
 ) {
 
-    fun performMigration() {
-        GlobalScope.launch {
-            val oldVersion = prefs.version.get()
+    fun performMigration() = runBlocking(Dispatchers.IO) {
+        val oldVersion = prefs.version.get()
 
-            if (oldVersion < 2199) {
-                upgradeTo370()
-            }
-
-            prefs.version.set(context.versionCode)
+        if (oldVersion < 2199) {
+            upgradeTo370()
         }
+
+        prefs.version.set(context.versionCode)
     }
 
     private fun upgradeTo370() {
