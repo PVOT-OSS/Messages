@@ -517,7 +517,7 @@
     <string name="messageLinkHandling_dialog_negative">Non</string>
     <string name="error_stt_toast">Désolé, il y a eu une erreur au chargement du fournisseur de saisie vocale.</string>
     <string name="stt_toast_extra_prompt">Exprimez votre message</string>
-    <string name="messages_text_share_file_error">Oups ! Quelque chose s’est mal déroulé pendant le partage</string>
+    <string name="messages_text_share_file_error">Oups ! Quelque chose s’est mal déroulé pendant le partage</string>
     <string name="main_sender_draft">Brouillon : %s</string>
     <string name="compose_scheduled_view">Messages programmés pour cette conversation</string>
     <string name="scheduled_send_cd">Programmer l\'envoi de ce message</string>
@@ -544,4 +544,5 @@
     <string name="compose_file_size_unavailable">Inconnu</string>
     <string name="compose_not_default_sms_message">Pour utiliser Messages, faites-en votre application SMS par défaut</string>
     <string name="compose_change_default_app">Changer d\'appli par défaut</string>
+    <string name="app_name">Messages</string>
 </resources>
