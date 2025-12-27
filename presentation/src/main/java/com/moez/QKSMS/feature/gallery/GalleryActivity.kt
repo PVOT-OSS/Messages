@@ -69,7 +69,6 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
         delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.gallery_activity)
         showBackButton(true)
         viewModel.bindView(this)
 
