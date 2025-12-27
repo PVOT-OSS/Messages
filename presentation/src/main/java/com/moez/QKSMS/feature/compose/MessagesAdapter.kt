@@ -20,6 +20,7 @@ package org.prauga.messages.feature.compose
 
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
@@ -358,30 +359,49 @@ class MessagesAdapter @Inject constructor(
             bottom = if (canGroup(message, next)) 0 else 16.dpToPx(context)
         )
 
-        // Bind the avatar and bubble colour
+        val isDarkMode = (context.resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK) ==
+            Configuration.UI_MODE_NIGHT_YES
+
         if (!message.isMe()) {
             (binding as InBindingWrapper).avatar.apply {
                 setRecipient(contactCache[message.address])
                 setVisible(!canGroup(message, next), View.INVISIBLE)
             }
 
+            val incomingBubbleColor = if (isDarkMode) {
+                context.getColor(R.color.bubbleIncomingDark)
+            } else {
+                context.getColor(R.color.bubbleIncomingLight)
+            }
+            val incomingTextColor = if (isDarkMode) {
+                context.getColor(R.color.white)
+            } else {
+                context.getColor(R.color.black)
+            }
+
             binding.body.apply {
-                setTextColor(theme.textPrimary)
-                setBackgroundTint(theme.theme)
-                highlightColor = R.attr.bubbleColor.withAlpha(0x5d)
+                setTextColor(incomingTextColor)
+                setBackgroundTint(incomingBubbleColor)
+                highlightColor = incomingBubbleColor.withAlpha(0x5d)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(R.attr.bubbleColor.withAlpha(0x7d))
-                    textSelectHandleLeft?.setTint(R.attr.bubbleColor.withAlpha(0x7d))
-                    textSelectHandleRight?.setTint(R.attr.bubbleColor.withAlpha(0x7d))
+                    textSelectHandle?.setTint(incomingBubbleColor.withAlpha(0x7d))
+                    textSelectHandleLeft?.setTint(incomingBubbleColor.withAlpha(0x7d))
+                    textSelectHandleRight?.setTint(incomingBubbleColor.withAlpha(0x7d))
                 }
             }
         } else {
+            val outgoingBubbleColor = context.getColor(R.color.bubbleOutgoing)
+            val outgoingTextColor = context.getColor(R.color.bubbleOutgoingText)
+
             binding.body.apply {
-                highlightColor = theme.theme.withAlpha(0x5d)
+                setTextColor(outgoingTextColor)
+                setBackgroundTint(outgoingBubbleColor)
+                highlightColor = outgoingBubbleColor.withAlpha(0x5d)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(theme.theme.withAlpha(0xad))
-                    textSelectHandleLeft?.setTint(theme.theme.withAlpha(0xad))
-                    textSelectHandleRight?.setTint(theme.theme.withAlpha(0xad))
+                    textSelectHandle?.setTint(outgoingBubbleColor.withAlpha(0xad))
+                    textSelectHandleLeft?.setTint(outgoingBubbleColor.withAlpha(0xad))
+                    textSelectHandleRight?.setTint(outgoingBubbleColor.withAlpha(0xad))
                 }
             }
         }

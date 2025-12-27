@@ -48,4 +48,10 @@
 
     <!-- Swipe action color -->
     <color name="swipe_delete">#E53935</color>
+
+    <!-- Compose Activity -->
+    <color name="bubbleOutgoing">#34C759</color>
+    <color name="bubbleOutgoingText">#FFFFFF</color>
+    <color name="bubbleIncomingLight">#E5E5EA</color>
+    <color name="bubbleIncomingDark">#3A3A3C</color>
 </resources>
