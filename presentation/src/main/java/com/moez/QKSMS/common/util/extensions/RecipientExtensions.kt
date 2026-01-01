@@ -7,6 +7,7 @@ import android.graphics.Path
 import android.provider.ContactsContract
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.MeasureSpec
@@ -33,24 +34,25 @@ fun Recipient.getThemedIcon(
     height: Int
 ): IconCompat {
     var icon: IconCompat? = null
-    if (contact != null) {
+    val photoUri = contact?.photoUri
+    if (photoUri != null) {
         val req = GlideApp.with(context)
             .asBitmap()
             .circleCrop()
-            .load(contact!!.photoUri)
+            .load(photoUri)
             .submit(width, height)
 
         val bitmap = tryOrNull { req.get() }
-        if (bitmap == null)
-            icon = null
-        else
+        if (bitmap != null) {
             icon = IconCompat.createWithBitmap(bitmap)
+        }
     }
     if (icon == null) {
         // If there is no contact or no photo, create the default icon using the avatar_view layout
         try {
-            val inflater = LayoutInflater.from(context)
-            val container = FrameLayout(context)
+            val themedContext = ContextThemeWrapper(context, R.style.AppTheme)
+            val inflater = LayoutInflater.from(themedContext)
+            val container = FrameLayout(themedContext)
             container.layoutParams = FrameLayout.LayoutParams(width, height)
             val view = inflater.inflate(R.layout.avatar_view, container)
             val textView = view.findViewById<QkTextView>(R.id.initial)
