@@ -61,15 +61,21 @@ dependencies {
     implementation(libs.rxkotlin)
 
     // testing
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.1.0-alpha3") {
-        exclude(group = "com.android.support", module = "support-annotations")
-    }
-
-    androidTestImplementation(libs.mockito.android)
-    testImplementation(libs.androidx.runner)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
     testImplementation(libs.robolectric)
+    testImplementation(libs.truth)
+    testImplementation(libs.androidx.runner)
+    testImplementation(libs.androidx.test.core)
+
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.mockito.android)
+    androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.core.ktx)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
 
     // coroutines
     implementation(libs.kotlinx.coroutines.core)

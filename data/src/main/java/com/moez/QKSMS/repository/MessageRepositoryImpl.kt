@@ -526,9 +526,11 @@ open class MessageRepositoryImpl @Inject constructor(
                         // too big, we'll need to try smaller and smaller values
                         val scale = maxBytes / originalBytes.size * (0.9 - attempts * 0.2)
                         if (scale <= 0) {
-                            Timber.w("Failed to compress ${originalBytes.size / 1024
-                            }Kb to ${maxBytes.toInt() / 1024}Kb")
-                            return@forEach
+                            val errorMsg = "Failed to compress image from ${originalBytes.size / 1024}KB " +
+                                "to fit within ${maxBytes.toInt() / 1024}KB limit. " +
+                                "Try using a smaller image or increasing your MMS size limit in settings."
+                            Timber.e(errorMsg)
+                            throw MmsCompressionException(errorMsg, attachment.getName(context))
                         }
 
                         val newArea = scale * width * height
