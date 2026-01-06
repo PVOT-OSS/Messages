@@ -10,8 +10,8 @@ Categories:
   - Communication
   - Internet
 AntiFeatures: NonFreeNet
-CurrentVersion: "1.0.5"
-CurrentVersionCode: 6
+CurrentVersion: "1.0.6"
+CurrentVersionCode: 7
 Description: |
   Messages is an open source replacement for the stock messaging app on Android.
   It displays SMS/MMS conversations, supports OTP Detection, message filtering,
