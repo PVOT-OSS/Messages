@@ -336,4 +336,24 @@
     <string name="qksms_plus_more_summary">QUIK on aktiivses arenduses ja sinu ostuga avanevad ka kõik tulevased QUIK+ funktsionaalsused!</string>
     <string name="toast_qksms_plus">Selle võimaluse kasutamiseks palun osta QUIK+ teenus</string>
     <string name="backup_disclaimer">Hetkel on toetatud vaid SMS-sõnumite varundamine ja taastamine. MMS-i tugi ja varunduste ajastamine saab olema saadaval üsna varsti!</string>
+    <string name="app_name">Sõnumid</string>
+    <string name="qksms_plus_delayed_title">Edasilükatud saatmine</string>
+    <string name="qksms_plus_blacklist_title">Detailne blokeerimine</string>
+    <string name="speak_no_messages">Sõnumeid pole</string>
+    <string name="settings_logging_enabled">Veaotsinguandmete logimine on kasutusel</string>
+    <string name="settings_logging_disabled">Veaotsinguandmete logimine pole kasutusel</string>
+    <string name="settings_delay_duration_hint">Sisesta kestus (sekundites)</string>
+    <string name="blocking_manager_copy_title">Kopeeri blokeeritud numbrid</string>
+    <string name="qksms_plus_donate">Toeta PayPali vahendusel</string>
+    <string name="qksms_plus_night_title">Automaatne öörežiim</string>
+    <string name="notification_message_failed_title">Sõnum ei ole saadetud</string>
+    <string name="speak_unseen_messages">Loe ette nägemata sõnumid</string>
+    <string name="messageLinkHandling_dialog_title">Välise lingi hoiatus</string>
+    <string name="stt_toast_extra_prompt">Loe oma sõnum ette</string>
+    <string name="message_content_filters_add_cd">Koosta uus filter</string>
+    <string name="qksms_plus_description_title">Toeta arendust ja kasuta täisfunktsionaalsust</string>
+    <plurals name="blocking_block_external">
+        <item quantity="one">Jätka rakenduses %s ja blokeeri see number</item>
+        <item quantity="other">Jätka rakenduses %s ja blokeeri need numbrid</item>
+    </plurals>
 </resources>
