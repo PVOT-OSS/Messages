@@ -70,7 +70,8 @@ interface MessageRepository {
         addresses: Collection<String>,
         body: String,
         attachments: Collection<Attachment>,
-        delay: Int = 0
+        delay: Int = 0,
+        applySignature: Boolean = true,
     )
 
     /**
