@@ -29,7 +29,7 @@ You can chat with the community over at [@Pvot_OS:telegram](https://t.me/pvot_os
 
 ## How This App Differs from QKSMS and QUIK
 
-This project is built on original fork from QKSMS and QUIK, but it takes a different directions in several areas.
+This project is built on an original fork from QKSMS and QUIK, but it takes a different direction in several areas.
 
 - **Opinionated UX choices:** Instead of offering a large set of themes or layouts, the app prioritizes a single, consistent visual style to keep navigation predictable and distraction-free.
 - **Reduced dependency footprint:** Compared to QKSMS’s extensive use of libraries for animations and theming, this project aims to keep external dependencies to a minimum for better control and easier maintenance.
