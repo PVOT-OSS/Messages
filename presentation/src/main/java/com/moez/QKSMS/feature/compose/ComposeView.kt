@@ -31,6 +31,9 @@ import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
 
+data class ReactionSelection(val messageId: Long, val emoji: String, val isRemoval: Boolean = false)
+data class MessageLongPress(val messageId: Long, val body: String, val anchor: View)
+
 interface ComposeView : QkView<ComposeState> {
 
     companion object {
@@ -87,6 +90,8 @@ interface ComposeView : QkView<ComposeState> {
     val recordAudioMsgRecordVisible: Subject<Boolean>
     val recordAudioRecord: Subject<MicInputCloudView.ViewState>
     val recordAudioChronometer: Subject<Boolean>
+    val reactionSelectedIntent: Subject<ReactionSelection>
+    val messageLongPressIntent: Observable<MessageLongPress>
 
     fun clearSelection()
     fun toggleSelectAll()
@@ -110,4 +115,5 @@ interface ComposeView : QkView<ComposeState> {
     fun showDeleteDialog(messages: List<Long>)
     fun showClearCurrentMessageDialog()
     fun focusMessage()
+    fun showReactionPicker(messageId: Long)
 }

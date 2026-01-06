@@ -122,7 +122,30 @@ class EmojiReactionRepositoryImpl @Inject constructor(
         return requireNotNull(adapter.fromJson(json)) { "Invalid emoji patterns JSON" }
     }
 
+    override fun buildOutgoingReactionBody(
+        emoji: String,
+        targetMessageText: String,
+        isRemoval: Boolean
+    ): String? {
+        if (targetMessageText.isBlank()) return null
+
+        val text = targetMessageText.trim()
+        val (added, removed) = when (emoji) {
+            "❤️" -> "Loved “$text”" to "Removed a heart from “$text”"
+            "👍" -> "Liked “$text”" to "Removed a like from “$text”"
+            "👎" -> "Disliked “$text”" to "Removed a dislike from “$text”"
+            "😂" -> "Laughed at “$text”" to "Removed a laugh from “$text”"
+            "‼️" -> "Emphasized “$text”" to "Removed an exclamation from “$text”"
+            "❓" -> "Questioned “$text”" to "Removed a question mark from “$text”"
+            else -> "Reacted $emoji to “$text”" to "Removed $emoji from “$text”"
+        }
+
+        return if (isRemoval) removed else added
+    }
+
     override fun parseEmojiReaction(body: String): ParsedEmojiReaction? {
+        Timber.d("Attempting to parse reaction from body: '$body'")
+
         val removal = parseRemoval(body)
         if (removal != null) return removal
 
@@ -133,10 +156,11 @@ class EmojiReactionRepositoryImpl @Inject constructor(
             val result = parser(match)
             if (result == null) continue
 
-            Timber.d("Reaction found with ${result.emoji}")
+            Timber.d("Reaction found with ${result.emoji} for message: '${result.originalMessage}'")
             return result
         }
 
+        Timber.d("No reaction pattern matched for body: '$body'")
         return null
     }
 
@@ -170,17 +194,23 @@ class EmojiReactionRepositoryImpl @Inject constructor(
             .sort("date", Sort.DESCENDING)
             .findAll()
         val endTime = System.currentTimeMillis()
-        Timber.d("Found ${messages.size} messages as potential emoji targets in ${endTime - startTime}ms")
+        Timber.d("Searching for target message in thread $threadId: found ${messages.size} messages in ${endTime - startTime}ms")
+        Timber.d("Looking for message text: '$originalMessageText'")
 
         val match = messages.find { message ->
-            message.getText(false).trim() == originalMessageText.trim()
+            val msgText = message.getText(false).trim()
+            val matches = msgText == originalMessageText.trim()
+            if (!matches && msgText.isNotEmpty()) {
+                Timber.v("  Checked message ${message.id}: '$msgText' - no match")
+            }
+            matches
         }
         if (match != null) {
             Timber.d("Found match for reaction target: message ID ${match.id}")
             return match
         }
 
-        Timber.w("No target message found for reaction text: '$originalMessageText'")
+        Timber.w("No target message found for reaction text: '$originalMessageText' in thread $threadId")
         return null
     }
 
