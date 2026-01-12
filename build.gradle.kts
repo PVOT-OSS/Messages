@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 // Needed until we upstream
 buildscript {
     dependencies {
-        classpath("io.realm:realm-gradle-plugin:10.19.0")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.5.2")
+        classpath(libs.realm.gradle.plugin)
+        classpath(libs.firebase.crashlytics.gradle)
     }
 }
 
