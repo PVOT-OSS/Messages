@@ -34,7 +34,6 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
@@ -66,10 +65,7 @@ class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivity
     override val sendIntent by lazy { binding.send.clicks() }
 
     private val viewModel by lazy {
-        ViewModelProviders.of(
-            this,
-            viewModelFactory
-        )[QkReplyViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[QkReplyViewModel::class.java]
     }
 
     private val speechResultLauncher =

@@ -96,7 +96,6 @@ dependencies {
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.common.java8)
-    implementation(libs.lifecycle.extensions)
 
     // androidx
     implementation(libs.androidx.appcompat)

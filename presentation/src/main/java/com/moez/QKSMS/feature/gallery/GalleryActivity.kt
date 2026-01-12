@@ -27,7 +27,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import dagger.android.AndroidInjection
@@ -59,10 +58,7 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
     private val optionsItemSubject: Subject<Int> = PublishSubject.create()
     private val pageChangedSubject: Subject<MmsPart> = PublishSubject.create()
     private val viewModel by lazy {
-        ViewModelProviders.of(
-            this,
-            viewModelFactory
-        )[GalleryViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[GalleryViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
