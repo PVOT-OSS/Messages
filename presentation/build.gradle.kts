@@ -39,10 +39,12 @@ android {
         versionCode = 7
         versionName = "1.0.6"
 
-        setProperty("archivesBaseName", "Messages-v${versionName}")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    extensions.getByType(BasePluginExtension::class.java)
+        .archivesName
+        .set("Messages-v${defaultConfig.versionName}")
 
     buildFeatures {
         buildConfig = true
