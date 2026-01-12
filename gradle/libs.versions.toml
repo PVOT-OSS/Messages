@@ -18,7 +18,7 @@ junit = "4.13.2"
 kotlinx-coroutines-core = "1.8.0"
 ktx = "1.17.0"
 libphonenumber-android = "9.0.17"
-lifecycle = "2.1.0"
+lifecycle = "2.10.0"
 material = "1.13.0"
 mockito-android = "5.7.0"
 moshi = "1.15.2"
@@ -57,7 +57,6 @@ lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-view
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
 lifecycle-common-java8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "lifecycle" }
-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "lifecycle" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
 androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "work-runtime-ktx" }

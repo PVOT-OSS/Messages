@@ -22,7 +22,6 @@ import android.graphics.Typeface
 import android.os.Bundle
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
 import androidx.lifecycle.lifecycleScope
@@ -53,10 +52,7 @@ class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivit
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy {
-        ViewModelProviders.of(
-            this,
-            viewModelFactory
-        )[PlusViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[PlusViewModel::class.java]
     }
 
     override val upgradeIntent get() = binding.upgrade.clicks()

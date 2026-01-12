@@ -44,7 +44,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
@@ -196,10 +195,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     private var seekBarUpdater: Disposable? = null
 
     private val viewModel by lazy {
-        ViewModelProviders.of(
-            this,
-            viewModelFactory
-        )[ComposeViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ComposeViewModel::class.java]
     }
 
     private var cameraDestination: Uri? = null
