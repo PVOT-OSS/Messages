@@ -114,11 +114,10 @@ dependencies {
     implementation(libs.glide)
     kapt(libs.compiler)
 
-    // exoplayer
-    implementation(libs.exoplayer.core)
-    implementation("com.github.google.ExoPlayer:exoplayer-ui:r2.9.0") {
-        exclude(mapOf("group" to "com.android.support", "module" to "support-media-compat"))
-    }
+    // media3
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.common)
 
     // rxbinding
     implementation(libs.rxbinding.kotlin)
