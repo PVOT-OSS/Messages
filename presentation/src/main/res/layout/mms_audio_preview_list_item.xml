@@ -69,7 +69,7 @@
             android:padding="6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/exo_icon_play"
+            app:srcCompat="@drawable/ic_play_circle_filled_white_24dp"
             app:tint="@color/tools_theme" />
 
         <org.prauga.messages.common.widget.QkTextView

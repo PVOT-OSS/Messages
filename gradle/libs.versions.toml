@@ -11,7 +11,7 @@ datashare = "1.3.0"
 documentfile = "1.1.0"
 emoji2-bundled = "1.6.0"
 exifinterface = "1.4.2"
-exoplayer-core = "r2.9.0"
+media3 = "1.9.0"
 flexbox = "3.0.0"
 glide = "5.0.5"
 javax-annotation-api = "1.3.2"
@@ -75,7 +75,9 @@ dagger-android-processor = { module = "com.google.dagger:dagger-android-processo
 dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 datashare = { module = "com.callcontrol:datashare", version.ref = "datashare" }
-exoplayer-core = { module = "com.github.google.ExoPlayer:exoplayer-core", version.ref = "exoplayer-core" }
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
+media3-common = { module = "androidx.media3:media3-common", version.ref = "media3" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 javax-annotation-api = { module = "javax.annotation:javax.annotation-api", version.ref = "javax-annotation-api" }
