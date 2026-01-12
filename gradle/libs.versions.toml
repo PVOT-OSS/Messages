@@ -1,5 +1,6 @@
 [versions]
 agp = "8.13.2"
+firebase-crashlytics-gradle = "3.0.6"
 kotlin = "2.2.0"
 appcompat = "1.7.1"
 autodispose-android-archcomponents = "1.4.1"
@@ -53,6 +54,7 @@ androidx-documentfile = { module = "androidx.documentfile:documentfile", version
 androidx-emoji2-bundled = { module = "androidx.emoji2:emoji2-bundled", version.ref = "emoji2-bundled" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
@@ -97,6 +99,7 @@ photoview = { module = "com.github.chrisbanes:photoview", version.ref = "photovi
 realm-android-adapters = { module = "com.github.realm:realm-android-adapters", version.ref = "realm-android-adapters" }
 realm-android-library = { module = "io.realm:realm-android-library", version.ref = "realm-annotations" }
 realm-annotations-processor = { module = "io.realm:realm-annotations-processor", version.ref = "realm-annotations" }
+realm-gradle-plugin = { module = "io.realm:realm-gradle-plugin", version.ref = "realm-annotations" }
 rx-preferences = { module = "com.f2prateek.rx.preferences2:rx-preferences", version.ref = "rx-preferences" }
 rxandroid = { module = "io.reactivex.rxjava2:rxandroid", version.ref = "rxandroid" }
 rxbinding-kotlin = { module = "com.jakewharton.rxbinding2:rxbinding-kotlin", version.ref = "rxbinding-kotlin" }
