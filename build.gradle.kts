@@ -1,5 +1,6 @@
 import com.android.build.gradle.BaseExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 // Needed until we upstream
 buildscript {
@@ -22,7 +23,9 @@ tasks.register<Delete>("clean") {
 
 subprojects {
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
 
     plugins.withId("com.android.application") {
