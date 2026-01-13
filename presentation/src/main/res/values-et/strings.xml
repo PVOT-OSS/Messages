@@ -338,7 +338,7 @@
     <string name="backup_disclaimer">Hetkel on toetatud vaid SMS-sõnumite varundamine ja taastamine. MMS-i tugi ja varunduste ajastamine saab olema saadaval üsna varsti!</string>
     <string name="app_name">Sõnumid</string>
     <string name="qksms_plus_delayed_title">Edasilükatud saatmine</string>
-    <string name="qksms_plus_blacklist_title">Detailne blokeerimine</string>
+    <string name="qksms_plus_blacklist_title">Üksikasjalik blokeerimine</string>
     <string name="speak_no_messages">Sõnumeid pole</string>
     <string name="settings_logging_enabled">Veaotsinguandmete logimine on kasutusel</string>
     <string name="settings_logging_disabled">Veaotsinguandmete logimine pole kasutusel</string>
@@ -356,4 +356,51 @@
         <item quantity="one">Jätka rakenduses %s ja blokeeri see number</item>
         <item quantity="other">Jätka rakenduses %s ja blokeeri need numbrid</item>
     </plurals>
+    <plurals name="toast_archived">
+        <item quantity="one">Vestlus on arhiveeritud</item>
+        <item quantity="other">%d vestlust on arhiveeritud</item>
+    </plurals>
+    <plurals name="toast_unarchived">
+        <item quantity="one">Vestlus on arhiivist eemaldatud</item>
+        <item quantity="other">%d vestlust on arhiivist eemaldatud</item>
+    </plurals>
+    <plurals name="notification_new_messages">
+        <item quantity="one">Uus sõnum</item>
+        <item quantity="other">%s uut sõnumit</item>
+    </plurals>
+    <plurals name="blocking_unblock_external">
+        <item quantity="one">Suundu rakendusse %s ja luba see number</item>
+        <item quantity="other">Suundu rakendusse %s ja luba need numbrid</item>
+    </plurals>
+    <string name="settings_long_as_mms_summary">Kui pikemate sõnumite saatmine ei õnnestu või nad saadetakse vales järjekorras, siis võid nad saata MMS-sõnumitena. Lisanduda võivad täiendavad teenustasud</string>
+    <string name="settings_sync_summary">Sünkrooni oma sõnumid uuesti Androidi sisemisse SMS-ide andmebaasi</string>
+    <string name="blocking_drop_summary">Peitmise asemel kustuta blokeeritud saatjate lähetatud sõnumid</string>
+    <string name="blocking_manager_qksms_summary">Sõnumirakendusse sisseehitatud blokeerimise funktsionaalsus</string>
+    <string name="blocking_manager_call_blocker_summary">jagadesBlokeeri spämmina saadetud sõnumeid, numbreid ja tundmatuid helistajaid keeluloendi ja ajagraafiku alusel</string>
+    <string name="qksms_plus_emoji_title">Sinu valitud automaatne emoji</string>
+    <string name="qksms_plus_backup_title">Sõnumite varundus</string>
+    <string name="qksms_plus_scheduled_title">Ajastatud sõnumid</string>
+    <string name="message_content_filters_dialog_title">Kustuta sõnumid mustri alusel</string>
+    <string name="qksms_plus_scheduled_summary">Ajasta sõnumite saatmine kindlal kuupäeval ja kellaajal</string>
+    <string name="qksms_plus_themes_summary">Kasuta ilusaid värve, mida vaikimisi Material Designi värvivalikus ei leidu</string>
+    <string name="qksms_plus_emoji_summary">Lisa linke enda soovitud emojidele</string>
+    <string name="qksms_plus_backup_summary">Varunda oma sõnumid automaatselt ja sa ei pea enam muretsema telefoni vahetamisel või kadumisel kaotsi mineva sõnumite ajaloo pärast</string>
+    <string name="qksms_plus_delayed_summary">Enne sõnumi saatmist oota mõni sekund</string>
+    <string name="qksms_plus_night_summary">Öörežiimi sisselülitamine vastavalt kellaajale</string>
+    <string name="qksms_plus_blacklist_summary">Blokeeri sõnumeid märksõnade või mustrite vastavuse alusel</string>
+    <string name="qksms_plus_forward_summary">Edasta mingite saatjate sõnumid automaatselt</string>
+    <string name="qksms_plus_respond_summary">Vasta saabunud sõnumitele eelseadistatud sõnumiga automaatselt</string>
+    <string name="notification_message_failed_text">Ei õnnestunud saata sõnumit adressaadile %s</string>
+    <string name="messageLinkHandling_dialog_positive">Jah, ava see link</string>
+    <string name="messageLinkHandling_dialog_body">Mõned lingid võivad olla ohtlikud või suunata sind edasi mittesoovitud lehele. Enne jätkamist palun vaata linki mõttega:\n\n%1$s\n\nKas sa soovid jätkata?</string>
+    <string name="blocking_manager_call_control_summary">Filtreeri oma kõnesid ja sõnumeid mugavalt ühes kohas. Community IQ™ võimaldab keelata soovimatud sõnumid j spämmarid kogukonna koostatud andmete alusel</string>
+    <string name="blocking_manager_copy_summary">Jätka rakendusse %s ja kopeeri sinna seni kogutud blokeeritud numbrid</string>
+    <string name="blocking_manager_sia_summary">Blokeeri soovimatuid sõnumeid ja kõnesid automaatselt „Should I Answer“ rakenduse abil</string>
+    <string name="message_content_filters_empty">Sinu koostatud sisufiltrid saavad olema nähtavad siin</string>
+    <string name="message_content_filters_dialog_hint">Sõna, fraas või regulaaravaldis</string>
+    <string name="blocked_messages_empty">Sinu poolt blokeeritud sõnumid saavad olema nähtavad siin</string>
+    <string name="qksms_plus_upgrade">Lõputu kestusega versiooniuuendus hinnaga %1$s %2$s</string>
+    <string name="qksms_plus_description_summary">Võid päästa kurnatud arendaja loovutades vaid %s</string>
+    <string name="qksms_plus_upgrade_donate">Ava täisfunktsionaalsus ja toeta arendajat - kokku vaid %1$s %2$s</string>
+    <string name="qksms_plus_error">Tekkis viga, palun proovi uuesti</string>
 </resources>
