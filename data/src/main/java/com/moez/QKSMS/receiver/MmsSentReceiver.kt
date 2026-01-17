@@ -30,7 +30,9 @@ import com.google.android.mms.MmsException
 import com.google.android.mms.util_alt.SqliteWrapper
 import com.klinker.android.send_message.Transaction
 import dagger.android.AndroidInjection
+import io.realm.Realm
 import org.prauga.messages.interactor.SyncMessage
+import org.prauga.messages.model.Message
 import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
@@ -64,29 +66,51 @@ class MmsSentReceiver : BroadcastReceiver() {
                     SqliteWrapper.update(context, context.contentResolver, Telephony.Mms.CONTENT_URI, values,
                             "${Telephony.Mms._ID} = ?", arrayOf(messageId.toString()))
 
-                    // TODO this query isn't able to find any results
-                    // Need to figure out why the message isn't appearing in the PendingMessages Uri,
-                    // so that we can properly assign the error type
-                    val errorTypeValues = ContentValues(1)
-                    errorTypeValues.put(Telephony.MmsSms.PendingMessages.ERROR_TYPE,
-                            Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT)
-                    SqliteWrapper.update(context, context.contentResolver, Telephony.MmsSms.PendingMessages.CONTENT_URI,
-                            errorTypeValues, "${Telephony.MmsSms.PendingMessages.MSG_ID} = ?",
-                            arrayOf(messageId.toString()))
+                    // Update the error type directly in Realm since the PendingMessages table
+                    // query doesn't work reliably (the message may not be in PendingMessages
+                    // by the time this receiver runs)
+                    updateErrorTypeInRealm(messageId, Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT)
 
                 } catch (e: MmsException) {
-                    e.printStackTrace()
+                    Timber.e(e, "Failed to mark MMS as failed")
                 }
             }
         }
 
         val filePath = intent.getStringExtra(Transaction.EXTRA_FILE_PATH)
         Timber.v(filePath)
-        File(filePath).delete()
+        filePath?.let { File(it).delete() }
 
-        Uri.parse(intent.getStringExtra("content_uri"))?.let { uri ->
+        Uri.parse(intent.getStringExtra("content_uri"))?.let { contentUri ->
             val pendingResult = goAsync()
-            syncMessage.execute(uri) { pendingResult.finish() }
+            syncMessage.execute(contentUri) { pendingResult.finish() }
+        }
+    }
+
+    /**
+     * Updates the error type for a failed MMS message directly in Realm.
+     * This is more reliable than trying to update the PendingMessages table,
+     * which may not contain the message by the time this receiver runs.
+     */
+    private fun updateErrorTypeInRealm(contentId: Long, errorType: Int) {
+        try {
+            Realm.getDefaultInstance().use { realm ->
+                realm.executeTransaction { r ->
+                    // Find the message by contentId (the original MMS ID)
+                    val message = r.where(Message::class.java)
+                        .equalTo("contentId", contentId)
+                        .findFirst()
+
+                    if (message != null) {
+                        message.errorType = errorType
+                        Timber.v("Updated errorType to $errorType for message contentId=$contentId")
+                    } else {
+                        Timber.w("Could not find message with contentId=$contentId to update errorType")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to update errorType in Realm for contentId=$contentId")
         }
     }
 

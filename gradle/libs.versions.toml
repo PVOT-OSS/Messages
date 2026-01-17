@@ -1,6 +1,7 @@
 [versions]
-agp = "8.13.1"
-kotlin = "1.9.25"
+agp = "8.13.2"
+firebase-crashlytics-gradle = "3.0.6"
+kotlin = "2.2.0"
 appcompat = "1.7.1"
 autodispose-android-archcomponents = "1.4.1"
 conductor = "3.2.0"
@@ -10,7 +11,7 @@ datashare = "1.3.0"
 documentfile = "1.1.0"
 emoji2-bundled = "1.6.0"
 exifinterface = "1.4.2"
-exoplayer-core = "r2.9.0"
+media3 = "1.9.0"
 flexbox = "3.0.0"
 glide = "5.0.5"
 javax-annotation-api = "1.3.2"
@@ -18,7 +19,7 @@ junit = "4.13.2"
 kotlinx-coroutines-core = "1.8.0"
 ktx = "1.17.0"
 libphonenumber-android = "9.0.17"
-lifecycle = "2.1.0"
+lifecycle = "2.10.0"
 material = "1.13.0"
 mockito-android = "5.7.0"
 moshi = "1.15.2"
@@ -38,6 +39,11 @@ rxkotlin = "2.4.0"
 shortcutbadger = "1.1.22"
 timber = "5.0.1"
 google-services = "4.4.4"
+mockito-kotlin = "6.1.0"
+truth = "1.4.5"
+androidx-test-core = "1.7.0"
+androidx-test-ext-junit = "1.3.0"
+espresso-core = "3.7.0"
 viewpager2 = "1.1.0"
 work-runtime-ktx = "2.10.5"
 
@@ -48,11 +54,11 @@ androidx-documentfile = { module = "androidx.documentfile:documentfile", version
 androidx-emoji2-bundled = { module = "androidx.emoji2:emoji2-bundled", version.ref = "emoji2-bundled" }
 androidx-exifinterface = { module = "androidx.exifinterface:exifinterface", version.ref = "exifinterface" }
 androidx-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "ktx" }
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
 lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
 lifecycle-common-java8 = { group = "androidx.lifecycle", name = "lifecycle-common-java8", version.ref = "lifecycle" }
-lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "lifecycle" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
 androidx-work-rxjava2 = { module = "androidx.work:work-rxjava2", version.ref = "work-runtime-ktx" }
@@ -69,7 +75,9 @@ dagger-android-processor = { module = "com.google.dagger:dagger-android-processo
 dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 datashare = { module = "com.callcontrol:datashare", version.ref = "datashare" }
-exoplayer-core = { module = "com.github.google.ExoPlayer:exoplayer-core", version.ref = "exoplayer-core" }
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3-ui = { module = "androidx.media3:media3-ui", version.ref = "media3" }
+media3-common = { module = "androidx.media3:media3-common", version.ref = "media3" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 javax-annotation-api = { module = "javax.annotation:javax.annotation-api", version.ref = "javax-annotation-api" }
@@ -93,6 +101,7 @@ photoview = { module = "com.github.chrisbanes:photoview", version.ref = "photovi
 realm-android-adapters = { module = "com.github.realm:realm-android-adapters", version.ref = "realm-android-adapters" }
 realm-android-library = { module = "io.realm:realm-android-library", version.ref = "realm-annotations" }
 realm-annotations-processor = { module = "io.realm:realm-annotations-processor", version.ref = "realm-annotations" }
+realm-gradle-plugin = { module = "io.realm:realm-gradle-plugin", version.ref = "realm-annotations" }
 rx-preferences = { module = "com.f2prateek.rx.preferences2:rx-preferences", version.ref = "rx-preferences" }
 rxandroid = { module = "io.reactivex.rxjava2:rxandroid", version.ref = "rxandroid" }
 rxbinding-kotlin = { module = "com.jakewharton.rxbinding2:rxbinding-kotlin", version.ref = "rxbinding-kotlin" }
@@ -106,8 +115,14 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 # Tests
 androidx-runner = { module = "androidx.test:runner", version.ref = "runner" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidx-test-core" }
+androidx-test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "androidx-test-core" }
+androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-test-ext-junit" }
+espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
 junit = { module = "junit:junit", version.ref = "junit" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

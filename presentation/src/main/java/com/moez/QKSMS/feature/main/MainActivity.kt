@@ -41,7 +41,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -147,7 +146,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override val snackbarButtonIntent: Subject<Unit> = PublishSubject.create()
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[MainViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
     }
     private val toggle by lazy {
         ActionBarDrawerToggle(

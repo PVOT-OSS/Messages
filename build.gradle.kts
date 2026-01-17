@@ -1,11 +1,12 @@
 import com.android.build.gradle.BaseExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 // Needed until we upstream
 buildscript {
     dependencies {
-        classpath("io.realm:realm-gradle-plugin:10.19.0")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.5.2")
+        classpath(libs.realm.gradle.plugin)
+        classpath(libs.firebase.crashlytics.gradle)
     }
 }
 
@@ -22,7 +23,9 @@ tasks.register<Delete>("clean") {
 
 subprojects {
     tasks.withType<KotlinCompile>().configureEach {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+        }
     }
 
     plugins.withId("com.android.application") {

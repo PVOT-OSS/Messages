@@ -36,13 +36,15 @@ android {
         minSdk = 23
         targetSdk = 36
 
-        versionCode = 7
-        versionName = "1.0.6"
-
-        setProperty("archivesBaseName", "Messages-v${versionName}")
+        versionCode = 8
+        versionName = "1.0.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    extensions.getByType(BasePluginExtension::class.java)
+        .archivesName
+        .set("Messages-v${defaultConfig.versionName}")
 
     buildFeatures {
         buildConfig = true
@@ -94,7 +96,6 @@ dependencies {
     implementation(libs.lifecycle.runtime.ktx)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.common.java8)
-    implementation(libs.lifecycle.extensions)
 
     // androidx
     implementation(libs.androidx.appcompat)
@@ -113,11 +114,10 @@ dependencies {
     implementation(libs.glide)
     kapt(libs.compiler)
 
-    // exoplayer
-    implementation(libs.exoplayer.core)
-    implementation("com.github.google.ExoPlayer:exoplayer-ui:r2.9.0") {
-        exclude(mapOf("group" to "com.android.support", "module" to "support-media-compat"))
-    }
+    // media3
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.common)
 
     // rxbinding
     implementation(libs.rxbinding.kotlin)

@@ -690,7 +690,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="0"
                 android:contentDescription="@string/compose_record_audio_msg_play_pause_cd"
-                app:srcCompat="@drawable/exo_controls_play"
+                app:srcCompat="@drawable/ic_play_circle_filled_white_24dp"
                 app:tint="@color/tools_theme" />
 
             <SeekBar

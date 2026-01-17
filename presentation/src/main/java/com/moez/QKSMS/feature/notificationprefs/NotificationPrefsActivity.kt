@@ -27,7 +27,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
@@ -63,7 +62,7 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
     override val actionsSelectedIntent by lazy { actionsDialog.adapter.menuItemClicks }
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[NotificationPrefsViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[NotificationPrefsViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

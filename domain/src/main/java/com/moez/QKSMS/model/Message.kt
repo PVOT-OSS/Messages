@@ -23,19 +23,21 @@ import android.net.Uri
 import android.provider.Telephony.Mms
 import android.provider.Telephony.MmsSms
 import android.provider.Telephony.Sms
-import org.prauga.messages.extensions.joinTo
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.Index
 import io.realm.annotations.PrimaryKey
+import org.prauga.messages.extensions.joinTo
 
 open class Message : RealmObject() {
 
     enum class AttachmentType { TEXT, IMAGE, VIDEO, AUDIO, SLIDESHOW, NOT_LOADED }
 
-    @PrimaryKey var id: Long = 0
+    @PrimaryKey
+    var id: Long = 0
 
-    @Index var threadId: Long = 0
+    @Index
+    var threadId: Long = 0
 
     // The MMS-SMS content provider returns messages where duplicate ids can exist. This is because
     // SMS and MMS are stored in separate tables. We can't use these ids as our realm message id
@@ -87,8 +89,10 @@ open class Message : RealmObject() {
     fun isSms(): Boolean = type == "sms"
 
     fun isMe(): Boolean {
-        val isIncomingMms = isMms() && (boxId == Mms.MESSAGE_BOX_INBOX || boxId == Mms.MESSAGE_BOX_ALL)
-        val isIncomingSms = isSms() && (boxId == Sms.MESSAGE_TYPE_INBOX || boxId == Sms.MESSAGE_TYPE_ALL)
+        val isIncomingMms =
+            isMms() && (boxId == Mms.MESSAGE_BOX_INBOX || boxId == Mms.MESSAGE_BOX_ALL)
+        val isIncomingSms =
+            isSms() && (boxId == Sms.MESSAGE_TYPE_INBOX || boxId == Sms.MESSAGE_TYPE_ALL)
 
         return !(isIncomingMms || isIncomingSms)
     }
@@ -143,10 +147,16 @@ open class Message : RealmObject() {
             val sb = StringBuilder()
 
             // Add subject
-            getCleansedSubject().takeIf { it.isNotEmpty() }?.run(sb::appendln)
+            getCleansedSubject().takeIf {
+                it.isNotEmpty()
+            }?.run(sb::appendLine)
 
             // Add parts
-            parts.mapNotNull { it.getSummary() }.forEach { summary -> sb.appendln(summary) }
+            parts.mapNotNull {
+                it.getSummary()
+            }.forEach { summary ->
+                sb.appendLine(summary)
+            }
 
             sb.toString().trim()
         }
@@ -172,7 +182,8 @@ open class Message : RealmObject() {
     }
 
     fun isFailedMessage(): Boolean {
-        val isFailedMms = isMms() && (errorType >= MmsSms.ERR_TYPE_GENERIC_PERMANENT || boxId == Mms.MESSAGE_BOX_FAILED)
+        val isFailedMms =
+            isMms() && (errorType >= MmsSms.ERR_TYPE_GENERIC_PERMANENT || boxId == Mms.MESSAGE_BOX_FAILED)
         val isFailedSms = isSms() && boxId == Sms.MESSAGE_TYPE_FAILED
         return isFailedMms || isFailedSms
     }

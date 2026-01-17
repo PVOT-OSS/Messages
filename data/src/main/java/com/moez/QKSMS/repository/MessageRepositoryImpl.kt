@@ -401,9 +401,11 @@ open class MessageRepositoryImpl @Inject constructor(
         addresses: Collection<String>,
         body: String,
         attachments: Collection<Attachment>,
-        delay: Int
+        delay: Int,
+        applySignature: Boolean
     ) {
         val signedBody = when {
+            !applySignature -> body
             prefs.signature.get().isEmpty() -> body
             body.isNotEmpty() -> body + '\n' + prefs.signature.get()
             else -> prefs.signature.get()
@@ -526,9 +528,11 @@ open class MessageRepositoryImpl @Inject constructor(
                         // too big, we'll need to try smaller and smaller values
                         val scale = maxBytes / originalBytes.size * (0.9 - attempts * 0.2)
                         if (scale <= 0) {
-                            Timber.w("Failed to compress ${originalBytes.size / 1024
-                            }Kb to ${maxBytes.toInt() / 1024}Kb")
-                            return@forEach
+                            val errorMsg = "Failed to compress image from ${originalBytes.size / 1024}KB " +
+                                "to fit within ${maxBytes.toInt() / 1024}KB limit. " +
+                                "Try using a smaller image or increasing your MMS size limit in settings."
+                            Timber.e(errorMsg)
+                            throw MmsCompressionException(errorMsg, attachment.getName(context))
                         }
 
                         val newArea = scale * width * height
@@ -681,6 +685,9 @@ open class MessageRepositoryImpl @Inject constructor(
         body: String,
         date: Long
     ): Message {
+        // Check if this is a reaction message before inserting
+        val parsedReaction = reactions.parseEmojiReaction(body)
+
         // Insert the message to Realm
         val message = Message().apply {
             this.threadId = threadId
@@ -694,6 +701,8 @@ open class MessageRepositoryImpl @Inject constructor(
             type = "sms"
             read = true
             seen = true
+            // Mark as reaction upfront so it's hidden from the start
+            isEmojiReaction = parsedReaction != null
         }
 
         // Insert the message to the native content provider
@@ -725,6 +734,25 @@ open class MessageRepositoryImpl @Inject constructor(
                 lastPathSegment?.toLong()?.let { id ->
                     realm.executeTransaction {
                         managedMessage?.takeIf { it.isValid }?.contentId = id
+                    }
+                }
+            }
+
+            // If this is a reaction message, find the target and link them
+            if (parsedReaction != null) {
+                managedMessage?.let { savedMessage ->
+                    val targetMessage = reactions.findTargetMessage(
+                        savedMessage.threadId,
+                        parsedReaction.originalMessage,
+                        realm
+                    )
+                    realm.executeTransaction {
+                        reactions.saveEmojiReaction(
+                            savedMessage,
+                            parsedReaction,
+                            targetMessage,
+                            realm,
+                        )
                     }
                 }
             }
@@ -854,6 +882,9 @@ open class MessageRepositoryImpl @Inject constructor(
         body: String,
         sentTime: Long
     ): Message {
+        // Check if this is a reaction message before inserting
+        val parsedReaction = reactions.parseEmojiReaction(body)
+
         // Insert the message to Realm
         val message = Message().apply {
             this.address = address
@@ -867,6 +898,8 @@ open class MessageRepositoryImpl @Inject constructor(
             boxId = Sms.MESSAGE_TYPE_INBOX
             type = "sms"
             read = activeConversationManager.getActiveConversation() == threadId
+            // Mark as reaction upfront so it's hidden from the start
+            isEmojiReaction = parsedReaction != null
         }
 
         // Insert the message to the native content provider
@@ -889,9 +922,9 @@ open class MessageRepositoryImpl @Inject constructor(
                     realm.executeTransaction { managedMessage?.contentId = id }
                 }
 
-            managedMessage?.let { savedMessage ->
-                val parsedReaction = reactions.parseEmojiReaction(body)
-                if (parsedReaction != null) {
+            // If this is a reaction message, find the target and link them
+            if (parsedReaction != null) {
+                managedMessage?.let { savedMessage ->
                     val targetMessage = reactions.findTargetMessage(
                         savedMessage.threadId,
                         parsedReaction.originalMessage,

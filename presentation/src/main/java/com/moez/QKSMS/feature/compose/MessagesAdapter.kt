@@ -72,6 +72,7 @@ import org.prauga.messages.feature.extensions.isEmojiOnly
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
+import org.prauga.messages.feature.compose.MessageLongPress
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
 import java.util.concurrent.TimeUnit
@@ -153,6 +154,7 @@ class MessagesAdapter @Inject constructor(
     val sendNowClicks: Subject<Long> = PublishSubject.create()
     val resendClicks: Subject<Long> = PublishSubject.create()
     val partContextMenuRegistrar: Subject<View> = PublishSubject.create()
+    val messageLongPresses: Subject<MessageLongPress> = PublishSubject.create()
 
     var data: Pair<Conversation, RealmResults<Message>>? = null
         set(value) {
@@ -210,6 +212,13 @@ class MessagesAdapter @Inject constructor(
                     getItem(adapterPosition)?.let {
                         toggleSelection(it.id)
                         containerView.isActivated = isSelected(it.id)
+                        messageLongPresses.onNext(
+                            MessageLongPress(
+                                it.id,
+                                it.getText(false),
+                                containerView
+                            )
+                        )
                     }
                     true
                 }
@@ -238,6 +247,13 @@ class MessagesAdapter @Inject constructor(
                     getItem(adapterPosition)?.let {
                         toggleSelection(it.id)
                         containerView.isActivated = isSelected(it.id)
+                        messageLongPresses.onNext(
+                            MessageLongPress(
+                                it.id,
+                                it.getText(false),
+                                containerView
+                            )
+                        )
                     }
                     true
                 }
@@ -489,21 +505,14 @@ class MessagesAdapter @Inject constructor(
         val hasReactions = reactions.isNotEmpty()
 
         if (hasReactions) {
-            val reactionCounts = reactions.groupBy { it.emoji }
-                .mapValues { it.value.size }
+            // Get unique emojis sorted by count (most popular first)
+            val uniqueEmojis = reactions.groupBy { it.emoji }
                 .toList()
-                .sortedByDescending { it.second } // Sort by count, most reactions first
+                .sortedByDescending { it.second.size }
+                .map { it.first }
+                .joinToString("")
 
-            // For now, show just the first (most popular) reaction
-            val topReaction = reactionCounts.first()
-            val reactionText = if (topReaction.second == 1) {
-                topReaction.first
-            } else {
-                // Use a non-breaking space to keep the emoji and count together
-                "${topReaction.first}\u00A0${topReaction.second}"
-            }
-
-            binding.reactionText.text = reactionText
+            binding.reactionText.text = uniqueEmojis
             binding.reactions.setVisible(true)
             makeRoomForEmojis(binding.reactions)
         } else {
