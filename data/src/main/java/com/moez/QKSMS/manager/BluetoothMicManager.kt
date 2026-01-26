@@ -25,6 +25,7 @@ import android.content.IntentFilter
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.AudioManager.GET_DEVICES_INPUTS
+import androidx.core.content.ContextCompat
 
 
 // this class is, by design, as simplistic it can be to support easy and fast connection
@@ -45,9 +46,12 @@ class BluetoothMicManager(
 
     init {
         // register for bluetooth sco broadcast intents
-        context.registerReceiver(this, IntentFilter().apply {
-            addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)
-        })
+        ContextCompat.registerReceiver(
+            context,
+            this,
+            IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
     enum class StartBluetoothDevice {
