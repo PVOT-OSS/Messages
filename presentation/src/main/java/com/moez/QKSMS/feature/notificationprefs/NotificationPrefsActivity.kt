@@ -76,10 +76,13 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
 
         val hasOreo = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
 
+        val hasR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
+
         binding.notificationsO.setVisible(hasOreo)
         binding.notifications.setVisible(!hasOreo)
         binding.vibration.setVisible(!hasOreo)
         binding.ringtone.setVisible(!hasOreo)
+        binding.bubbles.setVisible(hasR)
 
         previewModeDialog.setTitle(R.string.settings_notification_previews_title)
         previewModeDialog.adapter.setData(R.array.notification_preview_options)
@@ -106,6 +109,8 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
         binding.wake.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.wakeEnabled
         binding.silentNotContact.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.silentNotContact
         binding.silentNotContact.isVisible = state.threadId == 0L
+        binding.bubbles.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.bubblesEnabled
+        binding.bubbles.isVisible = state.threadId == 0L && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R
         binding.vibration.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.vibrationEnabled
         binding.ringtone.summary = state.ringtoneName
 

@@ -33,6 +33,7 @@ import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
+import androidx.core.graphics.drawable.IconCompat
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
 import androidx.core.content.getSystemService
@@ -452,6 +453,34 @@ class NotificationManagerImpl @Inject constructor(
         }
         val sc = shortcutManager.getShortcut(threadId)
         notification.setShortcutInfo(sc)
+
+        // Add bubble metadata for Android 11+ when bubbles are enabled
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && prefs.bubbles.get()) {
+            val bubbleIntent = PendingIntent.getActivity(
+                context,
+                threadId.toInt(),
+                Intent(context, ComposeActivity::class.java)
+                    .putExtra("threadId", threadId)
+                    .setAction(Intent.ACTION_VIEW)
+                    .setData(Uri.parse("sms:${conversation.recipients.firstOrNull()?.address}")),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
+
+            val bubbleIcon = avatar?.let { IconCompat.createWithAdaptiveBitmap(it) }
+                ?: IconCompat.createWithResource(context, R.drawable.ic_person_black_24dp)
+
+            val bubbleMetadata = NotificationCompat.BubbleMetadata.Builder(
+                bubbleIntent,
+                bubbleIcon
+            )
+                .setDesiredHeight(600)
+                .setAutoExpandBubble(false)
+                .setSuppressNotification(false)
+                .build()
+
+            notification.setBubbleMetadata(bubbleMetadata)
+        }
+
         notificationManager.notify(threadId.toInt(), notification.build())
 
         // Wake screen
@@ -581,6 +610,9 @@ class NotificationManagerImpl @Inject constructor(
                 lightColor = Color.WHITE
                 enableVibration(true)
                 vibrationPattern = VIBRATE_PATTERN
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    setAllowBubbles(true)
+                }
             }
 
             else -> {
@@ -599,6 +631,9 @@ class NotificationManagerImpl @Inject constructor(
                             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                             .build()
                     )
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        setAllowBubbles(true)
+                    }
                 }
             }
         }

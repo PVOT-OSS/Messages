@@ -87,6 +87,11 @@
         android:title="@string/compose_menu_forward"
         android:visible="false"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/react"
+        android:title="@string/compose_menu_react"
+        android:visible="false"
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/show_status"

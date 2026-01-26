@@ -77,7 +77,10 @@
             android:name=".feature.compose.ComposeActivity"
             android:exported="true"
             android:parentActivityName=".feature.main.MainActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:documentLaunchMode="always"
+            android:allowEmbedded="true"
+            android:resizeableActivity="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />

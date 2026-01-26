@@ -88,6 +88,14 @@
                 app:widget="@layout/settings_switch_widget" />
 
             <org.prauga.messages.common.widget.PreferenceView
+                android:id="@+id/bubbles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:title="@string/settings_bubbles"
+                app:summary="@string/settings_bubbles_summary"
+                app:widget="@layout/settings_switch_widget" />
+
+            <org.prauga.messages.common.widget.PreferenceView
                 android:id="@+id/vibration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

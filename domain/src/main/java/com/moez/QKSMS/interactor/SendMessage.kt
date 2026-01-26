@@ -40,7 +40,8 @@ class SendMessage @Inject constructor(
         val addresses: List<String>,
         val body: String,
         val attachments: List<Attachment> = listOf(),
-        val delay: Int = 0
+        val delay: Int = 0,
+        val applySignature: Boolean = true,
     )
 
     override fun buildObservable(params: Params): Flowable<*> = Flowable.just(Unit)
@@ -57,7 +58,7 @@ class SendMessage @Inject constructor(
                 return@doOnNext
 
             params.apply {
-                messageRepo.sendMessage(subId, threadId, addresses, body, attachments, delay)
+                messageRepo.sendMessage(subId, threadId, addresses, body, attachments, delay, applySignature)
             }
 
             conversationRepo.updateConversations(threadId)

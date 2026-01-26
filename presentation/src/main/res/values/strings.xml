@@ -151,6 +151,8 @@
     <string name="compose_menu_copy">Copy text</string>
     <string name="compose_menu_share">Share text</string>
     <string name="compose_menu_forward">Forward</string>
+    <string name="compose_menu_react">React</string>
+    <string name="compose_menu_more">More</string>
     <string name="compose_menu_show_status">Show status</string>
     <string name="compose_menu_delete">Delete</string>
     <string name="compose_menu_previous">Previous</string>
@@ -181,6 +183,12 @@
     <string name="compose_sim_cd">%s selected, change SIM card</string>
     <string name="compose_send_cd">Send message</string>
     <string name="compose_record_audio_msg_cd">Record audio message</string>
+    <string name="reaction_picker_love">❤️ Love</string>
+    <string name="reaction_picker_like">👍 Like</string>
+    <string name="reaction_picker_dislike">👎 Dislike</string>
+    <string name="reaction_picker_laugh">😂 Laugh</string>
+    <string name="reaction_picker_emphasize">‼️ Emphasize</string>
+    <string name="reaction_picker_question">❓ Question</string>
 
     <string name="compose_record_audio_msg_abort_cd">Cancel audio message</string>
     <string name="compose_record_audio_msg_attach_cd">Attach audio message</string>
@@ -293,6 +301,8 @@
     <string name="settings_qkreply_summary">Popup for new messages</string>
     <string name="settings_qkreply_tap_dismiss_title">Tap to dismiss</string>
     <string name="settings_qkreply_tap_dismiss_summary">Tap outside of the popup to close it</string>
+    <string name="settings_bubbles">Chat bubbles</string>
+    <string name="settings_bubbles_summary">Show conversations as floating bubbles</string>
     <string name="settings_delayed_title">Delayed sending</string>
     <string name="settings_swipe_actions">Swipe actions</string>
     <string name="settings_swipe_actions_summary">Configure swipe actions for conversations</string>
