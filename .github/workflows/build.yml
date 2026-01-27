@@ -36,37 +36,54 @@ jobs:
     - name: List APK Output Directory
       run: ls -R presentation/build/outputs/apk || true
 
-    - name: Rename APK
+    - name: Rename and Organize APKs
       shell: bash
       run: |
         set -euo pipefail
         shopt -s nullglob
-        mapfile -t apk_files < <(printf '%s\n' presentation/build/outputs/apk/debug/Messages-v*-debug.apk)
-        if [[ "${#apk_files[@]}" -eq 0 ]]; then
-          echo "No APK found matching Messages-v*-debug.apk" >&2
-          exit 1
-        fi
-        if [[ "${#apk_files[@]}" -gt 1 ]]; then
-          echo "Multiple APKs found: ${apk_files[*]}" >&2
-          exit 1
-        fi
-        mv "${apk_files[0]}" presentation/build/outputs/apk/debug/Messages-debug.apk
 
-        mapfile -t apk_files < <(printf '%s\n' presentation/build/outputs/apk/release/Messages-v*-release.apk)
-        if [[ "${#apk_files[@]}" -eq 0 ]]; then
-          echo "No APK found matching Messages-v*-release.apk" >&2
-          exit 1
-        fi
-        if [[ "${#apk_files[@]}" -gt 1 ]]; then
-          echo "Multiple APKs found: ${apk_files[*]}" >&2
-          exit 1
-        fi
-        mv "${apk_files[0]}" presentation/build/outputs/apk/debug/Messages-release.apk
+        echo "Processing Debug APKs..."
+        mkdir -p apks/debug
 
-    - name: Upload App
+        for apk in presentation/build/outputs/apk/debug/*-v8a-*.apk; do
+          if [ -f "$apk" ]; then
+            echo "Found v8a debug APK: $apk"
+            cp "$apk" apks/debug/Messages-arm64-v8a-debug.apk
+          fi
+        done
+
+        for apk in presentation/build/outputs/apk/debug/*-v7a-*.apk; do
+          if [ -f "$apk" ]; then
+            echo "Found v7a debug APK: $apk"
+            cp "$apk" apks/debug/Messages-armeabi-v7a-debug.apk
+          fi
+        done
+
+        echo "Processing Release APKs..."
+        mkdir -p apks/release
+
+        for apk in presentation/build/outputs/apk/release/*-v8a-*.apk; do
+          if [ -f "$apk" ]; then
+            echo "Found v8a release APK: $apk"
+            cp "$apk" apks/release/Messages-arm64-v8a-release.apk
+          fi
+        done
+
+        for apk in presentation/build/outputs/apk/release/*-v7a-*.apk; do
+          if [ -f "$apk" ]; then
+            echo "Found v7a release APK: $apk"
+            cp "$apk" apks/release/Messages-armeabi-v7a-release.apk
+          fi
+        done
+
+        echo "Final APK structure:"
+        find apks -type f -name "*.apk" -exec ls -lh {} \;
+
+    - name: Upload APKs
       uses: actions/upload-artifact@v4
       with:
         name: apks
         path: |
-          presentation/build/outputs/apk/**/Messages-debug.apk
-          presentation/build/outputs/apk/**/Messages-release.apk
+          apks/debug/*.apk
+          apks/release/*.apk
+        retention-days: 30
