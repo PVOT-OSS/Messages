@@ -183,20 +183,20 @@ class Navigator @Inject constructor(
     }
 
     fun showSourceCode() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages"))
         startActivityExternal(intent)
     }
 
     fun showChangelog() {
         val intent =
-            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages/releases"))
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages/releases"))
         startActivityExternal(intent)
     }
 
     fun showLicense() {
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("https://github.com/danascape/Messages/blob/master/LICENSE")
+            Uri.parse("https://github.com/PVOT-OSS/Messages/blob/master/LICENSE")
         )
         startActivityExternal(intent)
     }
@@ -213,12 +213,12 @@ class Navigator @Inject constructor(
     }
 
     fun showDonation() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages"))
         startActivityExternal(intent)
     }
 
     fun showRating() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/danascape/Messages"))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages"))
             .addFlags(
                 Intent.FLAG_ACTIVITY_NO_HISTORY
                         or Intent.FLAG_ACTIVITY_NEW_DOCUMENT
@@ -228,7 +228,7 @@ class Navigator @Inject constructor(
         try {
             startActivityExternal(intent)
         } catch (e: ActivityNotFoundException) {
-            val url = "https://github.com/danascape/Messages"
+            val url = "https://github.com/PVOT-OSS/Messages"
             startActivityExternal(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
     }
@@ -283,7 +283,7 @@ class Navigator @Inject constructor(
     fun showInvite() {
         Intent(Intent.ACTION_SEND)
             .setType("text/plain")
-            .putExtra(Intent.EXTRA_TEXT, "https://github.com/danascape/Messages/releases/latest")
+            .putExtra(Intent.EXTRA_TEXT, "https://github.com/PVOT-OSS/Messages/releases/latest")
             .let { Intent.createChooser(it, null) }
             .let(::startActivityExternal)
     }
