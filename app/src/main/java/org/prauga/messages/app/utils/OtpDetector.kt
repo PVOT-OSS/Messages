@@ -12,52 +12,14 @@ data class OtpDetectionResult(
 )
 
 class OtpDetector {
-
-    private val otpKeywords = listOf(
-        "otp",
-        "one time password",
-        "one-time password",
-        "verification code",
-        "verification number",
-        "login code",
-        "login otp",
-        "security code",
-        "2-step code",
-        "2 factor code",
-        "2fa code",
-        "mfa code",
-        "auth code",
-        "passcode",
-        "access code",
-        "reset code",
-        "transaction code",
-        "confirm code",
-        "confirmation code",
-        "code"
-    ).map { it.lowercase() }
-
-    private val safetyKeywords = listOf(
-        "do not share",
-        "don't share",
-        "never share",
-        "do not disclose",
-        "do not forward",
-        "keep this code secret",
-        "valid for",
-        "expires in",
-        "expires within",
-        "expires after"
-    ).map { it.lowercase() }
-
-    private val moneyIndicators = listOf(
-        "rs", "inr", "usd", "eur", "gbp", "₹", "$", "€", "£", "balance",
-        "amount", "debited", "credited", "txn", "transaction id", "order id"
-    ).map { it.lowercase() }
+    private val otpKeywords = OtpConstants.OTP_KEYWORDS
+    private val safetyKeywords = OtpConstants.SAFETY_KEYWORDS
+    private val moneyIndicators = OtpConstants.MONEY_INDICATORS
 
     fun detect(rawMessage: String): OtpDetectionResult {
         val message = rawMessage.trim()
         if (message.isEmpty()) {
-            return OtpDetectionResult(false, null, 0.0, "Empty message")
+            return OtpDetectionResult(false, null, 0.0, OtpConstants.EMPTY_MESSAGE)
         }
 
         val normalized = normalizeWhitespace(message)
@@ -70,9 +32,9 @@ class OtpDetector {
 
         if (candidates.isEmpty()) {
             val reason = if (hasOtpKeyword) {
-                "Contains OTP-like keywords but no numeric/alphanumeric candidate code found"
+                OtpConstants.KEYWORD_BUT_NO_CODE_MSG
             } else {
-                "No OTP-like keywords and no candidate code found"
+                OtpConstants.NO_OTP_KEYWORD_MSG
             }
             return OtpDetectionResult(false, null, 0.1, reason)
         }
@@ -124,13 +86,13 @@ class OtpDetector {
     )
 
     private fun normalizeWhitespace(input: String): String =
-        input.replace(Regex("\\s+"), " ").trim()
+        input.replace(Regex(OtpConstants.WHITESPACE_REGEX), " ").trim()
 
     private fun extractCandidates(message: String): List<Candidate> {
         val candidates = mutableListOf<Candidate>()
 
         // 1) Pure numeric chunks 3–10 digits
-        val numericRegex = Regex("\\b\\d{3,10}\\b")
+        val numericRegex = Regex(OtpConstants.NUMERIC_REGEX)
         numericRegex.findAll(message).forEach { match ->
             val code = match.value
             candidates += Candidate(
@@ -142,7 +104,7 @@ class OtpDetector {
         }
 
         // 2) Numeric with a single space or dash (e.g., "123 456", "12-34-56")
-        val spacedRegex = Regex("\\b\\d{2,4}([\\s-]\\d{2,4})+\\b")
+        val spacedRegex = Regex(OtpConstants.SPACED_NUMERIC_REGEX)
         spacedRegex.findAll(message).forEach { match ->
             val raw = match.value
             val normalizedCode = raw.replace("[\\s-]".toRegex(), "")
@@ -158,7 +120,7 @@ class OtpDetector {
         }
 
         // 3) Alphanumeric tokens 4–10 chars, at least 2 digits
-        val alnumRegex = Regex("\\b[0-9A-Za-z]{4,10}\\b")
+        val alnumRegex = Regex(OtpConstants.ALPHANUMERIC_REGEX)
         alnumRegex.findAll(message).forEach { match ->
             val token = match.value
             if (token.any { it.isDigit() } && token.count { it.isDigit() } >= 2) {
@@ -218,7 +180,7 @@ class OtpDetector {
 
         // Typical OTP line patterns
         if (Regex(
-                "(otp|code|password|passcode)",
+                OtpConstants.OTP_LINE_PATTERN,
                 RegexOption.IGNORE_CASE
             ).containsMatchIn(lineInfo.line)
         ) {
