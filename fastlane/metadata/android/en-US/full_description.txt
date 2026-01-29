@@ -1,4 +1,4 @@
-Messages is an open source replacement to the stock messaging app. It is a continuation of QUIK 
+Messages is an open source replacement to the stock messaging app. It is a continuation of QKSMS
 
 ## Features
 - Intuitive UI
