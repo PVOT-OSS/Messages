@@ -32,6 +32,7 @@ import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.OtpDetector
+import org.prauga.messages.app.utils.ParcelDetector
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.ConversationListItemBinding
@@ -149,9 +150,9 @@ class ConversationsAdapter @Inject constructor(
             // Choose appropriate tag text based on language
             val locale = context.resources.configuration.locales[0]
             val otpText = if (locale.language == "zh") {
-                "验证码"  // Show "验证码" for Chinese locale
+                context.getString(R.string.otp_tag_chinese)  // Show "验证码" for Chinese locale
             } else {
-                "OTP"     // Show "OTP" for other locales
+                context.getString(R.string.otp_tag)     // Show "OTP" for other locales
             }
             binding.otpTag.text = otpText
             
@@ -159,6 +160,30 @@ class ConversationsAdapter @Inject constructor(
             val theme = colors.theme(recipient).theme
             binding.otpTag.background.setTint(theme)
             binding.otpTag.setTextColor(colors.theme(recipient).textPrimary)
+        }
+        
+        // Check if the conversation contains parcel pickup code
+        // 1. Initialize Parcel detector
+        val parcelDetector = ParcelDetector()
+        // 2. Perform parcel code detection
+        val parcelResult = parcelDetector.detectParcel(snippet)
+        // 3. Show or hide parcel tag based on detection result
+        binding.parcelTag.isVisible = parcelResult.success
+        
+        if (parcelResult.success) {
+            // Choose appropriate tag text based on language
+            val locale = context.resources.configuration.locales[0]
+            val parcelText = if (locale.language == "zh") {
+                context.getString(R.string.parcel_tag_chinese)  // Show "取件码" for Chinese locale
+            } else {
+                context.getString(R.string.parcel_tag)     // Show "Parcel" for other locales
+            }
+            binding.parcelTag.text = parcelText
+            
+            // Set parcel tag background and text color to match theme
+            val theme = colors.theme(recipient).theme
+            binding.parcelTag.background.setTint(theme)
+            binding.parcelTag.setTextColor(colors.theme(recipient).textPrimary)
         }
     }
 
@@ -187,4 +212,3 @@ class ConversationsAdapter @Inject constructor(
     }
 
 }
-
