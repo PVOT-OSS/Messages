@@ -31,7 +31,7 @@ import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
-import org.prauga.messages.common.util.OtpDetector
+import org.prauga.messages.app.utils.OtpDetector
 import org.prauga.messages.app.utils.ParcelDetector
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setTint
@@ -78,14 +78,14 @@ class ConversationsAdapter @Inject constructor(
 
         return QkViewHolder(binding.root).apply {
             binding.root.setOnClickListener {
-                val conversation = getItem(adapterPosition) ?: return@setOnClickListener
+                val conversation = getItem(bindingAdapterPosition) ?: return@setOnClickListener
                 when (toggleSelection(conversation.id, false)) {
                     true -> binding.root.isActivated = isSelected(conversation.id)
                     false -> navigator.showConversation(conversation.id)
                 }
             }
             binding.root.setOnLongClickListener {
-                val conversation = getItem(adapterPosition) ?: return@setOnLongClickListener true
+                val conversation = getItem(bindingAdapterPosition) ?: return@setOnLongClickListener true
                 toggleSelection(conversation.id)
                 binding.root.isActivated = isSelected(conversation.id)
                 true
