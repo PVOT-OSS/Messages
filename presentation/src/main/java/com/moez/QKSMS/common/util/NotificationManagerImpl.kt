@@ -419,7 +419,8 @@ class NotificationManagerImpl @Inject constructor(
         val latestMessage = messages.lastOrNull()
         if (latestMessage != null) {
             val messageText = latestMessage.getText()
-            val otpDetector = OtpDetector()
+            val resourceProvider = OtpResourceProviderImpl(context)
+            val otpDetector = OtpDetector(resourceProvider)
             val otpResult = otpDetector.detect(messageText)
 
             if (otpResult.isOtp && otpResult.code != null) {
