@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="notification_action_copy_otp">कोड "%s" कॉपी करें</string>
+    <string name="otp_copied">OTP %s क्लिपबोर्ड पर कॉपी किया गया</string>
+
     <!-- OTP Error Messages in Hindi -->
     <string name="otp_error_empty_message">खाली संदेश</string>
     <string name="otp_error_no_keyword">कोई OTP जैसे कीवर्ड और कोई उम्मीदवार कोड नहीं मिला</string>
     <string name="otp_error_keyword_no_code">OTP जैसे कीवर्ड हैं लेकिन कोई संख्यात्मक/अल्फान्यूमेरिक उम्मीदवार कोड नहीं मिला</string>
+
+    <!-- Notification Channel Names in Hindi -->
+    <string name="notification_channel_default_name">संदेश</string>
+    <string name="notification_channel_default_description">नए संदेशों के लिए सूचनाएं</string>
+    <string name="notification_channel_backup_restore_name">बैकअप और पुनर्स्थापना</string>
+    <string name="notification_channel_backup_restore_description">बैकअप और पुनर्स्थापना कार्यों के लिए सूचनाएं</string>
 </resources>
