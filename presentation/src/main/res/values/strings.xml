@@ -454,8 +454,8 @@
     <string name="theme_apply">Apply</string>
 
     <string name="about_developer" translatable="false">Saalim Quadri</string>
-    <string name="about_source" translatable="false">https://github.com/danascape/Messages</string>
-    <string name="about_changelog" translatable="false">https://github.com/danascape/Messages/releases</string>
+    <string name="about_source" translatable="false">https://github.com/PVOT-OSS/Messages</string>
+    <string name="about_changelog" translatable="false">https://github.com/PVOT-OSS/Messages/releases</string>
     <string name="about_contact" translatable="false">saalim.priv@gmail.com</string>
     <string name="about_license" translatable="false">GNU General Public License v3.0</string>
     <string name="about_copyright" translatable="false">© 2014–2025</string>

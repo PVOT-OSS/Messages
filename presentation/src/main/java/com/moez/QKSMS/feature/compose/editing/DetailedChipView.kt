@@ -22,6 +22,7 @@ import android.content.Context
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.widget.RelativeLayout
+import org.prauga.messages.common.util.AnimationConfig
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
@@ -67,7 +68,7 @@ class DetailedChipView(context: Context) : RelativeLayout(context) {
     }
 
     fun show() {
-        startAnimation(AlphaAnimation(0f, 1f).apply { duration = 200 })
+        startAnimation(AlphaAnimation(0f, 1f).apply { duration = AnimationConfig.FADE_DURATION_MS })
 
         visibility = View.VISIBLE
         requestFocus()
@@ -75,7 +76,7 @@ class DetailedChipView(context: Context) : RelativeLayout(context) {
     }
 
     fun hide() {
-        startAnimation(AlphaAnimation(1f, 0f).apply { duration = 200 })
+        startAnimation(AlphaAnimation(1f, 0f).apply { duration = AnimationConfig.FADE_DURATION_MS })
 
         visibility = View.GONE
         clearFocus()

@@ -512,7 +512,7 @@ class MessagesAdapter @Inject constructor(
     }
 
     private fun makeRoomForEmojis(reactionsContainer: View) {
-        val paddingBottom = 25.dpToPx(context)
+        val paddingBottom = context.resources.getDimensionPixelSize(R.dimen.padding_reactions)
 
         (reactionsContainer.parent?.parent as? ViewGroup)?.let { parent ->
             parent.setPadding(

@@ -419,7 +419,8 @@ class NotificationManagerImpl @Inject constructor(
         val latestMessage = messages.lastOrNull()
         if (latestMessage != null) {
             val messageText = latestMessage.getText()
-            val otpDetector = OtpDetector()
+            val resourceProvider = OtpResourceProviderImpl(context)
+            val otpDetector = OtpDetector(resourceProvider)
             val otpResult = otpDetector.detect(messageText)
 
             if (otpResult.isOtp && otpResult.code != null) {
@@ -574,9 +575,10 @@ class NotificationManagerImpl @Inject constructor(
         val channel = when (threadId) {
             0L -> NotificationChannel(
                 DEFAULT_CHANNEL_ID,
-                "Default",
+                context.getString(R.string.notification_channel_default_name),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
+                description = context.getString(R.string.notification_channel_default_description)
                 enableLights(true)
                 lightColor = Color.WHITE
                 enableVibration(true)
@@ -646,9 +648,12 @@ class NotificationManagerImpl @Inject constructor(
 
     override fun getNotificationForBackup(): NotificationCompat.Builder {
         if (Build.VERSION.SDK_INT >= 26) {
-            val name = context.getString(R.string.backup_notification_channel_name)
+            val name = context.getString(R.string.notification_channel_backup_restore_name)
+            val description = context.getString(R.string.notification_channel_backup_restore_description)
             val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(BACKUP_RESTORE_CHANNEL_ID, name, importance)
+            val channel = NotificationChannel(BACKUP_RESTORE_CHANNEL_ID, name, importance).apply {
+                this.description = description
+            }
             val notificationManager = context.getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }

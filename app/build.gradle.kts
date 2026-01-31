@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.timber)
 
     // Test dependencies
     testImplementation(libs.junit)

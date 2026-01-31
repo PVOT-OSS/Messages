@@ -24,6 +24,7 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import androidx.core.net.toFile
+import org.prauga.messages.common.util.FileNamingConfig
 import org.prauga.messages.util.FileUtils
 import java.util.UUID
 
@@ -37,8 +38,8 @@ object MediaRecorderManager : MediaRecorder() {
         Error
     }
 
-    const val AUDIO_FILE_PREFIX = "recorded-"
-    const val AUDIO_FILE_SUFFIX = ".3ga"
+    const val AUDIO_FILE_PREFIX = FileNamingConfig.AUDIO_FILE_PREFIX
+    const val AUDIO_FILE_SUFFIX = FileNamingConfig.AUDIO_FILE_SUFFIX
 
     var recordingState: RecordingState = RecordingState.Initial
         private set
