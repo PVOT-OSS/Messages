@@ -27,6 +27,7 @@ import io.reactivex.rxkotlin.plusAssign
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
+import org.prauga.messages.common.util.FileNamingConfig
 import org.prauga.messages.common.util.extensions.makeToast
 import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.interactor.SaveImage
@@ -46,7 +47,7 @@ class GalleryViewModel @Inject constructor(
     private val permissions: PermissionManager
 ) : QkViewModel<GalleryView, GalleryState>(GalleryState()) {
     companion object {
-        const val DEFAULT_SHARE_FILENAME = "quik-media-attachment.jpg"
+        const val DEFAULT_SHARE_FILENAME = FileNamingConfig.DEFAULT_GALLERY_SHARE_FILENAME
     }
 
     init {

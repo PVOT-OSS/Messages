@@ -28,6 +28,7 @@ import com.moez.QKSMS.common.QkMediaPlayer
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import org.prauga.messages.common.util.FileNamingConfig
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewHolder
@@ -52,7 +53,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
     PartBinder() {
 
     companion object {
-        const val DEFAULT_SHARE_FILENAME = "quik-audio-attachment.mp3"
+        const val DEFAULT_SHARE_FILENAME = FileNamingConfig.DEFAULT_AUDIO_SHARE_FILENAME
     }
 
     @Inject
