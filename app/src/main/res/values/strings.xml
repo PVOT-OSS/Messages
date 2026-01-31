@@ -7,4 +7,10 @@
     <string name="otp_error_empty_message">Empty message</string>
     <string name="otp_error_no_keyword">No OTP-like keywords and no candidate code found</string>
     <string name="otp_error_keyword_no_code">Contains OTP-like keywords but no numeric/alphanumeric candidate code found</string>
+
+    <!-- Notification Channel Names -->
+    <string name="notification_channel_default_name">Messages</string>
+    <string name="notification_channel_default_description">Notifications for new messages</string>
+    <string name="notification_channel_backup_restore_name">Backup &amp; Restore</string>
+    <string name="notification_channel_backup_restore_description">Notifications for backup and restore operations</string>
 </resources>
