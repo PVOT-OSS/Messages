@@ -8,8 +8,7 @@ data class OtpDetectionResult(
     val isOtp: Boolean,
     val code: String?,
     val confidence: Double,
-    val reason: String,
-    val isParcel: Boolean = false
+    val reason: String
 )
 
 class OtpDetector {
@@ -42,18 +41,6 @@ class OtpDetector {
         "一次性密码",
         "二次验证码",
         "两步验证"
-    ).map { it.lowercase() }
-    
-    private val parcelKeywords = listOf(
-        "collection code",
-        "pickup code",
-        "collect code",
-        "use code",
-        "code",
-        "取件码",
-        "提取码",
-        "凭码",
-        "收集码"
     ).map { it.lowercase() }
 
     private val safetyKeywords = listOf(
@@ -95,18 +82,14 @@ class OtpDetector {
         
         // Check if it contains characters related to Chinese CAPTCHAs
         val hasChineseOtpChars = lower.contains("验证码") || lower.contains("登录") || lower.contains("码")
-        
-        // Check if it contains parcel-related keywords or characters
-        val hasParcelKeyword = parcelKeywords.any { lower.contains(it) }
-        val hasChineseParcelChars = lower.contains("取件码") || lower.contains("提取码") || lower.contains("凭码")
 
         val candidates = extractCandidates(normalized)
 
         if (candidates.isEmpty()) {
-            val reason = when {
-                hasOtpKeyword || hasChineseOtpChars -> "Contains OTP-like keywords but no numeric/alphanumeric candidate code found"
-                hasParcelKeyword || hasChineseParcelChars -> "Contains parcel-like keywords but no numeric/alphanumeric candidate code found"
-                else -> "No OTP-like keywords and no candidate code found"
+            val reason = if (hasOtpKeyword || hasChineseOtpChars) {
+                "Contains OTP-like keywords but no numeric/alphanumeric candidate code found"
+            } else {
+                "No OTP-like keywords and no candidate code found"
             }
             return OtpDetectionResult(false, null, 0.1, reason)
         }
@@ -120,8 +103,7 @@ class OtpDetector {
 
         val best = scored.maxByOrNull { it.score }!!
 
-        val isParcel = hasParcelKeyword || hasChineseParcelChars
-        val globalConfidence = computeGlobalConfidence(best, hasOtpKeyword, hasSafetyKeyword, hasChineseOtpChars, isParcel)
+        val globalConfidence = computeGlobalConfidence(best, hasOtpKeyword, hasSafetyKeyword, hasChineseOtpChars)
 
         val isOtp = globalConfidence >= 0.6
 
@@ -134,7 +116,7 @@ class OtpDetector {
                 }. "
             )
             append(
-                "HasOtpKeyword=$hasOtpKeyword, HasSafetyKeyword=$hasSafetyKeyword, IsParcel=$isParcel, GlobalConfidence=${
+                "HasOtpKeyword=$hasOtpKeyword, HasSafetyKeyword=$hasSafetyKeyword, GlobalConfidence=${
                     "%.2f".format(
                         globalConfidence
                     )
@@ -144,10 +126,9 @@ class OtpDetector {
 
         return OtpDetectionResult(
             isOtp = isOtp,
-            code = if (isOtp || isParcel) best.code else null,
+            code = if (isOtp) best.code else null,
             confidence = globalConfidence,
-            reason = reason,
-            isParcel = isParcel
+            reason = reason
         )
     }
 
@@ -372,8 +353,7 @@ class OtpDetector {
         best: Candidate,
         hasOtpKeyword: Boolean,
         hasSafetyKeyword: Boolean,
-        hasChineseOtpChars: Boolean,
-        isParcel: Boolean
+        hasChineseOtpChars: Boolean
     ): Double {
         var confidence = 0.0
 
@@ -382,7 +362,6 @@ class OtpDetector {
 
         if (hasOtpKeyword || hasChineseOtpChars) confidence += 0.15
         if (hasSafetyKeyword) confidence += 0.15
-        if (isParcel) confidence += 0.15
 
         return confidence.coerceIn(0.0, 1.0)
     }
