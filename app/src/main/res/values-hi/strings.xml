@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- OTP Error Messages in Hindi -->
+    <string name="otp_error_empty_message">खाली संदेश</string>
+    <string name="otp_error_no_keyword">कोई OTP जैसे कीवर्ड और कोई उम्मीदवार कोड नहीं मिला</string>
+    <string name="otp_error_keyword_no_code">OTP जैसे कीवर्ड हैं लेकिन कोई संख्यात्मक/अल्फान्यूमेरिक उम्मीदवार कोड नहीं मिला</string>
+</resources>

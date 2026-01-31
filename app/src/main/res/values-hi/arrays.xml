@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- OTP Keywords in Hindi: Terms commonly used in OTP/verification messages -->
+    <string-array name="otp_keywords">
+        <item>otp</item>
+        <item>वन टाइम पासवर्ड</item>
+        <item>सत्यापन कोड</item>
+        <item>सत्यापन संख्या</item>
+        <item>लॉगिन कोड</item>
+        <item>लॉगिन otp</item>
+        <item>सुरक्षा कोड</item>
+        <item>2-चरण कोड</item>
+        <item>2 कारक कोड</item>
+        <item>2fa कोड</item>
+        <item>mfa कोड</item>
+        <item>प्रमाणीकरण कोड</item>
+        <item>पासकोड</item>
+        <item>एक्सेस कोड</item>
+        <item>रीसेट कोड</item>
+        <item>लेनदेन कोड</item>
+        <item>पुष्टि कोड</item>
+        <item>कोड</item>
+    </string-array>
+
+    <!-- Safety Keywords in Hindi: Phrases that indicate security warnings -->
+    <string-array name="otp_safety_keywords">
+        <item>साझा न करें</item>
+        <item>शेयर न करें</item>
+        <item>कभी साझा न करें</item>
+        <item>प्रकट न करें</item>
+        <item>फॉरवर्ड न करें</item>
+        <item>इस कोड को गुप्त रखें</item>
+        <item>के लिए मान्य</item>
+        <item>में समाप्त होता है</item>
+        <item>के भीतर समाप्त होता है</item>
+        <item>के बाद समाप्त होता है</item>
+    </string-array>
+
+    <!-- Money Indicators in Hindi: Terms that suggest financial transactions -->
+    <string-array name="otp_money_indicators">
+        <item>rs</item>
+        <item>inr</item>
+        <item>रुपये</item>
+        <item>₹</item>
+        <item>$</item>
+        <item>€</item>
+        <item>£</item>
+        <item>शेष</item>
+        <item>राशि</item>
+        <item>डेबिट</item>
+        <item>क्रेडिट</item>
+        <item>txn</item>
+        <item>लेनदेन आईडी</item>
+        <item>ऑर्डर आईडी</item>
+    </string-array>
+</resources>

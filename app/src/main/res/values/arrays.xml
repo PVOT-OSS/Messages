@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- OTP Keywords: Terms commonly used in OTP/verification messages -->
+    <string-array name="otp_keywords">
+        <item>otp</item>
+        <item>one time password</item>
+        <item>one-time password</item>
+        <item>verification code</item>
+        <item>verification number</item>
+        <item>login code</item>
+        <item>login otp</item>
+        <item>security code</item>
+        <item>2-step code</item>
+        <item>2 factor code</item>
+        <item>2fa code</item>
+        <item>mfa code</item>
+        <item>auth code</item>
+        <item>passcode</item>
+        <item>access code</item>
+        <item>reset code</item>
+        <item>transaction code</item>
+        <item>confirm code</item>
+        <item>confirmation code</item>
+        <item>code</item>
+    </string-array>
+
+    <!-- Safety Keywords: Phrases that indicate security warnings in OTP messages -->
+    <string-array name="otp_safety_keywords">
+        <item>do not share</item>
+        <item>don\'t share</item>
+        <item>never share</item>
+        <item>do not disclose</item>
+        <item>do not forward</item>
+        <item>keep this code secret</item>
+        <item>valid for</item>
+        <item>expires in</item>
+        <item>expires within</item>
+        <item>expires after</item>
+    </string-array>
+
+    <!-- Money Indicators: Terms that suggest financial transactions (helps filter out non-OTP messages) -->
+    <string-array name="otp_money_indicators">
+        <item>rs</item>
+        <item>inr</item>
+        <item>usd</item>
+        <item>eur</item>
+        <item>gbp</item>
+        <item>₹</item>
+        <item>$</item>
+        <item>€</item>
+        <item>£</item>
+        <item>balance</item>
+        <item>amount</item>
+        <item>debited</item>
+        <item>credited</item>
+        <item>txn</item>
+        <item>transaction id</item>
+        <item>order id</item>
+    </string-array>
+</resources>
