@@ -11,15 +11,20 @@ data class OtpDetectionResult(
     val reason: String
 )
 
-class OtpDetector {
-    private val otpKeywords = OtpConstants.OTP_KEYWORDS
-    private val safetyKeywords = OtpConstants.SAFETY_KEYWORDS
-    private val moneyIndicators = OtpConstants.MONEY_INDICATORS
+class OtpDetector(private val resourceProvider: OtpResourceProvider) {
+    private val otpKeywords = resourceProvider.getOtpKeywords()
+    private val safetyKeywords = resourceProvider.getSafetyKeywords()
+    private val moneyIndicators = resourceProvider.getMoneyIndicators()
 
     fun detect(rawMessage: String): OtpDetectionResult {
         val message = rawMessage.trim()
         if (message.isEmpty()) {
-            return OtpDetectionResult(false, null, 0.0, OtpConstants.EMPTY_MESSAGE)
+            return OtpDetectionResult(
+                false,
+                null,
+                0.0,
+                resourceProvider.getErrorMessage(OtpErrorType.EMPTY_MESSAGE)
+            )
         }
 
         val normalized = normalizeWhitespace(message)
@@ -32,9 +37,9 @@ class OtpDetector {
 
         if (candidates.isEmpty()) {
             val reason = if (hasOtpKeyword) {
-                OtpConstants.KEYWORD_BUT_NO_CODE_MSG
+                resourceProvider.getErrorMessage(OtpErrorType.KEYWORD_BUT_NO_CODE)
             } else {
-                OtpConstants.NO_OTP_KEYWORD_MSG
+                resourceProvider.getErrorMessage(OtpErrorType.NO_OTP_KEYWORD)
             }
             return OtpDetectionResult(false, null, 0.1, reason)
         }
@@ -86,13 +91,13 @@ class OtpDetector {
     )
 
     private fun normalizeWhitespace(input: String): String =
-        input.replace(Regex(OtpConstants.WHITESPACE_REGEX), " ").trim()
+        input.replace(Regex(OtpPatternConfig.WHITESPACE_REGEX), " ").trim()
 
     private fun extractCandidates(message: String): List<Candidate> {
         val candidates = mutableListOf<Candidate>()
 
         // 1) Pure numeric chunks 3–10 digits
-        val numericRegex = Regex(OtpConstants.NUMERIC_REGEX)
+        val numericRegex = Regex(OtpPatternConfig.NUMERIC_REGEX)
         numericRegex.findAll(message).forEach { match ->
             val code = match.value
             candidates += Candidate(
@@ -104,7 +109,7 @@ class OtpDetector {
         }
 
         // 2) Numeric with a single space or dash (e.g., "123 456", "12-34-56")
-        val spacedRegex = Regex(OtpConstants.SPACED_NUMERIC_REGEX)
+        val spacedRegex = Regex(OtpPatternConfig.SPACED_NUMERIC_REGEX)
         spacedRegex.findAll(message).forEach { match ->
             val raw = match.value
             val normalizedCode = raw.replace("[\\s-]".toRegex(), "")
@@ -120,7 +125,7 @@ class OtpDetector {
         }
 
         // 3) Alphanumeric tokens 4–10 chars, at least 2 digits
-        val alnumRegex = Regex(OtpConstants.ALPHANUMERIC_REGEX)
+        val alnumRegex = Regex(OtpPatternConfig.ALPHANUMERIC_REGEX)
         alnumRegex.findAll(message).forEach { match ->
             val token = match.value
             if (token.any { it.isDigit() } && token.count { it.isDigit() } >= 2) {
@@ -170,7 +175,6 @@ class OtpDetector {
 
         // Local context: the line containing the candidate
         val lineInfo = extractLineContext(original, candidate.startIndex, candidate.endIndex)
-        val lineLower = lineInfo.line.lowercase()
 
         // If the line is mostly just the code -> strong hint
         val trimmedLine = lineInfo.line.trim()
@@ -180,7 +184,7 @@ class OtpDetector {
 
         // Typical OTP line patterns
         if (Regex(
-                OtpConstants.OTP_LINE_PATTERN,
+                OtpPatternConfig.OTP_LINE_PATTERN,
                 RegexOption.IGNORE_CASE
             ).containsMatchIn(lineInfo.line)
         ) {
