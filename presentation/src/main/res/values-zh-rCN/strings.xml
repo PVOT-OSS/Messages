@@ -490,4 +490,8 @@
     <string name="error_stt_toast">抱歉，加载语音转文字提供程序时出错。</string>
     <string name="stt_toast_extra_prompt">朗读你的消息</string>
     <string name="messages_text_share_file_error">分享失败</string>
+    
+    <!-- OTP and Parcel tags -->
+    <string name="otp_tag">验证码</string>
+    <string name="parcel_tag">取件码</string>
 </resources>

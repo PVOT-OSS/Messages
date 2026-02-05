@@ -71,10 +71,56 @@
         android:maxLines="2"
         android:minLines="2"
         app:layout_constraintBottom_toTopOf="@id/divider"
-        app:layout_constraintEnd_toStartOf="@id/scheduled"
+        app:layout_constraintEnd_toStartOf="@id/otpTag"
         app:layout_constraintStart_toStartOf="@id/title"
         app:layout_constraintTop_toBottomOf="@id/title"
         tools:text="@tools:sample/lorem/random" />
+
+    <!-- OTP tag: Used to mark messages containing One Time Password -->
+    <!-- Initially hidden, only shown when OTP is detected -->
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/otpTag"
+        style="@style/TextPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="7dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="OTP"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:background="@drawable/otp_tag_background"
+        app:layout_constraintEnd_toStartOf="@id/parcelTag"
+        app:layout_constraintTop_toTopOf="@id/snippet"
+        app:layout_constraintBottom_toBottomOf="@id/snippet"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/snippet" />
+
+    <!-- Parcel tag: Used to mark messages containing parcel pickup code -->
+    <!-- Initially hidden, only shown when parcel code is detected -->
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/parcelTag"
+        style="@style/TextPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="7dp"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:text="取件码"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:background="@drawable/otp_tag_background"
+        app:layout_constraintEnd_toStartOf="@id/scheduled"
+        app:layout_constraintTop_toTopOf="@id/snippet"
+        app:layout_constraintBottom_toBottomOf="@id/snippet"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@id/otpTag" />
 
     <ImageView
         android:id="@+id/pinned"

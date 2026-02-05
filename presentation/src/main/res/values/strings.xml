@@ -597,4 +597,8 @@
     <string name="stt_toast_extra_prompt">Speak your message</string>
 
     <string name="messages_text_share_file_error">Oops! Something went wrong while sharing</string>
+    
+    <!-- OTP and Parcel tags -->
+    <string name="otp_tag">OTP</string>
+    <string name="parcel_tag">Parcel</string>
 </resources>

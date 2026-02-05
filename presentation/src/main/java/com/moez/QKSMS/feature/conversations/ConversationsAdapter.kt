@@ -31,6 +31,8 @@ import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.common.util.OtpDetector
+import org.prauga.messages.app.utils.ParcelDetector
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.ConversationListItemBinding
@@ -76,14 +78,14 @@ class ConversationsAdapter @Inject constructor(
 
         return QkViewHolder(binding.root).apply {
             binding.root.setOnClickListener {
-                val conversation = getItem(adapterPosition) ?: return@setOnClickListener
+                val conversation = getItem(bindingAdapterPosition) ?: return@setOnClickListener
                 when (toggleSelection(conversation.id, false)) {
                     true -> binding.root.isActivated = isSelected(conversation.id)
                     false -> navigator.showConversation(conversation.id)
                 }
             }
             binding.root.setOnLongClickListener {
-                val conversation = getItem(adapterPosition) ?: return@setOnLongClickListener true
+                val conversation = getItem(bindingAdapterPosition) ?: return@setOnLongClickListener true
                 toggleSelection(conversation.id)
                 binding.root.isActivated = isSelected(conversation.id)
                 true
@@ -133,6 +135,46 @@ class ConversationsAdapter @Inject constructor(
         disposables.add(disposable)
 
         binding.pinned.isVisible = conversation.pinned
+
+        // Check if the conversation contains OTP (One Time Password)
+        // 1. Initialize OTP detector
+        val otpDetector = OtpDetector()
+        // 2. Get message snippet, handle possible null value
+        val snippet = conversation.snippet ?: ""
+        // 3. Perform OTP detection
+        val otpResult = otpDetector.detect(snippet)
+        // 4. Show or hide OTP tag based on detection result
+        binding.otpTag.isVisible = otpResult.isOtp
+        
+        if (otpResult.isOtp) {
+            // Get OTP tag text from string resources (Android will automatically use the appropriate translation)
+            val otpText = context.getString(R.string.otp_tag)
+            binding.otpTag.text = otpText
+            
+            // Set OTP tag background and text color to match theme
+            val theme = colors.theme(recipient).theme
+            binding.otpTag.background.setTint(theme)
+            binding.otpTag.setTextColor(colors.theme(recipient).textPrimary)
+        }
+        
+        // Check if the conversation contains parcel pickup code
+        // 1. Initialize Parcel detector
+        val parcelDetector = ParcelDetector()
+        // 2. Perform parcel code detection
+        val parcelResult = parcelDetector.detectParcel(snippet)
+        // 3. Show or hide parcel tag based on detection result
+        binding.parcelTag.isVisible = parcelResult.success
+        
+        if (parcelResult.success) {
+            // Get parcel tag text from string resources (Android will automatically use the appropriate translation)
+            val parcelText = context.getString(R.string.parcel_tag)
+            binding.parcelTag.text = parcelText
+            
+            // Set parcel tag background and text color to match theme
+            val theme = colors.theme(recipient).theme
+            binding.parcelTag.background.setTint(theme)
+            binding.parcelTag.setTextColor(colors.theme(recipient).textPrimary)
+        }
     }
 
     override fun getItemId(position: Int): Long {
