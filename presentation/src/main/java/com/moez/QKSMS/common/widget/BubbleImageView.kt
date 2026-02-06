@@ -24,6 +24,7 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.widget.ImageView
+import org.prauga.messages.app.R
 import org.prauga.messages.common.util.extensions.dpToPx
 
 class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
@@ -53,8 +54,8 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
     private val path = Path()
-    private val radiusSmall = 4.dpToPx(context).toFloat()
-    private val radiusLarge = 18.dpToPx(context).toFloat()
+    private val radiusSmall = context.resources.getDimensionPixelSize(R.dimen.bubble_radius_small).toFloat()
+    private val radiusLarge = context.resources.getDimensionPixelSize(R.dimen.bubble_radius_large).toFloat()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)

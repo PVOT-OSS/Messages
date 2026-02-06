@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
+ * Copyright (C) 2026 Vishnu R <vishnurajesh45@gmail.com>
  */
 
 package org.prauga.messages.app.utils
@@ -9,14 +9,45 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.prauga.messages.common.util.OtpDetector
+import org.prauga.messages.common.util.OtpErrorType
+import org.prauga.messages.common.util.OtpResourceProvider
 
 class OtpDetectorTest {
 
     private lateinit var otpDetector: OtpDetector
+    private lateinit var resourceProvider: OtpResourceProvider
 
     @Before
     fun setup() {
-        otpDetector = OtpDetector()
+        // Create a test resource provider with default English keywords
+        resourceProvider = object : OtpResourceProvider {
+            override fun getOtpKeywords(): List<String> = listOf(
+                "otp", "one time password", "one-time password", "verification code",
+                "verification number", "login code", "login otp", "security code",
+                "2-step code", "2 factor code", "2fa code", "mfa code", "auth code",
+                "passcode", "access code", "reset code", "transaction code",
+                "confirm code", "confirmation code", "code"
+            )
+
+            override fun getSafetyKeywords(): List<String> = listOf(
+                "do not share", "don't share", "never share", "do not disclose",
+                "do not forward", "keep this code secret", "valid for",
+                "expires in", "expires within", "expires after"
+            )
+
+            override fun getMoneyIndicators(): List<String> = listOf(
+                "rs", "inr", "usd", "eur", "gbp", "₹", "$", "€", "£", "balance",
+                "amount", "debited", "credited", "txn", "transaction id", "order id"
+            )
+
+            override fun getErrorMessage(errorType: OtpErrorType): String = when (errorType) {
+                OtpErrorType.EMPTY_MESSAGE -> "Empty message"
+                OtpErrorType.NO_OTP_KEYWORD -> "No OTP-like keywords and no candidate code found"
+                OtpErrorType.KEYWORD_BUT_NO_CODE -> "Contains OTP-like keywords but no numeric/alphanumeric candidate code found"
+            }
+        }
+        
+        otpDetector = OtpDetector(resourceProvider)
     }
 
     // Basic OTP Detection

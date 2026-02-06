@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.subjects.PublishSubject
+import org.prauga.messages.app.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.common.util.extensions.dpToPx
@@ -72,8 +73,8 @@ class ChipsAdapter @Inject constructor() :
             ViewGroup.LayoutParams.WRAP_CONTENT
         )
 
-        layoutParams.topMargin = 24.dpToPx(context)
-        layoutParams.marginStart = 56.dpToPx(context)
+        layoutParams.topMargin = context.resources.getDimensionPixelSize(R.dimen.margin_chip_top)
+        layoutParams.marginStart = context.resources.getDimensionPixelSize(R.dimen.margin_chip_start)
 
         rootView.addView(detailedChipView, layoutParams)
         detailedChipView.show()

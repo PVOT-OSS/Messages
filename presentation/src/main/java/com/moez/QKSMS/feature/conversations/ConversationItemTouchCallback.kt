@@ -61,7 +61,7 @@ class ConversationItemTouchCallback @Inject constructor(
     private var leftAction = 0
     private var swipeLeftIcon: Bitmap? = null
 
-    private val iconLength = 24.dpToPx(context)
+    private val iconLength = context.resources.getDimensionPixelSize(R.dimen.icon_size_small)
 
     init {
         leftBackgroundPaint.color = context.resources.getColor(R.color.swipe_delete, null)

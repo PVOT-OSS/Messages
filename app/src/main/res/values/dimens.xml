@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Icon Sizes -->
+    <dimen name="icon_size_small">24dp</dimen>
+    <dimen name="icon_size_medium">56dp</dimen>
+    
+    <!-- Padding -->
+    <dimen name="padding_standard">24dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_reactions">25dp</dimen>
+    
+    <!-- Margins -->
+    <dimen name="margin_chip_top">24dp</dimen>
+    <dimen name="margin_chip_start">56dp</dimen>
+    
+    <!-- Widget Dimensions - Mic Input Cloud -->
+    <dimen name="mic_cloud_radius_default">70dp</dimen>
+    <dimen name="mic_cloud_radius_extended">75dp</dimen>
+    <dimen name="mic_cloud_radius_maximum">80dp</dimen>
+    
+    <!-- Bubble Radii -->
+    <dimen name="bubble_radius_small">4dp</dimen>
+    <dimen name="bubble_radius_large">18dp</dimen>
+</resources>
