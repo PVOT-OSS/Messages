@@ -35,7 +35,6 @@ import org.prauga.messages.extensions.isContact
 import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVCard
 
-
 @SuppressLint("Range")
 class Attachment (
     context: Context,
@@ -94,4 +93,3 @@ class Attachment (
         return false
     }
 }
-

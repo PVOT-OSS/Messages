@@ -86,7 +86,6 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
 class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivityBinding::inflate),
     ComposeView {
 
@@ -393,7 +392,6 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
         seekBarUpdater?.dispose()
     }
-
 
     override fun render(state: ComposeState) {
         if (state.hasError) {

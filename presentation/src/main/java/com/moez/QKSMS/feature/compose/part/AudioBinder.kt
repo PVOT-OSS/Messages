@@ -48,7 +48,6 @@ import org.prauga.messages.util.GlideApp
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
 class AudioBinder @Inject constructor(colors: Colors, private val context: Context) :
     PartBinder() {
 
