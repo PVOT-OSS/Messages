@@ -388,11 +388,11 @@ class MessagesAdapter @Inject constructor(
             binding.body.apply {
                 setTextColor(incomingTextColor)
                 setBackgroundTint(incomingBubbleColor)
-                highlightColor = incomingBubbleColor.withAlpha(0x5d)
+                highlightColor = incomingTextColor.withAlpha(0x55)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(incomingBubbleColor.withAlpha(0x7d))
-                    textSelectHandleLeft?.setTint(incomingBubbleColor.withAlpha(0x7d))
-                    textSelectHandleRight?.setTint(incomingBubbleColor.withAlpha(0x7d))
+                    textSelectHandle?.setTint(incomingTextColor.withAlpha(0x7d))
+                    textSelectHandleLeft?.setTint(incomingTextColor.withAlpha(0x7d))
+                    textSelectHandleRight?.setTint(incomingTextColor.withAlpha(0x7d))
                 }
             }
         } else {
@@ -402,11 +402,11 @@ class MessagesAdapter @Inject constructor(
             binding.body.apply {
                 setTextColor(outgoingTextColor)
                 setBackgroundTint(outgoingBubbleColor)
-                highlightColor = outgoingBubbleColor.withAlpha(0x5d)
+                highlightColor = outgoingTextColor.withAlpha(0x55)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(outgoingBubbleColor.withAlpha(0xad))
-                    textSelectHandleLeft?.setTint(outgoingBubbleColor.withAlpha(0xad))
-                    textSelectHandleRight?.setTint(outgoingBubbleColor.withAlpha(0xad))
+                    textSelectHandle?.setTint(outgoingTextColor.withAlpha(0xad))
+                    textSelectHandleLeft?.setTint(outgoingTextColor.withAlpha(0xad))
+                    textSelectHandleRight?.setTint(outgoingTextColor.withAlpha(0xad))
                 }
             }
         }
