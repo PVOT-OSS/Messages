@@ -62,23 +62,8 @@ class GalleryPagerAdapter @Inject constructor(private val context: Context) :
             when (viewType) {
             VIEW_TYPE_IMAGE -> {
                 val binding = GalleryImagePageBinding.inflate(inflater, parent, false)
-                // When calling the public setter, it doesn't allow the midscale to be the same as the
-                // maxscale or the minscale. We don't want 3 levels and we don't want to modify the library
-                // so let's celebrate the invention of reflection!
-                binding.image.attacher.run {
-                    javaClass.getDeclaredField("mMinScale").run {
-                        isAccessible = true
-                        setFloat(binding.image.attacher, 1f)
-                    }
-                    javaClass.getDeclaredField("mMidScale").run {
-                        isAccessible = true
-                        setFloat(binding.image.attacher, 1f)
-                    }
-                    javaClass.getDeclaredField("mMaxScale").run {
-                        isAccessible = true
-                        setFloat(binding.image.attacher, 3f)
-                    }
-                }
+                // Use a tiny offset for midScale since setScaleLevels requires min < mid < max
+                binding.image.attacher.setScaleLevels(1f, 1.01f, 3f)
                 binding.root.apply { setOnClickListener(clicks::onNext) }
             }
 
