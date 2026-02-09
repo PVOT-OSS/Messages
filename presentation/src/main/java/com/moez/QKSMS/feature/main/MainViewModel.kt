@@ -136,10 +136,8 @@ class MainViewModel @Inject constructor(
         disposables += ratingManager.shouldShowRating
             .subscribe { show -> newState { copy(showRating = show) } }
 
-
         // Migrate the preferences from 2.7.3
         migratePreferences.execute(Unit)
-
 
         // If we have all permissions and we've never run a sync, run a sync. This will be the case
         // when upgrading from 2.7.3, or if the app's data was cleared
@@ -177,7 +175,6 @@ class MainViewModel @Inject constructor(
             !permissionManager.isDefaultSms() -> view.requestDefaultSms()
             !permissionManager.hasReadSms() || !permissionManager.hasContacts() -> view.requestPermissions()
         }
-
 
         // when unreadAtTop preference changes, reload the model view data to refresh view
         prefs.unreadAtTop.asObservable()

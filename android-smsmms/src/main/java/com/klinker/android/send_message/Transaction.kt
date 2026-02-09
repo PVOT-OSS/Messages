@@ -68,7 +68,6 @@ class Transaction @JvmOverloads constructor(private val context: Context, settin
         const val NOTIFY_OF_DELIVERY = "com.klinker.android.send_message.NOTIFY_DELIVERY"
         const val NOTIFY_OF_MMS = "com.klinker.android.messaging.NEW_MMS_DOWNLOADED"
 
-
         const val DEFAULT_EXPIRY_TIME = (7 * 24 * 60 * 60).toLong()
         const val DEFAULT_PRIORITY = PduHeaders.PRIORITY_NORMAL
     }
