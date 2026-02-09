@@ -365,7 +365,10 @@ class ConversationRepositoryImpl @Inject constructor(
             getConversation(addresses)
                 ?: tryOrNull { TelephonyCompat.getOrCreateThreadId(context, addresses.toSet()) }
                     ?.takeIf { it != 0L }
-                    ?.let { threadId -> getOrCreateConversation(threadId) }
+                    ?.let { threadId ->
+                        getOrCreateConversation(threadId)
+                            ?: createConversationFromAddresses(threadId, addresses)
+                    }
         }
 
     override fun saveDraft(threadId: Long, draft: String) =
@@ -544,5 +547,52 @@ class ConversationRepositoryImpl @Inject constructor(
                         realm.executeTransaction { it.insertOrUpdate(conversation) }
                     }
                 }
+        }
+
+    /**
+     * Fallback for when the content provider doesn't list the conversation (e.g. new thread with
+     * no messages yet). Creates the Conversation directly in Realm using the known addresses and
+     * canonical address IDs from the telephony provider.
+     */
+    private fun createConversationFromAddresses(threadId: Long, addresses: Collection<String>): Conversation? =
+        tryOrNull(true) {
+            // Query all canonical addresses from the telephony provider
+            val allCanonicalRecipients = cursorToRecipient.getRecipientCursor()
+                ?.use { cursor -> cursor.map { cursorToRecipient.map(it) } }
+                ?: emptyList()
+
+            Realm.getDefaultInstance().use { realm ->
+                realm.refresh()
+                val realmContacts = realm.where(Contact::class.java).findAll()
+
+                val recipients = addresses.map { address ->
+                    // Find the canonical address entry that getOrCreateThreadId created
+                    val canonical = allCanonicalRecipients.firstOrNull { recipient ->
+                        phoneNumberUtils.compare(recipient.address, address)
+                    }
+
+                    Recipient(
+                        id = canonical?.id ?: 0L,
+                        address = canonical?.address ?: address,
+                        lastUpdate = System.currentTimeMillis()
+                    ).apply {
+                        contact = realmContacts.firstOrNull { realmContact ->
+                            realmContact.numbers.any {
+                                phoneNumberUtils.compare(it.address, address)
+                            }
+                        }
+                    }
+                }
+
+                val conversation = Conversation().apply {
+                    id = threadId
+                    this.recipients.clear()
+                    this.recipients.addAll(recipients)
+                }
+
+                realm.executeTransaction { it.insertOrUpdate(conversation) }
+            }
+
+            getConversation(threadId)
         }
 }

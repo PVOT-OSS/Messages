@@ -81,6 +81,7 @@ import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.getText
 import org.prauga.messages.repository.ContactRepository
 import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.EmojiReactionRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.repository.ScheduledMessageRepository
 import org.prauga.messages.util.ActiveSubscriptionObservable
@@ -116,6 +117,7 @@ class ComposeViewModel @Inject constructor(
     private val markRead: MarkRead,
     private val messageDetailsFormatter: MessageDetailsFormatter,
     private val messageRepo: MessageRepository,
+    private val reactions: EmojiReactionRepository,
     private val scheduledMessageRepo: ScheduledMessageRepository,
     private val navigator: Navigator,
     private val permissionManager: PermissionManager,
@@ -495,6 +497,60 @@ class ComposeViewModel @Inject constructor(
             .autoDispose(view.scope())
             .subscribe { view.showDetails(it) }
 
+        // Open the reaction picker for a single selected message
+        view.optionsItemIntent
+            .filter { it == R.id.react }
+            .withLatestFrom(view.messagesSelectedIntent) { _, messages -> messages.firstOrNull() ?: -1L }
+            .filter { it != -1L }
+            .autoDispose(view.scope())
+            .subscribe { messageId ->
+                view.showReactionPicker(messageId)
+            }
+
+        view.reactionSelectedIntent
+            .withLatestFrom(conversation, state) { selection, convo, state ->
+                Triple(selection, convo, state)
+            }
+            .autoDispose(view.scope())
+            .subscribe { (selection, convo, currentState) ->
+                if (!permissionManager.isDefaultSms()) {
+                    view.requestDefaultSms()
+                    return@subscribe
+                }
+
+                if (!permissionManager.hasSendSms()) {
+                    view.requestSmsPermission()
+                    return@subscribe
+                }
+
+                val targetMessage = messageRepo.getMessage(selection.messageId) ?: return@subscribe
+
+                val body = reactions.buildOutgoingReactionBody(
+                    selection.emoji,
+                    targetMessage.getText(false),
+                    selection.isRemoval
+                ) ?: return@subscribe
+
+                val addresses = when {
+                    convo.recipients.isNotEmpty() -> convo.recipients.map { it.address }
+                    else -> listOf(targetMessage.address)
+                }
+
+                val params = SendMessage.Params(
+                    currentState.subscription?.subscriptionId ?: -1,
+                    convo.id.takeIf { it != 0L } ?: targetMessage.threadId,
+                    addresses,
+                    body,
+                    listOf(),
+                    0,
+                    applySignature = false,
+                )
+
+                sendMessage.execute(params) {
+                    view.clearSelection()
+                }
+            }
+
         // Show the delete message dialog if one or more messages selected
         view.optionsItemIntent
             .filter { it == R.id.delete }
@@ -675,10 +731,13 @@ class ComposeViewModel @Inject constructor(
         // Update the State when the message selected count changes
         view.messagesSelectedIntent
             .map {
-                Pair(
-                    it.size,
-                    it.any { messageRepo.getMessage(it)?.hasNonWhitespaceText() ?: false }
-                )
+                val selectedMessages = it.mapNotNull(messageRepo::getMessage)
+                val hasText = selectedMessages.any { msg -> msg.hasNonWhitespaceText() }
+                val canReact = selectedMessages.singleOrNull()?.let { msg ->
+                    !msg.isMe() && !msg.isEmojiReaction && msg.hasNonWhitespaceText()
+                } ?: false
+
+                Triple(selectedMessages.size, hasText, canReact)
             }
             .autoDispose(view.scope())
             .subscribe {
@@ -686,6 +745,7 @@ class ComposeViewModel @Inject constructor(
                     copy(
                         selectedMessages = it.first,
                         selectedMessagesHaveText = it.second,
+                        selectedMessagesCanReact = it.third,
                         editingMode = false
                     )
                 }

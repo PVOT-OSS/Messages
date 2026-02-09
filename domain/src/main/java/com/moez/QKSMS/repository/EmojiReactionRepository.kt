@@ -26,6 +26,11 @@ data class ParsedEmojiReaction(val emoji: String, val originalMessage: String, v
 interface EmojiReactionRepository {
     fun parseEmojiReaction(body: String): ParsedEmojiReaction?
 
+    /**
+     * Builds an outgoing reaction/tapback body that matches iOS-style SMS fallback formatting.
+     */
+    fun buildOutgoingReactionBody(emoji: String, targetMessageText: String, isRemoval: Boolean = false): String?
+
     fun findTargetMessage(threadId: Long, originalMessageText: String, realm: Realm): Message?
 
     fun saveEmojiReaction(

@@ -7,6 +7,7 @@
 
 # ez-vcard
 -dontwarn ezvcard.**
+-keep class ezvcard.Ezvcard { *; }
 -dontwarn org.apache.log.**
 -dontwarn org.apache.log4j.**
 -dontwarn org.python.core.**

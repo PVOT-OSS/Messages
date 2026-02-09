@@ -32,6 +32,7 @@ import com.uber.rxdogtag.autodispose.AutoDisposeConfigurer
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import io.reactivex.plugins.RxJavaPlugins
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.coroutines.Dispatchers
@@ -133,6 +134,11 @@ class QKApplication : Application(), HasAndroidInjector {
                     }
                 })
         )
+
+        // Handle undeliverable RxJava exceptions
+        RxJavaPlugins.setErrorHandler { e ->
+            Timber.w(e, "Undeliverable RxJava exception")
+        }
 
         // rxdogtag provides 'look-back' for exceptions in rxjava2 'chains'
         RxDogTag.builder()
