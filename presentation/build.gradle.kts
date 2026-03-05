@@ -184,6 +184,7 @@ dependencies {
     implementation(libs.moshi.kotlin)
     implementation(libs.shortcutbadger)
     implementation(libs.kotlin.stdlib.jdk7)
+    implementation("me.zhanghai.android.fastscroll:library:1.3.0")
     implementation(project(":android-smsmms"))
     implementation(project(":common"))
     implementation(project(":data"))
