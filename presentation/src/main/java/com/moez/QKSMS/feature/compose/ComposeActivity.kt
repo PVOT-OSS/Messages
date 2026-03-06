@@ -23,10 +23,13 @@ import android.animation.LayoutTransition
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
@@ -37,6 +40,8 @@ import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.widget.PopupWindow
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintSet
@@ -55,6 +60,7 @@ import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
@@ -79,6 +85,8 @@ import org.prauga.messages.feature.compose.editing.ChipsAdapter
 import org.prauga.messages.feature.contacts.ContactsActivity
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
+import org.prauga.messages.feature.compose.MessageLongPress
+import org.prauga.messages.feature.compose.ReactionSelection
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -191,6 +199,10 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     override val recordAudioMsgRecordVisible: Subject<Boolean> = PublishSubject.create()
     override val recordAudioChronometer: Subject<Boolean> = PublishSubject.create()
     override val recordAudioRecord: Subject<MicInputCloudView.ViewState> = PublishSubject.create()
+    override val reactionSelectedIntent: Subject<ReactionSelection> = PublishSubject.create()
+    override val messageLongPressIntent by lazy { messageAdapter.messageLongPresses }
+
+    private val disposables = CompositeDisposable()
 
     private var seekBarUpdater: Disposable? = null
 
@@ -373,6 +385,12 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         )
 
         window.callback = ComposeWindowCallback(window.callback, this)
+
+        disposables.add(
+            messageLongPressIntent.subscribe { payload ->
+                showReactionSheet(payload)
+            }
+        )
     }
 
     override fun onStart() {
@@ -392,6 +410,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         QkMediaPlayer.reset()
 
         seekBarUpdater?.dispose()
+        disposables.clear()
     }
 
 
@@ -444,6 +463,8 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             !state.editingMode && state.selectedMessages > 0 && state.selectedMessagesHaveText
         binding.toolbar.menu.findItem(R.id.details)?.isVisible =
             !state.editingMode && state.selectedMessages == 1
+        binding.toolbar.menu.findItem(R.id.react)?.isVisible =
+            !state.editingMode && state.selectedMessagesCanReact
         binding.toolbar.menu.findItem(R.id.delete)?.isVisible =
             !state.editingMode && ((state.selectedMessages > 0) || state.canSend)
         binding.toolbar.menu.findItem(R.id.forward)?.isVisible =
@@ -841,6 +862,125 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     override fun focusMessage() {
         binding.message.requestFocus()
+    }
+
+    private fun showReactionSheet(payload: MessageLongPress) {
+        val view = layoutInflater.inflate(R.layout.reaction_sheet, null)
+
+        val reactions = listOf(
+            view.findViewById<View>(R.id.reaction_love) to "❤️",
+            view.findViewById<View>(R.id.reaction_like) to "👍",
+            view.findViewById<View>(R.id.reaction_dislike) to "👎",
+            view.findViewById<View>(R.id.reaction_laugh) to "😂",
+            view.findViewById<View>(R.id.reaction_emphasize) to "‼️",
+            view.findViewById<View>(R.id.reaction_question) to "❓",
+        )
+
+        val popup = PopupWindow(
+            view,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        ).apply {
+            elevation = 16f
+            isOutsideTouchable = true
+            setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+        }
+
+        reactions.forEach { (button, emoji) ->
+            button.setOnClickListener {
+                reactionSelectedIntent.onNext(ReactionSelection(payload.messageId, emoji))
+                popup.dismiss()
+            }
+        }
+
+        view.findViewById<View>(R.id.action_copy).setOnClickListener {
+            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            clipboard.setPrimaryClip(ClipData.newPlainText("message", payload.body))
+            Snackbar.make(binding.root, R.string.toast_copied, Snackbar.LENGTH_SHORT).show()
+            popup.dismiss()
+        }
+
+        view.findViewById<View>(R.id.action_share).setOnClickListener {
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, payload.body)
+            }
+            startActivity(Intent.createChooser(intent, getString(R.string.compose_menu_share)))
+            popup.dismiss()
+        }
+
+        view.findViewById<View>(R.id.action_select_all).setOnClickListener {
+            popup.dismiss()
+            optionsItemIntent.onNext(R.id.select_all)
+        }
+
+        view.findViewById<View>(R.id.action_delete).setOnClickListener {
+            popup.dismiss()
+            optionsItemIntent.onNext(R.id.delete)
+        }
+
+        view.findViewById<View>(R.id.action_forward).setOnClickListener {
+            popup.dismiss()
+            optionsItemIntent.onNext(R.id.forward)
+        }
+
+        view.findViewById<View>(R.id.action_details).setOnClickListener {
+            popup.dismiss()
+            optionsItemIntent.onNext(R.id.show_status)
+        }
+
+        // Measure popup content to calculate proper positioning
+        view.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+        val popupWidth = view.measuredWidth
+        val popupHeight = view.measuredHeight
+
+        // Get anchor location and screen dimensions
+        val location = IntArray(2)
+        payload.anchor.getLocationOnScreen(location)
+        val anchorX = location[0]
+        val anchorY = location[1]
+        val anchorWidth = payload.anchor.width
+        val anchorHeight = payload.anchor.height
+
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val screenHeight = displayMetrics.heightPixels
+
+        // Calculate X position - center on anchor, but keep within screen bounds
+        var xPos = anchorX + (anchorWidth - popupWidth) / 2
+        xPos = xPos.coerceIn(16, screenWidth - popupWidth - 16)
+
+        // Calculate Y position - prefer above the anchor, fall back to below if no space
+        val yPos = if (anchorY - popupHeight > 0) {
+            anchorY - popupHeight - 8
+        } else {
+            anchorY + anchorHeight + 8
+        }
+
+        popup.showAtLocation(payload.anchor, android.view.Gravity.NO_GRAVITY, xPos, yPos)
+    }
+
+    override fun showReactionPicker(messageId: Long) {
+        val options = listOf(
+            ReactionSelection(messageId, "❤️") to getString(R.string.reaction_picker_love),
+            ReactionSelection(messageId, "👍") to getString(R.string.reaction_picker_like),
+            ReactionSelection(messageId, "👎") to getString(R.string.reaction_picker_dislike),
+            ReactionSelection(messageId, "😂") to getString(R.string.reaction_picker_laugh),
+            ReactionSelection(messageId, "‼️") to getString(R.string.reaction_picker_emphasize),
+            ReactionSelection(messageId, "❓") to getString(R.string.reaction_picker_question),
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle(R.string.compose_menu_react)
+            .setItems(options.map { it.second }.toTypedArray()) { _, index ->
+                reactionSelectedIntent.onNext(options[index].first)
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     private fun tintDialogButtons(dialog: android.app.AlertDialog) {
