@@ -21,7 +21,6 @@ package org.prauga.messages.feature.conversations
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.buildSpannedString
 import androidx.core.view.isVisible
@@ -40,7 +39,6 @@ import org.prauga.messages.repository.ScheduledMessageRepository
 import org.prauga.messages.util.PhoneNumberUtils
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
-import me.zhanghai.android.fastscroll.PopupTextProvider
 
 class ConversationsAdapter @Inject constructor(
     private val colors: Colors,
@@ -49,7 +47,7 @@ class ConversationsAdapter @Inject constructor(
     private val scheduledMessageRepo: ScheduledMessageRepository,
     private val navigator: Navigator,
     private val phoneNumberUtils: PhoneNumberUtils
-) : QkRealmAdapter<Conversation, QkViewHolder>(), PopupTextProvider {
+) : QkRealmAdapter<Conversation, QkViewHolder>() {
     private val disposables = CompositeDisposable()
 
     init {
@@ -158,16 +156,6 @@ class ConversationsAdapter @Inject constructor(
             val firstId = getItemId(0)
             toggleSelection(firstId, force = true)
             notifyItemChanged(0)
-        }
-    }
-
-    override fun getPopupText(view: View, position: Int): CharSequence {
-        val conversation = getItem(position)
-        val date = conversation?.date ?: 0L
-        return if (date > 0L) {
-            dateFormatter.getConversationTimestamp(date)
-        } else {
-            ""
         }
     }
 

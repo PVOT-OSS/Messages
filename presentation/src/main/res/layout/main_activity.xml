@@ -254,13 +254,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/filterGroup"
-            tools:listitem="@layout/conversation_list_item"
-            android:scrollbars="none"
-            app:fastScrollVerticalThumbDrawable="@drawable/scroll_thumb"
-            app:fastScrollVerticalTrackDrawable="@drawable/scroll_track"
-            app:fastScrollHorizontalThumbDrawable="@drawable/scroll_thumb"
-            app:fastScrollHorizontalTrackDrawable="@drawable/scroll_track"
-            />
+            tools:listitem="@layout/conversation_list_item" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/searchPill"

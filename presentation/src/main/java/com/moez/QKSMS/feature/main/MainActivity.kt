@@ -31,13 +31,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
@@ -75,7 +72,6 @@ import org.prauga.messages.feature.conversations.ConversationItemTouchCallback
 import org.prauga.messages.feature.conversations.ConversationsAdapter
 import org.prauga.messages.manager.ChangelogManager
 import org.prauga.messages.repository.SyncRepository
-import me.zhanghai.android.fastscroll.FastScrollerBuilder
 import javax.inject.Inject
 
 class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::inflate), MainView {
@@ -213,40 +209,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         itemTouchCallback.adapter = conversationsAdapter
         conversationsAdapter.autoScrollToStart(binding.recyclerView)
-
-        ContextCompat.getDrawable(this, R.drawable.scroll_track)?.let { trackDrawable ->
-            ContextCompat.getDrawable(this, R.drawable.scroll_thumb)?.let { thumbDrawable ->
-                FastScrollerBuilder(binding.recyclerView)
-                    .setTrackDrawable(trackDrawable)
-                    .setThumbDrawable(thumbDrawable)
-                    .setPopupStyle { popup ->
-                        val textView = popup as TextView
-                        val density = resources.displayMetrics.density
-
-                        val backgroundColor = resolveThemeColor(android.R.attr.textColorPrimary)
-                        val textColor = resolveThemeColor(android.R.attr.colorBackground)
-
-                        textView.background =
-                            ContextCompat.getDrawable(this, R.drawable.fastscroll_popup_background)
-                        textView.background?.mutate()?.let { drawable ->
-                            DrawableCompat.setTint(drawable, backgroundColor)
-                        }
-                        textView.setTextColor(textColor)
-
-                        textView.textSize = 12f
-                        textView.setPadding(
-                            (16 * density).toInt(),
-                            (8 * density).toInt(),
-                            (16 * density).toInt(),
-                            (8 * density).toInt()
-                        )
-                        textView.maxLines = 1
-                        textView.isAllCaps = false
-                        textView.elevation = 4 * density
-                    }
-                    .build()
-            }
-        }
 
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
