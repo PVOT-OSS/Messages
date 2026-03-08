@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import androidx.core.text.buildSpannedString
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.moez.QKSMS.common.widget.FastScrollerView
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkRealmAdapter
@@ -47,7 +48,7 @@ class ConversationsAdapter @Inject constructor(
     private val scheduledMessageRepo: ScheduledMessageRepository,
     private val navigator: Navigator,
     private val phoneNumberUtils: PhoneNumberUtils
-) : QkRealmAdapter<Conversation, QkViewHolder>() {
+) : QkRealmAdapter<Conversation, QkViewHolder>(), FastScrollerView.SectionTitleProvider {
     private val disposables = CompositeDisposable()
 
     init {
@@ -156,6 +157,16 @@ class ConversationsAdapter @Inject constructor(
             val firstId = getItemId(0)
             toggleSelection(firstId, force = true)
             notifyItemChanged(0)
+        }
+    }
+
+    override fun getSectionTitle(position: Int): String {
+        val conversation = getItem(position) ?: return ""
+        val timestamp = conversation.date
+        return if (timestamp > 0) {
+            dateFormatter.getConversationTimestamp(timestamp) ?: ""
+        } else {
+            ""
         }
     }
 
