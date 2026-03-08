@@ -48,6 +48,7 @@ import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.manager.ShortcutManager
 import org.prauga.messages.mapper.CursorToPartImpl
 import org.prauga.messages.receiver.BlockThreadReceiver
+import org.prauga.messages.receiver.DeleteConfirmationReceiver
 import org.prauga.messages.receiver.DeleteMessagesReceiver
 import org.prauga.messages.receiver.MarkArchivedReceiver
 import org.prauga.messages.receiver.MarkReadReceiver
@@ -302,12 +303,11 @@ class NotificationManagerImpl @Inject constructor(
                     }
 
                     Preferences.NOTIFICATION_ACTION_DELETE -> {
-                        val messageIds = messages.map { it.id }.toLongArray()
-                        val intent = Intent(context, DeleteMessagesReceiver::class.java)
+                        val intent = Intent(context, DeleteConfirmationReceiver::class.java)
                             .putExtra("threadId", threadId)
-                            .putExtra("messageIds", messageIds)
+                            .putExtra("action", "show_confirmation")
                         val pi = PendingIntent.getBroadcast(
-                            context, threadId.toInt(), intent,
+                            context, threadId.toInt() + 3000, intent,
                             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                         )
                         NotificationCompat.Action.Builder(
@@ -416,7 +416,10 @@ class NotificationManagerImpl @Inject constructor(
             .forEach { notification.addAction(it) }
 
         // Detect OTP in the latest message and add copy button if found
+        // If OTP is detected, show copy button instead of delete button
         val latestMessage = messages.lastOrNull()
+        var isOtpMessage = false
+        
         if (latestMessage != null) {
             val messageText = latestMessage.getText()
             val resourceProvider = OtpResourceProviderImpl(context)
@@ -424,6 +427,7 @@ class NotificationManagerImpl @Inject constructor(
             val otpResult = otpDetector.detect(messageText)
 
             if (otpResult.isOtp && otpResult.code != null) {
+                isOtpMessage = true
                 val copyOtpIntent = Intent(context, CopyOtpReceiver::class.java)
                     .putExtra("otpCode", otpResult.code)
                 val copyOtpPI = PendingIntent.getBroadcast(
@@ -440,6 +444,26 @@ class NotificationManagerImpl @Inject constructor(
 
                 notification.addAction(copyOtpAction)
             }
+        }
+
+        // Add delete button only for non-OTP messages
+        if (!isOtpMessage) {
+            val messageIds = messages.map { it.id }.toLongArray()
+            val deleteIntent = Intent(context, DeleteConfirmationReceiver::class.java)
+                .putExtra("threadId", threadId)
+                .putExtra("action", "show_confirmation")
+            val deletePI = PendingIntent.getBroadcast(
+                context, threadId.toInt() + 2000, deleteIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            val deleteAction = NotificationCompat.Action.Builder(
+                R.drawable.ic_delete_white_24dp,
+                context.getString(R.string.button_delete),
+                deletePI
+            )
+                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_DELETE)
+                .build()
+            notification.addAction(deleteAction)
         }
 
         if (prefs.qkreply.get()) {
@@ -672,6 +696,81 @@ class NotificationManagerImpl @Inject constructor(
 
     override fun cancel(i: Int) {
         notificationManager.cancel(i)
+    }
+
+    override fun showDeleteConfirmation(threadId: Long) {
+        val messages = messageRepo.getUnreadUnseenMessages(threadId)
+        if (messages.isEmpty()) {
+            return
+        }
+
+        val conversation = conversationRepo.getConversation(threadId) ?: return
+        val lastRecipient = conversation.lastMessage?.let { lastMessage ->
+            conversation.recipients.find { recipient ->
+                phoneNumberUtils.compare(recipient.address, lastMessage.address)
+            }
+        } ?: conversation.recipients.firstOrNull()
+
+        val contentIntent = Intent(context, ComposeActivity::class.java).putExtra("threadId", threadId)
+        val taskStackBuilder = TaskStackBuilder.create(context)
+            .addParentStack(ComposeActivity::class.java)
+            .addNextIntent(contentIntent)
+        val contentPI = taskStackBuilder.getPendingIntent(
+            threadId.toInt(),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val seenIntent = Intent(context, MarkSeenReceiver::class.java).putExtra("threadId", threadId)
+        val seenPI = PendingIntent.getBroadcast(
+            context, threadId.toInt(), seenIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        // Create Yes button (confirm delete)
+        val messageIds = messages.map { it.id }.toLongArray()
+        val confirmDeleteIntent = Intent(context, DeleteMessagesReceiver::class.java)
+            .putExtra("threadId", threadId)
+            .putExtra("messageIds", messageIds)
+        val confirmDeletePI = PendingIntent.getBroadcast(
+            context, threadId.toInt() + 4000, confirmDeleteIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val yesAction = NotificationCompat.Action.Builder(
+            R.drawable.ic_check_white_24dp,
+            context.getString(R.string.button_yes),
+            confirmDeletePI
+        ).build()
+
+        // Create No button (cancel delete)
+        val cancelDeleteIntent = Intent(context, DeleteConfirmationReceiver::class.java)
+            .putExtra("threadId", threadId)
+            .putExtra("action", "cancel")
+        val cancelDeletePI = PendingIntent.getBroadcast(
+            context, threadId.toInt() + 5000, cancelDeleteIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val noAction = NotificationCompat.Action.Builder(
+            R.drawable.ic_close_black_24dp,
+            context.getString(R.string.button_cancel),
+            cancelDeletePI
+        ).build()
+
+        val notification = NotificationCompat.Builder(context, getChannelIdForNotification(threadId))
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setColor(colors.theme(lastRecipient).theme)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setAutoCancel(true)
+            .setContentIntent(contentPI)
+            .setDeleteIntent(seenPI)
+            .setContentTitle(context.getString(R.string.delete_confirmation_title))
+            .setContentText(context.resources.getQuantityString(
+                R.plurals.delete_confirmation_message, messages.size, messages.size
+            ))
+            .addAction(yesAction)
+            .addAction(noAction)
+
+        notificationManager.notify(threadId.toInt(), notification.build())
     }
 
 }

@@ -141,6 +141,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.DeleteMessagesReceiver" />
+        <receiver android:name=".receiver.DeleteConfirmationReceiver" />
         <receiver
             android:name=".receiver.SmsReceiver"
             android:exported="true"
