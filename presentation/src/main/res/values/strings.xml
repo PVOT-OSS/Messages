@@ -488,6 +488,13 @@
     <string name="button_stop">Stop</string>
     <string name="button_more">More</string>
     <string name="button_set">Set</string>
+
+    <string name="delete_confirmation_title">Delete</string>
+    <plurals name="delete_confirmation_message">
+        <item quantity="one">Are you sure you would like to delete this message?</item>
+        <item quantity="other">Are you sure you would like to delete %d messages?</item>
+    </plurals>
+
     <string name="button_undo">Undo</string>
     <string name="button_clear">Clear</string>
 
