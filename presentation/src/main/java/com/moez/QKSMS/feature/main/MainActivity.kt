@@ -210,6 +210,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         itemTouchCallback.adapter = conversationsAdapter
         conversationsAdapter.autoScrollToStart(binding.recyclerView)
 
+        // Setup search adapter click listener
+        searchAdapter.onMessageClickListener = { conversationId, messageId ->
+            navigator.showConversation(conversationId, messageId)
+        }
+
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -403,6 +408,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 if (binding.recyclerView.adapter !== searchAdapter) binding.recyclerView.adapter =
                     searchAdapter
                 searchAdapter.data = state.page.data ?: listOf()
+                searchAdapter.setQuery(binding.toolbarSearch.text.toString())
                 itemTouchHelper.attachToRecyclerView(null)
                 binding.empty.setText(R.string.inbox_search_empty_text)
             }

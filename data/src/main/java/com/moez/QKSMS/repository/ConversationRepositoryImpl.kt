@@ -41,6 +41,7 @@ import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SearchResult
+import org.prauga.messages.model.SearchItem
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.tryOrNull
 import java.util.concurrent.TimeUnit
@@ -205,6 +206,77 @@ class ConversationRepositoryImpl @Inject constructor(
             .filter { match -> messagesByConversation.none { it.conversation.id == match.conversation.id } }
 
         return conversationMatches + messagesByConversation
+    }
+
+    override fun searchConversationsGrouped(query: CharSequence): List<SearchItem> {
+        val realm = Realm.getDefaultInstance()
+
+        val normalizedQuery = query.removeAccents()
+        val conversations = realm.copyFromRealm(
+            realm
+                .where(Conversation::class.java)
+                .notEqualTo("id", 0L)
+                .isNotNull("lastMessage")
+                .equalTo("blocked", false)
+                .isNotEmpty("recipients")
+                .sort("pinned", Sort.DESCENDING, "lastMessage.date", Sort.DESCENDING)
+                .findAll()
+        )
+
+        val conversationsById = conversations.associateBy { it.id }
+
+        // Get all messages matching the query, grouped by conversation
+        val messagesByConversation = realm.copyFromRealm(
+            realm
+                .where(Message::class.java)
+                .beginGroup()
+                .contains("body", normalizedQuery, Case.INSENSITIVE)
+                .or()
+                .contains("parts.text", normalizedQuery, Case.INSENSITIVE)
+                .endGroup()
+                .sort("date", Sort.DESCENDING)
+                .findAll()
+        )
+            .groupBy { message -> message.threadId }
+            .mapNotNull { (threadId, messages) ->
+                conversationsById[threadId]?.let { conversation ->
+                    Pair(conversation, messages)
+                }
+            }
+            .sortedByDescending { (_, messages) -> messages.size }
+
+        realm.close()
+
+        // Build the flattened list with headers and messages
+        val result = mutableListOf<SearchItem>()
+        
+        messagesByConversation.forEach { (conversation, messages) ->
+            // Add conversation header
+            result.add(SearchItem.Header(
+                conversationId = conversation.id,
+                title = conversation.getTitle()
+            ))
+            
+            // Add matching messages
+            messages.forEach { message ->
+                val body = when {
+                    message.body.isNotEmpty() -> message.body
+                    message.parts.isNotEmpty() -> message.parts.firstOrNull()?.text ?: ""
+                    else -> ""
+                }
+                
+                if (body.isNotEmpty()) {
+                    result.add(SearchItem.Message(
+                        messageId = message.id,
+                        conversationId = conversation.id,
+                        body = body,
+                        timestamp = message.date
+                    ))
+                }
+            }
+        }
+
+        return result
     }
 
     override fun getBlockedConversations(): RealmResults<Conversation> =

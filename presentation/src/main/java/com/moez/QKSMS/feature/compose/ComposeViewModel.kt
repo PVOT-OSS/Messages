@@ -92,12 +92,14 @@ import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 
 class ComposeViewModel @Inject constructor(
     @Named("query") private val query: String,
     @Named("threadId") private val threadId: Long,
+    @Named("messageId") private val messageId: Long,
     @Named("addresses") private val addresses: List<String>,
     @Named("text") private val sharedText: String,
     @Named("attachments") val sharedAttachments: List<Attachment>,
@@ -310,6 +312,19 @@ class ComposeViewModel @Inject constructor(
             view.requestDefaultSms()
             newState { copy(hasError = true) }
             return
+        }
+
+        // Scroll to specific message if messageId was provided
+        if (messageId != 0L) {
+            disposables += messages
+                .filter { it.isNotEmpty() }
+                .take(1)
+                .delay(300, TimeUnit.MILLISECONDS) // Small delay to ensure UI is ready
+                .observeOn(AndroidSchedulers.mainThread())
+                .autoDispose(view.scope())
+                .subscribe { 
+                    view.scrollToMessage(messageId)
+                }
         }
 
         val sharing = (sharedText.isNotEmpty() || sharedAttachments.isNotEmpty())
