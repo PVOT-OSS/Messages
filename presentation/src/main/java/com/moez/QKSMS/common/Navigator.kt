@@ -150,6 +150,13 @@ class Navigator @Inject constructor(
         startActivity(intent)
     }
 
+    fun showConversation(threadId: Long, messageId: Long) {
+        val intent = Intent(context, ComposeActivity::class.java)
+            .putExtra("threadId", threadId)
+            .putExtra("messageId", messageId)
+        startActivity(intent)
+    }
+
     fun showConversationInfo(threadId: Long) {
         val intent = Intent(context, ConversationInfoActivity::class.java)
         intent.putExtra("threadId", threadId)

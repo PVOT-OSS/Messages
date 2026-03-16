@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp">
+
+    <org.prauga.messages.common.widget.GroupAvatarView
+        android:id="@+id/headerAvatar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/headerTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/headerSubtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/headerAvatar"
+        app:layout_constraintTop_toTopOf="@id/headerAvatar"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:textSize="primary"
+        tools:text="John Doe" />
+
+    <org.prauga.messages.common.widget.QkTextView
+        android:id="@+id/headerSubtitle"
+        style="@style/TextTertiary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="@id/headerAvatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/headerTitle"
+        app:layout_constraintTop_toBottomOf="@id/headerTitle"
+        tools:text="+1 234 567 8900" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

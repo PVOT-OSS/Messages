@@ -22,6 +22,7 @@ package org.prauga.messages.feature.main
 import io.realm.RealmResults
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.SearchResult
+import org.prauga.messages.model.SearchItem
 import org.prauga.messages.repository.SyncRepository
 
 data class MainState(
@@ -51,7 +52,7 @@ data class Inbox(
 
 data class Searching(
     val loading: Boolean = false,
-    val data: List<SearchResult>? = null
+    val data: List<SearchItem>? = null
 ) : MainPage()
 
 data class Archived(

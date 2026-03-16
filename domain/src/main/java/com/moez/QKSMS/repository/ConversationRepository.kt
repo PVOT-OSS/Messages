@@ -44,6 +44,8 @@ interface ConversationRepository {
 
     fun searchConversations(query: CharSequence): List<SearchResult>
 
+    fun searchConversationsGrouped(query: CharSequence): List<org.prauga.messages.model.SearchItem>
+
     fun getBlockedConversations(): RealmResults<Conversation>
 
     fun getBlockedConversationsAsync(): RealmResults<Conversation>
