@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+
+import androidx.core.content.ContextCompat;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.Bundle;
@@ -57,7 +59,12 @@ public class DownloadManager {
         mMap.put(location, receiver);
 
         // Use unique action in order to avoid cancellation of notifying download result.
-        context.getApplicationContext().registerReceiver(receiver, new IntentFilter(receiver.mAction));
+        ContextCompat.registerReceiver(
+                context.getApplicationContext(),
+                receiver,
+                new IntentFilter(receiver.mAction),
+                ContextCompat.RECEIVER_NOT_EXPORTED
+        );
 
         Timber.v("receiving with system method");
         final String fileName = "download." + String.valueOf(Math.abs(new Random().nextLong())) + ".dat";

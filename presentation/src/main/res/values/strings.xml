@@ -151,6 +151,8 @@
     <string name="compose_menu_copy">Copy text</string>
     <string name="compose_menu_share">Share text</string>
     <string name="compose_menu_forward">Forward</string>
+    <string name="compose_menu_react">React</string>
+    <string name="compose_menu_more">More</string>
     <string name="compose_menu_show_status">Show status</string>
     <string name="compose_menu_delete">Delete</string>
     <string name="compose_menu_previous">Previous</string>
@@ -181,6 +183,12 @@
     <string name="compose_sim_cd">%s selected, change SIM card</string>
     <string name="compose_send_cd">Send message</string>
     <string name="compose_record_audio_msg_cd">Record audio message</string>
+    <string name="reaction_picker_love">❤️ Love</string>
+    <string name="reaction_picker_like">👍 Like</string>
+    <string name="reaction_picker_dislike">👎 Dislike</string>
+    <string name="reaction_picker_laugh">😂 Laugh</string>
+    <string name="reaction_picker_emphasize">‼️ Emphasize</string>
+    <string name="reaction_picker_question">❓ Question</string>
 
     <string name="compose_record_audio_msg_abort_cd">Cancel audio message</string>
     <string name="compose_record_audio_msg_attach_cd">Attach audio message</string>
@@ -259,6 +267,11 @@
     <string name="scheduled_compose_cd">Schedule a message</string>
     <string name="scheduled_send_cd">Schedule this message</string>
     <string name="scheduled_options_title">Scheduled message</string>
+    <string-array name="scheduled_options">
+        <item>Send now</item>
+        <item>Copy text</item>
+        <item>Delete</item>
+    </string-array>
     <string name="attachment_missing">Missing</string>
 
     <string name="settings_category_appearance">Appearance</string>
@@ -488,6 +501,13 @@
     <string name="button_stop">Stop</string>
     <string name="button_more">More</string>
     <string name="button_set">Set</string>
+
+    <string name="delete_confirmation_title">Delete</string>
+    <plurals name="delete_confirmation_message">
+        <item quantity="one">Are you sure you would like to delete this message?</item>
+        <item quantity="other">Are you sure you would like to delete %d messages?</item>
+    </plurals>
+
     <string name="button_undo">Undo</string>
     <string name="button_clear">Clear</string>
 

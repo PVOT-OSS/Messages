@@ -32,6 +32,7 @@ import org.prauga.messages.feature.compose.BubbleUtils.canGroup
 import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -71,7 +72,9 @@ class PartsAdapter @Inject constructor(
         this.next = next
         this.bodyVisible =
             holder.containerView.findViewById<View>(R.id.body)?.visibility == View.VISIBLE
-        this.data = message.parts.filter { !it.isSmil() && !it.isText() }
+        val filteredParts = message.parts.filter { !it.isSmil() && !it.isText() }
+        Timber.d("PartsAdapter.setData: messageId=${message.id} contentId=${message.contentId} totalParts=${message.parts.size} filteredParts=${filteredParts.size} types=${filteredParts.map { it.type }}")
+        this.data = filteredParts
         this.audioState = audioState
     }
 

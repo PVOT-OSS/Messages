@@ -5,6 +5,7 @@ package org.prauga.messages.receiver
 
 import android.content.Context
 import android.content.Intent
+import org.prauga.messages.interactor.ReceiveSms
 import org.prauga.messages.repository.MessageRepository
 import org.junit.Before
 import org.junit.Test
@@ -24,6 +25,9 @@ class SmsReceiverTest {
     @Mock
     private lateinit var messageRepository: MessageRepository
 
+    @Mock
+    private lateinit var receiveSms: ReceiveSms
+
     private lateinit var receiver: SmsReceiver
 
     @Before
@@ -32,6 +36,7 @@ class SmsReceiverTest {
         receiver = SmsReceiver()
         // Manually inject dependencies for testing
         receiver.messageRepo = messageRepository
+        receiver.receiveSms = receiveSms
     }
 
     @Test
@@ -90,14 +95,6 @@ class SmsReceiverTest {
         org.junit.Assert.assertNotEquals(sim1, sim2)
         org.junit.Assert.assertNotEquals(sim1, noSim)
         org.junit.Assert.assertNotEquals(sim2, noSim)
-    }
-
-    @Test
-    fun givenWorkerInputDataKey_whenAccessed_thenIsCorrectValue() {
-        val expectedKey = "messageId"
-
-        org.junit.Assert.assertEquals(expectedKey,
-            org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID)
     }
 
     @Test

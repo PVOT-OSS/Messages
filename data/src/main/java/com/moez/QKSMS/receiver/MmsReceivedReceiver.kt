@@ -24,6 +24,7 @@ import android.net.Uri
 import com.klinker.android.send_message.MmsReceivedReceiver
 import dagger.android.AndroidInjection
 import org.prauga.messages.interactor.ReceiveMms
+import timber.log.Timber
 import javax.inject.Inject
 
 class MmsReceivedReceiver : MmsReceivedReceiver() {
@@ -31,15 +32,19 @@ class MmsReceivedReceiver : MmsReceivedReceiver() {
     @Inject lateinit var receiveMms: ReceiveMms
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        Timber.d("MmsReceivedReceiver.onReceive: action=${intent?.action} extras=${intent?.extras?.keySet()}")
         AndroidInjection.inject(this, context)
         super.onReceive(context, intent)
     }
 
     override fun onMessageReceived(messageUri: Uri?) {
-        messageUri?.let { uri ->
-            val pendingResult = goAsync()
-            receiveMms.execute(uri) { pendingResult.finish() }
+        Timber.d("MmsReceivedReceiver.onMessageReceived: uri=$messageUri")
+        if (messageUri == null) {
+            Timber.w("MmsReceivedReceiver.onMessageReceived: uri is null, skipping sync")
+            return
         }
+        val pendingResult = goAsync()
+        receiveMms.execute(messageUri) { pendingResult.finish() }
     }
 
 }

@@ -72,8 +72,10 @@ import org.prauga.messages.feature.extensions.isEmojiOnly
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
+import org.prauga.messages.feature.compose.MessageLongPress
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
@@ -153,6 +155,7 @@ class MessagesAdapter @Inject constructor(
     val sendNowClicks: Subject<Long> = PublishSubject.create()
     val resendClicks: Subject<Long> = PublishSubject.create()
     val partContextMenuRegistrar: Subject<View> = PublishSubject.create()
+    val messageLongPresses: Subject<MessageLongPress> = PublishSubject.create()
 
     var data: Pair<Conversation, RealmResults<Message>>? = null
         set(value) {
@@ -210,6 +213,13 @@ class MessagesAdapter @Inject constructor(
                     getItem(adapterPosition)?.let {
                         toggleSelection(it.id)
                         containerView.isActivated = isSelected(it.id)
+                        messageLongPresses.onNext(
+                            MessageLongPress(
+                                it.id,
+                                it.getText(false),
+                                containerView
+                            )
+                        )
                     }
                     true
                 }
@@ -238,6 +248,13 @@ class MessagesAdapter @Inject constructor(
                     getItem(adapterPosition)?.let {
                         toggleSelection(it.id)
                         containerView.isActivated = isSelected(it.id)
+                        messageLongPresses.onNext(
+                            MessageLongPress(
+                                it.id,
+                                it.getText(false),
+                                containerView
+                            )
+                        )
                     }
                     true
                 }
@@ -388,11 +405,11 @@ class MessagesAdapter @Inject constructor(
             binding.body.apply {
                 setTextColor(incomingTextColor)
                 setBackgroundTint(incomingBubbleColor)
-                highlightColor = incomingBubbleColor.withAlpha(0x5d)
+                highlightColor = incomingTextColor.withAlpha(0x55)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(incomingBubbleColor.withAlpha(0x7d))
-                    textSelectHandleLeft?.setTint(incomingBubbleColor.withAlpha(0x7d))
-                    textSelectHandleRight?.setTint(incomingBubbleColor.withAlpha(0x7d))
+                    textSelectHandle?.setTint(incomingTextColor.withAlpha(0x7d))
+                    textSelectHandleLeft?.setTint(incomingTextColor.withAlpha(0x7d))
+                    textSelectHandleRight?.setTint(incomingTextColor.withAlpha(0x7d))
                 }
             }
         } else {
@@ -402,11 +419,11 @@ class MessagesAdapter @Inject constructor(
             binding.body.apply {
                 setTextColor(outgoingTextColor)
                 setBackgroundTint(outgoingBubbleColor)
-                highlightColor = outgoingBubbleColor.withAlpha(0x5d)
+                highlightColor = outgoingTextColor.withAlpha(0x55)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    textSelectHandle?.setTint(outgoingBubbleColor.withAlpha(0xad))
-                    textSelectHandleLeft?.setTint(outgoingBubbleColor.withAlpha(0xad))
-                    textSelectHandleRight?.setTint(outgoingBubbleColor.withAlpha(0xad))
+                    textSelectHandle?.setTint(outgoingTextColor.withAlpha(0xad))
+                    textSelectHandleLeft?.setTint(outgoingTextColor.withAlpha(0xad))
+                    textSelectHandleRight?.setTint(outgoingTextColor.withAlpha(0xad))
                 }
             }
         }
@@ -474,6 +491,7 @@ class MessagesAdapter @Inject constructor(
         }
 
         // Bind the parts
+        Timber.d("MessagesAdapter.bindMessage: messageId=${message.id} contentId=${message.contentId} isMms=${message.isMms()} partsCount=${message.parts.size} parts=${message.parts.map { "${it.type}(id=${it.id})" }}")
         binding.parts.adapter = partsAdapterProvider.get().apply {
             this.theme = theme
             setData(message, previous, next, holder, audioState)
@@ -489,21 +507,14 @@ class MessagesAdapter @Inject constructor(
         val hasReactions = reactions.isNotEmpty()
 
         if (hasReactions) {
-            val reactionCounts = reactions.groupBy { it.emoji }
-                .mapValues { it.value.size }
+            // Get unique emojis sorted by count (most popular first)
+            val uniqueEmojis = reactions.groupBy { it.emoji }
                 .toList()
-                .sortedByDescending { it.second } // Sort by count, most reactions first
+                .sortedByDescending { it.second.size }
+                .map { it.first }
+                .joinToString("")
 
-            // For now, show just the first (most popular) reaction
-            val topReaction = reactionCounts.first()
-            val reactionText = if (topReaction.second == 1) {
-                topReaction.first
-            } else {
-                // Use a non-breaking space to keep the emoji and count together
-                "${topReaction.first}\u00A0${topReaction.second}"
-            }
-
-            binding.reactionText.text = reactionText
+            binding.reactionText.text = uniqueEmojis
             binding.reactions.setVisible(true)
             makeRoomForEmojis(binding.reactions)
         } else {

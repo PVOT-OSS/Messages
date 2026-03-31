@@ -41,6 +41,7 @@ import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SearchResult
+import org.prauga.messages.model.SearchItem
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.tryOrNull
 import java.util.concurrent.TimeUnit
@@ -207,6 +208,77 @@ class ConversationRepositoryImpl @Inject constructor(
         return conversationMatches + messagesByConversation
     }
 
+    override fun searchConversationsGrouped(query: CharSequence): List<SearchItem> {
+        val realm = Realm.getDefaultInstance()
+
+        val normalizedQuery = query.removeAccents()
+        val conversations = realm.copyFromRealm(
+            realm
+                .where(Conversation::class.java)
+                .notEqualTo("id", 0L)
+                .isNotNull("lastMessage")
+                .equalTo("blocked", false)
+                .isNotEmpty("recipients")
+                .sort("pinned", Sort.DESCENDING, "lastMessage.date", Sort.DESCENDING)
+                .findAll()
+        )
+
+        val conversationsById = conversations.associateBy { it.id }
+
+        // Get all messages matching the query, grouped by conversation
+        val messagesByConversation = realm.copyFromRealm(
+            realm
+                .where(Message::class.java)
+                .beginGroup()
+                .contains("body", normalizedQuery, Case.INSENSITIVE)
+                .or()
+                .contains("parts.text", normalizedQuery, Case.INSENSITIVE)
+                .endGroup()
+                .sort("date", Sort.DESCENDING)
+                .findAll()
+        )
+            .groupBy { message -> message.threadId }
+            .mapNotNull { (threadId, messages) ->
+                conversationsById[threadId]?.let { conversation ->
+                    Pair(conversation, messages)
+                }
+            }
+            .sortedByDescending { (_, messages) -> messages.size }
+
+        realm.close()
+
+        // Build the flattened list with headers and messages
+        val result = mutableListOf<SearchItem>()
+        
+        messagesByConversation.forEach { (conversation, messages) ->
+            // Add conversation header
+            result.add(SearchItem.Header(
+                conversationId = conversation.id,
+                title = conversation.getTitle()
+            ))
+            
+            // Add matching messages
+            messages.forEach { message ->
+                val body = when {
+                    message.body.isNotEmpty() -> message.body
+                    message.parts.isNotEmpty() -> message.parts.firstOrNull()?.text ?: ""
+                    else -> ""
+                }
+                
+                if (body.isNotEmpty()) {
+                    result.add(SearchItem.Message(
+                        messageId = message.id,
+                        conversationId = conversation.id,
+                        body = body,
+                        timestamp = message.date
+                    ))
+                }
+            }
+        }
+
+        return result
+    }
+
     override fun getBlockedConversations(): RealmResults<Conversation> =
         Realm.getDefaultInstance()
             .where(Conversation::class.java)
@@ -365,7 +437,10 @@ class ConversationRepositoryImpl @Inject constructor(
             getConversation(addresses)
                 ?: tryOrNull { TelephonyCompat.getOrCreateThreadId(context, addresses.toSet()) }
                     ?.takeIf { it != 0L }
-                    ?.let { threadId -> getOrCreateConversation(threadId) }
+                    ?.let { threadId ->
+                        getOrCreateConversation(threadId)
+                            ?: createConversationFromAddresses(threadId, addresses)
+                    }
         }
 
     override fun saveDraft(threadId: Long, draft: String) =
@@ -544,5 +619,52 @@ class ConversationRepositoryImpl @Inject constructor(
                         realm.executeTransaction { it.insertOrUpdate(conversation) }
                     }
                 }
+        }
+
+    /**
+     * Fallback for when the content provider doesn't list the conversation (e.g. new thread with
+     * no messages yet). Creates the Conversation directly in Realm using the known addresses and
+     * canonical address IDs from the telephony provider.
+     */
+    private fun createConversationFromAddresses(threadId: Long, addresses: Collection<String>): Conversation? =
+        tryOrNull(true) {
+            // Query all canonical addresses from the telephony provider
+            val allCanonicalRecipients = cursorToRecipient.getRecipientCursor()
+                ?.use { cursor -> cursor.map { cursorToRecipient.map(it) } }
+                ?: emptyList()
+
+            Realm.getDefaultInstance().use { realm ->
+                realm.refresh()
+                val realmContacts = realm.where(Contact::class.java).findAll()
+
+                val recipients = addresses.map { address ->
+                    // Find the canonical address entry that getOrCreateThreadId created
+                    val canonical = allCanonicalRecipients.firstOrNull { recipient ->
+                        phoneNumberUtils.compare(recipient.address, address)
+                    }
+
+                    Recipient(
+                        id = canonical?.id ?: 0L,
+                        address = canonical?.address ?: address,
+                        lastUpdate = System.currentTimeMillis()
+                    ).apply {
+                        contact = realmContacts.firstOrNull { realmContact ->
+                            realmContact.numbers.any {
+                                phoneNumberUtils.compare(it.address, address)
+                            }
+                        }
+                    }
+                }
+
+                val conversation = Conversation().apply {
+                    id = threadId
+                    this.recipients.clear()
+                    this.recipients.addAll(recipients)
+                }
+
+                realm.executeTransaction { it.insertOrUpdate(conversation) }
+            }
+
+            getConversation(threadId)
         }
 }

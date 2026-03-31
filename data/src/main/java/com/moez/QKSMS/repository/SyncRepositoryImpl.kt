@@ -258,6 +258,8 @@ class SyncRepositoryImpl @Inject constructor(
         // If we don't have a valid id, return null
         val id = tryOrNull(false) { ContentUris.parseId(uri) } ?: return null
 
+        Timber.d("syncMessage: type=$type id=$id uri=$uri")
+
         // Check if the message already exists, so we can reuse the id
         val existingId = Realm.getDefaultInstance().use { realm ->
             realm.refresh()
@@ -267,6 +269,7 @@ class SyncRepositoryImpl @Inject constructor(
                     .findFirst()
                     ?.id
         }
+        Timber.d("syncMessage: existingRealmId=$existingId")
 
         // The uri might be something like content://mms/inbox/id
         // The box might change though, so we should just use the mms/id uri
@@ -275,23 +278,37 @@ class SyncRepositoryImpl @Inject constructor(
             else -> ContentUris.withAppendedId(Telephony.Sms.CONTENT_URI, id)
         }
 
-        return contentResolver.query(stableUri, null, null, null, null)?.use { cursor ->
+        val cursor = contentResolver.query(stableUri, null, null, null, null)
+        Timber.d("syncMessage: stableUri=$stableUri cursorCount=${cursor?.count}")
+        if (cursor == null) {
+            Timber.w("syncMessage: query returned null cursor for $stableUri")
+            return null
+        }
+
+        return cursor.use {
 
             // If there are no rows, return null. Otherwise, we've moved to the first row
-            if (!cursor.moveToFirst()) return null
+            if (!cursor.moveToFirst()) {
+                Timber.w("syncMessage: cursor is empty for $stableUri")
+                return null
+            }
 
             val columnsMap = CursorToMessage.MessageColumns(cursor)
             cursorToMessage.map(Pair(cursor, columnsMap)).apply {
                 existingId?.let { this.id = it }
 
                 if (isMms()) {
+                    val partsCursor = cursorToPart.getPartsCursor(contentId)
+                    Timber.d("syncMessage: MMS contentId=$contentId partsCursorCount=${partsCursor?.count}")
                     parts = RealmList<MmsPart>().apply {
-                        addAll(cursorToPart.getPartsCursor(contentId)?.map { cursorToPart.map(it) }.orEmpty())
+                        addAll(partsCursor?.map { cursorToPart.map(it) }.orEmpty())
                     }
+                    Timber.d("syncMessage: loaded ${parts.size} parts: ${parts.map { "${it.type}(id=${it.id})" }}")
                 }
 
                 conversationRepo.getOrCreateConversation(threadId)
                 insertOrUpdate()
+                Timber.d("syncMessage: saved message id=$id type=$type threadId=$threadId")
 
                 val text = getText(false)
                 val parsedReaction = reactions.parseEmojiReaction(text)

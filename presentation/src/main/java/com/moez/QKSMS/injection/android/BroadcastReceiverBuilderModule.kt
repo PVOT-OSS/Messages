@@ -25,6 +25,7 @@ import org.prauga.messages.injection.scope.ActivityScope
 import org.prauga.messages.receiver.BlockThreadReceiver
 import org.prauga.messages.receiver.BootReceiver
 import org.prauga.messages.receiver.DefaultSmsChangedReceiver
+import org.prauga.messages.receiver.DeleteConfirmationReceiver
 import org.prauga.messages.receiver.DeleteMessagesReceiver
 import org.prauga.messages.receiver.MarkArchivedReceiver
 import org.prauga.messages.receiver.MarkReadReceiver
@@ -61,6 +62,10 @@ abstract class BroadcastReceiverBuilderModule {
     @ActivityScope
     @ContributesAndroidInjector()
     abstract fun bindDeleteMessagesReceiver(): DeleteMessagesReceiver
+
+    @ActivityScope
+    @ContributesAndroidInjector()
+    abstract fun bindDeleteConfirmationReceiver(): DeleteConfirmationReceiver
 
     @ActivityScope
     @ContributesAndroidInjector

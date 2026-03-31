@@ -119,6 +119,9 @@ class Transaction @JvmOverloads constructor(private val context: Context, settin
             } catch (e: IOException) {
                 Timber.e(e, "Error writing send file")
                 null
+            } catch (e: OutOfMemoryError) {
+                Timber.e(e, "Not enough memory to compose MMS")
+                null
             }
 
             val configOverrides = bundleOf(
@@ -140,7 +143,7 @@ class Transaction @JvmOverloads constructor(private val context: Context, settin
                 }
 
             }
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             Timber.e(e, "Error using system sending method")
         }
 

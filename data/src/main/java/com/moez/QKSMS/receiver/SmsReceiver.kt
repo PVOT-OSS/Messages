@@ -22,14 +22,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony.Sms
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.OutOfQuotaPolicy
-import androidx.work.WorkManager
-import androidx.work.workDataOf
 import dagger.android.AndroidInjection
+import org.prauga.messages.interactor.ReceiveSms
 import org.prauga.messages.repository.MessageRepository
-import org.prauga.messages.worker.ReceiveSmsWorker
-import org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -37,16 +32,19 @@ import javax.inject.Inject
 
 class SmsReceiver : BroadcastReceiver() {
     @Inject lateinit var messageRepo: MessageRepository
+    @Inject lateinit var receiveSms: ReceiveSms
 
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
+
+        val pendingResult = goAsync()
 
         Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
             // reduce list of messages to single message and save in db
             val messageId = Single.just(messages)
                 .observeOn(Schedulers.io())
                 .map {
-                    Timber.v("onReceive() new sms")  // here so runs on io thread
+                    Timber.v("onReceive() new sms")
 
                     messageRepo.insertReceivedSms(
                         intent.extras?.getInt("subscription", -1) ?: -1,
@@ -57,14 +55,8 @@ class SmsReceiver : BroadcastReceiver() {
                 }
                 .blockingGet()
 
-            // start worker with message id as param
-            WorkManager.getInstance(context).enqueue(
-                OneTimeWorkRequestBuilder<ReceiveSmsWorker>()
-                    .setInputData(workDataOf(INPUT_DATA_KEY_MESSAGE_ID to messageId))
-                    .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                    .build()
-            )
-        }
+            receiveSms.execute(messageId) { pendingResult.finish() }
+        } ?: pendingResult.finish()
     }
 
 }

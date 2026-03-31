@@ -30,6 +30,7 @@ import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.util.GlideApp
+import timber.log.Timber
 import javax.inject.Inject
 
 class ImageBinder @Inject constructor(colors: Colors, private val context: Context) : PartBinder() {
@@ -58,7 +59,9 @@ class ImageBinder @Inject constructor(colors: Colors, private val context: Conte
             else -> BubbleImageView.Style.ONLY
         }
 
-        GlideApp.with(context).load(part.getUri()).fitCenter().into(binding.thumbnail)
+        val partUri = part.getUri()
+        Timber.d("ImageBinder.bindPart: partId=${part.id} type=${part.type} uri=$partUri messageId=${message.id}")
+        GlideApp.with(context).load(partUri).fitCenter().into(binding.thumbnail)
     }
 
 }

@@ -52,6 +52,7 @@ import org.prauga.messages.manager.ChangelogManager
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.manager.RatingManager
 import org.prauga.messages.model.EmojiSyncNeeded
+import org.prauga.messages.model.SearchItem
 import org.prauga.messages.model.SearchResult
 import org.prauga.messages.model.SyncLog
 import org.prauga.messages.repository.ConversationRepository
@@ -307,13 +308,13 @@ class MainViewModel @Inject constructor(
                                 }
                             }
                         }
-                        Observable.empty<List<SearchResult>>()
+                        Observable.empty<List<SearchItem>>()
                     } else {
                         newState {
                             val page = (page as? Searching) ?: Searching()
                             copy(page = page.copy(loading = true))
                         }
-                        Observable.fromCallable { conversationRepo.searchConversations(query) }
+                        Observable.fromCallable { conversationRepo.searchConversationsGrouped(query) }
                             .subscribeOn(Schedulers.io())
                     }
                 }

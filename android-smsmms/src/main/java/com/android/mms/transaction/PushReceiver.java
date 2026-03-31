@@ -148,6 +148,7 @@ public class PushReceiver extends BroadcastReceiver {
                             }
 
                             int subId = intent.getIntExtra("subscription", Utils.getDefaultSubscriptionId());
+                            Timber.d("PushReceiver: MMS notification received, triggering download. location=" + location + " notifUri=" + uri + " subId=" + subId);
                             DownloadManager.getInstance().downloadMultimediaMessage(mContext, location, uri, true, subId);
                         } else {
                             Timber.v("Skip downloading duplicate message: " + new String(nInd.getContentLocation()));

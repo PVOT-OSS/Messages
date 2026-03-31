@@ -256,6 +256,18 @@
             app:layout_constraintTop_toBottomOf="@id/filterGroup"
             tools:listitem="@layout/conversation_list_item" />
 
+        <com.moez.QKSMS.common.widget.FastScrollerView
+            android:id="@+id/fastScroller"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="3dp"
+            app:layout_constraintBottom_toTopOf="@id/compose"
+            app:layout_constraintEnd_toEndOf="@id/recyclerView"
+            app:layout_constraintStart_toStartOf="@id/recyclerView"
+            app:layout_constraintTop_toTopOf="@id/recyclerView" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/searchPill"
             android:layout_width="0dp"

@@ -97,12 +97,13 @@ public class DownloadRequest extends MmsRequest {
                     });
             return null;
         }
+        Timber.d("DownloadRequest.persist: responseLength=" + response.length + " locationUrl=" + locationUrl + " supportContentDisposition=" + mmsConfig.getSupportMmsContentDisposition());
         final long identity = Binder.clearCallingIdentity();
         try {
             final GenericPdu pdu =
                     (new PduParser(response, mmsConfig.getSupportMmsContentDisposition())).parse();
             if (pdu == null || !(pdu instanceof RetrieveConf)) {
-                Timber.e("DownloadRequest.persistIfRequired: invalid parsed PDU");
+                Timber.e("DownloadRequest.persistIfRequired: invalid parsed PDU. pdu=" + pdu + (pdu != null ? " type=" + pdu.getMessageType() : ""));
 
                 // Update the error type of the NotificationInd
                 setErrorType(context, locationUrl, Telephony.MmsSms.ERR_TYPE_MMS_PROTO_PERMANENT);
@@ -110,6 +111,7 @@ public class DownloadRequest extends MmsRequest {
             }
             final RetrieveConf retrieveConf = (RetrieveConf) pdu;
             final int status = retrieveConf.getRetrieveStatus();
+            Timber.d("DownloadRequest.persist: PDU parsed ok, retrieveStatus=" + status + " partCount=" + retrieveConf.getBody().getPartsNum());
 //            if (status != PduHeaders.RETRIEVE_STATUS_OK) {
 //                Timber.e("DownloadRequest.persistIfRequired: retrieve failed "
 //                        + status);
@@ -131,6 +133,7 @@ public class DownloadRequest extends MmsRequest {
             // Store the downloaded message
             final PduPersister persister = PduPersister.getPduPersister(context);
             final Uri messageUri = persister.persist(pdu, Telephony.Mms.Inbox.CONTENT_URI, PduPersister.DUMMY_THREAD_ID, true, true, null);
+            Timber.d("DownloadRequest.persist: PduPersister.persist returned uri=" + messageUri);
             if (messageUri == null) {
                 Timber.e("DownloadRequest.persistIfRequired: can not persist message");
                 return null;
