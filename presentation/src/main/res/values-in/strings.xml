@@ -404,4 +404,90 @@
         <item>LOL</item>
         <item>Tidak apa-apa</item>
     </string-array>
+    <string name="app_name">Pesan</string>
+    <string name="menu_mms_part_share">Bagikan</string>
+    <string name="menu_mms_part_forward">Teruskan</string>
+    <string name="menu_mms_part_open">Buka secara eksternal</string>
+    <string name="main_menu_select_all">Pilih semua</string>
+    <string name="main_menu_send_now">Kirim sekarang</string>
+    <string name="main_menu_edit_message">Edit pesan</string>
+    <string name="main_menu_rename_conversation">Ganti nama percakapan</string>
+    <string name="main_filter_all">Semua</string>
+    <string name="main_filter_unread">Belum dibaca</string>
+    <string name="main_sender_draft">Draf: %s</string>
+    <string name="main_not_default_sms_message">Untuk menggunakan Pesan, jadikan sebagai aplikasi SMS default Anda</string>
+    <string name="main_change_default_app">Ubah aplikasi default</string>
+    <string name="scheduled_menu_send_now">Kirim sekarang</string>
+    <string name="scheduled_menu_edit_message">Edit pesan</string>
+    <plurals name="dialog_delete_chat">
+        <item quantity="other">Apakah Anda yakin ingin menghapus %d pesan?</item>
+    </plurals>
+    <plurals name="dialog_send_now">
+        <item quantity="other">Apakah Anda yakin ingin mengirim %d pesan sekarang?</item>
+    </plurals>
+    <string name="dialog_edit_scheduled_message_title">Edit pesan</string>
+    <string name="dialog_edit_scheduled_message">Mengedit pesan ini akan menghapusnya dari jadwal.\n\nPastikan untuk mengirimnya kembali di layar berikutnya, atau pesan akan hilang.\n\nApakah Anda ingin melanjutkan?</string>
+    <string name="dialog_edit_scheduled_message_positive_button">Ya, edit pesan</string>
+    <string name="dialog_clear_compose_title">Hapus pesan</string>
+    <string name="dialog_clear_compose">Hapus pesan? Tindakan ini tidak dapat dibatalkan.</string>
+    <string name="compose_scheduled_view">Pesan terjadwal untuk percakapan ini</string>
+    <string name="compose_no_valid_recipients">Tidak dapat mengirim ke peserta lain</string>
+    <string name="compose_file_size_unavailable">Tidak diketahui</string>
+    <string name="compose_not_default_sms_message">Untuk menggunakan Pesan, jadikan sebagai aplikasi SMS default Anda</string>
+    <string name="compose_change_default_app">Ubah aplikasi default</string>
+    <string name="compose_menu_show_status">Tampilkan status</string>
+    <string name="compose_attach_file_cd">Lampirkan file apa saja</string>
+    <string name="compose_audio_message_cd">Rekam pesan audio</string>
+    <string name="compose_schedule_cancel_cd">Batalkan pesan terjadwal</string>
+    <string name="compose_record_audio_msg_cd">Rekam pesan audio</string>
+    <string name="compose_record_audio_msg_abort_cd">Batalkan pesan audio</string>
+    <string name="compose_record_audio_msg_attach_cd">Lampirkan pesan audio</string>
+    <string name="compose_record_audio_msg_play_pause_cd">Putar atau jeda pesan audio</string>
+    <string name="compose_message_cancel">Batal</string>
+    <string name="compose_message_send_now">Kirim sekarang</string>
+    <string name="compose_message_sim">Nomor SIM</string>
+    <string name="compose_message_item">Item pesan</string>
+    <string name="compose_message_attachment">Lampiran</string>
+    <string name="compose_toast_drag_stt">Pindahkan tombol ucapan-ke-teks ke mana saja yang Anda inginkan</string>
+    <string name="message_body_too_long_to_display">⚠ Pesan terlalu panjang. Salin atau Simpan untuk teks lengkapnya</string>
+    <string name="clipboard_too_large_to_copy">Ukuran data melebihi batas clipboard</string>
+    <string name="clipboard_unable_to_copy_to">Tidak dapat menyalin ke clipboard</string>
+    <string name="scheduled_send_cd">Jadwalkan pesan ini</string>
+    <string name="attachment_missing">Tidak ada</string>
+    <string name="settings_system_show_stt_title">Tampilkan tombol ucapan-ke-teks</string>
+    <string name="settings_notification_previews_summary">Tampilkan nama dan pesan</string>
+    <string name="settings_notification_silent_title">Senyap jika bukan kontak</string>
+    <string name="settings_notification_silent_summary">Menyenyapkan notifikasi untuk pesan yang pengirimnya tidak ada di kontak Anda</string>
+    <string name="settings_unread_at_top_title">Belum dibaca di atas</string>
+    <string name="settings_unread_at_top_summary">Tampilkan percakapan yang belum dibaca di bagian atas</string>
+    <string name="settings_mms_weblink_title">Penanganan tautan dalam pesan</string>
+    <string name="settings_disable_screenshots_title">Nonaktifkan Tangkapan Layar</string>
+    <string name="settings_diable_screenshots_summary">Mencegah OS dan aplikasi lain mengambil tangkapan layar dari aplikasi.</string>
+    <string name="message_content_filters_title">Filter konten pesan</string>
+    <string name="message_content_filters_empty">Filter konten pesan Anda akan muncul di sini</string>
+    <string name="message_content_filters_add_cd">Buat filter baru</string>
+    <string name="message_content_filters_dialog_title">Hapus pesan yang cocok dengan</string>
+    <string name="message_content_filters_dialog_hint">Kata, frasa, atau ekspresi reguler</string>
+    <string name="message_content_filters_dialog_case_switch">Peka huruf besar/kecil</string>
+    <string name="message_content_filters_dialog_regex_switch">Ekspresi reguler</string>
+    <string name="message_content_filters_dialog_contacts_switch">Sertakan kontak</string>
+    <string name="message_content_filters_dialog_create">Buat</string>
+    <string name="all_conversations_widget_title">Semua Percakapan</string>
+    <string name="button_clear">Hapus</string>
+    <plurals name="toast_archived">
+        <item quantity="other">%d percakapan diarsipkan</item>
+    </plurals>
+    <plurals name="toast_unarchived">
+        <item quantity="other">%d percakapan dibatalkan arsipnya</item>
+    </plurals>
+    <string name="notification_message_failed_action">Kirim ulang</string>
+    <string name="speak_no_messages">Tidak Ada Pesan</string>
+    <string name="speak_unseen_messages">Bacakan pesan yang belum dilihat</string>
+    <string name="messageLinkHandling_dialog_title">Peringatan Tautan Eksternal</string>
+    <string name="messageLinkHandling_dialog_body">Beberapa tautan mungkin tidak aman atau mengarahkan Anda secara tak terduga. Tinjau tautan di bawah sebelum melanjutkan:\n\n%1$s\n\nApakah Anda ingin melanjutkan?</string>
+    <string name="messageLinkHandling_dialog_positive">Ya, buka tautan</string>
+    <string name="messageLinkHandling_dialog_negative">Tidak</string>
+    <string name="error_stt_toast">Maaf, terjadi kesalahan saat memuat penyedia Ucapan-ke-Teks.</string>
+    <string name="stt_toast_extra_prompt">Ucapkan pesan Anda</string>
+    <string name="messages_text_share_file_error">Ups! Terjadi kesalahan saat berbagi</string>
 </resources>
