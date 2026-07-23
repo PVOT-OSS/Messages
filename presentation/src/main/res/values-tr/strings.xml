@@ -45,7 +45,7 @@
     <string name="main_menu_read">Okundu olarak işaretle</string>
     <string name="main_menu_unread">Okunmadı olarak işaretle</string>
     <string name="main_menu_block">Engelle</string>
-    <string name="main_syncing">İletiler eşitleniyor.. </string>
+    <string name="main_syncing">İletiler eşitleniyor…</string>
     <string name="main_sender_you">Sen: %s</string>
     <string name="main_message_results_title">Mesajlardaki sonuçlar</string>
     <string name="main_message_results">%d mesaj</string>
@@ -57,9 +57,9 @@
     <string name="main_default_sms_message">QUIK varsayılan SMS uygulaması yap</string>
     <string name="main_default_sms_change">Değiştir</string>
     <string name="main_permission_required">İzin gerekli</string>
-    <string name="main_permission_sms">QUIK göndermek ve SMS mesajları görüntülemek için izni olması gerekir.</string>
-    <string name="main_permission_contacts">QUIK kişilerinizi görüntülemek için izni olması gerekir.</string>
-    <string name="main_permission_notifications">QUIK needs permission to display notifications</string>
+    <string name="main_permission_sms">SMS mesajları göndermek ve görüntülemek için izin gerekli</string>
+    <string name="main_permission_contacts">Kişilerinizi görüntülemek için izin gerekli</string>
+    <string name="main_permission_notifications">Bildirimleri görüntülemek için izin gerekli</string>
     <string name="main_permission_allow">İzin ver</string>
     <string name="drawer_inbox">Gelen Kutusu</string>
     <string name="drawer_archived">Arşivle</string>
@@ -70,7 +70,7 @@
     <string name="drawer_help">Yardım &amp; Geri bildirim</string>
     <string name="drawer_invite">Arkadaşlarınızı davet edin</string>
     <string name="drawer_plus_banner_summary">İnanılmaz yeni özelliklerin kilidini aç ve geliştirmeye destek ol</string>
-    <string name="rate_title">QUIK tadını çıkarıyor musun?</string>
+    <string name="rate_title">Uygulamayı beğeniyor musunuz?</string>
     <string name="rate_summary">Biraz sevgi paylaş ve Google Playden bizi oyla!</string>
     <string name="rate_okay">TAMAM!</string>
     <string name="rate_dismiss">GÖREVDEN</string>
@@ -98,7 +98,7 @@
     <string name="compose_scheduled_future">Seçilen zaman gelecekte olmalı!</string>
     <string name="compose_scheduled_plus">Zamanlanmış mesajlaşma kullanmak için QUIK+ kilidini kaldırmak gerekir</string>
     <string name="compose_scheduled_toast">Zamanlanmış iletilere eklendi</string>
-    <string name="compose_hint">Mesaj Yaz...</string>
+    <string name="compose_hint">Mesaj yaz…</string>
     <string name="compose_menu_copy">Metni kopyala</string>
     <string name="compose_menu_forward">Yönlendir</string>
     <string name="compose_menu_delete">Sil</string>
@@ -126,7 +126,7 @@
     <string name="compose_sim_changed_toast">SIM %1$d (%2$s) seçili</string>
     <string name="compose_sim_cd">Seçili, %s SIM kartı değiştirin</string>
     <string name="compose_send_cd">Mesaj gönder</string>
-    <string name="message_status_sending">Gönderiliyor...</string>
+    <string name="message_status_sending">Gönderiliyor…</string>
     <string name="message_status_delivered">Teslim Edildi %s</string>
     <string name="message_status_failed">Gönderilemedi. Yeniden denemek için dokunun</string>
     <string name="info_title">Ayrıntılar</string>
@@ -298,11 +298,11 @@ BAĞLAM İSTEĞİ</string>
     <string name="qksms_plus_description_title">Gelişimini desteklemek, her şey kilitsiz</string>
     <string name="qksms_plus_description_summary">Seni  kurtarmak için sadece %s açlıktan ölen bir geliştirici</string>
     <!-- Substitutions are for price and currency. Ex: Lifetime upgrade for $1.99 USD -->
-    <string name="qksms_plus_upgrade">Süresiz kullanmak 1$s %2$s</string>
+    <string name="qksms_plus_upgrade">%1$s %2$s için süresiz kullanım</string>
     <!-- Substitutions are for price and currency. Ex: Unlock + donate for $4.99 USD -->
     <string name="qksms_plus_upgrade_donate">Kilidi aç ve Satın Al %1$s %2$s</string>
     <string name="qksms_plus_thanks_title">QUIK desteği için teşekkür ederiz!!</string>
-    <string name="qksms_plus_thanks_summary">Şimdi tüm QUIK+ özellikleri açıldı!</string>
+    <string name="qksms_plus_thanks_summary">Şimdi tüm QUIK+ özelliklerine erişiminiz var</string>
     <string name="qksms_plus_error">Bir hata oluştu. Lütfen tekrar deneyin</string>
     <string name="qksms_plus_free_title">QUIK+ F-Droid kullanıcıları için ücretsizdir! Eğer gelişmeyi desteklemek istiyorsanız, bağış yapmakta özgürsünüz.</string>
     <string name="qksms_plus_donate">Paypal ile satın al</string>
@@ -312,7 +312,7 @@ BAĞLAM İSTEĞİ</string>
     <string name="qksms_plus_emoji_title">Özel otomatik ifadeler</string>
     <string name="qksms_plus_emoji_summary">Özel otomatik ifadeler kısayolları oluştur</string>
     <string name="qksms_plus_backup_title">Mesajları yedekle</string>
-    <string name="qksms_plus_backup_summary">İletileriniz otomatik olarak yedekleyin. Telefonunuzu değiştirir veya kaybolursa endişelenmeyin.</string>
+    <string name="qksms_plus_backup_summary">İletileriniz otomatik olarak yedekleyin. Telefonunuzu değiştirir veya kaybolursa endişelenmeyin</string>
     <string name="qksms_plus_scheduled_title">Zamanlanmış iletiler</string>
     <string name="qksms_plus_scheduled_summary">Belirli bir saatte ve tarihte otomatik olarak gönderilecek mesajları zamanla</string>
     <string name="qksms_plus_delayed_title">Gecikmeli gönderme</string>
@@ -327,7 +327,7 @@ BAĞLAM İSTEĞİ</string>
     <string name="qksms_plus_respond_summary">Önceden ayarlanmış bir yanıt ile gelen iletilere otomatik olarak yanıtla</string>
     <string name="qksms_plus_more_title">Daha fazla</string>
     <string name="qksms_plus_more_summary">QUIK etkin geliştirme altında ve satın alırsan tüm gelecek QUIK+ özellikleri dahil olacaktır!</string>
-    <string name="widget_loading">Yükleniyor...</string>
+    <string name="widget_loading">Yükleniyor…</string>
     <string name="widget_more">Daha fazla konuşma göster</string>
     <string name="qkreply_menu_read">Okundu olarak işaretle</string>
     <string name="qkreply_menu_call">Ara</string>
@@ -448,7 +448,7 @@ BAĞLAM İSTEĞİ</string>
     <string name="compose_message_sim">SIM numarası</string>
     <string name="compose_message_attachment">Ek</string>
     <string name="compose_toast_drag_stt">Sesle yazma butonunu istediğiniz yere taşıyın</string>
-    <string name="message_body_too_long_to_display">⚠ Mesaj çok uzun. Metnin tümü için Kopyala yada Kaydet.</string>
+    <string name="message_body_too_long_to_display">⚠ Mesaj çok uzun. Metnin tümü için Kopyala yada Kaydet</string>
     <string name="app_name">Mesajlar</string>
     <string name="main_filter_all">Tümü</string>
     <string name="main_filter_unread">Okunmamış</string>
@@ -482,4 +482,23 @@ BAĞLAM İSTEĞİ</string>
     <string name="messageLinkHandling_dialog_negative">Hayır</string>
     <string name="error_stt_toast">Üzgünüz, sesli okuma sağlayıcısı açılırken bir hata oluştu.</string>
     <string name="stt_toast_extra_prompt">Mesajınızı konuşun</string>
+    <string name="compose_message_item">Mesaj ögesi</string>
+    <string name="message_content_filters_title">Mesaj içerik filtreleri</string>
+    <string name="message_content_filters_empty">Mesaj içerik filtreleriniz burada görünecek</string>
+    <string name="message_content_filters_add_cd">Yeni filtre oluştur</string>
+    <string name="message_content_filters_dialog_title">Eşleşen mesajları bırak</string>
+    <string name="message_content_filters_dialog_hint">Sözcük, sözcük grubu veya düzenli ifade</string>
+    <string name="message_content_filters_dialog_case_switch">Büyük/küçük harf duyarlı</string>
+    <string name="message_content_filters_dialog_regex_switch">Düzenli ifade</string>
+    <string name="message_content_filters_dialog_contacts_switch">Kişileri dahil et</string>
+    <string name="message_content_filters_dialog_create">Oluştur</string>
+    <string name="all_conversations_widget_title">Tüm Konuşmalar</string>
+    <string name="button_clear">Temizle</string>
+    <string name="notification_message_failed_action">Yeniden gönder</string>
+    <string name="speak_no_messages">Mesaj Yok</string>
+    <string name="speak_unseen_messages">Görülmeyen mesajları konuş</string>
+    <string name="messageLinkHandling_dialog_title">Harici Bağlantı Uyarısı</string>
+    <string name="messageLinkHandling_dialog_body">Bazı bağlantılar güvenli olmayabilir veya sizi beklenmedik bir şekilde başka bir sayfaya yönlendirebilir. Devam etmeden önce aşağıdaki bağlantıyı inceleyin:\n\n%1$s\n\nDevam etmek istiyor musunuz?</string>
+    <string name="messageLinkHandling_dialog_positive">Evet, bağlantıyı aç</string>
+    <string name="messages_text_share_file_error">Paylaşırken bir sorun oluştu</string>
 </resources>
