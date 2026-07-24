@@ -24,7 +24,7 @@
     <string name="title_settings">Definições</string>
     <string name="title_notification_prefs">Notificações</string>
     <string name="title_theme">Tema</string>
-    <string name="title_conversations">Pesquisar caixa de entrada…</string>
+    <string name="title_conversations">Pesquisar caixa de entrada</string>
     <string name="title_compose">Digite um nome ou número</string>
     <string name="setup_skip">Ignorar</string>
     <string name="setup_next">Continuar</string>
@@ -189,7 +189,7 @@
     </string-array>
     <string name="settings_category_appearance">Aparência</string>
     <string name="settings_category_general">Geral</string>
-    <string name="settings_category_qkreply">QK Reply</string>
+    <string name="settings_category_qkreply">Pvot Reply</string>
     <string name="settings_theme_title">Tema</string>
     <string name="settings_night_title">Modo noturno</string>
     <string name="settings_black_title">Modo escuro puro</string>
@@ -210,7 +210,7 @@
     <string name="settings_vibration_title">Vibração</string>
     <string name="settings_ringtone_title">Som</string>
     <string name="settings_ringtone_none">Nenhum</string>
-    <string name="settings_qkreply_title">QK Reply</string>
+    <string name="settings_qkreply_title">Pvot Reply</string>
     <string name="settings_qkreply_summary">Alerta para novas mensagens</string>
     <string name="settings_qkreply_tap_dismiss_title">Toque para fechar</string>
     <string name="settings_qkreply_tap_dismiss_summary">Toque fora do alerta para o fechar</string>
@@ -249,7 +249,7 @@
         <item quantity="other">Após %d dias</item>
     </plurals>
     <string name="settings_long_as_mms_title">Enviar mensagens longas como MMS</string>
-    <string name="settings_long_as_mms_summary">Se as mensagens longas não estiverem a ser enviadas ou estão a ser enviadas pela ordem errada, pode tentar enviar como MMS. Podem ser aplicados custos adicionais.</string>
+    <string name="settings_long_as_mms_summary">Se as mensagens longas não estiverem a ser enviadas ou estiverem a ser enviadas pela ordem errada, pode tentar enviar como MMS. Podem ser aplicados custos adicionais.</string>
     <string name="settings_mms_size_title">Comprimir anexos MMS automaticamente</string>
     <string name="settings_sync_title">Sincronizar mensagens</string>
     <string name="settings_sync_summary">Sincronizar mensagens com a base de dados nativa do Android</string>
@@ -468,7 +468,7 @@
     <string name="settings_unread_at_top_summary">Mostrar conversas não lidas em cima</string>
     <string name="settings_mms_weblink_title">Gestão de ligações em mensagens</string>
     <string name="settings_disable_screenshots_title">Desativar capturas de ecrã</string>
-    <string name="settings_diable_screenshots_summary">Impedir que o SO e outras aplicações obtenham capturas de ecrã</string>
+    <string name="settings_diable_screenshots_summary">Impedir que o SO e outras aplicações obtenham capturas de ecrã.</string>
     <string name="message_content_filters_title">Filtro de conteúdos</string>
     <string name="message_content_filters_empty">Os filtros de conteúdos serão mostrados aqui</string>
     <string name="message_content_filters_add_cd">Criar filtro</string>
@@ -506,4 +506,6 @@
     <string name="compose_file_size_unavailable">Desconhecido</string>
     <string name="compose_change_default_app">Alterar aplicação padrão</string>
     <string name="app_name">Messages</string>
+    <string name="main_not_default_sms_message">Para utilizar Messages, tem que a ativar como aplicação padrão</string>
+    <string name="compose_not_default_sms_message">Para utilizar Messages, tem que a ativar como aplicação padrão</string>
 </resources>
