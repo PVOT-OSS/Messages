@@ -18,7 +18,6 @@
  */
 package org.prauga.messages.interactor
 
-import android.content.Context
 import org.prauga.messages.manager.ShortcutManager
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.repository.ConversationRepository
@@ -27,7 +26,6 @@ import io.reactivex.Flowable
 import javax.inject.Inject
 
 class SendMessage @Inject constructor(
-    private val context: Context,
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository,
     private val updateBadge: UpdateBadge,
@@ -66,9 +64,6 @@ class SendMessage @Inject constructor(
             conversationRepo.markUnarchived(threadId)
 
             shortcutManager.reportShortcutUsed(threadId)
-
-            // delete attachment local files, if any, because they're saved to mms db by now
-            params.attachments.forEach { it.removeCacheFile(context) }
         }
         .flatMap { updateBadge.buildObservable(Unit) } // Update the widget
 

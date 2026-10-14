@@ -88,6 +88,7 @@ import org.prauga.messages.util.ActiveSubscriptionObservable
 import org.prauga.messages.util.FileUtils
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.runAfter
 import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
 import java.text.SimpleDateFormat
@@ -1266,6 +1267,12 @@ class ComposeViewModel @Inject constructor(
                         (!state.editingMode ||    // and is not a new convo (group msg or not is already set)
                                 state.sendAsGroup))  // or (is a new convo and) send as group is selected
 
+                val attachments = state.attachments
+                val sendCount = if (state.scheduled == 0L && !sendAsGroup) addresses.size else 1
+                val onSendComplete = runAfter(sendCount) {
+                    attachments.forEach { it.removeCacheFile(context) }
+                }
+
                 when {
                     // Scheduling a message
                     state.scheduled != 0L -> addScheduledMessage.execute(
@@ -1275,9 +1282,10 @@ class ComposeViewModel @Inject constructor(
                             addresses,
                             sendAsGroup,
                             body.toString(),
-                            state.attachments.map { it.uri.toString() },
+                            attachments.map { it.uri.toString() },
                             conversationId
-                        )
+                        ),
+                        onSendComplete
                     ).also {
                         newState { copy(scheduled = 0, hasScheduledMessages = true) }
                         showScheduledToast = true
@@ -1290,9 +1298,10 @@ class ComposeViewModel @Inject constructor(
                             0,
                             addresses,
                             body.toString(),
-                            state.attachments,
+                            attachments,
                             delay
-                        )
+                        ),
+                        onSendComplete
                     )
 
                     // sending message to individual address(es)
@@ -1303,9 +1312,10 @@ class ComposeViewModel @Inject constructor(
                                 0,
                                 listOf(it),
                                 body.toString(),
-                                state.attachments,
+                                attachments,
                                 delay
-                            )
+                            ),
+                            onSendComplete
                         )
                     }
                 }
@@ -1370,20 +1380,16 @@ class ComposeViewModel @Inject constructor(
                 }
 
         // clear the current message schedule, text and attachments
+        // attachment files are deleted by the send itself once it no longer needs them
         view.clearCurrentMessageIntent
             .observeOn(AndroidSchedulers.mainThread())
-            .withLatestFrom(state) { hasError, state ->
-                // remove attachments
-                state.attachments.forEach { it.removeCacheFile(context) }
-                hasError
-            }
             .autoDispose(view.scope())
-            .subscribe {
+            .subscribe { hasError ->
                 view.setDraft("")
                 newState {
                     copy(
                         editingMode = false,
-                        hasError = it,  // hasError being kinda misused to finish() compose activity
+                        hasError = hasError,  // hasError being kinda misused to finish() compose activity
                         attachments = listOf(),
                         scheduled = 0,
                     )

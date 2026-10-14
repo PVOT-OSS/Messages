@@ -3,7 +3,6 @@
  */
 package org.prauga.messages.interactor
 
-import android.content.Context
 import org.prauga.messages.manager.ShortcutManager
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Conversation
@@ -17,12 +16,10 @@ import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.MockitoAnnotations
 
 class SendMessageTest {
-
-    @Mock
-    private lateinit var context: Context
 
     @Mock
     private lateinit var conversationRepo: ConversationRepository
@@ -48,7 +45,7 @@ class SendMessageTest {
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         `when`(updateBadge.buildObservable(Unit)).thenReturn(Flowable.just(Unit))
-        sendMessage = SendMessage(context, conversationRepo, messageRepo, updateBadge, shortcutManager)
+        sendMessage = SendMessage(conversationRepo, messageRepo, updateBadge, shortcutManager)
     }
 
     @Test
@@ -155,7 +152,7 @@ class SendMessageTest {
 
         testSubscriber.assertComplete()
         verify(messageRepo).sendMessage(1, 100L, listOf("+1234567890"), "Message with attachment", attachments, 0)
-        verify(attachment).removeCacheFile(context)
+        verifyNoInteractions(attachment)
     }
 
     @Test
@@ -224,7 +221,7 @@ class SendMessageTest {
     }
 
     @Test
-    fun givenMultipleAttachments_whenBuildObservable_thenCleansUpAllAttachments() {
+    fun givenMultipleAttachments_whenBuildObservable_thenLeavesCleanupToCaller() {
         val attachment1 = org.mockito.Mockito.mock(Attachment::class.java)
         val attachment2 = org.mockito.Mockito.mock(Attachment::class.java)
         val attachment3 = org.mockito.Mockito.mock(Attachment::class.java)
@@ -241,8 +238,6 @@ class SendMessageTest {
         sendMessage.buildObservable(params).subscribe(testSubscriber)
 
         testSubscriber.assertComplete()
-        verify(attachment1).removeCacheFile(context)
-        verify(attachment2).removeCacheFile(context)
-        verify(attachment3).removeCacheFile(context)
+        verifyNoInteractions(attachment1, attachment2, attachment3)
     }
 }
