@@ -1166,8 +1166,10 @@ class ComposeViewModel @Inject constructor(
                     if (e is Exception)
                         throw e
 
-                    // rename recorded file to new name
-                    FileUtils.renameTo(MediaRecorderManager.uri, newUri)
+                    if (!FileUtils.renameTo(MediaRecorderManager.uri, newUri)) {
+                        FileUtils.deleteFile(newUri)
+                        throw IllegalStateException("Unable to move audio recording to $newUri")
+                    }
 
                     // attach newly named file to message
                     newState {
@@ -1176,7 +1178,9 @@ class ComposeViewModel @Inject constructor(
                             attachments = attachments + Attachment(context, newUri)
                         )
                     }
-                } catch (e: Exception) { /* nothing */
+                } catch (e: Exception) {
+                    Timber.w(e)
+                    context.makeToast(R.string.compose_record_audio_msg_attach_error)
                 }
             }
 

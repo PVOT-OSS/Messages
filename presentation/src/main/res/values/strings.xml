@@ -192,6 +192,7 @@
 
     <string name="compose_record_audio_msg_abort_cd">Cancel audio message</string>
     <string name="compose_record_audio_msg_attach_cd">Attach audio message</string>
+    <string name="compose_record_audio_msg_attach_error">Unable to attach audio message</string>
     <string name="compose_record_audio_msg_play_pause_cd">Play or pause audio message</string>
 
     <string name="compose_message_cancel">Cancel</string>
