@@ -846,9 +846,6 @@ class ComposeViewModel @Inject constructor(
                         else ""
                     )
 
-                // remove attachments
-                state.attachments.forEach { it.removeCacheFile(context) }
-
                 newState { copy(saveDraft = true) }
             }
             .autoDispose(view.scope())
