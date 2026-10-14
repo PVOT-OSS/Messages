@@ -847,7 +847,7 @@ class ComposeViewModel @Inject constructor(
                     )
 
                 // remove attachments
-                state.attachments.forEach { it.removeCacheFile() }
+                state.attachments.forEach { it.removeCacheFile(context) }
 
                 newState { copy(saveDraft = true) }
             }
@@ -948,7 +948,7 @@ class ComposeViewModel @Inject constructor(
                 newState { copy(attachments = attachments - it) }
 
                 // if the attachment is backed by a local file, delete the file
-                it.removeCacheFile()
+                it.removeCacheFile(context)
             }
 
         conversation
@@ -1377,7 +1377,7 @@ class ComposeViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .withLatestFrom(state) { hasError, state ->
                 // remove attachments
-                state.attachments.forEach { it.removeCacheFile() }
+                state.attachments.forEach { it.removeCacheFile(context) }
                 hasError
             }
             .autoDispose(view.scope())

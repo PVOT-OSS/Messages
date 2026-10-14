@@ -68,7 +68,7 @@ class SendMessage @Inject constructor(
             shortcutManager.reportShortcutUsed(threadId)
 
             // delete attachment local files, if any, because they're saved to mms db by now
-            params.attachments.forEach { it.removeCacheFile() }
+            params.attachments.forEach { it.removeCacheFile(context) }
         }
         .flatMap { updateBadge.buildObservable(Unit) } // Update the widget
 
