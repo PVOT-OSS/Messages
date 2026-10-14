@@ -141,9 +141,9 @@ class FileUtils {
             catch (e: Exception) { false }
         }
 
-        fun renameTo(fromUri: Uri, toUri: Uri) {
-            fromUri.toFile().renameTo(toUri.toFile())
-        }
+        fun renameTo(fromUri: Uri, toUri: Uri): Boolean =
+            try { fromUri.toFile().renameTo(toUri.toFile()) }
+            catch (e: Exception) { false }
     }
 
 }
