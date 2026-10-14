@@ -155,7 +155,7 @@ class SendMessageTest {
 
         testSubscriber.assertComplete()
         verify(messageRepo).sendMessage(1, 100L, listOf("+1234567890"), "Message with attachment", attachments, 0)
-        verify(attachment).removeCacheFile()
+        verify(attachment).removeCacheFile(context)
     }
 
     @Test
@@ -241,8 +241,8 @@ class SendMessageTest {
         sendMessage.buildObservable(params).subscribe(testSubscriber)
 
         testSubscriber.assertComplete()
-        verify(attachment1).removeCacheFile()
-        verify(attachment2).removeCacheFile()
-        verify(attachment3).removeCacheFile()
+        verify(attachment1).removeCacheFile(context)
+        verify(attachment2).removeCacheFile(context)
+        verify(attachment3).removeCacheFile(context)
     }
 }

@@ -83,13 +83,16 @@ class Attachment (
         resourceBytes = null
     }
 
-    fun removeCacheFile(): Boolean {
-        // all file:// scheme files are local to the app cache dir, so can be deleted
-        if (uri.scheme == ContentResolver.SCHEME_FILE) {
-            return try { uri.toFile().delete() }
-            catch (e: Exception) { false }
-        }
+    fun removeCacheFile(context: Context): Boolean {
+        if (uri.scheme != ContentResolver.SCHEME_FILE)
+            return false
 
-        return false
+        return try {
+            val file = uri.toFile().canonicalFile
+            val cacheDir = context.cacheDir.canonicalFile
+            file.startsWith(cacheDir) && file != cacheDir && file.delete()
+        } catch (e: Exception) {
+            false
+        }
     }
 }
