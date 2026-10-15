@@ -32,6 +32,7 @@ import android.provider.Telephony
 import android.provider.Telephony.Mms
 import android.provider.Telephony.Sms
 import android.telephony.SmsManager
+import android.telephony.SmsMessage
 import android.webkit.MimeTypeMap
 import androidx.core.content.contentValuesOf
 import com.android.mms.MmsConfig
@@ -426,7 +427,9 @@ constructor(
             }
 
         val parts = smsManager.divideMessage(strippedBody).orEmpty()
-        val forceMms = prefs.longAsMms.get() && parts.size > 1
+        val forceMms =
+            (prefs.longAsMms.get() && parts.size > 1) ||
+                carrierRequiresMms(subId, addresses, strippedBody, parts.size)
 
         if (addresses.size == 1 && attachments.isEmpty() && !forceMms) { // SMS
             if (delay > 0) { // With delay
@@ -592,7 +595,11 @@ constructor(
                     }
             }
 
-            val recipients = addresses.map(phoneNumberUtils::normalizeNumber)
+            val recipients =
+                addresses.map { address ->
+                    if (isEmailAddress(address)) address
+                    else phoneNumberUtils.normalizeNumber(address)
+                }
 
             // Pre-insert the MMS message
             val (_, messageUri) = insertSentMms(subId, threadId, recipients, parts, null)
@@ -683,6 +690,34 @@ constructor(
                         userMaxMessageSize(message.subId),
                     )
             } ?: Unit
+
+    private fun carrierRequiresMms(
+        subId: Int,
+        addresses: Collection<String>,
+        body: String,
+        smsParts: Int,
+    ): Boolean {
+        val config = tryOrNull { CarrierMmsConfig.get(context, subId) } ?: return false
+        if (!config.mmsEnabled) return false
+
+        val threshold = config.smsToMmsTextThreshold
+        if (threshold > 0 && smsParts > threshold) return true
+
+        val lengthThreshold =
+            config.smsToMmsTextLengthThreshold.let { threshold ->
+                val is16Bit =
+                    tryOrNull(false) {
+                        SmsMessage.calculateLength(body, false)[3] ==
+                            SmsMessage.ENCODING_16BIT
+                    } == true
+                if (threshold > 0 && is16Bit) threshold / 2 else threshold
+            }
+        if (lengthThreshold > 0 && body.length > lengthThreshold) return true
+
+        return addresses.any(::isEmailAddress) && config.emailGatewayNumber.isEmpty()
+    }
+
+    private fun isEmailAddress(address: String) = address.contains('@')
 
     private fun userMaxMessageSize(subId: Int): Int? {
         val chosen = prefs.mmsSize.get()
