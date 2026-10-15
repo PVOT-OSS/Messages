@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Inhishonor <inhishonor@protonmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.common.util
 
 import android.app.Activity

@@ -1,9 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Mock HTTP client for MMS testing.
- * Simulates MMS network operations without actual network calls.
+ * SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.testutil
 
 import com.google.android.mms.pdu_alt.PduHeaders

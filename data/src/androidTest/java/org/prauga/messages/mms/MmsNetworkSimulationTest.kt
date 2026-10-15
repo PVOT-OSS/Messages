@@ -1,9 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Instrumented tests for MMS network simulation.
- * Tests network scenarios using MockMmsHttpClient.
+ * SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.mms
 
 import android.content.Context

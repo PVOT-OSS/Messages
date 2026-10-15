@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)

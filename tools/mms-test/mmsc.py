@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 A fake MMSC for testing MMS end to end on the Android emulator, without a carrier.
 

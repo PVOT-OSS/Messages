@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+# SPDX-FileCopyrightText: 2025-2026 Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # android-smsmms
 -dontwarn android.net.ConnectivityManager
 -dontwarn android.net.LinkProperties

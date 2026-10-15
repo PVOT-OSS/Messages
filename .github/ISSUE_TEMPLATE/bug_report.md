@@ -7,6 +7,12 @@ assignees: ''
 
 ---
 
+<!--
+SPDX-FileCopyrightText: octoshrimpy <octoshrimpy@users.noreply.github.com>
+SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 

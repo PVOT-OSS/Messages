@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 1994 Anthony Dekker
+ * SPDX-License-Identifier: LicenseRef-Glide-gif-encoder
+ */
+
 package com.bumptech.glide.gifencoder;
 
 // Ported to Java 12/00 K Weiner

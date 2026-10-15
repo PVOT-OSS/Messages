@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 Minimal MMS (OMA-MMS-ENC) PDU encoding and decoding, enough to play an MMSC in tests.
 

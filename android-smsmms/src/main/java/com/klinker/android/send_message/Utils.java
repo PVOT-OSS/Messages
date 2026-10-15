@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: Jacob Klinker
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.klinker.android.send_message;
 
 import android.content.Context;

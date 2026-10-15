@@ -1,10 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Instrumented integration tests for MMS functionality.
- * These tests run on an actual Android device or emulator and use
- * real Android components with a mocked network layer.
+ * SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.mms
 
 import android.content.ContentResolver

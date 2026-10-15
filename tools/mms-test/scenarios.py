@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 Runs MMS scenarios end to end against the fake MMSC and checks what happened, on a device or
 emulator prepared with ./setup.sh.

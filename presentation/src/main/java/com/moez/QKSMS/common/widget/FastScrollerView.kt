@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Shubham-344 <shubhamanand030404@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package com.moez.QKSMS.common.widget

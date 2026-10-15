@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: Jacob Klinker
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.android.mms.transaction;
 
 import android.app.PendingIntent;

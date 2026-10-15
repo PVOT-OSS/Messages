@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: Jannis <jvajen@gmail.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 ### DESCRIPTION
 A short description of the issue.
 Example: Conversations aren't marked as read when they are opened from a notification.

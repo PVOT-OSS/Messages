@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 // From
 // https://medium.com/@KaushalVasava/android-15-edge-to-edge-support-how-to-implement-in-xml-views-59a65d73f1c9
 

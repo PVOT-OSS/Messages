@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2025-2026 Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 [versions]
 agp = "8.13.2"
 firebase-crashlytics-gradle = "3.0.6"

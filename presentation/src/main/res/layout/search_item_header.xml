@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
-  -->
+     SPDX-FileCopyrightText: 2026 Shubham-344 <shubhamanand030404@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"

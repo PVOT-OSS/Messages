@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # End to end MMS tests without a carrier
 
 These tools test MMS sending and receiving for real, through Android's own `MmsService`, against a
