@@ -8,8 +8,8 @@ import android.content.res.Configuration
 import android.telephony.SmsManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.klinker.android.send_message.CarrierMmsConfig
-import com.klinker.android.send_message.MmsConfigOverrides
+import org.prauga.messages.carrier.CarrierMmsConfig
+import org.prauga.messages.carrier.MmsConfigOverrides
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull

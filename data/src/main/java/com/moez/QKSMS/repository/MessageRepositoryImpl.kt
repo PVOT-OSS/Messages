@@ -49,7 +49,7 @@ import com.google.android.mms.pdu_alt.PduPart
 import com.google.android.mms.pdu_alt.PduPersister
 import com.google.android.mms.pdu_alt.SendReq
 import com.google.android.mms.smil.SmilHelper
-import com.klinker.android.send_message.CarrierMmsConfig
+import org.prauga.messages.carrier.CarrierMmsConfig
 import com.klinker.android.send_message.SimpleCharacters
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.Transaction

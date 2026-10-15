@@ -32,6 +32,7 @@ import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.PduPersister;
 import com.google.android.mms.pdu_alt.RetrieveConf;
 import com.google.android.mms.util_alt.SqliteWrapper;
+import org.prauga.messages.carrier.CarrierMmsConfig;
 import timber.log.Timber;
 
 import java.io.File;

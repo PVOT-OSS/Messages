@@ -12,8 +12,8 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import com.klinker.android.send_message.BroadcastUtils;
-import com.klinker.android.send_message.CarrierMmsConfig;
-import com.klinker.android.send_message.MmsConfigOverrides;
+import org.prauga.messages.carrier.CarrierMmsConfig;
+import org.prauga.messages.carrier.MmsConfigOverrides;
 import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.SmsManagerFactory;
 

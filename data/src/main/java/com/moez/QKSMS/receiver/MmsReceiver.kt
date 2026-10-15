@@ -22,7 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.android.mms.transaction.PushReceiver
-import com.klinker.android.send_message.CarrierMmsConfig
+import org.prauga.messages.carrier.CarrierMmsConfig
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 import org.prauga.messages.interactor.ReceiveMms
