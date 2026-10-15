@@ -23,7 +23,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.telephony.SmsManager
-import androidx.core.os.bundleOf
 import com.android.mms.MmsConfig
 import com.android.mms.dom.smil.parser.SmilXmlSerializer
 import com.google.android.mms.ContentType
@@ -148,14 +147,10 @@ constructor(private val context: Context, settings: Settings = Settings()) {
                 }
 
             val configOverrides =
-                bundleOf(
-                    Pair(SmsManager.MMS_CONFIG_GROUP_MMS_ENABLED, true),
-                    Pair(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE, MmsConfig.getMaxMessageSize()),
-                )
-
-            MmsConfig.getHttpParams()
-                ?.takeIf { it.isNotEmpty() }
-                ?.let { configOverrides.putString(SmsManager.MMS_CONFIG_HTTP_PARAMS, it) }
+                MmsConfigOverrides.create(context, subId).apply {
+                    putBoolean(SmsManager.MMS_CONFIG_GROUP_MMS_ENABLED, true)
+                    putInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE, MmsConfig.getMaxMessageSize())
+                }
 
             if (contentUri != null) {
                 SmsManagerFactory.createSmsManager(subId)

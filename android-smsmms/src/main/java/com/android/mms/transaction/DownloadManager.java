@@ -11,9 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
-import android.text.TextUtils;
-import com.android.mms.MmsConfig;
 import com.klinker.android.send_message.BroadcastUtils;
+import com.klinker.android.send_message.MmsConfigOverrides;
 import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.SmsManagerFactory;
 
@@ -68,11 +67,7 @@ public class DownloadManager {
                 context, location.hashCode(), download, PendingIntent.FLAG_UPDATE_CURRENT | mutable);
 
         final SmsManager smsManager = SmsManagerFactory.INSTANCE.createSmsManager(subscriptionId);
-        Bundle configOverrides = new Bundle();
-        String httpParams = MmsConfig.getHttpParams();
-        if (!TextUtils.isEmpty(httpParams)) {
-            configOverrides.putString(SmsManager.MMS_CONFIG_HTTP_PARAMS, httpParams);
-        }
+        Bundle configOverrides = MmsConfigOverrides.create(context, subscriptionId);
 
         try {
             smsManager.downloadMultimediaMessage(context, location, contentUri, configOverrides, pendingIntent);
