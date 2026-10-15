@@ -1222,7 +1222,7 @@ constructor(
                 Sms.DATE to date,
                 Sms.DATE_SENT to sentTime,
                 Sms.READ to 0,
-                Sms.SEEN to 1,
+                Sms.SEEN to 0,
                 Sms.PROTOCOL to details.protocol,
                 Sms.REPLY_PATH_PRESENT to if (details.replyPathPresent) 1 else 0,
             )
