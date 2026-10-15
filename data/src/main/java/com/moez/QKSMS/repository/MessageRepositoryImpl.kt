@@ -59,6 +59,7 @@ import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
 import java.io.ByteArrayOutputStream
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -1159,7 +1160,9 @@ constructor(
         // Check if this is a reaction message before inserting
         val parsedReaction = tryOrNull { reactions.parseEmojiReaction(body) }
 
-        val date = System.currentTimeMillis()
+        val date =
+            if (Calendar.getInstance().get(Calendar.YEAR) < 2025 && sentTime > 0) sentTime
+            else System.currentTimeMillis()
 
         val values =
             contentValuesOf(
