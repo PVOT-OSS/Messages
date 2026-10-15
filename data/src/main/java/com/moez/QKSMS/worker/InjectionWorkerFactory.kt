@@ -25,11 +25,13 @@ import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import javax.inject.Inject
 import org.prauga.messages.interactor.ReceiveSms
+import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.repository.ScheduledMessageRepository
 
 class InjectionWorkerFactory
 @Inject
 constructor(
+    private val messageRepository: MessageRepository,
     private val receiveSms: ReceiveSms,
     private val scheduledMessageRepository: ScheduledMessageRepository,
 ) : WorkerFactory() {
@@ -50,6 +52,9 @@ constructor(
             }
             is ReceiveSmsWorker -> {
                 instance.receiveSms = receiveSms
+            }
+            is MmsDownloadRetryWorker -> {
+                instance.messageRepo = messageRepository
             }
         }
 
