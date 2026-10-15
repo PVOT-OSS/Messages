@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.injection.android
 
 import dagger.Module
@@ -25,6 +12,7 @@ import org.prauga.messages.injection.scope.ActivityScope
 import org.prauga.messages.receiver.BlockThreadReceiver
 import org.prauga.messages.receiver.BootReceiver
 import org.prauga.messages.receiver.DefaultSmsChangedReceiver
+import org.prauga.messages.receiver.DeleteConfirmationReceiver
 import org.prauga.messages.receiver.DeleteMessagesReceiver
 import org.prauga.messages.receiver.MarkArchivedReceiver
 import org.prauga.messages.receiver.MarkReadReceiver
@@ -50,9 +38,7 @@ abstract class BroadcastReceiverBuilderModule {
     @ContributesAndroidInjector()
     abstract fun bindBlockThreadReceiver(): BlockThreadReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindBootReceiver(): BootReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindBootReceiver(): BootReceiver
 
     @ActivityScope
     @ContributesAndroidInjector()
@@ -61,6 +47,10 @@ abstract class BroadcastReceiverBuilderModule {
     @ActivityScope
     @ContributesAndroidInjector()
     abstract fun bindDeleteMessagesReceiver(): DeleteMessagesReceiver
+
+    @ActivityScope
+    @ContributesAndroidInjector()
+    abstract fun bindDeleteConfirmationReceiver(): DeleteConfirmationReceiver
 
     @ActivityScope
     @ContributesAndroidInjector
@@ -86,13 +76,9 @@ abstract class BroadcastReceiverBuilderModule {
     @ContributesAndroidInjector()
     abstract fun bindMmsReceivedReceiver(): MmsReceivedReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindMmsReceiver(): MmsReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindMmsReceiver(): MmsReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindMmsSentReceiver(): MmsSentReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindMmsSentReceiver(): MmsSentReceiver
 
     @ActivityScope
     @ContributesAndroidInjector()
@@ -118,16 +104,9 @@ abstract class BroadcastReceiverBuilderModule {
     @ContributesAndroidInjector()
     abstract fun bindSmsProviderChangedReceiver(): SmsProviderChangedReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindSmsReceiver(): SmsReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindSmsReceiver(): SmsReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindSmsSentReceiver(): SmsSentReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindSmsSentReceiver(): SmsSentReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindWidgetProvider(): WidgetProvider
-
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindWidgetProvider(): WidgetProvider
 }

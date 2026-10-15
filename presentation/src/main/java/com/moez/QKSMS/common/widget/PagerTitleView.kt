@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.widget
 
 import android.R
@@ -30,6 +17,7 @@ import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.forEach
 import org.prauga.messages.common.util.extensions.resolveThemeColor
@@ -37,15 +25,12 @@ import org.prauga.messages.databinding.TabViewBinding
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.ConversationRepository
-import javax.inject.Inject
 
 class PagerTitleView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     LinearLayout(context, attrs) {
 
-    @Inject
-    lateinit var colors: Colors
-    @Inject
-    lateinit var conversationRepo: ConversationRepository
+    @Inject lateinit var colors: Colors
+    @Inject lateinit var conversationRepo: ConversationRepository
 
     private val recipientId: Subject<Long> = BehaviorSubject.create()
 
@@ -76,26 +61,27 @@ class PagerTitleView @JvmOverloads constructor(context: Context, attrs: Attribut
             addView(view.root)
         }
 
-        childCount.forEach { index ->
-            getChildAt(index).isActivated = index == pager?.currentItem
-        }
+        childCount.forEach { index -> getChildAt(index).isActivated = index == pager?.currentItem }
 
-        pager?.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                childCount.forEach { index ->
-                    getChildAt(index).isActivated = index == position
+        pager?.addOnPageChangeListener(
+            object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    childCount.forEach { index ->
+                        getChildAt(index).isActivated = index == position
+                    }
                 }
             }
-        })
+        )
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        val states = arrayOf(
-            intArrayOf(android.R.attr.state_activated),
-            intArrayOf(-android.R.attr.state_activated)
-        )
+        val states =
+            arrayOf(
+                intArrayOf(android.R.attr.state_activated),
+                intArrayOf(-android.R.attr.state_activated),
+            )
 
         recipientId
             .distinctUntilChanged()
@@ -112,5 +98,4 @@ class PagerTitleView @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
             }
     }
-
 }

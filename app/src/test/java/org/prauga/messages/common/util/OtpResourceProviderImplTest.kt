@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.common.util
@@ -19,9 +20,9 @@ import org.robolectric.annotation.Config
 
 /**
  * Unit tests for OtpResourceProviderImpl.
- * 
- * These tests verify resource loading, lowercase normalization,
- * fallback behavior, and error message retrieval.
+ *
+ * These tests verify resource loading, lowercase normalization, fallback behavior, and error
+ * message retrieval.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.P])
@@ -93,8 +94,10 @@ class OtpResourceProviderImplTest {
         // Then
         assertNotNull("Error message should not be null", result)
         assertFalse("Error message should not be empty", result.isEmpty())
-        assertTrue("Should contain expected message", 
-            result.contains("No OTP") || result.contains("no candidate code"))
+        assertTrue(
+            "Should contain expected message",
+            result.contains("No OTP") || result.contains("no candidate code"),
+        )
     }
 
     @Test
@@ -105,8 +108,10 @@ class OtpResourceProviderImplTest {
         // Then
         assertNotNull("Error message should not be null", result)
         assertFalse("Error message should not be empty", result.isEmpty())
-        assertTrue("Should contain expected message",
-            result.contains("OTP") || result.contains("no numeric") || result.contains("no code"))
+        assertTrue(
+            "Should contain expected message",
+            result.contains("OTP") || result.contains("no numeric") || result.contains("no code"),
+        )
     }
 
     @Test
@@ -128,12 +133,15 @@ class OtpResourceProviderImplTest {
         val moneyIndicators = provider.getMoneyIndicators()
 
         // Then
-        assertTrue("All OTP keywords should be lowercase", 
-            otpKeywords.all { it == it.lowercase() })
-        assertTrue("All safety keywords should be lowercase",
-            safetyKeywords.all { it == it.lowercase() })
-        assertTrue("All money indicators should be lowercase",
-            moneyIndicators.all { it == it.lowercase() })
+        assertTrue("All OTP keywords should be lowercase", otpKeywords.all { it == it.lowercase() })
+        assertTrue(
+            "All safety keywords should be lowercase",
+            safetyKeywords.all { it == it.lowercase() },
+        )
+        assertTrue(
+            "All money indicators should be lowercase",
+            moneyIndicators.all { it == it.lowercase() },
+        )
     }
 
     @Test

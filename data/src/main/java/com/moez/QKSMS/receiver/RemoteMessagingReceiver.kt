@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.receiver
 
 import android.content.BroadcastReceiver
@@ -23,12 +10,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.RemoteInput
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.compat.SubscriptionManagerCompat
 import org.prauga.messages.interactor.MarkRead
 import org.prauga.messages.interactor.SendMessage
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
-import javax.inject.Inject
 
 class RemoteMessagingReceiver : BroadcastReceiver() {
 
@@ -49,12 +36,16 @@ class RemoteMessagingReceiver : BroadcastReceiver() {
         markRead.execute(listOf(threadId))
 
         val lastMessage = messageRepo.getMessages(threadId).lastOrNull()
-        val subId = subscriptionManager.activeSubscriptionInfoList
+        val subId =
+            subscriptionManager.activeSubscriptionInfoList
                 .firstOrNull { it.subscriptionId == lastMessage?.subId }
                 ?.subscriptionId ?: -1
-        val addresses = conversationRepo.getConversation(threadId)?.recipients?.map { it.address } ?: return
+        val addresses =
+            conversationRepo.getConversation(threadId)?.recipients?.map { it.address } ?: return
 
         val pendingRepository = goAsync()
-        sendMessage.execute(SendMessage.Params(subId, threadId, addresses, body)) { pendingRepository.finish() }
+        sendMessage.execute(SendMessage.Params(subId, threadId, addresses, body)) {
+            pendingRepository.finish()
+        }
     }
 }

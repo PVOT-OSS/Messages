@@ -1,18 +1,20 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.receiver
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import org.prauga.messages.interactor.MarkDelivered
-import org.prauga.messages.interactor.MarkDeliveryFailed
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.interactor.MarkDelivered
+import org.prauga.messages.interactor.MarkDeliveryFailed
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -20,14 +22,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class SmsDeliveredReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var markDelivered: MarkDelivered
+    @Mock private lateinit var markDelivered: MarkDelivered
 
-    @Mock
-    private lateinit var markDeliveryFailed: MarkDeliveryFailed
+    @Mock private lateinit var markDeliveryFailed: MarkDeliveryFailed
 
     private lateinit var receiver: SmsDeliveredReceiver
 
@@ -45,8 +44,10 @@ class SmsDeliveredReceiverTest {
         val receiver = SmsDeliveredReceiver()
 
         org.junit.Assert.assertNotNull("Receiver should be instantiable", receiver)
-        org.junit.Assert.assertTrue("Receiver should be a BroadcastReceiver",
-            receiver is android.content.BroadcastReceiver)
+        org.junit.Assert.assertTrue(
+            "Receiver should be a BroadcastReceiver",
+            receiver is android.content.BroadcastReceiver,
+        )
     }
 
     @Test
@@ -67,9 +68,7 @@ class SmsDeliveredReceiverTest {
     @Test
     fun givenIntent_whenExtraIdSet_thenRetrievesCorrectly() {
         val expectedId = 54321L
-        val intent = Intent().apply {
-            putExtra("id", expectedId)
-        }
+        val intent = Intent().apply { putExtra("id", expectedId) }
 
         val id = intent.getLongExtra("id", 0L)
 
@@ -79,9 +78,7 @@ class SmsDeliveredReceiverTest {
     @Test
     fun givenIntentWithMaxLongId_whenExtraIdRetrieved_thenReturnsMaxValue() {
         val expectedId = Long.MAX_VALUE
-        val intent = Intent().apply {
-            putExtra("id", expectedId)
-        }
+        val intent = Intent().apply { putExtra("id", expectedId) }
 
         val id = intent.getLongExtra("id", 0L)
 
@@ -111,7 +108,10 @@ class SmsDeliveredReceiverTest {
         val successCode = Activity.RESULT_OK
         val failureCode = Activity.RESULT_CANCELED
 
-        org.junit.Assert.assertNotEquals("Success and failure codes should be different",
-            successCode, failureCode)
+        org.junit.Assert.assertNotEquals(
+            "Success and failure codes should be different",
+            successCode,
+            failureCode,
+        )
     }
 }

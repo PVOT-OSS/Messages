@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: Priit Jõerüüt <jrthwlate@users.noreply.hosted.weblate.org>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <resources>
     <string name="shortcut_compose_long_label">Uus vestlus</string>
     <string name="shortcut_compose_short_label">Kirjuta</string>

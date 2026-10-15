@@ -1,34 +1,31 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.ConversationRepository
-import org.prauga.messages.repository.MessageRepository
-import org.prauga.messages.util.Preferences
+import com.f2prateek.rx.preferences2.Preference
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import com.f2prateek.rx.preferences2.Preference
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
+import org.prauga.messages.util.Preferences
 
 class DeleteOldMessagesTest {
 
-    @Mock
-    private lateinit var conversationRepo: ConversationRepository
+    @Mock private lateinit var conversationRepo: ConversationRepository
 
-    @Mock
-    private lateinit var messageRepo: MessageRepository
+    @Mock private lateinit var messageRepo: MessageRepository
 
-    @Mock
-    private lateinit var prefs: Preferences
+    @Mock private lateinit var prefs: Preferences
 
-    @Mock
-    private lateinit var autoDeletePref: Preference<Int>
+    @Mock private lateinit var autoDeletePref: Preference<Int>
 
     private lateinit var deleteOldMessages: DeleteOldMessages
 

@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Inhishonor <inhishonor@protonmail.com>
+SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # Contributing
 
 Contributions are greatly appreciated! There are many ways to contribute to this repository:

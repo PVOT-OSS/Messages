@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2020 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.service
 
 import android.annotation.SuppressLint
@@ -7,13 +12,13 @@ import android.app.job.JobService
 import android.content.ComponentName
 import android.content.Context
 import dagger.android.AndroidInjection
-import org.prauga.messages.common.util.extensions.jobScheduler
-import org.prauga.messages.interactor.DeleteOldMessages
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import org.prauga.messages.common.util.extensions.jobScheduler
+import org.prauga.messages.interactor.DeleteOldMessages
+import timber.log.Timber
 
 class AutoDeleteService : JobService() {
 
@@ -24,7 +29,8 @@ class AutoDeleteService : JobService() {
         fun scheduleJob(context: Context) {
             Timber.i("Scheduling job")
             val serviceComponent = ComponentName(context, AutoDeleteService::class.java)
-            val periodicJob = JobInfo.Builder(JobId, serviceComponent)
+            val periodicJob =
+                JobInfo.Builder(JobId, serviceComponent)
                     .setPeriodic(TimeUnit.DAYS.toMillis(1))
                     .setPersisted(true)
                     .build()
@@ -46,9 +52,7 @@ class AutoDeleteService : JobService() {
         Timber.i("onStartJob")
         AndroidInjection.inject(this)
         disposables += deleteOldMessages
-        deleteOldMessages.execute(Unit) {
-            jobFinished(params, false)
-        }
+        deleteOldMessages.execute(Unit) { jobFinished(params, false) }
         return true
     }
 

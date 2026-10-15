@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.model
 
 import android.annotation.SuppressLint
@@ -35,12 +23,11 @@ import org.prauga.messages.extensions.isContact
 import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVCard
 
-
 @SuppressLint("Range")
-class Attachment (
+class Attachment(
     context: Context,
     var uri: Uri = Uri.EMPTY,
-    inputContent: InputContentInfoCompat? = null
+    inputContent: InputContentInfoCompat? = null,
 ) {
     private var resourceBytes: ByteArray? = null
 
@@ -49,8 +36,7 @@ class Attachment (
             uri = inputContent?.contentUri ?: uri
 
         // if constructed with a uri to a contact, convert uri to associated vcard uri
-        if (uri.isContact(context))
-            uri = uri.contactToVCard(context)
+        if (uri.isContact(context)) uri = uri.contactToVCard(context)
     }
 
     fun isVCard(context: Context): Boolean = uri.isVCard(context)
@@ -72,8 +58,7 @@ class Attachment (
 
     fun getResourceBytes(context: Context): ByteArray {
         // cache resource bytes by loading first time only
-        if (resourceBytes != null)
-            return resourceBytes!!
+        if (resourceBytes != null) return resourceBytes!!
 
         resourceBytes = uri.getResourceBytes(context)
 
@@ -84,14 +69,15 @@ class Attachment (
         resourceBytes = null
     }
 
-    fun removeCacheFile(): Boolean {
-        // all file:// scheme files are local to the app cache dir, so can be deleted
-        if (uri.scheme == ContentResolver.SCHEME_FILE) {
-            return try { uri.toFile().delete() }
-            catch (e: Exception) { false }
-        }
+    fun removeCacheFile(context: Context): Boolean {
+        if (uri.scheme != ContentResolver.SCHEME_FILE) return false
 
-        return false
+        return try {
+            val file = uri.toFile().canonicalFile
+            val cacheDir = context.cacheDir.canonicalFile
+            file.startsWith(cacheDir) && file != cacheDir && file.delete()
+        } catch (e: Exception) {
+            false
+        }
     }
 }
-

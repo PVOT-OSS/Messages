@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2025
- *
- * This file is part of QUIK.
- *
- * QUIK is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QUIK is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.moez.QKSMS.manager
 
 import android.content.BroadcastReceiver
@@ -25,35 +13,39 @@ import android.content.IntentFilter
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.AudioManager.GET_DEVICES_INPUTS
-
+import androidx.core.content.ContextCompat
 
 // this class is, by design, as simplistic it can be to support easy and fast connection
 // for recording from first bluetooth mic found, if any
 
-class BluetoothMicManager(
-    private val context: Context,
-    private val callbacks: Callbacks
-)
-    : BroadcastReceiver() {
+class BluetoothMicManager(private val context: Context, private val callbacks: Callbacks) :
+    BroadcastReceiver() {
     interface Callbacks {
         fun onNoDeviceFound()
+
         fun onDeviceFound(device: AudioDeviceInfo?)
+
         fun onConnecting(device: AudioDeviceInfo?)
+
         fun onConnected(device: AudioDeviceInfo?)
+
         fun onDisconnected(device: AudioDeviceInfo?)
     }
 
     init {
         // register for bluetooth sco broadcast intents
-        context.registerReceiver(this, IntentFilter().apply {
-            addAction(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED)
-        })
+        ContextCompat.registerReceiver(
+            context,
+            this,
+            IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
     }
 
     enum class StartBluetoothDevice {
         NoDevice,
         Connecting,
-        Connected
+        Connected,
     }
 
     var device: AudioDeviceInfo? = null
@@ -63,8 +55,7 @@ class BluetoothMicManager(
     private var closed: Boolean = false
 
     fun close() {
-        if (closed)
-            return
+        if (closed) return
         closed = true
 
         device = null
@@ -81,19 +72,18 @@ class BluetoothMicManager(
         // get all audio input devices
         val allAudioInputDevices = audioManager.getDevices(GET_DEVICES_INPUTS)
 
-// @TODO: below code can be used for BLE headset devices if and when one can be tested
-//      : also need to register for BLE headset intent broadcasts and other things later
-//        // firstly (highest priority), check for a connected BLE headset input device
-//        for (btInputDevice in allAudioInputDevices) {
-//            if (btInputDevice.type == AudioDeviceInfo.TYPE_BLE_HEADSET) {
-//                device = btInputDevice
-//                break
-//            }
-//        }
+        // @TODO: below code can be used for BLE headset devices if and when one can be tested
+        //      : also need to register for BLE headset intent broadcasts and other things later
+        //        // firstly (highest priority), check for a connected BLE headset input device
+        //        for (btInputDevice in allAudioInputDevices) {
+        //            if (btInputDevice.type == AudioDeviceInfo.TYPE_BLE_HEADSET) {
+        //                device = btInputDevice
+        //                break
+        //            }
+        //        }
 
         // if no ble device found, check if platform supports non-phone-call sco connections
-        if ((device == null) &&
-            (audioManager.isBluetoothScoAvailableOffCall)) {
+        if ((device == null) && (audioManager.isBluetoothScoAvailableOffCall)) {
             // find first SCO input device
             for (btInputDevice in allAudioInputDevices) {
                 if (btInputDevice.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
@@ -113,14 +103,14 @@ class BluetoothMicManager(
         callbacks.onDeviceFound(device)
 
         // start sco connection on bluetooth device (even if already started by other app)
-        try {    // see https://stackoverflow.com/a/26929741 for try-catch reason
+        try { // see https://stackoverflow.com/a/26929741 for try-catch reason
             audioManager.startBluetoothSco()
+        } catch (e: Exception) {
+            /* nothing */
         }
-        catch (e: Exception) { /* nothing */ }
 
         // if sco device is already on (maybe by another app?) callback now
-        if (audioManager.isBluetoothScoOn)
-            callbacks.onConnected(device)
+        if (audioManager.isBluetoothScoOn) callbacks.onConnected(device)
     }
 
     override fun onReceive(context: Context, intent: Intent) {

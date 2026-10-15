@@ -1,20 +1,21 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.repository.MessageRepository
 
 class MarkAllSeenTest {
 
-    @Mock
-    private lateinit var messageRepo: MessageRepository
+    @Mock private lateinit var messageRepo: MessageRepository
 
     private lateinit var markAllSeen: MarkAllSeen
 

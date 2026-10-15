@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<motorola_config_override>
+    <bool name="groupChatDefaultsToMMS">true</bool>
+</motorola_config_override>

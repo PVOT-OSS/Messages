@@ -1,18 +1,7 @@
 /*
- * Copyright (C) 2007 Esmertec AG.
- * Copyright (C) 2007 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-FileCopyrightText: 2007 Esmertec AG.
+ * SPDX-FileCopyrightText: 2007 The Android Open Source Project
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package com.android.mms.dom;
@@ -26,16 +15,16 @@ import org.w3c.dom.TypeInfo;
 public class AttrImpl extends NodeImpl implements Attr {
     private String mName;
     private String mValue;
-	
+
 	/*
      * Internal methods
      */
-	
+
 	protected AttrImpl(DocumentImpl owner, String name) {
 		super(owner);
 		mName = name;
 	}
-	
+
     /*
      * Attr Interface Methods
      */
@@ -63,7 +52,7 @@ public class AttrImpl extends NodeImpl implements Attr {
 	public void setValue(String value) throws DOMException {
 		mValue = value;
 	}
-	
+
     /*
      * Node Interface Methods
      */
@@ -77,22 +66,22 @@ public class AttrImpl extends NodeImpl implements Attr {
 	public short getNodeType() {
 		return Node.ATTRIBUTE_NODE;
 	}
-	
+
 	@Override
 	public Node getParentNode() {
 		return null;
 	}
-	
-	@Override 
+
+	@Override
 	public Node getPreviousSibling() {
 		return null;
 	}
-	
+
 	@Override
 	public Node getNextSibling() {
 		return null;
 	}
-	
+
 	@Override
 	public void setNodeValue(String nodeValue) throws DOMException {
         setValue(nodeValue);

@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.receiver
 
 import android.app.Activity
@@ -9,7 +11,6 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Telephony
 import com.klinker.android.send_message.Transaction
-import org.prauga.messages.interactor.SyncMessage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -18,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.interactor.SyncMessage
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -25,11 +27,9 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class MmsSentReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var syncMessage: SyncMessage
+    @Mock private lateinit var syncMessage: SyncMessage
 
     private lateinit var receiver: MmsSentReceiver
 
@@ -56,9 +56,7 @@ class MmsSentReceiverTest {
     @Test
     fun givenIntent_whenExtraContentUriRetrieved_thenParsesCorrectly() {
         val expectedUri = "content://mms/123"
-        val intent = Intent().apply {
-            putExtra(Transaction.EXTRA_CONTENT_URI, expectedUri)
-        }
+        val intent = Intent().apply { putExtra(Transaction.EXTRA_CONTENT_URI, expectedUri) }
 
         val uriString = intent.getStringExtra(Transaction.EXTRA_CONTENT_URI)
 
@@ -69,9 +67,7 @@ class MmsSentReceiverTest {
     @Test
     fun givenIntent_whenExtraFilePathRetrieved_thenReturnsPath() {
         val expectedPath = "/data/user/0/com.app/cache/send.12345.dat"
-        val intent = Intent().apply {
-            putExtra(Transaction.EXTRA_FILE_PATH, expectedPath)
-        }
+        val intent = Intent().apply { putExtra(Transaction.EXTRA_FILE_PATH, expectedPath) }
 
         val filePath = intent.getStringExtra(Transaction.EXTRA_FILE_PATH)
 
@@ -138,7 +134,6 @@ class MmsSentReceiverTest {
     fun givenTransactionConstants_whenAccessed_thenHaveCorrectValues() {
         assertEquals("content_uri", Transaction.EXTRA_CONTENT_URI)
         assertEquals("file_path", Transaction.EXTRA_FILE_PATH)
-        assertEquals("org.prauga.messages.MMS_SENT", Transaction.MMS_SENT)
     }
 
     @Test

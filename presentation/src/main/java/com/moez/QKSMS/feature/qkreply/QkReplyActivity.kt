@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.qkreply
 
 import android.app.Activity
@@ -40,6 +28,7 @@ import com.jakewharton.rxbinding2.widget.textChanges
 import dagger.android.AndroidInjection
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.autoScrollToStart
@@ -48,16 +37,13 @@ import org.prauga.messages.common.util.extensions.showKeyboard
 import org.prauga.messages.common.widget.QkEditText
 import org.prauga.messages.databinding.QkreplyActivityBinding
 import org.prauga.messages.feature.compose.MessagesAdapter
-import javax.inject.Inject
 
-class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivityBinding::inflate),
-    QkReplyView {
+class QkReplyActivity :
+    QkThemedActivity<QkreplyActivityBinding>(QkreplyActivityBinding::inflate), QkReplyView {
 
-    @Inject
-    lateinit var adapter: MessagesAdapter
+    @Inject lateinit var adapter: MessagesAdapter
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override val menuItemIntent: Subject<Int> = PublishSubject.create()
     override val textChangedIntent by lazy { binding.message.textChanges() }
@@ -70,8 +56,7 @@ class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivity
 
     private val speechResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode != Activity.RESULT_OK)
-                return@registerForActivityResult
+            if (result.resultCode != Activity.RESULT_OK) return@registerForActivityResult
 
             // check returned results are good
             val match = result.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
@@ -80,8 +65,7 @@ class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivity
 
             // get the edit text view
             val message = findViewById<QkEditText>(R.id.message)
-            if (message === null)
-                return@registerForActivityResult
+            if (message === null) return@registerForActivityResult
 
             // populate message box with data returned by STT, set cursor to end, and focus
             message.setText(match[0])
@@ -104,40 +88,48 @@ class QkReplyActivity : QkThemedActivity<QkreplyActivityBinding>(QkreplyActivity
 
         binding.messages.adapter = adapter
         binding.messages.adapter?.autoScrollToStart(binding.messages)
-        binding.messages.adapter?.registerAdapterDataObserver(object :
-            RecyclerView.AdapterDataObserver() {
-            override fun onChanged() = binding.messages.scrollToPosition(adapter.itemCount - 1)
-        })
-
-        binding.message.setOnTouchListener(object : OnTouchListener {
-            private val gestureDetector =
-                GestureDetector(this@QkReplyActivity, object : SimpleOnGestureListener() {
-                    override fun onDoubleTap(e: MotionEvent): Boolean {
-                        val speechRecognizerIntent =
-                            Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-                                .putExtra(
-                                    RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                                    RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-                                )
-                        // include if want a custom message that the STT can (optionally) display   .putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your message")
-                        speechResultLauncher.launch(speechRecognizerIntent)
-                        return true
-                    }
-
-                    override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                        binding.message.showKeyboard()
-                        return true
-                    }
-
-                    override fun onSingleTapUp(e: MotionEvent): Boolean {
-                        return true     // don't show soft keyboard on this event
-                    }
-                })
-
-            override fun onTouch(v: View, e: MotionEvent): Boolean {
-                return gestureDetector.onTouchEvent(e)
+        binding.messages.adapter?.registerAdapterDataObserver(
+            object : RecyclerView.AdapterDataObserver() {
+                override fun onChanged() = binding.messages.scrollToPosition(adapter.itemCount - 1)
             }
-        })
+        )
+
+        binding.message.setOnTouchListener(
+            object : OnTouchListener {
+                private val gestureDetector =
+                    GestureDetector(
+                        this@QkReplyActivity,
+                        object : SimpleOnGestureListener() {
+                            override fun onDoubleTap(e: MotionEvent): Boolean {
+                                val speechRecognizerIntent =
+                                    Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                                        .putExtra(
+                                            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                                            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM,
+                                        )
+                                // include if want a custom message that the STT can (optionally)
+                                // display   .putExtra(RecognizerIntent.EXTRA_PROMPT, "Speak your
+                                // message")
+                                speechResultLauncher.launch(speechRecognizerIntent)
+                                return true
+                            }
+
+                            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                                binding.message.showKeyboard()
+                                return true
+                            }
+
+                            override fun onSingleTapUp(e: MotionEvent): Boolean {
+                                return true // don't show soft keyboard on this event
+                            }
+                        },
+                    )
+
+                override fun onTouch(v: View, e: MotionEvent): Boolean {
+                    return gestureDetector.onTouchEvent(e)
+                }
+            }
+        )
     }
 
     override fun render(state: QkReplyState) {

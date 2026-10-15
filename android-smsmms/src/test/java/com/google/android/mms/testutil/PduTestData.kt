@@ -1,15 +1,15 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Raw binary PDU test data for MMS parsing tests.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.google.android.mms.testutil
 
 import com.google.android.mms.pdu_alt.PduHeaders
 
 /**
- * Provides raw binary PDU data for testing PduParser.
- * These are carefully constructed byte arrays that represent valid and invalid MMS PDUs.
+ * Provides raw binary PDU data for testing PduParser. These are carefully constructed byte arrays
+ * that represent valid and invalid MMS PDUs.
  */
 object PduTestData {
 
@@ -69,32 +69,37 @@ object PduTestData {
 
     // ==================== Valid PDU Samples ====================
 
-    /**
-     * Creates a minimal valid SendReq PDU.
-     */
+    /** Creates a minimal valid SendReq PDU. */
     fun createMinimalSendReqPdu(): ByteArray {
         return byteArrayOf(
             // Message Type: M-Send.req
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_SEND_REQ.toByte(),
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_SEND_REQ.toByte(),
 
             // Transaction ID
-            HEADER_TRANSACTION_ID, *"TEST001".toByteArray(), 0x00,
+            HEADER_TRANSACTION_ID,
+            *"TEST001".toByteArray(),
+            0x00,
 
             // MMS Version: 1.3
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
 
             // From: +1234567890/TYPE=PLMN
             HEADER_FROM,
             0x0F, // Value-length
             0x80.toByte(), // Address-present-token
-            *"+1234567890".toByteArray(), 0x00,
+            *"+1234567890".toByteArray(),
+            0x00,
 
             // To: +0987654321/TYPE=PLMN
             HEADER_TO,
-            *"+0987654321".toByteArray(), 0x00,
+            *"+0987654321".toByteArray(),
+            0x00,
 
             // Content-Type: application/vnd.wap.multipart.related
-            HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
 
             // Number of parts: 1
             0x01,
@@ -109,38 +114,48 @@ object PduTestData {
 
             // Part 1 headers (Content-Location)
             0xAE.toByte(), // Content-Location
-            *"text".toByteArray(), 0x00,
+            *"text".toByteArray(),
+            0x00,
 
             // Part 1 data
-            *"Hello World".toByteArray()
+            *"Hello World".toByteArray(),
         )
     }
 
-    /**
-     * Creates a minimal valid RetrieveConf PDU.
-     */
+    /** Creates a minimal valid RetrieveConf PDU. */
     fun createMinimalRetrieveConfPdu(): ByteArray {
         return byteArrayOf(
             // Message Type: M-Retrieve.conf
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
 
             // MMS Version: 1.3
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
 
             // Message ID
-            HEADER_MESSAGE_ID, *"MSG001".toByteArray(), 0x00,
+            HEADER_MESSAGE_ID,
+            *"MSG001".toByteArray(),
+            0x00,
 
             // Date (4 bytes: current time / 1000)
-            HEADER_DATE, 0x04, 0x5F, 0x5E, 0x10, 0x00,
+            HEADER_DATE,
+            0x04,
+            0x5F,
+            0x5E,
+            0x10,
+            0x00,
 
             // From
             HEADER_FROM,
             0x0F,
             0x80.toByte(),
-            *"+1234567890".toByteArray(), 0x00,
+            *"+1234567890".toByteArray(),
+            0x00,
 
             // Content-Type: application/vnd.wap.multipart.related
-            HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
 
             // Number of parts: 1
             0x01,
@@ -155,161 +170,217 @@ object PduTestData {
 
             // Part 1 headers
             0xAE.toByte(),
-            *"text".toByteArray(), 0x00,
+            *"text".toByteArray(),
+            0x00,
 
             // Part 1 data
-            *"Test message".toByteArray()
+            *"Test message".toByteArray(),
         )
     }
 
-    /**
-     * Creates a minimal valid NotificationInd PDU.
-     */
+    /** Creates a minimal valid NotificationInd PDU. */
     fun createMinimalNotificationIndPdu(): ByteArray {
         return byteArrayOf(
             // Message Type
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_NOTIFICATION_IND.toByte(),
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_NOTIFICATION_IND.toByte(),
 
             // Transaction ID
-            HEADER_TRANSACTION_ID, *"NOTIF001".toByteArray(), 0x00,
+            HEADER_TRANSACTION_ID,
+            *"NOTIF001".toByteArray(),
+            0x00,
 
             // MMS Version
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
 
             // Message Class: Personal
-            HEADER_MESSAGE_CLASS, 0x80.toByte(),
+            HEADER_MESSAGE_CLASS,
+            0x80.toByte(),
 
             // Message Size (4 bytes for 50000)
-            HEADER_MESSAGE_SIZE, 0x04, 0x00, 0x00, 0xC3.toByte(), 0x50,
+            HEADER_MESSAGE_SIZE,
+            0x04,
+            0x00,
+            0x00,
+            0xC3.toByte(),
+            0x50,
 
             // Expiry (relative, 86400 seconds = 24 hours)
-            HEADER_EXPIRY, 0x04, 0x81.toByte(), 0x00, 0x01, 0x51, 0x80.toByte(),
+            HEADER_EXPIRY,
+            0x04,
+            0x81.toByte(),
+            0x00,
+            0x01,
+            0x51,
+            0x80.toByte(),
 
             // Content Location
             HEADER_CONTENT_LOCATION,
-            *"http://mmsc.example.com/mms/download/123".toByteArray(), 0x00,
+            *"http://mmsc.example.com/mms/download/123".toByteArray(),
+            0x00,
 
             // From
             HEADER_FROM,
             0x0F,
             0x80.toByte(),
-            *"+1234567890".toByteArray(), 0x00
+            *"+1234567890".toByteArray(),
+            0x00,
         )
     }
 
-    /**
-     * Creates a minimal valid SendConf PDU.
-     */
+    /** Creates a minimal valid SendConf PDU. */
     fun createMinimalSendConfPdu(): ByteArray {
         return byteArrayOf(
             // Message Type
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_SEND_CONF.toByte(),
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_SEND_CONF.toByte(),
 
             // Transaction ID
-            HEADER_TRANSACTION_ID, *"TEST001".toByteArray(), 0x00,
+            HEADER_TRANSACTION_ID,
+            *"TEST001".toByteArray(),
+            0x00,
 
             // MMS Version
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
 
             // Response Status: OK
-            HEADER_RESPONSE_STATUS, RESPONSE_STATUS_OK,
+            HEADER_RESPONSE_STATUS,
+            RESPONSE_STATUS_OK,
 
             // Message ID
-            HEADER_MESSAGE_ID, *"SENT001".toByteArray(), 0x00
+            HEADER_MESSAGE_ID,
+            *"SENT001".toByteArray(),
+            0x00,
         )
     }
 
-    /**
-     * Creates a minimal valid DeliveryInd PDU.
-     */
+    /** Creates a minimal valid DeliveryInd PDU. */
     fun createMinimalDeliveryIndPdu(): ByteArray {
         return byteArrayOf(
             // Message Type
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_DELIVERY_IND.toByte(),
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_DELIVERY_IND.toByte(),
 
             // MMS Version
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
 
             // Message ID
-            HEADER_MESSAGE_ID, *"MSG001".toByteArray(), 0x00,
+            HEADER_MESSAGE_ID,
+            *"MSG001".toByteArray(),
+            0x00,
 
             // To
-            HEADER_TO, *"+0987654321".toByteArray(), 0x00,
+            HEADER_TO,
+            *"+0987654321".toByteArray(),
+            0x00,
 
             // Status: Retrieved
-            HEADER_STATUS, 0x81.toByte(),
+            HEADER_STATUS,
+            0x81.toByte(),
 
             // Date
-            HEADER_DATE, 0x04, 0x5F, 0x5E, 0x10, 0x00
+            HEADER_DATE,
+            0x04,
+            0x5F,
+            0x5E,
+            0x10,
+            0x00,
         )
     }
 
     // ==================== Invalid/Edge Case PDU Samples ====================
 
-    /**
-     * Empty PDU - should fail parsing.
-     */
+    /** Empty PDU - should fail parsing. */
     fun createEmptyPdu(): ByteArray = byteArrayOf()
 
-    /**
-     * Null bytes only - should fail parsing.
-     */
+    /** Null bytes only - should fail parsing. */
     fun createNullPdu(): ByteArray = byteArrayOf(0x00, 0x00, 0x00, 0x00)
 
-    /**
-     * Truncated PDU - header without value.
-     */
-    fun createTruncatedPdu(): ByteArray = byteArrayOf(
-        HEADER_MESSAGE_TYPE // No value following
-    )
+    /** Truncated PDU - header without value. */
+    fun createTruncatedPdu(): ByteArray =
+        byteArrayOf(
+            HEADER_MESSAGE_TYPE // No value following
+        )
 
-    /**
-     * PDU with invalid message type.
-     */
-    fun createInvalidMessageTypePdu(): ByteArray = byteArrayOf(
-        HEADER_MESSAGE_TYPE, 0xFF.toByte(), // Invalid message type
-        HEADER_MMS_VERSION, MMS_VERSION_1_3
-    )
+    /** PDU with invalid message type. */
+    fun createInvalidMessageTypePdu(): ByteArray =
+        byteArrayOf(
+            HEADER_MESSAGE_TYPE,
+            0xFF.toByte(), // Invalid message type
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
+        )
 
-    /**
-     * PDU missing mandatory MMS version header.
-     */
-    fun createMissingVersionPdu(): ByteArray = byteArrayOf(
-        HEADER_MESSAGE_TYPE, MESSAGE_TYPE_SEND_REQ.toByte(),
-        HEADER_TRANSACTION_ID, *"TEST001".toByteArray(), 0x00,
-        HEADER_FROM, 0x0F, 0x80.toByte(), *"+1234567890".toByteArray(), 0x00,
-        HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED
-        // Missing MMS_VERSION
-    )
+    /** PDU missing mandatory MMS version header. */
+    fun createMissingVersionPdu(): ByteArray =
+        byteArrayOf(
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_SEND_REQ.toByte(),
+            HEADER_TRANSACTION_ID,
+            *"TEST001".toByteArray(),
+            0x00,
+            HEADER_FROM,
+            0x0F,
+            0x80.toByte(),
+            *"+1234567890".toByteArray(),
+            0x00,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
+            // Missing MMS_VERSION
+        )
 
-    /**
-     * PDU with malformed content-type header.
-     */
-    fun createMalformedContentTypePdu(): ByteArray = byteArrayOf(
-        HEADER_MESSAGE_TYPE, MESSAGE_TYPE_SEND_REQ.toByte(),
-        HEADER_MMS_VERSION, MMS_VERSION_1_3,
-        HEADER_TRANSACTION_ID, *"TEST001".toByteArray(), 0x00,
-        HEADER_FROM, 0x0F, 0x80.toByte(), *"+1234567890".toByteArray(), 0x00,
-        HEADER_CONTENT_TYPE, 0x00 // Invalid content type value
-    )
+    /** PDU with malformed content-type header. */
+    fun createMalformedContentTypePdu(): ByteArray =
+        byteArrayOf(
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_SEND_REQ.toByte(),
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
+            HEADER_TRANSACTION_ID,
+            *"TEST001".toByteArray(),
+            0x00,
+            HEADER_FROM,
+            0x0F,
+            0x80.toByte(),
+            *"+1234567890".toByteArray(),
+            0x00,
+            HEADER_CONTENT_TYPE,
+            0x00, // Invalid content type value
+        )
 
     // ==================== Multi-Part PDU Samples ====================
 
-    /**
-     * Creates a PDU with multiple parts (text + image).
-     */
+    /** Creates a PDU with multiple parts (text + image). */
     fun createMultiPartPdu(): ByteArray {
         val textData = "Hello World".toByteArray()
-        val imageData = byteArrayOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte(), 0xE0.toByte()) // JPEG start
+        val imageData =
+            byteArrayOf(0xFF.toByte(), 0xD8.toByte(), 0xFF.toByte(), 0xE0.toByte()) // JPEG start
 
         return byteArrayOf(
             // Headers
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
-            HEADER_MESSAGE_ID, *"MSG001".toByteArray(), 0x00,
-            HEADER_DATE, 0x04, 0x5F, 0x5E, 0x10, 0x00,
-            HEADER_FROM, 0x0F, 0x80.toByte(), *"+1234567890".toByteArray(), 0x00,
-            HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED,
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
+            HEADER_MESSAGE_ID,
+            *"MSG001".toByteArray(),
+            0x00,
+            HEADER_DATE,
+            0x04,
+            0x5F,
+            0x5E,
+            0x10,
+            0x00,
+            HEADER_FROM,
+            0x0F,
+            0x80.toByte(),
+            *"+1234567890".toByteArray(),
+            0x00,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
 
             // Number of parts: 2
             0x02,
@@ -318,32 +389,50 @@ object PduTestData {
             0x10, // Header length
             textData.size.toByte(), // Data length
             CONTENT_TYPE_TEXT_PLAIN,
-            0xAE.toByte(), *"text.txt".toByteArray(), 0x00,
+            0xAE.toByte(),
+            *"text.txt".toByteArray(),
+            0x00,
             *textData,
 
             // Part 2: Image
             0x12, // Header length
             imageData.size.toByte(), // Data length
             CONTENT_TYPE_IMAGE_JPEG,
-            0xAE.toByte(), *"image.jpg".toByteArray(), 0x00,
-            *imageData
+            0xAE.toByte(),
+            *"image.jpg".toByteArray(),
+            0x00,
+            *imageData,
         )
     }
 
-    /**
-     * Creates a PDU with SMIL and media parts.
-     */
+    /** Creates a PDU with SMIL and media parts. */
     fun createSmilPdu(): ByteArray {
-        val smilData = """<smil><head><layout><root-layout/></layout></head><body><par><text src="text.txt"/></par></body></smil>""".toByteArray()
+        val smilData =
+            """<smil><head><layout><root-layout/></layout></head><body><par><text src="text.txt"/></par></body></smil>"""
+                .toByteArray()
         val textData = "Hello".toByteArray()
 
         return byteArrayOf(
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
-            HEADER_MESSAGE_ID, *"SMIL001".toByteArray(), 0x00,
-            HEADER_DATE, 0x04, 0x5F, 0x5E, 0x10, 0x00,
-            HEADER_FROM, 0x0F, 0x80.toByte(), *"+1234567890".toByteArray(), 0x00,
-            HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED,
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
+            HEADER_MESSAGE_ID,
+            *"SMIL001".toByteArray(),
+            0x00,
+            HEADER_DATE,
+            0x04,
+            0x5F,
+            0x5E,
+            0x10,
+            0x00,
+            HEADER_FROM,
+            0x0F,
+            0x80.toByte(),
+            *"+1234567890".toByteArray(),
+            0x00,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
 
             // Number of parts: 2
             0x02,
@@ -352,36 +441,50 @@ object PduTestData {
             0x10,
             smilData.size.toByte(),
             CONTENT_TYPE_APPLICATION_SMIL,
-            0xAE.toByte(), *"smil.xml".toByteArray(), 0x00,
+            0xAE.toByte(),
+            *"smil.xml".toByteArray(),
+            0x00,
             *smilData,
 
             // Part 2: Text
             0x10,
             textData.size.toByte(),
             CONTENT_TYPE_TEXT_PLAIN,
-            0xAE.toByte(), *"text.txt".toByteArray(), 0x00,
-            *textData
+            0xAE.toByte(),
+            *"text.txt".toByteArray(),
+            0x00,
+            *textData,
         )
     }
 
     // ==================== Character Encoding PDU Samples ====================
 
-    /**
-     * Creates a PDU with UTF-8 encoded text.
-     */
+    /** Creates a PDU with UTF-8 encoded text. */
     fun createUtf8TextPdu(): ByteArray {
         val utf8Text = "Hello 你好 مرحبا 🎉".toByteArray(Charsets.UTF_8)
 
         return byteArrayOf(
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
-            HEADER_MESSAGE_ID, *"UTF8-001".toByteArray(), 0x00,
-            HEADER_DATE, 0x04, 0x5F, 0x5E, 0x10, 0x00,
-            HEADER_FROM, 0x0F, 0x80.toByte(), *"+1234567890".toByteArray(), 0x00,
-            HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED,
-
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
+            HEADER_MESSAGE_ID,
+            *"UTF8-001".toByteArray(),
+            0x00,
+            HEADER_DATE,
+            0x04,
+            0x5F,
+            0x5E,
+            0x10,
+            0x00,
+            HEADER_FROM,
+            0x0F,
+            0x80.toByte(),
+            *"+1234567890".toByteArray(),
+            0x00,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
             0x01,
-
             0x14,
             utf8Text.size.toByte(),
 
@@ -390,47 +493,59 @@ object PduTestData {
             CONTENT_TYPE_TEXT_PLAIN,
             0x81.toByte(), // Charset parameter
             0x6A, // UTF-8 charset code (106)
-
-            0xAE.toByte(), *"text.txt".toByteArray(), 0x00,
-            *utf8Text
+            0xAE.toByte(),
+            *"text.txt".toByteArray(),
+            0x00,
+            *utf8Text,
         )
     }
 
-    /**
-     * Creates a PDU with emoji in subject.
-     */
+    /** Creates a PDU with emoji in subject. */
     fun createEmojiSubjectPdu(): ByteArray {
         val subjectBytes = "Party time! 🎉🎊".toByteArray(Charsets.UTF_8)
 
         return byteArrayOf(
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
-            HEADER_MESSAGE_ID, *"EMOJI-001".toByteArray(), 0x00,
-            HEADER_DATE, 0x04, 0x5F, 0x5E, 0x10, 0x00,
-            HEADER_FROM, 0x0F, 0x80.toByte(), *"+1234567890".toByteArray(), 0x00,
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
+            HEADER_MESSAGE_ID,
+            *"EMOJI-001".toByteArray(),
+            0x00,
+            HEADER_DATE,
+            0x04,
+            0x5F,
+            0x5E,
+            0x10,
+            0x00,
+            HEADER_FROM,
+            0x0F,
+            0x80.toByte(),
+            *"+1234567890".toByteArray(),
+            0x00,
 
             // Subject with emoji
             HEADER_SUBJECT,
             (subjectBytes.size + 2).toByte(), // Value-length
             0x6A, // UTF-8 charset
-            *subjectBytes, 0x00,
-
-            HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED,
-
+            *subjectBytes,
+            0x00,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
             0x01,
             0x10,
             0x04,
             CONTENT_TYPE_TEXT_PLAIN,
-            0xAE.toByte(), *"t".toByteArray(), 0x00,
-            *"test".toByteArray()
+            0xAE.toByte(),
+            *"t".toByteArray(),
+            0x00,
+            *"test".toByteArray(),
         )
     }
 
     // ==================== Large/Boundary Condition PDUs ====================
 
-    /**
-     * Creates a PDU at the maximum reasonable size for testing.
-     */
+    /** Creates a PDU at the maximum reasonable size for testing. */
     fun createLargePdu(partDataSize: Int = 300000): ByteArray {
         val largeData = ByteArray(partDataSize) { (it % 256).toByte() }
 
@@ -438,27 +553,38 @@ object PduTestData {
         val sizeBytes = encodeUintvar(partDataSize)
 
         return byteArrayOf(
-            HEADER_MESSAGE_TYPE, MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
-            HEADER_MMS_VERSION, MMS_VERSION_1_3,
-            HEADER_MESSAGE_ID, *"LARGE-001".toByteArray(), 0x00,
-            HEADER_DATE, 0x04, 0x5F, 0x5E, 0x10, 0x00,
-            HEADER_FROM, 0x0F, 0x80.toByte(), *"+1234567890".toByteArray(), 0x00,
-            HEADER_CONTENT_TYPE, CONTENT_TYPE_MULTIPART_RELATED,
-
+            HEADER_MESSAGE_TYPE,
+            MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
+            HEADER_MMS_VERSION,
+            MMS_VERSION_1_3,
+            HEADER_MESSAGE_ID,
+            *"LARGE-001".toByteArray(),
+            0x00,
+            HEADER_DATE,
+            0x04,
+            0x5F,
+            0x5E,
+            0x10,
+            0x00,
+            HEADER_FROM,
+            0x0F,
+            0x80.toByte(),
+            *"+1234567890".toByteArray(),
+            0x00,
+            HEADER_CONTENT_TYPE,
+            CONTENT_TYPE_MULTIPART_RELATED,
             0x01, // Number of parts
-
             0x12, // Header length
             *sizeBytes, // Data length (uintvar encoded)
-
             CONTENT_TYPE_IMAGE_JPEG,
-            0xAE.toByte(), *"large.jpg".toByteArray(), 0x00,
-            *largeData
+            0xAE.toByte(),
+            *"large.jpg".toByteArray(),
+            0x00,
+            *largeData,
         )
     }
 
-    /**
-     * Encodes an integer as a uintvar (variable-length unsigned integer).
-     */
+    /** Encodes an integer as a uintvar (variable-length unsigned integer). */
     private fun encodeUintvar(value: Int): ByteArray {
         if (value < 128) {
             return byteArrayOf(value.toByte())

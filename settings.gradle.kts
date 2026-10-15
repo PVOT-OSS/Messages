@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -29,8 +34,15 @@ dependencyResolutionManagement {
 rootProject.name = "Messages"
 
 include(":presentation")
+
 include(":android-smsmms")
+
 include(":domain")
+
 include(":data")
+
 include(":common")
+
 include(":app")
+
+include(":carrier-configs")

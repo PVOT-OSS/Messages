@@ -1,51 +1,38 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.themepicker
 
 import android.animation.ObjectAnimator
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.Group
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.dpToPx
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setVisible
-import org.prauga.messages.feature.themepicker.injection.ThemePickerModule
-import org.prauga.messages.injection.appComponent
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import android.widget.ImageView
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.ViewPager
 import org.prauga.messages.common.widget.PagerTitleView
 import org.prauga.messages.common.widget.QkEditText
 import org.prauga.messages.common.widget.QkTextView
-import javax.inject.Inject
+import org.prauga.messages.feature.themepicker.injection.ThemePickerModule
+import org.prauga.messages.injection.appComponent
 
-class ThemePickerController(
-    val recipientId: Long = 0L
-) : QkController<ThemePickerView, ThemePickerState, ThemePickerPresenter>(), ThemePickerView {
+class ThemePickerController(val recipientId: Long = 0L) :
+    QkController<ThemePickerView, ThemePickerState, ThemePickerPresenter>(), ThemePickerView {
 
     @Inject override lateinit var presenter: ThemePickerPresenter
 
@@ -67,10 +54,10 @@ class ThemePickerController(
 
     init {
         appComponent
-                .themePickerBuilder()
-                .themePickerModule(ThemePickerModule(this))
-                .build()
-                .inject(this)
+            .themePickerBuilder()
+            .themePickerModule(ThemePickerModule(this))
+            .build()
+            .inject(this)
 
         layoutRes = R.layout.theme_picker_controller
     }
@@ -115,7 +102,13 @@ class ThemePickerController(
         super.onDetach(view)
 
         themedActivity?.supportActionBar?.let { toolbar ->
-            ObjectAnimator.ofFloat(toolbar, "elevation", toolbar.elevation, 8.dpToPx(toolbar.themedContext).toFloat()).start()
+            ObjectAnimator.ofFloat(
+                    toolbar,
+                    "elevation",
+                    toolbar.elevation,
+                    8.dpToPx(toolbar.themedContext).toFloat(),
+                )
+                .start()
         }
     }
 
@@ -151,5 +144,4 @@ class ThemePickerController(
         picker.setColor(color)
         themeAdapter.selectedColor = color
     }
-
 }

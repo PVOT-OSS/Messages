@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.util.extensions
 
 import android.animation.LayoutTransition
@@ -54,33 +41,23 @@ fun EditText.hideKeyboard() {
 }
 
 fun ImageView.setTint(color: Int?) {
-    imageTintList =
-        if (color == null) null
-        else ColorStateList.valueOf(color)
+    imageTintList = if (color == null) null else ColorStateList.valueOf(color)
 }
 
 fun TextView.setTint(color: Int?) {
-    foregroundTintList =
-        if (color == null) null
-        else ColorStateList.valueOf(color)
+    foregroundTintList = if (color == null) null else ColorStateList.valueOf(color)
 }
 
 fun ProgressBar.setTint(color: Int?) {
-    indeterminateTintList =
-        if (color == null) null
-        else ColorStateList.valueOf(color)
-    progressTintList =
-        if (color == null) null
-        else ColorStateList.valueOf(color)
+    indeterminateTintList = if (color == null) null else ColorStateList.valueOf(color)
+    progressTintList = if (color == null) null else ColorStateList.valueOf(color)
 }
 
 fun View.setBackgroundTint(color: Int?) {
 
     // API 21 doesn't support this
 
-    backgroundTintList =
-        if (color == null) null
-        else ColorStateList.valueOf(color)
+    backgroundTintList = if (color == null) null else ColorStateList.valueOf(color)
 }
 
 fun View.setPadding(left: Int? = null, top: Int? = null, right: Int? = null, bottom: Int? = null) {
@@ -88,7 +65,7 @@ fun View.setPadding(left: Int? = null, top: Int? = null, right: Int? = null, bot
         left ?: paddingLeft,
         top ?: paddingTop,
         right ?: paddingRight,
-        bottom ?: paddingBottom
+        bottom ?: paddingBottom,
     )
 }
 
@@ -98,11 +75,9 @@ fun View.setVisible(visible: Boolean, invisible: Int = View.GONE) {
 
 /**
  * If a view captures clicks at all, then the parent won't ever receive touch events. This is a
- * problem when we're trying to capture link clicks, but tapping or long pressing other areas of
- * the view no longer work. Also problematic when we try to long press on an image in the message
- * view
+ * problem when we're trying to capture link clicks, but tapping or long pressing other areas of the
+ * view no longer work. Also problematic when we try to long press on an image in the message view
  */
-
 class CancelableSimpleOnGestureListener(view: View, parentView: View) : SimpleOnGestureListener() {
     private var lastUpEvent: MotionEvent? = null
     private val parent = parentView
@@ -110,8 +85,7 @@ class CancelableSimpleOnGestureListener(view: View, parentView: View) : SimpleOn
     private var textInitiallySelectable = false
 
     init {
-        if (thisView is TextView)
-            textInitiallySelectable = thisView.isTextSelectable
+        if (thisView is TextView) textInitiallySelectable = thisView.isTextSelectable
     }
 
     fun cancelCurrentClick() {
@@ -154,23 +128,27 @@ class CancelableSimpleOnGestureListener(view: View, parentView: View) : SimpleOn
 fun View.forwardTouches(parent: View): CancelableSimpleOnGestureListener {
     val gestureListener = CancelableSimpleOnGestureListener(this, parent)
 
-    setOnTouchListener(object : OnTouchListener {
-        val gestureDetector = GestureDetector(parent.context, gestureListener)
+    setOnTouchListener(
+        object : OnTouchListener {
+            val gestureDetector = GestureDetector(parent.context, gestureListener)
 
-        override fun onTouch(v: View, e: MotionEvent): Boolean {
-            return gestureDetector.onTouchEvent(e)
+            override fun onTouch(v: View, e: MotionEvent): Boolean {
+                return gestureDetector.onTouchEvent(e)
+            }
         }
-    })
+    )
 
     return gestureListener
 }
 
 fun ViewPager.addOnPageChangeListener(listener: (Int) -> Unit) {
-    addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-        override fun onPageSelected(position: Int) {
-            listener(position)
+    addOnPageChangeListener(
+        object : ViewPager.SimpleOnPageChangeListener() {
+            override fun onPageSelected(position: Int) {
+                listener(position)
+            }
         }
-    })
+    )
 }
 
 fun RecyclerView.scrapViews() {

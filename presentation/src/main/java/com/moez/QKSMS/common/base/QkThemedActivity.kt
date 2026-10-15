@@ -1,20 +1,7 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.common.base
@@ -37,6 +24,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.resolveThemeBoolean
@@ -47,32 +36,26 @@ import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.PhoneNumberUtils
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 /**
  * Base activity that automatically applies any necessary theme theme settings and colors
  *
- * In most cases, this should be used instead of the base QkActivity, except for when
- * an activity does not depend on the theme
+ * In most cases, this should be used instead of the base QkActivity, except for when an activity
+ * does not depend on the theme
  */
-abstract class QkThemedActivity<Vb : ViewBinding>(
-    inflate: (LayoutInflater) -> Vb
-) : QkActivity<Vb>(inflate) {
+abstract class QkThemedActivity<Vb : ViewBinding>(inflate: (LayoutInflater) -> Vb) :
+    QkActivity<Vb>(inflate) {
 
-    @Inject
-    lateinit var colors: Colors
+    @Inject lateinit var colors: Colors
 
-    @Inject
-    lateinit var conversationRepo: ConversationRepository
+    @Inject lateinit var conversationRepo: ConversationRepository
 
-    @Inject
-    lateinit var messageRepo: MessageRepository
+    @Inject lateinit var messageRepo: MessageRepository
 
-    @Inject
-    lateinit var phoneNumberUtils: PhoneNumberUtils
+    @Inject lateinit var phoneNumberUtils: PhoneNumberUtils
 
-    val toolbarView: Toolbar? get() = findViewById(R.id.toolbar)
+    val toolbarView: Toolbar?
+        get() = findViewById(R.id.toolbar)
 
     /**
      * In case the activity should be themed for a specific conversation, the selected conversation
@@ -81,33 +64,37 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
     val threadId: Subject<Long> = BehaviorSubject.createDefault(0)
 
     /**
-     * Switch the theme if the threadId changes
-     * Set it based on the latest message in the conversation
+     * Switch the theme if the threadId changes Set it based on the latest message in the
+     * conversation
      */
-    val theme: Observable<Colors.Theme> = threadId
-        .distinctUntilChanged()
-        .switchMap { threadId ->
-            val conversation = conversationRepo.getConversation(threadId)
-            when {
-                conversation == null -> Observable.just(Optional(null))
+    val theme: Observable<Colors.Theme> =
+        threadId
+            .distinctUntilChanged()
+            .switchMap { threadId ->
+                val conversation = conversationRepo.getConversation(threadId)
+                when {
+                    conversation == null -> Observable.just(Optional(null))
 
-                conversation.recipients.size == 1 -> Observable.just(Optional(conversation.recipients.first()))
+                    conversation.recipients.size == 1 ->
+                        Observable.just(Optional(conversation.recipients.first()))
 
-                else -> messageRepo.getLastIncomingMessage(conversation.id)
-                    .asObservable()
-                    .mapNotNull { messages -> messages.firstOrNull() }
-                    .distinctUntilChanged { message -> message.address }
-                    .mapNotNull { message ->
-                        conversation.recipients.find { recipient ->
-                            phoneNumberUtils.compare(recipient.address, message.address)
-                        }
-                    }
-                    .map { recipient -> Optional(recipient) }
-                    .startWith(Optional(conversation.recipients.firstOrNull()))
-                    .distinctUntilChanged()
+                    else ->
+                        messageRepo
+                            .getLastIncomingMessage(conversation.id)
+                            .asObservable()
+                            .mapNotNull { messages -> messages.firstOrNull() }
+                            .distinctUntilChanged { message -> message.address }
+                            .mapNotNull { message ->
+                                conversation.recipients.find { recipient ->
+                                    phoneNumberUtils.compare(recipient.address, message.address)
+                                }
+                            }
+                            .map { recipient -> Optional(recipient) }
+                            .startWith(Optional(conversation.recipients.firstOrNull()))
+                            .distinctUntilChanged()
+                }
             }
-        }
-        .switchMap { colors.themeObservable(it.value) }
+            .switchMap { colors.themeObservable(it.value) }
 
     @SuppressLint("InlinedApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,8 +102,7 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
         super.onCreate(savedInstanceState)
 
         // When certain preferences change, we need to recreate the activity
-        val triggers =
-            listOf(prefs.nightMode, prefs.night, prefs.textSize, prefs.systemFont)
+        val triggers = listOf(prefs.nightMode, prefs.night, prefs.textSize, prefs.systemFont)
         Observable.merge(triggers.map { it.asObservable().skip(1) })
             .debounce(400, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
@@ -126,8 +112,10 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
         // We can only set light nav bar on API 27 in attrs, but we can do it in API 26 here
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
             val night = !resolveThemeBoolean(R.attr.isLightTheme)
-            window.decorView.systemUiVisibility = if (night) 0 else
-                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            window.decorView.systemUiVisibility =
+                if (night) 0
+                else
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         }
 
         // Some devices don't let you modify android.R.attr.navigationBarColor
@@ -152,23 +140,24 @@ abstract class QkThemedActivity<Vb : ViewBinding>(
 
         // Update the colours of the menu items
         Observables.combineLatest(menu, theme) { menu, theme ->
-            menu.iterator().forEach { menuItem ->
-                val tint = when (menuItem.itemId) {
-                    in getColoredMenuItems() -> theme.theme
-                    else -> textSecondary
-                }
+                menu.iterator().forEach { menuItem ->
+                    val tint =
+                        when (menuItem.itemId) {
+                            in getColoredMenuItems() -> theme.theme
+                            else -> textSecondary
+                        }
 
-                menuItem.icon = menuItem.icon?.apply { setTint(tint) }
+                    menuItem.icon = menuItem.icon?.apply { setTint(tint) }
+                }
             }
-        }.autoDispose(scope(Lifecycle.Event.ON_DESTROY)).subscribe()
+            .autoDispose(scope(Lifecycle.Event.ON_DESTROY))
+            .subscribe()
     }
 
     open fun getColoredMenuItems(): List<Int> {
         return listOf()
     }
 
-    /**
-     * This can be overridden in case an activity does not want to use the default themes
-     */
+    /** This can be overridden in case an activity does not want to use the default themes */
     open fun getActivityThemeRes(): Int = R.style.AppTheme
 }

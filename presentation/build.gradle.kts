@@ -1,35 +1,19 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 plugins {
     alias(libs.plugins.android.application)
-    id("realm-android")   // must come before Kotlin plugins
+    id("realm-android") // must come before Kotlin plugins
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
 }
 
 android {
     namespace = "org.prauga.messages"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk { version = release(36) }
 
     defaultConfig {
         applicationId = "org.prauga.messages"
@@ -42,7 +26,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    extensions.getByType(BasePluginExtension::class.java)
+    extensions
+        .getByType(BasePluginExtension::class.java)
         .archivesName
         .set("Messages-v${defaultConfig.versionName}")
 
@@ -71,10 +56,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("platform")
         }
     }
@@ -85,9 +67,7 @@ android {
         includeInBundle = false
     }
 
-    lint {
-        abortOnError = false
-    }
+    lint { abortOnError = false }
 }
 
 dependencies {
@@ -185,6 +165,7 @@ dependencies {
     implementation(libs.shortcutbadger)
     implementation(libs.kotlin.stdlib.jdk7)
     implementation(project(":android-smsmms"))
+    implementation(project(":carrier-configs"))
     implementation(project(":common"))
     implementation(project(":data"))
     implementation(project(":domain"))

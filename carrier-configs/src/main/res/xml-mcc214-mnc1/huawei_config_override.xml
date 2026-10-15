@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<huawei_config_override>
+    <bool name="smsUsesSimpleCharactersOnly">true</bool>
+    <int name="smsToMmsTextThreshold">5</int>
+</huawei_config_override>

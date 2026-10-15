@@ -1,21 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
-  ~
-  ~ This file is part of QKSMS.
-  ~
-  ~ QKSMS is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ QKSMS is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
-  -->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+     SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -188,6 +177,23 @@
             app:icon="@drawable/ic_photo_size_select_actual_black_24dp"
             app:title="@string/settings_mms_size_title"
             tools:summary="100KB" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/mmsAutoDownload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_file_download_black_24dp"
+            app:summary="@string/settings_mms_auto_download_summary"
+            app:title="@string/settings_mms_auto_download_title"
+            app:widget="@layout/settings_switch_widget" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/mmsRoamingAutoDownload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:summary="@string/settings_mms_roaming_auto_download_summary"
+            app:title="@string/settings_mms_roaming_auto_download_title"
+            app:widget="@layout/settings_switch_widget" />
 
         <org.prauga.messages.common.widget.PreferenceView
             android:id="@+id/messsageLinkHandling"

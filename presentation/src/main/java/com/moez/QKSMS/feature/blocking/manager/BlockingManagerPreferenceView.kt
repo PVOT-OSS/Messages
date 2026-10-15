@@ -1,20 +1,6 @@
 /*
- * Copyright (C) 2020 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2021 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.feature.blocking.manager
@@ -32,9 +18,9 @@ import org.prauga.messages.common.util.extensions.resolveThemeAttribute
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.BlockingManagerPreferenceViewBinding
 
-class BlockingManagerPreferenceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : ConstraintLayout(context, attrs) {
+class BlockingManagerPreferenceView
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs) {
 
     private val binding: BlockingManagerPreferenceViewBinding =
         BlockingManagerPreferenceViewBinding.inflate(LayoutInflater.from(context), this)
@@ -85,9 +71,9 @@ class BlockingManagerPreferenceView @JvmOverloads constructor(
             summary = getString(R.styleable.BlockingManagerPreferenceView_summary)
 
             // If there's a custom view used for the preference's widget, inflate it
-            getResourceId(R.styleable.BlockingManagerPreferenceView_widget, -1).takeIf { it != -1 }?.let { id ->
-                View.inflate(context, id, binding.widgetFrame)
-            }
+            getResourceId(R.styleable.BlockingManagerPreferenceView_widget, -1)
+                .takeIf { it != -1 }
+                ?.let { id -> View.inflate(context, id, binding.widgetFrame) }
 
             recycle()
         }

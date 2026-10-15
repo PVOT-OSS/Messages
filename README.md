@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: Moez Bhatti <moez.bhatti@gmail.com>
+SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # Messages
 
 Messages is an open source replacement to the [stock messaging app](https://github.com/android/platform_packages_apps_mms) on Android. It is a continuation of [QKSMS](https://github.com/moezbhatti/qksms).

@@ -1,14 +1,11 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Instrumented integration tests for MMS functionality.
- * These tests run on an actual Android device or emulator and use
- * real Android components with a mocked network layer.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.mms
 
 import android.content.ContentResolver
-import android.content.ContentValues
 import android.content.Context
 import android.net.Uri
 import android.provider.Telephony
@@ -189,47 +186,24 @@ class MmsIntegrationTest {
 
     @Test
     fun givenImageContentType_whenValidate_thenRecognized() {
-        val imageTypes = listOf(
-            "image/jpeg",
-            "image/png",
-            "image/gif",
-            "image/bmp",
-            "image/wbmp"
-        )
+        val imageTypes = listOf("image/jpeg", "image/png", "image/gif", "image/bmp", "image/wbmp")
 
-        imageTypes.forEach { type ->
-            assertThat(type.startsWith("image/")).isTrue()
-        }
+        imageTypes.forEach { type -> assertThat(type.startsWith("image/")).isTrue() }
     }
 
     @Test
     fun givenVideoContentType_whenValidate_thenRecognized() {
-        val videoTypes = listOf(
-            "video/mp4",
-            "video/3gpp",
-            "video/3gpp2",
-            "video/h263"
-        )
+        val videoTypes = listOf("video/mp4", "video/3gpp", "video/3gpp2", "video/h263")
 
-        videoTypes.forEach { type ->
-            assertThat(type.startsWith("video/")).isTrue()
-        }
+        videoTypes.forEach { type -> assertThat(type.startsWith("video/")).isTrue() }
     }
 
     @Test
     fun givenAudioContentType_whenValidate_thenRecognized() {
-        val audioTypes = listOf(
-            "audio/mp3",
-            "audio/mpeg",
-            "audio/aac",
-            "audio/amr",
-            "audio/ogg",
-            "audio/mid"
-        )
+        val audioTypes =
+            listOf("audio/mp3", "audio/mpeg", "audio/aac", "audio/amr", "audio/ogg", "audio/mid")
 
-        audioTypes.forEach { type ->
-            assertThat(type.startsWith("audio/")).isTrue()
-        }
+        audioTypes.forEach { type -> assertThat(type.startsWith("audio/")).isTrue() }
     }
 
     // ==================== URI Handling Tests ====================
@@ -390,11 +364,8 @@ class MmsIntegrationTest {
 
     @Test
     fun givenConcurrentSends_whenComplete_thenAllTracked() {
-        val threads = (1..5).map { i ->
-            Thread {
-                mockHttpClient.simulateSend(byteArrayOf(i.toByte()))
-            }
-        }
+        val threads =
+            (1..5).map { i -> Thread { mockHttpClient.simulateSend(byteArrayOf(i.toByte())) } }
 
         threads.forEach { it.start() }
         threads.forEach { it.join() }

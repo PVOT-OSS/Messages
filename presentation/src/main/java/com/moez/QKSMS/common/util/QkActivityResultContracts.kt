@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2023 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.common.util
 
 import android.app.Activity
@@ -10,16 +15,14 @@ import androidx.activity.result.contract.ActivityResultContract
 
 class QkActivityResultContracts {
 
-    data class OpenDocumentParams(
-        val mimeTypes: List<String>,
-        val initialUri: Uri? = null
-    )
+    data class OpenDocumentParams(val mimeTypes: List<String>, val initialUri: Uri? = null)
 
     class OpenDocument : ActivityResultContract<OpenDocumentParams, Uri>() {
         override fun createIntent(context: Context, input: OpenDocumentParams): Intent {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                .putExtra(Intent.EXTRA_MIME_TYPES, input.mimeTypes.toTypedArray())
-                .setType("*/*")
+            val intent =
+                Intent(Intent.ACTION_OPEN_DOCUMENT)
+                    .putExtra(Intent.EXTRA_MIME_TYPES, input.mimeTypes.toTypedArray())
+                    .setType("*/*")
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, input.initialUri)
@@ -29,11 +32,9 @@ class QkActivityResultContracts {
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri {
-            if (resultCode != Activity.RESULT_OK)
-                return Uri.EMPTY
+            if (resultCode != Activity.RESULT_OK) return Uri.EMPTY
 
             return intent?.data ?: Uri.EMPTY
         }
     }
-
 }

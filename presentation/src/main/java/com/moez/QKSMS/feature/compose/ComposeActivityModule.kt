@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.compose
 
 import android.content.Intent
@@ -24,9 +11,9 @@ import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import javax.inject.Named
 import org.prauga.messages.injection.ViewModelKey
 import org.prauga.messages.model.Attachment
-import javax.inject.Named
 
 @Module
 class ComposeActivityModule {
@@ -42,17 +29,21 @@ class ComposeActivityModule {
         activity.intent.extras?.getLong("threadId") ?: 0L
 
     @Provides
+    @Named("messageId")
+    fun provideMessageId(activity: ComposeActivity): Long =
+        activity.intent.extras?.getLong("messageId") ?: 0L
+
+    @Provides
     @Named("addresses")
     fun provideAddresses(activity: ComposeActivity): List<String> =
         if ((activity.intent?.data?.scheme == "sms") || (activity.intent?.data?.scheme == "smsto"))
-            activity.intent?.data
+            activity.intent
+                ?.data
                 ?.schemeSpecificPart
                 ?.removeSuffix("?${activity.intent?.data?.query}")
                 ?.split(",", ";")
-                ?.filter { it.isNotEmpty() }
-                ?: listOf()
-        else
-            listOf()
+                ?.filter { it.isNotEmpty() } ?: listOf()
+        else listOf()
 
     @Provides
     @Named("text")
@@ -61,8 +52,7 @@ class ComposeActivityModule {
 
         // from subject, if passed in intent
         retVal.append(activity.intent?.getStringExtra(Intent.EXTRA_SUBJECT) ?: "")
-        if (retVal.isNotEmpty())
-            retVal.append("\n")
+        if (retVal.isNotEmpty()) retVal.append("\n")
 
         // from extra_text or sms_body extras, if passed in intent
         retVal.append(
@@ -75,11 +65,12 @@ class ComposeActivityModule {
         // sms:12345678?body=hello%20there&body=goodbye
         if ((activity.intent?.data?.scheme == "sms") || (activity.intent?.data?.scheme == "smsto"))
             retVal.append(
-                activity.intent?.data?.query
+                activity.intent
+                    ?.data
+                    ?.query
                     ?.split("&")
                     ?.filter { it.startsWith("body=") }
-                    ?.joinToString("\n") { it.removePrefix("body=") }
-                    ?: ""
+                    ?.joinToString("\n") { it.removePrefix("body=") } ?: ""
             )
 
         return retVal.toString()
@@ -120,5 +111,4 @@ class ComposeActivityModule {
     @IntoMap
     @ViewModelKey(ComposeViewModel::class)
     fun provideComposeViewModel(viewModel: ComposeViewModel): ViewModel = viewModel
-
 }

@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.base
 
 import androidx.annotation.CallSuper
@@ -28,9 +16,8 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 
-abstract class QkPresenter<View, State : Any>(
-    initialState: State
-) where View : QkViewContract<State> {
+abstract class QkPresenter<View, State : Any>(initialState: State) where
+View : QkViewContract<State> {
 
     protected val disposables = CompositeDisposable()
     protected val state: Subject<State> = BehaviorSubject.createDefault(initialState)
@@ -40,12 +27,11 @@ abstract class QkPresenter<View, State : Any>(
     init {
         // If we accidentally push a realm object into the state on the wrong thread, switching
         // to mainThread right here should immediately alert us of the issue
-        disposables += stateReducer
-            .observeOn(AndroidSchedulers.mainThread())
-            .scan(initialState) { state, reducer -> reducer(state) }
-            .subscribe { newState ->
-                state.onNext(newState)
-            }
+        disposables +=
+            stateReducer
+                .observeOn(AndroidSchedulers.mainThread())
+                .scan(initialState) { state, reducer -> reducer(state) }
+                .subscribe { newState -> state.onNext(newState) }
     }
 
     @CallSuper
@@ -59,5 +45,4 @@ abstract class QkPresenter<View, State : Any>(
     protected fun newState(reducer: State.() -> State) = stateReducer.onNext(reducer)
 
     open fun onCleared() = disposables.dispose()
-
 }

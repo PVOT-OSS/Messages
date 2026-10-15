@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: Jacob Klinker
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.google.android.mms.smil;
 
 import com.android.mms.dom.smil.SmilDocumentImpl;

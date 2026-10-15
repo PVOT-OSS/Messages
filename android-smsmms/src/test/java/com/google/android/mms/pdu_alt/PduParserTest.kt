@@ -1,9 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Unit tests for MMS PDU parsing functionality.
- * Tests focus on factory methods and round-trip verification.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.google.android.mms.pdu_alt
 
 import com.google.android.mms.ContentType
@@ -17,8 +16,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [PduParser].
- * Tests PDU parsing via factory-created PDUs and round-trip verification.
+ * Unit tests for [PduParser]. Tests PDU parsing via factory-created PDUs and round-trip
+ * verification.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28], manifest = Config.NONE)
@@ -143,34 +142,35 @@ class PduParserTest {
 
     @Test
     fun givenImageSendReq_whenCreate_thenHasImagePart() {
-        val sendReq = MmsPduFactory.createImageSendReq(
-            imageType = ContentType.IMAGE_JPEG,
-            imageData = MmsPduFactory.createFakeImageData()
-        )
+        val sendReq =
+            MmsPduFactory.createImageSendReq(
+                imageType = ContentType.IMAGE_JPEG,
+                imageData = MmsPduFactory.createFakeImageData(),
+            )
 
         assertThat(sendReq.body.partsNum).isGreaterThan(0)
     }
 
     @Test
     fun givenPngImageSendReq_whenCreate_thenHasPngPart() {
-        val sendReq = MmsPduFactory.createImageSendReq(
-            imageType = ContentType.IMAGE_PNG,
-            imageData = MmsPduFactory.createFakePngData()
-        )
+        val sendReq =
+            MmsPduFactory.createImageSendReq(
+                imageType = ContentType.IMAGE_PNG,
+                imageData = MmsPduFactory.createFakePngData(),
+            )
 
         assertThat(sendReq.body).isNotNull()
     }
 
     @Test
     fun givenGifImageSendReq_whenCreate_thenHasGifPart() {
-        val gifData = ContentTypeTestData.IMAGE_TYPES
-            .find { it.mimeType == ContentType.IMAGE_GIF }
-            ?.sampleData?.invoke() ?: byteArrayOf(0x47, 0x49, 0x46) // GIF magic bytes
+        val gifData =
+            ContentTypeTestData.IMAGE_TYPES.find { it.mimeType == ContentType.IMAGE_GIF }
+                ?.sampleData
+                ?.invoke() ?: byteArrayOf(0x47, 0x49, 0x46) // GIF magic bytes
 
-        val sendReq = MmsPduFactory.createImageSendReq(
-            imageType = ContentType.IMAGE_GIF,
-            imageData = gifData
-        )
+        val sendReq =
+            MmsPduFactory.createImageSendReq(imageType = ContentType.IMAGE_GIF, imageData = gifData)
 
         assertThat(sendReq.body).isNotNull()
     }
@@ -179,10 +179,11 @@ class PduParserTest {
 
     @Test
     fun givenTextAndImageSendReq_whenCreate_thenHasMultipleParts() {
-        val sendReq = MmsPduFactory.createTextAndImageSendReq(
-            text = "Check out this image!",
-            imageData = MmsPduFactory.createFakeImageData()
-        )
+        val sendReq =
+            MmsPduFactory.createTextAndImageSendReq(
+                text = "Check out this image!",
+                imageData = MmsPduFactory.createFakeImageData(),
+            )
 
         // Should have text, image, and SMIL parts
         assertThat(sendReq.body.partsNum).isGreaterThan(1)
@@ -193,10 +194,8 @@ class PduParserTest {
     @Test
     fun givenGroupSendReq_whenCreate_thenHasAllRecipients() {
         val recipients = listOf("+15551111111", "+15552222222")
-        val sendReq = MmsPduFactory.createGroupSendReq(
-            recipients = recipients,
-            text = "Group message"
-        )
+        val sendReq =
+            MmsPduFactory.createGroupSendReq(recipients = recipients, text = "Group message")
 
         assertThat(sendReq.to.size).isEqualTo(2)
     }
@@ -234,7 +233,8 @@ class PduParserTest {
 
     @Test
     fun givenSendReqWithImagePart_whenCreate_thenPartHasCorrectContentType() {
-        val imagePart = MMSPart("image.jpg", ContentType.IMAGE_JPEG, MmsPduFactory.createFakeImageData())
+        val imagePart =
+            MMSPart("image.jpg", ContentType.IMAGE_JPEG, MmsPduFactory.createFakeImageData())
         val sendReq = MmsPduFactory.createSendReq(parts = listOf(imagePart))
 
         val body = sendReq.body

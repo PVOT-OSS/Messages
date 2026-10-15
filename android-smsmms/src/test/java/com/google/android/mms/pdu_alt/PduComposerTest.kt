@@ -1,11 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Unit tests for MMS PDU encoding/composition functionality.
- * Note: PduComposer.make() requires a ContentResolver for body parts,
- * so these tests focus on structure validation and factory methods.
- * Full composition tests are in instrumented tests.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.google.android.mms.pdu_alt
 
 import com.google.android.mms.ContentType
@@ -19,8 +16,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
 /**
- * Unit tests for [PduComposer].
- * Tests focus on SendReq structure validation and factory methods.
+ * Unit tests for [PduComposer]. Tests focus on SendReq structure validation and factory methods.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28], manifest = Config.NONE)
@@ -49,10 +45,8 @@ class PduComposerTest {
 
     @Test
     fun givenSendReqWithSubject_whenCreate_thenHasSubject() {
-        val sendReq = MmsPduFactory.createSendReq(
-            to = listOf("+15551234567"),
-            subject = "Test Subject"
-        )
+        val sendReq =
+            MmsPduFactory.createSendReq(to = listOf("+15551234567"), subject = "Test Subject")
 
         assertThat(sendReq.subject).isNotNull()
         assertThat(sendReq.subject.string).isEqualTo("Test Subject")
@@ -123,7 +117,8 @@ class PduComposerTest {
 
     @Test
     fun givenSendReqWithImagePart_whenCreate_thenBodyHasImagePart() {
-        val imagePart = MMSPart("image.jpg", ContentType.IMAGE_JPEG, MmsPduFactory.createFakeImageData())
+        val imagePart =
+            MMSPart("image.jpg", ContentType.IMAGE_JPEG, MmsPduFactory.createFakeImageData())
         val sendReq = MmsPduFactory.createSendReq(parts = listOf(imagePart))
 
         val body = sendReq.body
@@ -143,7 +138,8 @@ class PduComposerTest {
     @Test
     fun givenSendReqWithMultipleParts_whenCreate_thenBodyHasAllParts() {
         val textPart = MMSPart("text", ContentType.TEXT_PLAIN, "Test".toByteArray())
-        val imagePart = MMSPart("image.jpg", ContentType.IMAGE_JPEG, MmsPduFactory.createFakeImageData())
+        val imagePart =
+            MMSPart("image.jpg", ContentType.IMAGE_JPEG, MmsPduFactory.createFakeImageData())
         val sendReq = MmsPduFactory.createSendReq(parts = listOf(textPart, imagePart))
 
         val body = sendReq.body
@@ -233,7 +229,9 @@ class PduComposerTest {
 
     @Test
     fun givenGifPart_whenCreate_thenContentTypeIsImageGif() {
-        val gifData = ContentTypeTestData.getSampleData(ContentType.IMAGE_GIF) ?: byteArrayOf(0x47, 0x49, 0x46)
+        val gifData =
+            ContentTypeTestData.getSampleData(ContentType.IMAGE_GIF)
+                ?: byteArrayOf(0x47, 0x49, 0x46)
         val gifPart = MMSPart("image.gif", ContentType.IMAGE_GIF, gifData)
         val sendReq = MmsPduFactory.createSendReq(parts = listOf(gifPart))
 
@@ -336,10 +334,7 @@ class PduComposerTest {
     @Test
     fun givenSubjectWithUnicode_whenCreate_thenSubjectPreserved() {
         val subject = "Test 你好 مرحبا"
-        val sendReq = MmsPduFactory.createSendReq(
-            to = listOf("+15551234567"),
-            subject = subject
-        )
+        val sendReq = MmsPduFactory.createSendReq(to = listOf("+15551234567"), subject = subject)
 
         assertThat(sendReq.subject.string).isEqualTo(subject)
     }
@@ -347,10 +342,7 @@ class PduComposerTest {
     @Test
     fun givenSubjectWithEmoji_whenCreate_thenSubjectPreserved() {
         val subject = "Party time 🎉🎊"
-        val sendReq = MmsPduFactory.createSendReq(
-            to = listOf("+15551234567"),
-            subject = subject
-        )
+        val sendReq = MmsPduFactory.createSendReq(to = listOf("+15551234567"), subject = subject)
 
         assertThat(sendReq.subject.string).isEqualTo(subject)
     }

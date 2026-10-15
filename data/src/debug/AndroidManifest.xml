@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <receiver
+            android:name="org.prauga.messages.receiver.TestMmsPushReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP">
+            <intent-filter>
+                <action android:name="org.prauga.messages.TEST_MMS_PUSH" />
+                <action android:name="org.prauga.messages.TEST_MMS_SEND" />
+                <action android:name="org.prauga.messages.TEST_MMS_DOWNLOAD" />
+                <action android:name="org.prauga.messages.TEST_SET_PREF" />
+                <action android:name="org.prauga.messages.TEST_BLOCK" />
+                <action android:name="org.prauga.messages.TEST_DELETE" />
+                <action android:name="org.prauga.messages.TEST_RETRY" />
+                <action android:name="org.prauga.messages.TEST_SMS_RESULT" />
+                <action android:name="org.prauga.messages.TEST_SMS_DELAYED" />
+                <action android:name="org.prauga.messages.TEST_SMS_NOTIFICATION_RETRY" />
+                <action android:name="org.prauga.messages.TEST_SMS_DUMP" />
+                <action android:name="org.prauga.messages.TEST_SMS_RECEIVE" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

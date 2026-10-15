@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.experiment
 
 import android.content.Context
@@ -33,9 +20,7 @@ abstract class Experiment<T>(val context: Context) {
     protected abstract val variants: List<Variant<T>>
     protected abstract val default: T
 
-    /**
-     * Returns true if the current device qualifies for the experiment
-     */
+    /** Returns true if the current device qualifies for the experiment */
     protected open val qualifies: Boolean by lazy { Locale.getDefault().language.startsWith("en") }
 
     val variant: T by lazy {
@@ -47,11 +32,10 @@ abstract class Experiment<T>(val context: Context) {
             }
 
             else -> { // Variant hasn't been set yet
-                variants[Random().nextInt(variants.size)].also { variant ->
-                    prefs.edit().putString(prefKey, variant.key).apply()
-                }.value
+                variants[Random().nextInt(variants.size)]
+                    .also { variant -> prefs.edit().putString(prefKey, variant.key).apply() }
+                    .value
             }
         } ?: default
     }
-
 }

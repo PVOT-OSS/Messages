@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.compose
 
 import android.net.Uri
@@ -30,6 +18,14 @@ import org.prauga.messages.common.base.QkView
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
+
+data class ReactionSelection(
+    val messageId: Long,
+    val emoji: String,
+    val isRemoval: Boolean = false,
+)
+
+data class MessageLongPress(val messageId: Long, val body: String, val anchor: View)
 
 interface ComposeView : QkView<ComposeState> {
 
@@ -55,6 +51,7 @@ interface ComposeView : QkView<ComposeState> {
     val cancelSendingIntent: Subject<Long>
     val sendNowIntent: Subject<Long>
     val resendIntent: Subject<Long>
+    val downloadMmsIntent: Subject<Long>
     val attachmentDeletedIntent: Subject<Attachment>
     val textChangedIntent: Observable<CharSequence>
     val attachIntent: Observable<Unit>
@@ -87,27 +84,52 @@ interface ComposeView : QkView<ComposeState> {
     val recordAudioMsgRecordVisible: Subject<Boolean>
     val recordAudioRecord: Subject<MicInputCloudView.ViewState>
     val recordAudioChronometer: Subject<Boolean>
+    val reactionSelectedIntent: Subject<ReactionSelection>
+    val messageLongPressIntent: Observable<MessageLongPress>
 
     fun clearSelection()
+
     fun toggleSelectAll()
+
     fun expandMessages(messageIds: List<Long>, expand: Boolean)
+
     fun showDetails(details: String)
+
     fun showMessageLinkAskDialog(uri: Uri)
+
     fun requestDefaultSms()
+
     fun requestStoragePermission()
+
     fun requestRecordAudioPermission()
+
     fun requestSmsPermission()
+
     fun showContacts(sharing: Boolean, chips: List<Recipient>)
+
     fun themeChanged()
+
     fun showKeyboard()
+
     fun requestCamera()
+
     fun requestGallery(mimeType: String, requestCode: Int)
+
     fun requestDatePicker()
+
     fun requestContact()
+
     fun setDraft(draft: String)
+
     fun scrollToMessage(id: Long)
+
     fun showQksmsPlusSnackbar(@StringRes message: Int)
+
     fun showDeleteDialog(messages: List<Long>)
+
     fun showClearCurrentMessageDialog()
+
     fun focusMessage()
+
+    fun showReactionPicker(messageId: Long)
 }

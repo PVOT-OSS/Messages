@@ -1,12 +1,13 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.receiver
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import org.prauga.messages.interactor.SyncMessage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -16,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.interactor.SyncMessage
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -23,11 +25,9 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class MmsUpdatedReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var syncMessage: SyncMessage
+    @Mock private lateinit var syncMessage: SyncMessage
 
     private lateinit var receiver: MmsUpdatedReceiver
 
@@ -59,9 +59,7 @@ class MmsUpdatedReceiverTest {
     @Test
     fun givenIntent_whenUriExtraSet_thenRetrievesCorrectly() {
         val expectedUri = "content://mms/123"
-        val intent = Intent().apply {
-            putExtra(MmsUpdatedReceiver.URI, expectedUri)
-        }
+        val intent = Intent().apply { putExtra(MmsUpdatedReceiver.URI, expectedUri) }
 
         val uriString = intent.getStringExtra(MmsUpdatedReceiver.URI)
 
@@ -105,9 +103,7 @@ class MmsUpdatedReceiverTest {
         val uriString: String? = "content://mms/123"
         var executed = false
 
-        uriString?.let {
-            executed = true
-        }
+        uriString?.let { executed = true }
 
         assertTrue(executed)
     }

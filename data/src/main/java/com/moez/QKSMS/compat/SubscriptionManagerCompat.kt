@@ -1,29 +1,20 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.compat
 
 import android.content.Context
+import android.os.Build
 import android.telephony.SubscriptionManager
-import org.prauga.messages.manager.PermissionManager
 import javax.inject.Inject
+import org.prauga.messages.manager.PermissionManager
 
-class SubscriptionManagerCompat @Inject constructor(context: Context, private val permissions: PermissionManager) {
+class SubscriptionManagerCompat
+@Inject
+constructor(context: Context, private val permissions: PermissionManager) {
 
     private val subscriptionManager: SubscriptionManager?
         get() = field?.takeIf { permissions.hasPhone() }
@@ -43,6 +34,12 @@ class SubscriptionManagerCompat @Inject constructor(context: Context, private va
                 listOf()
             }
         }
+
+    val defaultSmsSubscriptionId: Int
+        get() =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                SubscriptionManager.getDefaultSmsSubscriptionId()
+            else SubscriptionManager.INVALID_SUBSCRIPTION_ID
 
     init {
         subscriptionManager = SubscriptionManager.from(context)
@@ -66,7 +63,16 @@ class SubscriptionManagerCompat @Inject constructor(context: Context, private va
             }
 
         abstract fun onSubscriptionsChanged()
-
     }
 
+    companion object {
+        fun preferredSubscription(
+            subs: List<SubscriptionInfoCompat>,
+            lastUsedSubId: Int,
+            defaultSmsSubId: Int,
+        ): SubscriptionInfoCompat? =
+            subs.firstOrNull { it.subscriptionId == lastUsedSubId }
+                ?: subs.firstOrNull { it.subscriptionId == defaultSmsSubId }
+                ?: subs.firstOrNull()
+    }
 }

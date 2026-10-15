@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Test utility factory for creating MMS PDU objects for testing purposes.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.google.android.mms.testutil
 
 import com.google.android.mms.ContentType
@@ -12,9 +12,9 @@ import java.io.ByteArrayOutputStream
 import java.util.UUID
 
 /**
- * Factory for creating test MMS PDU objects.
- * Provides methods to create SendReq PDUs and raw byte arrays for other PDU types
- * (which have package-private constructors) for testing different MMS scenarios.
+ * Factory for creating test MMS PDU objects. Provides methods to create SendReq PDUs and raw byte
+ * arrays for other PDU types (which have package-private constructors) for testing different MMS
+ * scenarios.
  */
 object MmsPduFactory {
 
@@ -25,15 +25,15 @@ object MmsPduFactory {
     // ==================== SendReq Creation ====================
 
     /**
-     * Creates a SendReq PDU with the specified parameters.
-     * SendReq has a public constructor so we can use it directly.
+     * Creates a SendReq PDU with the specified parameters. SendReq has a public constructor so we
+     * can use it directly.
      */
     fun createSendReq(
         to: List<String> = listOf(DEFAULT_PHONE),
         from: String = DEFAULT_PHONE,
         subject: String? = null,
         parts: List<MMSPart> = emptyList(),
-        transactionId: String = UUID.randomUUID().toString().take(20)
+        transactionId: String = UUID.randomUUID().toString().take(20),
     ): SendReq {
         val sendReq = SendReq()
 
@@ -47,14 +47,10 @@ object MmsPduFactory {
         sendReq.from = EncodedStringValue(from)
 
         // Set recipients
-        to.forEach { recipient ->
-            sendReq.addTo(EncodedStringValue(recipient))
-        }
+        to.forEach { recipient -> sendReq.addTo(EncodedStringValue(recipient)) }
 
         // Set subject if provided
-        subject?.let {
-            sendReq.subject = EncodedStringValue(it)
-        }
+        subject?.let { sendReq.subject = EncodedStringValue(it) }
 
         // Set date
         sendReq.date = System.currentTimeMillis() / 1000
@@ -64,9 +60,7 @@ object MmsPduFactory {
 
         // Create body with parts
         val body = PduBody()
-        parts.forEach { mmsPart ->
-            body.addPart(createPduPart(mmsPart))
-        }
+        parts.forEach { mmsPart -> body.addPart(createPduPart(mmsPart)) }
 
         // Add SMIL if there are multiple parts
         if (parts.isNotEmpty()) {
@@ -82,49 +76,35 @@ object MmsPduFactory {
         return sendReq
     }
 
-    /**
-     * Creates a simple text-only SendReq.
-     */
-    fun createTextSendReq(
-        to: String = DEFAULT_PHONE,
-        text: String = "Test message"
-    ): SendReq {
+    /** Creates a simple text-only SendReq. */
+    fun createTextSendReq(to: String = DEFAULT_PHONE, text: String = "Test message"): SendReq {
         val textPart = MMSPart("text", ContentType.TEXT_PLAIN, text.toByteArray())
         return createSendReq(to = listOf(to), parts = listOf(textPart))
     }
 
-    /**
-     * Creates a SendReq with an image attachment.
-     */
+    /** Creates a SendReq with an image attachment. */
     fun createImageSendReq(
         to: String = DEFAULT_PHONE,
         imageType: String = ContentType.IMAGE_JPEG,
-        imageData: ByteArray = createFakeImageData()
+        imageData: ByteArray = createFakeImageData(),
     ): SendReq {
         val imagePart = MMSPart("image.jpg", imageType, imageData)
         return createSendReq(to = listOf(to), parts = listOf(imagePart))
     }
 
-    /**
-     * Creates a SendReq with text and image.
-     */
+    /** Creates a SendReq with text and image. */
     fun createTextAndImageSendReq(
         to: String = DEFAULT_PHONE,
         text: String = "Check out this image!",
-        imageData: ByteArray = createFakeImageData()
+        imageData: ByteArray = createFakeImageData(),
     ): SendReq {
         val textPart = MMSPart("text", ContentType.TEXT_PLAIN, text.toByteArray())
         val imagePart = MMSPart("image.jpg", ContentType.IMAGE_JPEG, imageData)
         return createSendReq(to = listOf(to), parts = listOf(textPart, imagePart))
     }
 
-    /**
-     * Creates a group MMS SendReq with multiple recipients.
-     */
-    fun createGroupSendReq(
-        recipients: List<String>,
-        text: String = "Group message"
-    ): SendReq {
+    /** Creates a group MMS SendReq with multiple recipients. */
+    fun createGroupSendReq(recipients: List<String>, text: String = "Group message"): SendReq {
         val textPart = MMSPart("text", ContentType.TEXT_PLAIN, text.toByteArray())
         return createSendReq(to = recipients, parts = listOf(textPart))
     }
@@ -134,12 +114,11 @@ object MmsPduFactory {
     // because RetrieveConf, NotificationInd, SendConf, and DeliveryInd have
     // package-private constructors.
 
-    /**
-     * Creates raw RetrieveConf PDU bytes (incoming MMS).
-     */
+    /** Creates raw RetrieveConf PDU bytes (incoming MMS). */
     fun createRetrieveConfBytes(
         from: String = DEFAULT_PHONE,
-        transactionId: String = DEFAULT_TRANSACTION_ID
+        transactionId: String = DEFAULT_TRANSACTION_ID,
+        retrieveStatus: Int? = null,
     ): ByteArray {
         val out = ByteArrayOutputStream()
 
@@ -173,21 +152,26 @@ object MmsPduFactory {
         out.write(fromBytes)
         out.write(0x00) // Null terminator
 
+        retrieveStatus?.let {
+            out.write(0x99)
+            out.write(it)
+        }
+
         // Content-Type: multipart/related
         out.write(0x84) // Content-type field
-        out.write(0x9F) // multipart/related
+        out.write(0xB3)
+
+        out.write(0x00)
 
         return out.toByteArray()
     }
 
-    /**
-     * Creates raw NotificationInd PDU bytes (MMS notification).
-     */
+    /** Creates raw NotificationInd PDU bytes (MMS notification). */
     fun createNotificationIndBytes(
         contentLocation: String = "http://mmsc.carrier.com/mms/123",
         messageSize: Long = 50000,
         from: String = DEFAULT_PHONE,
-        transactionId: String = DEFAULT_TRANSACTION_ID
+        transactionId: String = DEFAULT_TRANSACTION_ID,
     ): ByteArray {
         val out = ByteArrayOutputStream()
 
@@ -242,13 +226,11 @@ object MmsPduFactory {
         return out.toByteArray()
     }
 
-    /**
-     * Creates raw SendConf PDU bytes (send confirmation).
-     */
+    /** Creates raw SendConf PDU bytes (send confirmation). */
     fun createSendConfBytes(
         transactionId: String = DEFAULT_TRANSACTION_ID,
         responseStatus: Int = PduHeaders.RESPONSE_STATUS_OK,
-        messageId: String = DEFAULT_MESSAGE_ID
+        messageId: String = DEFAULT_MESSAGE_ID,
     ): ByteArray {
         val out = ByteArrayOutputStream()
 
@@ -279,13 +261,11 @@ object MmsPduFactory {
         return out.toByteArray()
     }
 
-    /**
-     * Creates raw DeliveryInd PDU bytes (delivery report).
-     */
+    /** Creates raw DeliveryInd PDU bytes (delivery report). */
     fun createDeliveryIndBytes(
         messageId: String = DEFAULT_MESSAGE_ID,
         to: String = DEFAULT_PHONE,
-        status: Int = PduHeaders.STATUS_RETRIEVED
+        status: Int = PduHeaders.STATUS_RETRIEVED,
     ): ByteArray {
         val out = ByteArrayOutputStream()
 
@@ -325,9 +305,7 @@ object MmsPduFactory {
 
     // ==================== Helper Methods ====================
 
-    /**
-     * Converts an MMSPart to a PduPart.
-     */
+    /** Converts an MMSPart to a PduPart. */
     private fun createPduPart(mmsPart: MMSPart): PduPart {
         val pduPart = PduPart()
 
@@ -352,9 +330,7 @@ object MmsPduFactory {
         return pduPart
     }
 
-    /**
-     * Creates a SMIL part for the given message parts.
-     */
+    /** Creates a SMIL part for the given message parts. */
     private fun createSmilPart(parts: List<MMSPart>): PduPart {
         val smilContent = buildSmilDocument(parts)
         val smilPart = PduPart()
@@ -367,9 +343,7 @@ object MmsPduFactory {
         return smilPart
     }
 
-    /**
-     * Builds a SMIL document for the given parts.
-     */
+    /** Builds a SMIL document for the given parts. */
     private fun buildSmilDocument(parts: List<MMSPart>): String {
         val sb = StringBuilder()
         sb.append("<smil><head><layout>")
@@ -381,16 +355,21 @@ object MmsPduFactory {
 
         parts.forEach { part ->
             when {
-                part.mimeType.startsWith("image/") || part.mimeType.startsWith("video/") -> hasImage = true
+                part.mimeType.startsWith("image/") || part.mimeType.startsWith("video/") ->
+                    hasImage = true
                 part.mimeType.startsWith("text/") -> hasText = true
             }
         }
 
         if (hasImage) {
-            sb.append("<region id=\"Image\" top=\"0\" left=\"0\" height=\"80%\" width=\"100%\" fit=\"meet\"/>")
+            sb.append(
+                "<region id=\"Image\" top=\"0\" left=\"0\" height=\"80%\" width=\"100%\" fit=\"meet\"/>"
+            )
         }
         if (hasText) {
-            sb.append("<region id=\"Text\" top=\"80%\" left=\"0\" height=\"20%\" width=\"100%\" fit=\"scroll\"/>")
+            sb.append(
+                "<region id=\"Text\" top=\"80%\" left=\"0\" height=\"20%\" width=\"100%\" fit=\"scroll\"/>"
+            )
         }
 
         sb.append("</layout></head><body><par dur=\"5000ms\">")
@@ -399,10 +378,13 @@ object MmsPduFactory {
         parts.forEach { part ->
             val src = part.name
             when {
-                part.mimeType.startsWith("image/") -> sb.append("<img src=\"$src\" region=\"Image\"/>")
-                part.mimeType.startsWith("video/") -> sb.append("<video src=\"$src\" region=\"Image\"/>")
+                part.mimeType.startsWith("image/") ->
+                    sb.append("<img src=\"$src\" region=\"Image\"/>")
+                part.mimeType.startsWith("video/") ->
+                    sb.append("<video src=\"$src\" region=\"Image\"/>")
                 part.mimeType.startsWith("audio/") -> sb.append("<audio src=\"$src\"/>")
-                part.mimeType.startsWith("text/") -> sb.append("<text src=\"$src\" region=\"Text\"/>")
+                part.mimeType.startsWith("text/") ->
+                    sb.append("<text src=\"$src\" region=\"Text\"/>")
             }
         }
 
@@ -410,10 +392,7 @@ object MmsPduFactory {
         return sb.toString()
     }
 
-    /**
-     * Creates fake JPEG image data for testing.
-     * This is a minimal valid JPEG header.
-     */
+    /** Creates fake JPEG image data for testing. This is a minimal valid JPEG header. */
     fun createFakeImageData(size: Int = 1024): ByteArray {
         val out = ByteArrayOutputStream()
 
@@ -461,9 +440,7 @@ object MmsPduFactory {
         return out.toByteArray()
     }
 
-    /**
-     * Creates fake PNG image data for testing.
-     */
+    /** Creates fake PNG image data for testing. */
     fun createFakePngData(size: Int = 1024): ByteArray {
         val out = ByteArrayOutputStream()
 
@@ -492,9 +469,7 @@ object MmsPduFactory {
         return out.toByteArray()
     }
 
-    /**
-     * Creates fake audio data for testing.
-     */
+    /** Creates fake audio data for testing. */
     fun createFakeAudioData(size: Int = 2048): ByteArray {
         // Simple audio file header (not valid but good for testing)
         return ByteArray(size) { index ->
@@ -506,9 +481,7 @@ object MmsPduFactory {
         }
     }
 
-    /**
-     * Creates fake video data for testing.
-     */
+    /** Creates fake video data for testing. */
     fun createFakeVideoData(size: Int = 4096): ByteArray {
         // Simple MP4/3GPP header pattern
         val out = ByteArrayOutputStream()
@@ -527,13 +500,8 @@ object MmsPduFactory {
         return out.toByteArray()
     }
 
-    /**
-     * Creates a vCard data string for testing.
-     */
-    fun createVCardData(
-        name: String = "Test Contact",
-        phone: String = DEFAULT_PHONE
-    ): ByteArray {
+    /** Creates a vCard data string for testing. */
+    fun createVCardData(name: String = "Test Contact", phone: String = DEFAULT_PHONE): ByteArray {
         return """
             BEGIN:VCARD
             VERSION:3.0
@@ -541,6 +509,8 @@ object MmsPduFactory {
             FN:$name
             TEL;TYPE=CELL:$phone
             END:VCARD
-        """.trimIndent().toByteArray()
+        """
+            .trimIndent()
+            .toByteArray()
     }
 }

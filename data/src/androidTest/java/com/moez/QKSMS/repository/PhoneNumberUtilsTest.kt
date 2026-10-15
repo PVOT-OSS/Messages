@@ -1,32 +1,19 @@
 /*
- * Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.repository
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
-import org.prauga.messages.util.PhoneNumberUtils
+import java.util.Locale
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.Locale
+import org.prauga.messages.util.PhoneNumberUtils
 
 @RunWith(AndroidJUnit4::class)
 class PhoneNumberUtilsTest {
@@ -68,5 +55,4 @@ class PhoneNumberUtilsTest {
     fun compare_unequalNumbers_returnsFalse() {
         assertFalse(phoneNumberUtils.compare("123 456 7890", "234 567 8901"))
     }
-
 }

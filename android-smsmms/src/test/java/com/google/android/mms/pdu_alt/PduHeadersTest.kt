@@ -1,10 +1,11 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.google.android.mms.pdu_alt
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
 import org.junit.Test
 
 class PduHeadersTest {
@@ -317,16 +318,17 @@ class PduHeadersTest {
     // All header constants are unique within their category
     @Test
     fun givenMessageTypes_whenCompared_thenAllUnique() {
-        val messageTypes = listOf(
-            PduHeaders.MESSAGE_TYPE_SEND_REQ,
-            PduHeaders.MESSAGE_TYPE_SEND_CONF,
-            PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND,
-            PduHeaders.MESSAGE_TYPE_NOTIFYRESP_IND,
-            PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF,
-            PduHeaders.MESSAGE_TYPE_ACKNOWLEDGE_IND,
-            PduHeaders.MESSAGE_TYPE_DELIVERY_IND,
-            PduHeaders.MESSAGE_TYPE_READ_REC_IND
-        )
+        val messageTypes =
+            listOf(
+                PduHeaders.MESSAGE_TYPE_SEND_REQ,
+                PduHeaders.MESSAGE_TYPE_SEND_CONF,
+                PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND,
+                PduHeaders.MESSAGE_TYPE_NOTIFYRESP_IND,
+                PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF,
+                PduHeaders.MESSAGE_TYPE_ACKNOWLEDGE_IND,
+                PduHeaders.MESSAGE_TYPE_DELIVERY_IND,
+                PduHeaders.MESSAGE_TYPE_READ_REC_IND,
+            )
         assertEquals(messageTypes.size, messageTypes.toSet().size)
     }
 

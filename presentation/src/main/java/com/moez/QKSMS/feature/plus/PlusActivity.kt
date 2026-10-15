@@ -1,30 +1,19 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.plus
 
 import android.graphics.Typeface
 import android.os.Bundle
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
-import androidx.lifecycle.lifecycleScope
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
@@ -39,30 +28,41 @@ import org.prauga.messages.databinding.QksmsPlusActivityBinding
 import org.prauga.messages.feature.plus.experiment.UpgradeButtonExperiment
 import org.prauga.messages.manager.BillingManager
 import timber.log.Timber
-import javax.inject.Inject
 
-class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivityBinding::inflate),
-    PlusView {
+class PlusActivity :
+    QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivityBinding::inflate), PlusView {
 
-    @Inject
-    lateinit var fontProvider: FontProvider
-    @Inject
-    lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var fontProvider: FontProvider
+    @Inject lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PlusViewModel::class.java]
     }
 
-    override val upgradeIntent get() = binding.upgrade.clicks()
-    override val upgradeDonateIntent get() = binding.upgradeDonate.clicks()
-    override val donateIntent get() = binding.donate.clicks()
-    override val themeClicks get() = binding.themes.clicks()
-    override val scheduleClicks get() = binding.schedule.clicks()
-    override val backupClicks get() = binding.backup.clicks()
-    override val delayedClicks get() = binding.delayed.clicks()
-    override val nightClicks get() = binding.night.clicks()
+    override val upgradeIntent
+        get() = binding.upgrade.clicks()
+
+    override val upgradeDonateIntent
+        get() = binding.upgradeDonate.clicks()
+
+    override val donateIntent
+        get() = binding.donate.clicks()
+
+    override val themeClicks
+        get() = binding.themes.clicks()
+
+    override val scheduleClicks
+        get() = binding.schedule.clicks()
+
+    override val backupClicks
+        get() = binding.backup.clicks()
+
+    override val delayedClicks
+        get() = binding.delayed.clicks()
+
+    override val nightClicks
+        get() = binding.night.clicks()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -128,5 +128,4 @@ class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivit
             }
         }
     }
-
 }

@@ -1,28 +1,23 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.settings.swipe
 
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
+import com.uber.autodispose.autoDispose
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
 import org.prauga.messages.common.base.QkController
@@ -31,15 +26,9 @@ import org.prauga.messages.common.util.extensions.animateLayoutChanges
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.injection.appComponent
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import android.widget.ImageView
-import android.widget.TextView
-import com.uber.autodispose.autoDispose
-import javax.inject.Inject
 
-class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState, SwipeActionsPresenter>(), SwipeActionsView {
+class SwipeActionsController :
+    QkController<SwipeActionsView, SwipeActionsState, SwipeActionsPresenter>(), SwipeActionsView {
 
     @Inject override lateinit var presenter: SwipeActionsPresenter
     @Inject lateinit var actionsDialog: QkDialog
@@ -52,9 +41,7 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
     private lateinit var leftIcon: ImageView
     private lateinit var leftLabel: TextView
 
-    /**
-     * Allows us to subscribe to [actionClicks] more than once
-     */
+    /** Allows us to subscribe to [actionClicks] more than once */
     private val actionClicks: Subject<SwipeActionsView.Action> = PublishSubject.create()
 
     init {
@@ -87,8 +74,9 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
         left.postDelayed({ left.animateLayoutChanges = true }, 100)
 
         Observable.merge(
-            right.clicks().map { SwipeActionsView.Action.RIGHT },
-            left.clicks().map { SwipeActionsView.Action.LEFT })
+                right.clicks().map { SwipeActionsView.Action.RIGHT },
+                left.clicks().map { SwipeActionsView.Action.LEFT },
+            )
             .autoDispose(scope())
             .subscribe(actionClicks)
     }
@@ -118,5 +106,4 @@ class SwipeActionsController : QkController<SwipeActionsView, SwipeActionsState,
         leftIcon.setImageResource(state.leftIcon)
         leftLabel.text = state.leftLabel
     }
-
 }

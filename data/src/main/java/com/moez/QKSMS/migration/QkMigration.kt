@@ -1,48 +1,39 @@
 /*
- * Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.migration
 
 import android.content.Context
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.prauga.messages.blocking.QksmsBlockingClient
 import org.prauga.messages.common.util.extensions.versionCode
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
-class QkMigration @Inject constructor(
+class QkMigration
+@Inject
+constructor(
     private val context: Context,
     private val conversationRepo: ConversationRepository,
     private val prefs: Preferences,
-    private val qksmsBlockingClient: QksmsBlockingClient
+    private val qksmsBlockingClient: QksmsBlockingClient,
 ) {
 
-    fun performMigration() = runBlocking(Dispatchers.IO) {
-        val oldVersion = prefs.version.get()
+    fun performMigration() =
+        runBlocking(Dispatchers.IO) {
+            val oldVersion = prefs.version.get()
 
-        if (oldVersion < 2199) {
-            upgradeTo370()
+            if (oldVersion < 2199) {
+                upgradeTo370()
+            }
+
+            prefs.version.set(context.versionCode)
         }
-
-        prefs.version.set(context.versionCode)
-    }
 
     private fun upgradeTo370() {
         // Migrate changelog version
@@ -55,12 +46,13 @@ class QkMigration @Inject constructor(
         }
 
         // Migrate blocked conversations into QK blocking client
-        val addresses = conversationRepo.getBlockedConversations()
+        val addresses =
+            conversationRepo
+                .getBlockedConversations()
                 .flatMap { conversation -> conversation.recipients }
                 .map { recipient -> recipient.address }
                 .distinct()
 
         qksmsBlockingClient.block(addresses).blockingAwait()
     }
-
 }

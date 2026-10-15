@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.blocking.messages
 
 import android.content.Context
@@ -23,6 +11,8 @@ import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -31,13 +21,11 @@ import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.databinding.BlockedListItemBinding
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.util.Preferences
-import io.reactivex.subjects.PublishSubject
-import javax.inject.Inject
 
-class BlockedMessagesAdapter @Inject constructor(
-    private val context: Context,
-    private val dateFormatter: DateFormatter
-) : QkRealmAdapter<Conversation, QkViewHolder>() {
+class BlockedMessagesAdapter
+@Inject
+constructor(private val context: Context, private val dateFormatter: DateFormatter) :
+    QkRealmAdapter<Conversation, QkViewHolder>() {
 
     val clicks: PublishSubject<Long> = PublishSubject.create()
 
@@ -48,7 +36,9 @@ class BlockedMessagesAdapter @Inject constructor(
         if (viewType == 0) {
             binding.title.setTypeface(binding.title.typeface, Typeface.BOLD)
             binding.date.setTypeface(binding.date.typeface, Typeface.BOLD)
-            binding.date.setTextColor(binding.root.context.resolveThemeColor(android.R.attr.textColorPrimary))
+            binding.date.setTextColor(
+                binding.root.context.resolveThemeColor(android.R.attr.textColorPrimary)
+            )
         }
 
         return QkViewHolder(binding.root).apply {
@@ -79,11 +69,14 @@ class BlockedMessagesAdapter @Inject constructor(
         binding.title.text = conversation.getTitle()
         binding.date.text = dateFormatter.getConversationTimestamp(conversation.date)
 
-        binding.blocker.text = when (conversation.blockingClient) {
-            Preferences.BLOCKING_MANAGER_CC -> context.getString(R.string.blocking_manager_call_control_title)
-            Preferences.BLOCKING_MANAGER_SIA -> context.getString(R.string.blocking_manager_sia_title)
-            else -> null
-        }
+        binding.blocker.text =
+            when (conversation.blockingClient) {
+                Preferences.BLOCKING_MANAGER_CC ->
+                    context.getString(R.string.blocking_manager_call_control_title)
+                Preferences.BLOCKING_MANAGER_SIA ->
+                    context.getString(R.string.blocking_manager_sia_title)
+                else -> null
+            }
 
         binding.reason.text = conversation.blockReason
         binding.blocker.isVisible = binding.blocker.text.isNotEmpty()
@@ -94,5 +87,4 @@ class BlockedMessagesAdapter @Inject constructor(
         val conversation = getItem(position)
         return if (conversation?.unread == false) 1 else 0
     }
-
 }

@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.common.util
@@ -8,7 +9,7 @@ data class OtpDetectionResult(
     val isOtp: Boolean,
     val code: String?,
     val confidence: Double,
-    val reason: String
+    val reason: String,
 )
 
 class OtpDetector(private val resourceProvider: OtpResourceProvider) {
@@ -23,7 +24,7 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
                 false,
                 null,
                 0.0,
-                resourceProvider.getErrorMessage(OtpErrorType.EMPTY_MESSAGE)
+                resourceProvider.getErrorMessage(OtpErrorType.EMPTY_MESSAGE),
             )
         }
 
@@ -36,20 +37,22 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         val candidates = extractCandidates(normalized)
 
         if (candidates.isEmpty()) {
-            val reason = if (hasOtpKeyword) {
-                resourceProvider.getErrorMessage(OtpErrorType.KEYWORD_BUT_NO_CODE)
-            } else {
-                resourceProvider.getErrorMessage(OtpErrorType.NO_OTP_KEYWORD)
-            }
+            val reason =
+                if (hasOtpKeyword) {
+                    resourceProvider.getErrorMessage(OtpErrorType.KEYWORD_BUT_NO_CODE)
+                } else {
+                    resourceProvider.getErrorMessage(OtpErrorType.NO_OTP_KEYWORD)
+                }
             return OtpDetectionResult(false, null, 0.1, reason)
         }
 
         // Compute a score for each candidate
-        val scored = candidates.map { candidate ->
-            val score =
-                scoreCandidate(candidate, normalized, lower, hasOtpKeyword, hasSafetyKeyword)
-            candidate.copy(score = score)
-        }
+        val scored =
+            candidates.map { candidate ->
+                val score =
+                    scoreCandidate(candidate, normalized, lower, hasOtpKeyword, hasSafetyKeyword)
+                candidate.copy(score = score)
+            }
 
         val best = scored.maxByOrNull { it.score }!!
 
@@ -78,7 +81,7 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
             isOtp = isOtp,
             code = if (isOtp) best.code else null,
             confidence = globalConfidence,
-            reason = reason
+            reason = reason,
         )
     }
 
@@ -87,7 +90,7 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         val startIndex: Int,
         val endIndex: Int,
         val isNumeric: Boolean,
-        val score: Double = 0.0
+        val score: Double = 0.0,
     )
 
     private fun normalizeWhitespace(input: String): String =
@@ -100,12 +103,13 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         val numericRegex = Regex(OtpPatternConfig.NUMERIC_REGEX)
         numericRegex.findAll(message).forEach { match ->
             val code = match.value
-            candidates += Candidate(
-                code = code,
-                startIndex = match.range.first,
-                endIndex = match.range.last,
-                isNumeric = true
-            )
+            candidates +=
+                Candidate(
+                    code = code,
+                    startIndex = match.range.first,
+                    endIndex = match.range.last,
+                    isNumeric = true,
+                )
         }
 
         // 2) Numeric with a single space or dash (e.g., "123 456", "12-34-56")
@@ -115,12 +119,13 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
             val normalizedCode = raw.replace("[\\s-]".toRegex(), "")
             // Avoid duplicating codes we already saw as a plain numeric chunk
             if (normalizedCode.length in 4..8 && candidates.none { it.code == normalizedCode }) {
-                candidates += Candidate(
-                    code = normalizedCode,
-                    startIndex = match.range.first,
-                    endIndex = match.range.last,
-                    isNumeric = true
-                )
+                candidates +=
+                    Candidate(
+                        code = normalizedCode,
+                        startIndex = match.range.first,
+                        endIndex = match.range.last,
+                        isNumeric = true,
+                    )
             }
         }
 
@@ -131,12 +136,13 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
             if (token.any { it.isDigit() } && token.count { it.isDigit() } >= 2) {
                 // Skip if it's purely numeric; we already captured those
                 if (!token.all { it.isDigit() }) {
-                    candidates += Candidate(
-                        code = token,
-                        startIndex = match.range.first,
-                        endIndex = match.range.last,
-                        isNumeric = false
-                    )
+                    candidates +=
+                        Candidate(
+                            code = token,
+                            startIndex = match.range.first,
+                            endIndex = match.range.last,
+                            isNumeric = false,
+                        )
                 }
             }
         }
@@ -149,19 +155,20 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         original: String,
         lower: String,
         hasOtpKeyword: Boolean,
-        hasSafetyKeyword: Boolean
+        hasSafetyKeyword: Boolean,
     ): Double {
         var score = 0.0
 
         val len = candidate.code.length
 
         // Length preference: 6 is king, but 4–8 is common.
-        score += when {
-            len == 6 -> 3.0
-            len in 4..8 -> 2.0
-            len in 3..10 -> 1.0
-            else -> -1.0
-        }
+        score +=
+            when {
+                len == 6 -> 3.0
+                len in 4..8 -> 2.0
+                len in 3..10 -> 1.0
+                else -> -1.0
+            }
 
         // Numeric gets a slight boost over alphanumeric (based on current SMS trends)
         if (candidate.isNumeric) {
@@ -183,10 +190,9 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         }
 
         // Typical OTP line patterns
-        if (Regex(
-                OtpPatternConfig.OTP_LINE_PATTERN,
-                RegexOption.IGNORE_CASE
-            ).containsMatchIn(lineInfo.line)
+        if (
+            Regex(OtpPatternConfig.OTP_LINE_PATTERN, RegexOption.IGNORE_CASE)
+                .containsMatchIn(lineInfo.line)
         ) {
             score += 2.0
         }
@@ -211,12 +217,13 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         }
 
         // Money / transaction amount heuristics
-        val hasMoneyContextNear = hasIndicatorNear(
-            text = lower,
-            indicators = moneyIndicators,
-            index = candidate.startIndex,
-            radius = 25
-        )
+        val hasMoneyContextNear =
+            hasIndicatorNear(
+                text = lower,
+                indicators = moneyIndicators,
+                index = candidate.startIndex,
+                radius = 25,
+            )
         if (hasMoneyContextNear) {
             score -= 2.0 // looks like an amount, not an OTP
         }
@@ -245,7 +252,7 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         return LineContext(
             line = text.substring(lineStart..lineEnd),
             from = lineStart,
-            to = lineEnd
+            to = lineEnd,
         )
     }
 
@@ -272,7 +279,7 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         text: String,
         indicators: List<String>,
         index: Int,
-        radius: Int
+        radius: Int,
     ): Boolean {
         val start = (index - radius).coerceAtLeast(0)
         val end = (index + radius).coerceAtMost(text.length)
@@ -301,7 +308,7 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
     private fun computeGlobalConfidence(
         best: Candidate,
         hasOtpKeyword: Boolean,
-        hasSafetyKeyword: Boolean
+        hasSafetyKeyword: Boolean,
     ): Double {
         var confidence = 0.0
 

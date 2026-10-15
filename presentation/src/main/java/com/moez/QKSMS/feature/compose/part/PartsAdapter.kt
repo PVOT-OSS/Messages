@@ -1,27 +1,16 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.compose.part
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import io.reactivex.Observable
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
@@ -32,16 +21,21 @@ import org.prauga.messages.feature.compose.BubbleUtils.canGroup
 import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import javax.inject.Inject
 
-
-class PartsAdapter @Inject constructor(
+class PartsAdapter
+@Inject
+constructor(
     colors: Colors,
     fileBinder: FileBinder,
     imageBinder: ImageBinder,
     audioBinder: AudioBinder,
     vCardBinder: VCardBinder,
-) : QkContextMenuRecyclerView.Adapter<Long, MmsPart, QkContextMenuRecyclerView.ViewHolder<MmsPart>>() {
+) :
+    QkContextMenuRecyclerView.Adapter<
+        Long,
+        MmsPart,
+        QkContextMenuRecyclerView.ViewHolder<MmsPart>,
+    >() {
 
     private val partBinders = listOf(audioBinder, imageBinder, vCardBinder, fileBinder)
 
@@ -64,7 +58,7 @@ class PartsAdapter @Inject constructor(
         previous: Message?,
         next: Message?,
         holder: QkViewHolder,
-        audioState: MessagesAdapter.AudioState?
+        audioState: MessagesAdapter.AudioState?,
     ) {
         this.message = message
         this.previous = previous
@@ -75,8 +69,10 @@ class PartsAdapter @Inject constructor(
         this.audioState = audioState
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            : QkContextMenuRecyclerView.ViewHolder<MmsPart> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): QkContextMenuRecyclerView.ViewHolder<MmsPart> {
         val layout = partBinders.getOrNull(viewType)?.partLayout ?: 0
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
         return QkContextMenuRecyclerView.ViewHolder(view)
@@ -84,7 +80,7 @@ class PartsAdapter @Inject constructor(
 
     override fun onBindViewHolder(
         holder: QkContextMenuRecyclerView.ViewHolder<MmsPart>,
-        position: Int
+        position: Int,
     ) {
         val part = data[position]
 
@@ -94,12 +90,10 @@ class PartsAdapter @Inject constructor(
         val canGroupWithNext = canGroup(message, next) || position < itemCount - 1 || bodyVisible
 
         val binder = partBinders.firstOrNull { it.canBindPart(part) }
-        if (binder == null)
-            return
+        if (binder == null) return
 
         // if audioState is set and binder is audio type, set it's audioState ref
-        if ((audioState != null) && (binder is AudioBinder))
-            binder.audioState = audioState!!
+        if ((audioState != null) && (binder is AudioBinder)) binder.audioState = audioState!!
 
         binder.bindPart(holder, part, message, canGroupWithPrevious, canGroupWithNext)
     }
@@ -107,5 +101,4 @@ class PartsAdapter @Inject constructor(
     override fun getItemViewType(position: Int): Int {
         return partBinders.indexOfFirst { it.canBindPart(data[position]) }
     }
-
 }

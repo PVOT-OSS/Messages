@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2025
- *
- * This file is part of QUIK.
- *
- * QUIK is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QUIK is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QUIK.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.moez.QKSMS.manager
 
 import android.content.Context
@@ -24,9 +11,9 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import androidx.core.net.toFile
+import java.util.UUID
 import org.prauga.messages.common.util.FileNamingConfig
 import org.prauga.messages.util.FileUtils
-import java.util.UUID
 
 object MediaRecorderManager : MediaRecorder() {
 
@@ -35,7 +22,7 @@ object MediaRecorderManager : MediaRecorder() {
         DataSourceConfigured,
         Prepared,
         Recording,
-        Error
+        Error,
     }
 
     const val AUDIO_FILE_PREFIX = FileNamingConfig.AUDIO_FILE_PREFIX
@@ -49,29 +36,27 @@ object MediaRecorderManager : MediaRecorder() {
 
     fun stopRecording(): Uri {
         return try {
-            if (recordingState == RecordingState.Recording)
-                stop()
+            if (recordingState == RecordingState.Recording) stop()
 
             reset()
             recordingState = RecordingState.Initial
 
             uri
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Uri.EMPTY
         }
     }
 
     fun startRecording(context: Context, preferredAudioDevice: AudioDeviceInfo? = null): Uri {
         return try {
-            val (newUri, e) = FileUtils.create(
-                FileUtils.Companion.Location.Cache,
-                context,
-                "$AUDIO_FILE_PREFIX${UUID.randomUUID()}$AUDIO_FILE_SUFFIX",
-                ""
-            )
-            if (e is Exception)
-                throw e
+            val (newUri, e) =
+                FileUtils.create(
+                    FileUtils.Companion.Location.Cache,
+                    context,
+                    "$AUDIO_FILE_PREFIX${UUID.randomUUID()}$AUDIO_FILE_SUFFIX",
+                    "",
+                )
+            if (e is Exception) throw e
 
             uri = newUri
 
@@ -97,10 +82,8 @@ object MediaRecorderManager : MediaRecorder() {
             recordingState = RecordingState.Recording
 
             uri
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Uri.EMPTY
         }
     }
-
 }

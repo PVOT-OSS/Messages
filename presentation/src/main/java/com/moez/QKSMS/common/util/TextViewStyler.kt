@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.util
 
 import android.graphics.Typeface
@@ -23,6 +10,7 @@ import android.os.Build
 import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.TextView
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.util.TextViewStyler.Companion.SIZE_PRIMARY
 import org.prauga.messages.common.util.TextViewStyler.Companion.SIZE_SECONDARY
@@ -32,13 +20,13 @@ import org.prauga.messages.common.util.extensions.getColorCompat
 import org.prauga.messages.common.widget.QkEditText
 import org.prauga.messages.common.widget.QkTextView
 import org.prauga.messages.util.Preferences
-import javax.inject.Inject
 
-
-class TextViewStyler @Inject constructor(
+class TextViewStyler
+@Inject
+constructor(
     private val prefs: Preferences,
     private val colors: Colors,
-    private val fontProvider: FontProvider
+    private val fontProvider: FontProvider,
 ) {
 
     companion object {
@@ -60,15 +48,15 @@ class TextViewStyler @Inject constructor(
                 var textSizeAttr = 0
 
                 when (this) {
-                    is QkTextView -> context.obtainStyledAttributes(attrs, R.styleable.QkTextView)
-                        ?.run {
+                    is QkTextView ->
+                        context.obtainStyledAttributes(attrs, R.styleable.QkTextView)?.run {
                             colorAttr = getInt(R.styleable.QkTextView_textColor, -1)
                             textSizeAttr = getInt(R.styleable.QkTextView_textSize, -1)
                             recycle()
                         }
 
-                    is QkEditText -> context.obtainStyledAttributes(attrs, R.styleable.QkEditText)
-                        ?.run {
+                    is QkEditText ->
+                        context.obtainStyledAttributes(attrs, R.styleable.QkEditText)?.run {
                             colorAttr = getInt(R.styleable.QkEditText_textColor, -1)
                             textSizeAttr = getInt(R.styleable.QkEditText_textSize, -1)
                             recycle()
@@ -79,22 +67,24 @@ class TextViewStyler @Inject constructor(
                 setTextColor(
                     when (colorAttr) {
                         COLOR_PRIMARY_ON_THEME -> context.getColorCompat(R.color.textPrimaryDark)
-                        COLOR_SECONDARY_ON_THEME -> context.getColorCompat(R.color.textSecondaryDark)
+                        COLOR_SECONDARY_ON_THEME ->
+                            context.getColorCompat(R.color.textSecondaryDark)
                         COLOR_TERTIARY_ON_THEME -> context.getColorCompat(R.color.textTertiaryDark)
                         COLOR_THEME -> context.getColorCompat(R.color.tools_theme)
                         else -> currentTextColor
                     }
                 )
 
-                textSize = when (textSizeAttr) {
-                    SIZE_PRIMARY -> 16f
-                    SIZE_SECONDARY -> 14f
-                    SIZE_TERTIARY -> 12f
-                    SIZE_TOOLBAR -> 20f
-                    SIZE_DIALOG -> 18f
-                    SIZE_EMOJI -> 32f
-                    else -> textSize / paint.density
-                }
+                textSize =
+                    when (textSizeAttr) {
+                        SIZE_PRIMARY -> 16f
+                        SIZE_SECONDARY -> 14f
+                        SIZE_TERTIARY -> 12f
+                        SIZE_TOOLBAR -> 20f
+                        SIZE_DIALOG -> 18f
+                        SIZE_EMOJI -> 32f
+                        else -> textSize / paint.density
+                    }
             }
         }
     }
@@ -110,15 +100,15 @@ class TextViewStyler @Inject constructor(
         }
 
         when (textView) {
-            is QkTextView -> textView.context.obtainStyledAttributes(attrs, R.styleable.QkTextView)
-                .run {
+            is QkTextView ->
+                textView.context.obtainStyledAttributes(attrs, R.styleable.QkTextView).run {
                     colorAttr = getInt(R.styleable.QkTextView_textColor, -1)
                     textSizeAttr = getInt(R.styleable.QkTextView_textSize, -1)
                     recycle()
                 }
 
-            is QkEditText -> textView.context.obtainStyledAttributes(attrs, R.styleable.QkEditText)
-                .run {
+            is QkEditText ->
+                textView.context.obtainStyledAttributes(attrs, R.styleable.QkEditText).run {
                     colorAttr = getInt(R.styleable.QkEditText_textColor, -1)
                     textSizeAttr = getInt(R.styleable.QkEditText_textSize, -1)
                     recycle()
@@ -137,8 +127,10 @@ class TextViewStyler @Inject constructor(
         setTextSize(textView, textSizeAttr)
 
         if (textView is EditText) {
-            val drawable = textView.resources.getDrawable(R.drawable.cursor)
-                .apply { setTint(colors.theme().theme) }
+            val drawable =
+                textView.resources.getDrawable(R.drawable.cursor).apply {
+                    setTint(colors.theme().theme)
+                }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 textView.textCursorDrawable = drawable
             }
@@ -154,60 +146,71 @@ class TextViewStyler @Inject constructor(
     fun setTextSize(textView: TextView, textSizeAttr: Int) {
         val textSizePref = prefs.textSize.get()
         when (textSizeAttr) {
-            SIZE_PRIMARY -> textView.textSize = when (textSizePref) {
-                Preferences.TEXT_SIZE_SMALL -> 14f
-                Preferences.TEXT_SIZE_NORMAL -> 16f
-                Preferences.TEXT_SIZE_LARGE -> 18f
-                Preferences.TEXT_SIZE_LARGER -> 20f
-                Preferences.TEXT_SIZE_SUPER -> 40f
-                else -> 16f
-            }
+            SIZE_PRIMARY ->
+                textView.textSize =
+                    when (textSizePref) {
+                        Preferences.TEXT_SIZE_SMALL -> 14f
+                        Preferences.TEXT_SIZE_NORMAL -> 16f
+                        Preferences.TEXT_SIZE_LARGE -> 18f
+                        Preferences.TEXT_SIZE_LARGER -> 20f
+                        Preferences.TEXT_SIZE_SUPER -> 40f
+                        else -> 16f
+                    }
 
-            SIZE_SECONDARY -> textView.textSize = when (textSizePref) {
-                Preferences.TEXT_SIZE_SMALL -> 12f
-                Preferences.TEXT_SIZE_NORMAL -> 14f
-                Preferences.TEXT_SIZE_LARGE -> 16f
-                Preferences.TEXT_SIZE_LARGER -> 18f
-                Preferences.TEXT_SIZE_SUPER -> 36f
-                else -> 14f
-            }
+            SIZE_SECONDARY ->
+                textView.textSize =
+                    when (textSizePref) {
+                        Preferences.TEXT_SIZE_SMALL -> 12f
+                        Preferences.TEXT_SIZE_NORMAL -> 14f
+                        Preferences.TEXT_SIZE_LARGE -> 16f
+                        Preferences.TEXT_SIZE_LARGER -> 18f
+                        Preferences.TEXT_SIZE_SUPER -> 36f
+                        else -> 14f
+                    }
 
-            SIZE_TERTIARY -> textView.textSize = when (textSizePref) {
-                Preferences.TEXT_SIZE_SMALL -> 10f
-                Preferences.TEXT_SIZE_NORMAL -> 12f
-                Preferences.TEXT_SIZE_LARGE -> 14f
-                Preferences.TEXT_SIZE_LARGER -> 16f
-                Preferences.TEXT_SIZE_SUPER -> 32f
-                else -> 12f
-            }
+            SIZE_TERTIARY ->
+                textView.textSize =
+                    when (textSizePref) {
+                        Preferences.TEXT_SIZE_SMALL -> 10f
+                        Preferences.TEXT_SIZE_NORMAL -> 12f
+                        Preferences.TEXT_SIZE_LARGE -> 14f
+                        Preferences.TEXT_SIZE_LARGER -> 16f
+                        Preferences.TEXT_SIZE_SUPER -> 32f
+                        else -> 12f
+                    }
 
-            SIZE_TOOLBAR -> textView.textSize = when (textSizePref) {
-                Preferences.TEXT_SIZE_SMALL -> 18f
-                Preferences.TEXT_SIZE_NORMAL -> 20f
-                Preferences.TEXT_SIZE_LARGE -> 22f
-                Preferences.TEXT_SIZE_LARGER -> 26f
-                Preferences.TEXT_SIZE_SUPER -> 52f
-                else -> 20f
-            }
+            SIZE_TOOLBAR ->
+                textView.textSize =
+                    when (textSizePref) {
+                        Preferences.TEXT_SIZE_SMALL -> 18f
+                        Preferences.TEXT_SIZE_NORMAL -> 20f
+                        Preferences.TEXT_SIZE_LARGE -> 22f
+                        Preferences.TEXT_SIZE_LARGER -> 26f
+                        Preferences.TEXT_SIZE_SUPER -> 52f
+                        else -> 20f
+                    }
 
-            SIZE_DIALOG -> textView.textSize = when (textSizePref) {
-                Preferences.TEXT_SIZE_SMALL -> 16f
-                Preferences.TEXT_SIZE_NORMAL -> 18f
-                Preferences.TEXT_SIZE_LARGE -> 20f
-                Preferences.TEXT_SIZE_LARGER -> 24f
-                Preferences.TEXT_SIZE_SUPER -> 48f
-                else -> 18f
-            }
+            SIZE_DIALOG ->
+                textView.textSize =
+                    when (textSizePref) {
+                        Preferences.TEXT_SIZE_SMALL -> 16f
+                        Preferences.TEXT_SIZE_NORMAL -> 18f
+                        Preferences.TEXT_SIZE_LARGE -> 20f
+                        Preferences.TEXT_SIZE_LARGER -> 24f
+                        Preferences.TEXT_SIZE_SUPER -> 48f
+                        else -> 18f
+                    }
 
-            SIZE_EMOJI -> textView.textSize = when (textSizePref) {
-                Preferences.TEXT_SIZE_SMALL -> 28f
-                Preferences.TEXT_SIZE_NORMAL -> 32f
-                Preferences.TEXT_SIZE_LARGE -> 36f
-                Preferences.TEXT_SIZE_LARGER -> 40f
-                Preferences.TEXT_SIZE_SUPER -> 80f
-                else -> 32f
-            }
+            SIZE_EMOJI ->
+                textView.textSize =
+                    when (textSizePref) {
+                        Preferences.TEXT_SIZE_SMALL -> 28f
+                        Preferences.TEXT_SIZE_NORMAL -> 32f
+                        Preferences.TEXT_SIZE_LARGE -> 36f
+                        Preferences.TEXT_SIZE_LARGER -> 40f
+                        Preferences.TEXT_SIZE_SUPER -> 80f
+                        else -> 32f
+                    }
         }
     }
-
 }

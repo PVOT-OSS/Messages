@@ -1,8 +1,20 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.interactor
 
+import com.f2prateek.rx.preferences2.Preference
+import io.reactivex.Flowable
+import io.reactivex.Single
+import io.reactivex.subscribers.TestSubscriber
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.manager.ShortcutManager
@@ -13,58 +25,34 @@ import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageContentFilterRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Flowable
-import io.reactivex.Single
-import io.reactivex.subscribers.TestSubscriber
-import org.junit.Before
-import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
-import com.f2prateek.rx.preferences2.Preference
 
 class ReceiveSmsTest {
 
-    @Mock
-    private lateinit var conversationRepo: ConversationRepository
+    @Mock private lateinit var conversationRepo: ConversationRepository
 
-    @Mock
-    private lateinit var blockingClient: BlockingClient
+    @Mock private lateinit var blockingClient: BlockingClient
 
-    @Mock
-    private lateinit var prefs: Preferences
+    @Mock private lateinit var prefs: Preferences
 
-    @Mock
-    private lateinit var messageRepo: MessageRepository
+    @Mock private lateinit var messageRepo: MessageRepository
 
-    @Mock
-    private lateinit var notificationManager: NotificationManager
+    @Mock private lateinit var notificationManager: NotificationManager
 
-    @Mock
-    private lateinit var updateBadge: UpdateBadge
+    @Mock private lateinit var updateBadge: UpdateBadge
 
-    @Mock
-    private lateinit var shortcutManager: ShortcutManager
+    @Mock private lateinit var shortcutManager: ShortcutManager
 
-    @Mock
-    private lateinit var filterRepo: MessageContentFilterRepository
+    @Mock private lateinit var filterRepo: MessageContentFilterRepository
 
-    @Mock
-    private lateinit var contactsRepo: ContactRepository
+    @Mock private lateinit var contactsRepo: ContactRepository
 
-    @Mock
-    private lateinit var message: Message
+    @Mock private lateinit var message: Message
 
-    @Mock
-    private lateinit var conversation: Conversation
+    @Mock private lateinit var conversation: Conversation
 
-    @Mock
-    private lateinit var dropPref: Preference<Boolean>
+    @Mock private lateinit var dropPref: Preference<Boolean>
 
-    @Mock
-    private lateinit var blockingManagerPref: Preference<Int>
+    @Mock private lateinit var blockingManagerPref: Preference<Int>
 
     private lateinit var receiveSms: ReceiveSms
 
@@ -76,10 +64,18 @@ class ReceiveSmsTest {
         `when`(prefs.blockingManager).thenReturn(blockingManagerPref)
         `when`(dropPref.get()).thenReturn(false)
         `when`(blockingManagerPref.get()).thenReturn(0)
-        receiveSms = ReceiveSms(
-            conversationRepo, blockingClient, prefs, messageRepo,
-            notificationManager, updateBadge, shortcutManager, filterRepo, contactsRepo
-        )
+        receiveSms =
+            ReceiveSms(
+                conversationRepo,
+                blockingClient,
+                prefs,
+                messageRepo,
+                notificationManager,
+                updateBadge,
+                shortcutManager,
+                filterRepo,
+                contactsRepo,
+            )
     }
 
     @Test
@@ -100,9 +96,8 @@ class ReceiveSmsTest {
         `when`(messageRepo.getMessage(messageId)).thenReturn(message)
         `when`(message.id).thenReturn(messageId)
         `when`(message.address).thenReturn("+1234567890")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.Block("spam"))
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.Block("spam")))
         `when`(dropPref.get()).thenReturn(true)
         val testSubscriber = TestSubscriber<Any>()
 
@@ -120,9 +115,8 @@ class ReceiveSmsTest {
         `when`(message.id).thenReturn(messageId)
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.Block("spam"))
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.Block("spam")))
         `when`(dropPref.get()).thenReturn(false)
         `when`(message.getText()).thenReturn("")
         `when`(filterRepo.isBlocked("", "+1234567890", contactsRepo)).thenReturn(false)
@@ -145,9 +139,8 @@ class ReceiveSmsTest {
         `when`(message.id).thenReturn(messageId)
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.Unblock)
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.Unblock))
         `when`(message.getText()).thenReturn("")
         `when`(filterRepo.isBlocked("", "+1234567890", contactsRepo)).thenReturn(false)
         `when`(conversationRepo.getOrCreateConversation(threadId)).thenReturn(conversation)
@@ -171,9 +164,8 @@ class ReceiveSmsTest {
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
         `when`(message.getText()).thenReturn("spam content")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.DoNothing)
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.DoNothing))
         `when`(filterRepo.isBlocked("spam content", "+1234567890", contactsRepo)).thenReturn(true)
         val testSubscriber = TestSubscriber<Any>()
 
@@ -192,9 +184,8 @@ class ReceiveSmsTest {
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
         `when`(message.getText()).thenReturn("Hello")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.DoNothing)
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.DoNothing))
         `when`(filterRepo.isBlocked("Hello", "+1234567890", contactsRepo)).thenReturn(false)
         `when`(conversationRepo.getOrCreateConversation(threadId)).thenReturn(conversation)
         `when`(conversation.blocked).thenReturn(false)
@@ -217,9 +208,8 @@ class ReceiveSmsTest {
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
         `when`(message.getText()).thenReturn("Hello")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.DoNothing)
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.DoNothing))
         `when`(filterRepo.isBlocked("Hello", "+1234567890", contactsRepo)).thenReturn(false)
         `when`(conversationRepo.getOrCreateConversation(threadId)).thenReturn(conversation)
         `when`(conversation.blocked).thenReturn(true)
@@ -240,9 +230,8 @@ class ReceiveSmsTest {
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
         `when`(message.getText()).thenReturn("Hello")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.DoNothing)
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.DoNothing))
         `when`(filterRepo.isBlocked("Hello", "+1234567890", contactsRepo)).thenReturn(false)
         `when`(conversationRepo.getOrCreateConversation(threadId)).thenReturn(conversation)
         `when`(conversation.blocked).thenReturn(false)
@@ -265,9 +254,8 @@ class ReceiveSmsTest {
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
         `when`(message.getText()).thenReturn("Hello")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.DoNothing)
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.DoNothing))
         `when`(filterRepo.isBlocked("Hello", "+1234567890", contactsRepo)).thenReturn(false)
         `when`(conversationRepo.getOrCreateConversation(threadId)).thenReturn(conversation)
         `when`(conversation.blocked).thenReturn(false)
@@ -290,9 +278,8 @@ class ReceiveSmsTest {
         `when`(message.threadId).thenReturn(threadId)
         `when`(message.address).thenReturn("+1234567890")
         `when`(message.getText()).thenReturn("Hello")
-        `when`(blockingClient.shouldBlock("+1234567890")).thenReturn(
-            Single.just(BlockingClient.Action.DoNothing)
-        )
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.DoNothing))
         `when`(filterRepo.isBlocked("Hello", "+1234567890", contactsRepo)).thenReturn(false)
         `when`(conversationRepo.getOrCreateConversation(threadId)).thenReturn(conversation)
         `when`(conversation.blocked).thenReturn(false)

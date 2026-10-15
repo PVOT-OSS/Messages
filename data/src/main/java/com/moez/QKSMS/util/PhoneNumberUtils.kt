@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.util
 
 import android.content.Context
@@ -33,8 +20,8 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
     private val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
 
     /**
-     * Android's implementation is too loose and causes false positives
-     * libphonenumber is stricter but too slow
+     * Android's implementation is too loose and causes false positives libphonenumber is stricter
+     * but too slow
      *
      * This method will run successfully stricter checks without compromising much speed
      */
@@ -75,5 +62,4 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
     private fun parse(number: CharSequence): Phonenumber.PhoneNumber? {
         return tryOrNull(false) { phoneNumberUtil.parse(number, countryCode) }
     }
-
 }

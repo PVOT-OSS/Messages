@@ -1,17 +1,7 @@
 /*
- * Copyright (C) 2015 Jacob Klinker
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-FileCopyrightText: 2015 Jacob Klinker
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package com.google.android.mms.pdu_alt;
@@ -66,6 +56,8 @@ import java.util.Set;
  */
 public class PduPersister {
     private static final boolean LOCAL_LOGV = false;
+
+    public static final String UNKNOWN_SENDER = "Unknown sender";
 
     public static final long DUMMY_THREAD_ID = Long.MAX_VALUE;
     private static final int DEFAULT_SUBSCRIPTION = 0;
@@ -668,7 +660,8 @@ public class PduPersister {
         } finally {
             synchronized (PDU_CACHE_INSTANCE) {
                 if (pdu != null) {
-                    assert (PDU_CACHE_INSTANCE.get(uri) == null);
+                    // Another thread can load the same message at the same time, e.g. when
+                    // several MMS arrive at once, so an entry may already be there: replace it
                     // Update the cache entry with the real info
                     cacheEntry = new PduCacheEntry(pdu, msgBox, threadId);
                     PDU_CACHE_INSTANCE.put(uri, cacheEntry);
@@ -1401,6 +1394,9 @@ public class PduPersister {
                     loadRecipients(PduHeaders.TO, recipients, addressMap, false);
                     break;
             }
+            if (recipients.isEmpty() && msgType != PduHeaders.MESSAGE_TYPE_SEND_REQ) {
+                recipients.add(UNKNOWN_SENDER);
+            }
             if (threadId == DUMMY_THREAD_ID && createThreadId && !recipients.isEmpty()) {
                 // Given all the recipients associated with this message, find (or create) the
                 // correct thread.
@@ -1499,6 +1495,9 @@ public class PduPersister {
         for (EncodedStringValue v : array) {
             if (v != null) {
                 String number = v.getString();
+                if (PduHeaders.FROM_INSERT_ADDRESS_TOKEN_STR.equals(number)) {
+                    continue;
+                }
                 if ((myNumber == null || !PhoneNumberUtils.compare(number, myNumber)) &&
                         !recipients.contains(number)) {
                     // Only add numbers which aren't my own number.

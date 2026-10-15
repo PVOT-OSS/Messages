@@ -1,33 +1,30 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.interactor
 
-import org.prauga.messages.manager.NotificationManager
-import org.prauga.messages.model.Message
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.never
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.manager.NotificationManager
+import org.prauga.messages.model.Message
+import org.prauga.messages.repository.MessageRepository
 
 class RetrySendingTest {
 
-    @Mock
-    private lateinit var messageRepository: MessageRepository
+    @Mock private lateinit var messageRepository: MessageRepository
 
-    @Mock
-    private lateinit var notificationManager: NotificationManager
+    @Mock private lateinit var notificationManager: NotificationManager
 
-    @Mock
-    private lateinit var smsMessage: Message
+    @Mock private lateinit var smsMessage: Message
 
-    @Mock
-    private lateinit var mmsMessage: Message
+    @Mock private lateinit var mmsMessage: Message
 
     private lateinit var retrySending: RetrySending
 

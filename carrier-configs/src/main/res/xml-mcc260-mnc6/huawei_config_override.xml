@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<huawei_config_override>
+    <int name="smsToMmsTextThreshold">6</int>
+</huawei_config_override>

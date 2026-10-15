@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: Kevin Weiner, FM Software
+ * SPDX-License-Identifier: LicenseRef-Glide-gif-encoder
+ */
+
 package com.bumptech.glide.gifencoder;
 
 import java.io.IOException;

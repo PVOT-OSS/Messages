@@ -1,22 +1,11 @@
 /*
- * Copyright (C) 2015 Jacob Klinker
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-FileCopyrightText: 2015 Jacob Klinker
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package com.android.mms.service_alt;
 
-import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -24,7 +13,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 import android.os.Binder;
-import android.os.Bundle;
 import android.provider.Telephony;
 import android.text.TextUtils;
 
@@ -40,41 +28,15 @@ import com.klinker.android.send_message.Transaction;
 
 import timber.log.Timber;
 
-/**
- * Request to download an MMS
- */
-public class DownloadRequest extends MmsRequest {
+public final class DownloadRequest {
 
     private static final String LOCATION_SELECTION =
             Telephony.Mms.MESSAGE_TYPE + "=? AND " + Telephony.Mms.CONTENT_LOCATION + " =?";
 
-    static final String[] PROJECTION = new String[]{
-            Telephony.Mms.CONTENT_LOCATION
-    };
-
-    // The indexes of the columns which must be consistent with above PROJECTION.
-    static final int COLUMN_CONTENT_LOCATION = 0;
-
-    private final String mLocationUrl;
-    private final PendingIntent mDownloadedIntent;
-    private final Uri mContentUri;
-
-    public DownloadRequest(RequestManager manager, int subId, String locationUrl,
-                           Uri contentUri, PendingIntent downloadedIntent, String creator,
-                           Bundle configOverrides, Context context) throws MmsException {
-        super(manager, subId, creator, configOverrides);
-
-        if (locationUrl == null) {
-            mLocationUrl = getContentLocation(context, contentUri);
-        } else {
-            mLocationUrl = locationUrl;
-        }
-
-        mDownloadedIntent = downloadedIntent;
-        mContentUri = contentUri;
+    private DownloadRequest() {
     }
 
-    public static Uri persist(Context context, byte[] response, MmsConfig.Overridden mmsConfig,
+    public static Uri persist(Context context, byte[] response, boolean supportContentDisposition,
                               String locationUrl, int subId, String creator) {
         // Let any mms apps running as secondary user know that a new mms has been downloaded.
         notifyOfDownload(context);
@@ -100,7 +62,7 @@ public class DownloadRequest extends MmsRequest {
         final long identity = Binder.clearCallingIdentity();
         try {
             final GenericPdu pdu =
-                    (new PduParser(response, mmsConfig.getSupportMmsContentDisposition())).parse();
+                    (new PduParser(response, supportContentDisposition)).parse();
             if (pdu == null || !(pdu instanceof RetrieveConf)) {
                 Timber.e("DownloadRequest.persistIfRequired: invalid parsed PDU");
 
@@ -143,6 +105,7 @@ public class DownloadRequest extends MmsRequest {
                 values.put(Telephony.Mms.DATE_SENT, retrieveConf.getDate());
             } catch (Exception ignored) {
             }
+            values.put(Telephony.Mms.CONTENT_LOCATION, locationUrl);
             values.put(Telephony.Mms.READ, 0);
             values.put(Telephony.Mms.SEEN, 0);
             if (!TextUtils.isEmpty(creator)) {
@@ -225,26 +188,6 @@ public class DownloadRequest extends MmsRequest {
 //                    null,
 //                    null, Activity.RESULT_OK, null, null);
 //        }
-    }
-
-    private String getContentLocation(Context context, Uri uri)
-            throws MmsException {
-        Cursor cursor = android.database.sqlite.SqliteWrapper.query(context, context.getContentResolver(),
-                uri, PROJECTION, null, null, null);
-
-        if (cursor != null) {
-            try {
-                if ((cursor.getCount() == 1) && cursor.moveToFirst()) {
-                    String location = cursor.getString(COLUMN_CONTENT_LOCATION);
-                    cursor.close();
-                    return location;
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-
-        throw new MmsException("Cannot get X-Mms-Content-Location from: " + uri);
     }
 
     private static Long getId(Context context, String location) {

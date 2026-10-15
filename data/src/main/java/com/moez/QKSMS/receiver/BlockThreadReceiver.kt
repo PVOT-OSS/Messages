@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2020 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.receiver
 
 import android.annotation.SuppressLint
@@ -23,13 +10,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.interactor.MarkBlocked
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import javax.inject.Inject
 
 class BlockThreadReceiver : BroadcastReceiver() {
 
@@ -46,9 +33,7 @@ class BlockThreadReceiver : BroadcastReceiver() {
 
         blockingClient
             .block(
-                conversationRepo.getConversation(threadId)
-                    ?.recipients
-                    ?.map { it.address }
+                conversationRepo.getConversation(threadId)?.recipients?.map { it.address }
                     ?: listOf()
             )
             .subscribeOn(Schedulers.io())
@@ -58,13 +43,11 @@ class BlockThreadReceiver : BroadcastReceiver() {
                 )
             )
             .subscribe(
-                {
-                    goAsync().finish()
-                },
+                { goAsync().finish() },
                 { error ->
                     Timber.e("BlockThreadReceiver", "blocking failed")
                     goAsync().finish()
-                }
+                },
             )
     }
 }

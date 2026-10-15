@@ -1,38 +1,29 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.compose.part
 
 import android.content.Context
 import android.content.res.ColorStateList
 import android.media.AudioAttributes
 import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.METADATA_KEY_TITLE
 import android.view.View
 import android.widget.SeekBar
 import com.moez.QKSMS.common.QkMediaPlayer
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.prauga.messages.common.util.FileNamingConfig
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.FileNamingConfig
 import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
@@ -45,19 +36,15 @@ import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.util.GlideApp
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import org.prauga.messages.util.tryOrNull
 
-
-class AudioBinder @Inject constructor(colors: Colors, private val context: Context) :
-    PartBinder() {
+class AudioBinder @Inject constructor(colors: Colors, private val context: Context) : PartBinder() {
 
     companion object {
         const val DEFAULT_SHARE_FILENAME = FileNamingConfig.DEFAULT_AUDIO_SHARE_FILENAME
     }
 
-    @Inject
-    lateinit var navigator: Navigator
+    @Inject lateinit var navigator: Navigator
 
     override val partLayout = R.layout.mms_audio_preview_list_item
     override var theme = colors.theme()
@@ -69,15 +56,15 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
     private fun startSeekBarUpdateTimer() {
         audioState.apply {
             seekBarUpdater?.dispose()
-            seekBarUpdater = Observable.interval(500, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.single())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
-                    viewHolder?.containerView
-                        ?.findViewById<SeekBar>(R.id.seekBar)
-                        ?.progress = QkMediaPlayer.currentPosition
-                }
-                .subscribe()
+            seekBarUpdater =
+                Observable.interval(500, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.single())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext {
+                        viewHolder?.containerView?.findViewById<SeekBar>(R.id.seekBar)?.progress =
+                            QkMediaPlayer.currentPosition
+                    }
+                    .subscribe()
         }
     }
 
@@ -88,7 +75,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
         binding.seekBar.progress = QkMediaPlayer.currentPosition
         binding.playPause.setImageResource(R.drawable.exo_icon_pause)
         binding.playPause.tag = QkMediaPlayer.PlayingState.Playing
-        binding.metadataTitle.isSelected = true     // start marquee
+        binding.metadataTitle.isSelected = true // start marquee
     }
 
     private fun uiToPaused(viewHolder: QkViewHolder) {
@@ -104,7 +91,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
         binding.seekBar.isEnabled = false
         binding.playPause.setImageResource(R.drawable.exo_icon_play)
         binding.playPause.tag = QkMediaPlayer.PlayingState.Stopped
-        binding.metadataTitle.isSelected = false   // stop marquee
+        binding.metadataTitle.isSelected = false // stop marquee
     }
 
     override fun bindPart(
@@ -165,22 +152,28 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                             startSeekBarUpdateTimer()
                         }
 
-                        QkMediaPlayer.setOnCompletionListener {   // also called on error because we don't have an onerrorlistener
-                            audioState.apply {
-                                // if this part is currently active, set it to stopped and inactive
-                                if ((partId == part.id) && (viewHolder != null))
-                                    uiToStopped(viewHolder!!)
+                        QkMediaPlayer
+                            .setOnCompletionListener { // also called on error because we don't have
+                                // an onerrorlistener
+                                audioState.apply {
+                                    // if this part is currently active, set it to stopped and
+                                    // inactive
+                                    if ((partId == part.id) && (viewHolder != null))
+                                        uiToStopped(viewHolder!!)
 
-                                state = QkMediaPlayer.PlayingState.Stopped
-                                partId = -1
-                                viewHolder = null
+                                    state = QkMediaPlayer.PlayingState.Stopped
+                                    partId = -1
+                                    viewHolder = null
+                                }
                             }
-                        }
 
                         // start the media player play sequence
                         QkMediaPlayer.setAudioAttributes(
                             AudioAttributes.Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)     // music, maybe?? could be voice. don't want to use CONTENT_TYPE_UNKNOWN though
+                                .setContentType(
+                                    AudioAttributes.CONTENT_TYPE_MUSIC
+                                ) // music, maybe?? could be voice. don't want to use
+                                // CONTENT_TYPE_UNKNOWN though
                                 .setUsage(AudioAttributes.USAGE_MEDIA)
                                 .build()
                         )
@@ -194,23 +187,17 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
         }
 
         // if this item is the active active audio item update the active view holder
-        if (audioState.partId == part.id)
-            audioState.viewHolder = holder
+        if (audioState.partId == part.id) audioState.viewHolder = holder
         // else, this is not the active item so ensure the stored view holder is not this one
-        else if (audioState.viewHolder == holder)
-            audioState.viewHolder = null
+        else if (audioState.viewHolder == holder) audioState.viewHolder = null
 
         // tint colours
         val secondaryColor =
-            if (!message.isMe())
-                theme.theme
-            else
-                holder.containerView.context.resolveThemeColor(R.attr.bubbleColor)
+            if (!message.isMe()) theme.theme
+            else holder.containerView.context.resolveThemeColor(R.attr.bubbleColor)
         val primaryColor =
-            if (!message.isMe())
-                theme.textPrimary
-            else
-                holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary)
+            if (!message.isMe()) theme.textPrimary
+            else holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary)
 
         // sound wave
         binding.soundWave.setTint(primaryColor)
@@ -220,71 +207,81 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
             setTint(secondaryColor)
             thumbTintList = ColorStateList.valueOf(secondaryColor)
 
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
-                    // if seek was initiated by the user and this part is currently playing
-                    if (fromUser)
-                        QkMediaPlayer.seekTo(progress)
-                }
+            setOnSeekBarChangeListener(
+                object : SeekBar.OnSeekBarChangeListener {
+                    override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
+                        // if seek was initiated by the user and this part is currently playing
+                        if (fromUser) QkMediaPlayer.seekTo(progress)
+                    }
 
-                override fun onStartTrackingTouch(p0: SeekBar?) { /* nothing */
-                }
+                    override fun onStartTrackingTouch(p0: SeekBar?) {
+                        /* nothing */
+                    }
 
-                override fun onStopTrackingTouch(p0: SeekBar?) { /* nothing */
+                    override fun onStopTrackingTouch(p0: SeekBar?) {
+                        /* nothing */
+                    }
                 }
-            })
+            )
         }
 
         // playPause button
         binding.playPause.apply {
-            if ((audioState.partId == part.id) &&
-                (audioState.state == QkMediaPlayer.PlayingState.Playing)
+            if (
+                (audioState.partId == part.id) &&
+                    (audioState.state == QkMediaPlayer.PlayingState.Playing)
             )
                 uiToPlaying(holder)
-            else if ((audioState.partId == part.id) &&
-                (audioState.state == QkMediaPlayer.PlayingState.Paused)
+            else if (
+                (audioState.partId == part.id) &&
+                    (audioState.state == QkMediaPlayer.PlayingState.Paused)
             )
                 uiToPaused(holder)
-            else
-                uiToStopped(holder)
+            else uiToStopped(holder)
 
             setTint(secondaryColor)
             setBackgroundTint(primaryColor)
         }
 
         MediaMetadataRetriever().apply {
-            if (part.getUri().resourceExists(context))
-                setDataSource(context, part.getUri())
+            val readable =
+                part.getUri().resourceExists(context) &&
+                    tryOrNull(false) { setDataSource(context, part.getUri()) } != null
 
             // metadata title
             binding.metadataTitle.apply {
-                text = extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                text =
+                    if (!readable) null
+                    else tryOrNull(false) { extractMetadata(METADATA_KEY_TITLE) }
 
-                if (text.isEmpty())
-                    visibility = View.GONE
+                if (text.isEmpty()) visibility = View.GONE
                 else {
                     visibility = View.VISIBLE
                     setTextColor(primaryColor)
-                    setBackgroundTint(secondaryColor.withAlpha(0xcc))    // hex value is alpha
+                    setBackgroundTint(secondaryColor.withAlpha(0xcc)) // hex value is alpha
                 }
             }
 
             // bubble / embedded image
             binding.thumbnail.apply {
-                bubbleStyle = when {
-                    !canGroupWithPrevious && canGroupWithNext ->
-                        if (message.isMe()) BubbleImageView.Style.OUT_FIRST else BubbleImageView.Style.IN_FIRST
+                bubbleStyle =
+                    when {
+                        !canGroupWithPrevious && canGroupWithNext ->
+                            if (message.isMe()) BubbleImageView.Style.OUT_FIRST
+                            else BubbleImageView.Style.IN_FIRST
 
-                    canGroupWithPrevious && canGroupWithNext ->
-                        if (message.isMe()) BubbleImageView.Style.OUT_MIDDLE else BubbleImageView.Style.IN_MIDDLE
+                        canGroupWithPrevious && canGroupWithNext ->
+                            if (message.isMe()) BubbleImageView.Style.OUT_MIDDLE
+                            else BubbleImageView.Style.IN_MIDDLE
 
-                    canGroupWithPrevious && !canGroupWithNext ->
-                        if (message.isMe()) BubbleImageView.Style.OUT_LAST else BubbleImageView.Style.IN_LAST
+                        canGroupWithPrevious && !canGroupWithNext ->
+                            if (message.isMe()) BubbleImageView.Style.OUT_LAST
+                            else BubbleImageView.Style.IN_LAST
 
-                    else -> BubbleImageView.Style.ONLY
-                }
+                        else -> BubbleImageView.Style.ONLY
+                    }
 
-                val embeddedPicture = embeddedPicture
+                val embeddedPicture = if (readable) tryOrNull(false) { embeddedPicture } else null
                 if (embeddedPicture == null) {
                     binding.frame.layoutParams.height = (binding.frame.layoutParams.width / 2)
                     setTint(secondaryColor)
@@ -297,7 +294,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                         .load(embeddedPicture)
                         .override(
                             binding.frame.layoutParams.width,
-                            binding.frame.layoutParams.height
+                            binding.frame.layoutParams.height,
                         )
                         .into(this)
                 }

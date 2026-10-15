@@ -1,20 +1,21 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.SyncRepository
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.repository.SyncRepository
 
 class SyncContactsTest {
 
-    @Mock
-    private lateinit var syncManager: SyncRepository
+    @Mock private lateinit var syncManager: SyncRepository
 
     private lateinit var syncContacts: SyncContacts
 

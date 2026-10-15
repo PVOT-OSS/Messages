@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.changelog
 
 import android.content.Context
@@ -28,7 +15,8 @@ import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.databinding.ChangelogListItemBinding
 import org.prauga.messages.manager.ChangelogManager
 
-class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapter.ChangelogItem, QkBindingViewHolder<ChangelogListItemBinding>>() {
+class ChangelogAdapter(private val context: Context) :
+    QkAdapter<ChangelogAdapter.ChangelogItem, QkBindingViewHolder<ChangelogListItemBinding>>() {
 
     data class ChangelogItem(val type: Int, val label: String)
 
@@ -57,8 +45,12 @@ class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapte
         data = changes
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkBindingViewHolder<ChangelogListItemBinding> {
-        val binding = ChangelogListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): QkBindingViewHolder<ChangelogListItemBinding> {
+        val binding =
+            ChangelogListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             if (viewType == 0) {
                 binding.changelogItem.setTypeface(binding.changelogItem.typeface, Typeface.BOLD)
@@ -66,7 +58,10 @@ class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapte
         }
     }
 
-    override fun onBindViewHolder(holder: QkBindingViewHolder<ChangelogListItemBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: QkBindingViewHolder<ChangelogListItemBinding>,
+        position: Int,
+    ) {
         val item = getItem(position)
         holder.binding.changelogItem.text = item.label
     }
@@ -74,5 +69,4 @@ class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapte
     override fun getItemViewType(position: Int): Int {
         return getItem(position).type
     }
-
 }
