@@ -23,7 +23,7 @@ class SmsSentParts {
             when {
                 !ok && failed.add(key) -> Outcome.FAILED
                 !ok -> Outcome.FAILED_SILENTLY
-                last -> Outcome.SENT
+                last && key !in failed -> Outcome.SENT
                 else -> Outcome.NONE
             }
 
