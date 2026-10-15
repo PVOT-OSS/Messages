@@ -21,7 +21,8 @@ class ResumeUnsentSms @Inject constructor(private val messageRepo: MessageReposi
                         message.id in params.retrying -> Unit
                         message.date > params.now ->
                             messageRepo.scheduleDelayedSms(message.id, message.date)
-                        else -> messageRepo.markFailed(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
+                        else ->
+                            messageRepo.markFailed(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
                     }
                 }
             }
