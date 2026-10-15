@@ -48,3 +48,5 @@ include(":app")
 include(":carrier-configs")
 
 include(":gif-encoder")
+
+include(":otp-detector")
