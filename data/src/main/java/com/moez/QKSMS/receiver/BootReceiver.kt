@@ -36,7 +36,7 @@ class BootReceiver : BroadcastReceiver() {
         AndroidInjection.inject(this, context)
 
         val result = goAsync()
-        val retrying = SmsSendRetryWorker.pending(context)
+        val retrying = SmsSendRetryWorker.pending(context) - SmsSendRetryWorker.inFlight(context)
         resumeUnsentSms.execute(ResumeUnsentSms.Params(System.currentTimeMillis(), retrying)) {
             updateScheduledMessageAlarms.execute(Unit) { result.finish() }
         }
