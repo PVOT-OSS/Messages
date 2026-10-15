@@ -188,7 +188,7 @@ class Context:
         if unblock:
             extras += ["--ez", "unblock", "true"]
         self.broadcast("TEST_BLOCK", *extras)
-        time.sleep(1)
+        time.sleep(4)
 
     def delete_message(self, row):
         self.broadcast("TEST_DELETE", "--es", "uri", f"content://mms/{row['_id']}")
