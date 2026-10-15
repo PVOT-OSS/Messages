@@ -8,12 +8,15 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.any
+import org.mockito.Mockito.anyInt
 import org.mockito.Mockito.anyLong
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoInteractions
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.manager.MmsDownloadPolicy
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.model.Message
 import org.prauga.messages.repository.MessageRepository
@@ -24,6 +27,8 @@ class DownloadPendingMmsTest {
 
     @Mock private lateinit var permissionManager: PermissionManager
 
+    @Mock private lateinit var mmsDownloadPolicy: MmsDownloadPolicy
+
     @Mock private lateinit var first: Message
 
     @Mock private lateinit var second: Message
@@ -33,7 +38,9 @@ class DownloadPendingMmsTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        downloadPendingMms = DownloadPendingMms(messageRepository, permissionManager)
+        downloadPendingMms =
+            DownloadPendingMms(messageRepository, mmsDownloadPolicy, permissionManager)
+        `when`(mmsDownloadPolicy.shouldAutoDownload(anyInt(), any())).thenReturn(true)
     }
 
     @Test
@@ -64,6 +71,17 @@ class DownloadPendingMmsTest {
         downloadPendingMms.buildObservable(Unit).subscribe(TestSubscriber<Any>())
 
         assertTrue(since in (weekAgo - 1000)..(weekAgo + 1000))
+    }
+
+    @Test
+    fun givenPolicyAgainstAutoDownload_whenBuildObservable_thenLeavesThemForTheUser() {
+        `when`(permissionManager.isDefaultSms()).thenReturn(true)
+        `when`(messageRepository.getPendingMmsDownloads(anyLong())).thenReturn(listOf(first))
+        `when`(mmsDownloadPolicy.shouldAutoDownload(anyInt(), any())).thenReturn(false)
+
+        downloadPendingMms.buildObservable(Unit).subscribe(TestSubscriber<Any>())
+
+        verify(messageRepository, never()).downloadMms(first, true)
     }
 
     @Test

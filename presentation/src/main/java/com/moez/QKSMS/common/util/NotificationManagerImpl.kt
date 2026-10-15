@@ -220,7 +220,10 @@ constructor(
             }
 
             NotificationCompat.MessagingStyle.Message(
-                    message.getSummary(),
+                    when (message.isPendingMmsDownload()) {
+                        true -> context.getString(R.string.message_mms_not_downloaded)
+                        false -> message.getSummary()
+                    },
                     message.date,
                     person.build(),
                 )

@@ -18,6 +18,35 @@
  */
 package org.prauga.messages.receiver
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import com.android.mms.transaction.PushReceiver
+import com.klinker.android.send_message.CarrierMmsConfig
+import dagger.android.AndroidInjection
+import javax.inject.Inject
+import org.prauga.messages.interactor.ReceiveMms
+import org.prauga.messages.manager.MmsDownloadPolicy
+import timber.log.Timber
 
-class MmsReceiver : PushReceiver()
+class MmsReceiver : PushReceiver() {
+
+    @Inject lateinit var mmsDownloadPolicy: MmsDownloadPolicy
+    @Inject lateinit var receiveMms: ReceiveMms
+
+    override fun onReceive(context: Context, intent: Intent) {
+        AndroidInjection.inject(this, context)
+        super.onReceive(context, intent)
+    }
+
+    override fun shouldAutoDownload(
+        context: Context,
+        subId: Int,
+        config: CarrierMmsConfig,
+        from: String?,
+    ): Boolean = mmsDownloadPolicy.shouldAutoDownload(subId, from)
+
+    override fun onNotificationReceived(context: Context, notificationUri: Uri, subId: Int) {
+        receiveMms.buildObservable(notificationUri).blockingSubscribe({}, Timber::w)
+    }
+}

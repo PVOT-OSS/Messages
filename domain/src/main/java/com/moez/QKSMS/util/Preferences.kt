@@ -133,6 +133,8 @@ constructor(
     val autoDelete = rxPrefs.getInteger("autoDelete", 0)
     val longAsMms = rxPrefs.getBoolean("longAsMms", false)
     val mmsSize = rxPrefs.getInteger("mmsSize", 300)
+    val mmsAutoDownload = rxPrefs.getBoolean("mmsAutoDownload", true)
+    val mmsRoamingAutoDownload = rxPrefs.getBoolean("mmsRoamingAutoDownload", false)
     val messageLinkHandling = rxPrefs.getInteger("messageLinkHandling", MESSAGE_LINK_HANDLING_ASK)
     val disableScreenshots = rxPrefs.getBoolean("disableScreenshots", false)
     val logging = rxPrefs.getBoolean("logging", false)
