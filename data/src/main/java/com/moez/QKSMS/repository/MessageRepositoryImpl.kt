@@ -856,6 +856,17 @@ constructor(
 
         val contentId = messageUri.lastPathSegment?.toLongOrNull() ?: 0L
 
+        if (subId >= 0 && prefs.canUseSubId.get()) {
+            tryOrNull {
+                context.contentResolver.update(
+                    messageUri,
+                    contentValuesOf(Mms.SUBSCRIPTION_ID to subId),
+                    null,
+                    null,
+                )
+            }
+        }
+
         // Query parts from the content provider
         val mmsParts = mutableListOf<MmsPart>()
         cursorToPart.getPartsCursor(contentId)?.use { cursor ->
