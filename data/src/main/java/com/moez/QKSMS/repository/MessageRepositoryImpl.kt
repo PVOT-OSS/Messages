@@ -650,7 +650,11 @@ constructor(
             config.emailGatewayNumber.takeIf {
                 it.isNotEmpty() && isEmailAddress(message.address)
             }
-        val destination = gateway ?: message.address
+        val destination =
+            gateway
+                ?: android.telephony.PhoneNumberUtils.stripSeparators(message.address)
+                    ?.takeIf { it.isNotEmpty() }
+                ?: message.address
         val body = if (gateway != null) "${message.address} ${message.body}" else message.body
 
         val parts =
