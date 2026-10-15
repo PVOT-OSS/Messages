@@ -25,6 +25,7 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 import org.prauga.messages.interactor.ResumeUnsentSms
 import org.prauga.messages.interactor.UpdateScheduledMessageAlarms
+import org.prauga.messages.worker.SmsSendRetryWorker
 
 class BootReceiver : BroadcastReceiver() {
 
@@ -35,7 +36,8 @@ class BootReceiver : BroadcastReceiver() {
         AndroidInjection.inject(this, context)
 
         val result = goAsync()
-        resumeUnsentSms.execute(System.currentTimeMillis()) {
+        val retrying = SmsSendRetryWorker.pending(context)
+        resumeUnsentSms.execute(ResumeUnsentSms.Params(System.currentTimeMillis(), retrying)) {
             updateScheduledMessageAlarms.execute(Unit) { result.finish() }
         }
     }

@@ -38,9 +38,9 @@ class ResumeUnsentSmsTest {
             `when`(it.date).thenReturn(date)
         }
 
-    private fun resume() {
+    private fun resume(retrying: Set<Long> = emptySet()) {
         val subscriber = TestSubscriber<Unit>()
-        resumeUnsentSms.buildObservable(now).subscribe(subscriber)
+        resumeUnsentSms.buildObservable(ResumeUnsentSms.Params(now, retrying)).subscribe(subscriber)
         subscriber.assertComplete()
         subscriber.assertNoErrors()
     }
@@ -95,5 +95,16 @@ class ResumeUnsentSmsTest {
         `when`(messageRepo.getUnsentSms()).thenThrow(IllegalStateException("Realm"))
 
         resume()
+    }
+
+    @Test
+    fun givenSmsWaitingForAnAutomaticRetry_whenResumed_thenItIsLeftToTheRetry() {
+        val unsent = listOf(sms(4, now - 5_000))
+        `when`(messageRepo.getUnsentSms()).thenReturn(unsent)
+
+        resume(retrying = setOf(4))
+
+        verify(messageRepo, never()).scheduleDelayedSms(anyLong(), anyLong())
+        verify(messageRepo, never()).markFailed(anyLong(), anyInt())
     }
 }
