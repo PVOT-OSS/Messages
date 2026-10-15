@@ -67,6 +67,8 @@ import java.util.Set;
 public class PduPersister {
     private static final boolean LOCAL_LOGV = false;
 
+    public static final String UNKNOWN_SENDER = "Unknown sender";
+
     public static final long DUMMY_THREAD_ID = Long.MAX_VALUE;
     private static final int DEFAULT_SUBSCRIPTION = 0;
     private static final int MAX_TEXT_BODY_SIZE = 300 * 1024;
@@ -668,7 +670,8 @@ public class PduPersister {
         } finally {
             synchronized (PDU_CACHE_INSTANCE) {
                 if (pdu != null) {
-                    assert (PDU_CACHE_INSTANCE.get(uri) == null);
+                    // Another thread can load the same message at the same time, e.g. when
+                    // several MMS arrive at once, so an entry may already be there: replace it
                     // Update the cache entry with the real info
                     cacheEntry = new PduCacheEntry(pdu, msgBox, threadId);
                     PDU_CACHE_INSTANCE.put(uri, cacheEntry);
@@ -1401,6 +1404,9 @@ public class PduPersister {
                     loadRecipients(PduHeaders.TO, recipients, addressMap, false);
                     break;
             }
+            if (recipients.isEmpty() && msgType != PduHeaders.MESSAGE_TYPE_SEND_REQ) {
+                recipients.add(UNKNOWN_SENDER);
+            }
             if (threadId == DUMMY_THREAD_ID && createThreadId && !recipients.isEmpty()) {
                 // Given all the recipients associated with this message, find (or create) the
                 // correct thread.
@@ -1499,6 +1505,9 @@ public class PduPersister {
         for (EncodedStringValue v : array) {
             if (v != null) {
                 String number = v.getString();
+                if (PduHeaders.FROM_INSERT_ADDRESS_TOKEN_STR.equals(number)) {
+                    continue;
+                }
                 if ((myNumber == null || !PhoneNumberUtils.compare(number, myNumber)) &&
                         !recipients.contains(number)) {
                     // Only add numbers which aren't my own number.
