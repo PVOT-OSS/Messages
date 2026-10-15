@@ -53,9 +53,7 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
 
     private var selection = mutableListOf<Long>()
 
-    /**
-     * Mark this message as highlighted
-     */
+    /** Mark this message as highlighted */
     var highlight: Long = -1L
         set(value) {
             if (field == value) return
@@ -99,8 +97,7 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
         selection.clear()
 
         if (needToSelectAll) {
-            for (position in 0 until itemCount)
-                selection += getItemId(position)
+            for (position in 0 until itemCount) selection += getItemId(position)
         }
 
         // fire a single change event now
@@ -152,5 +149,4 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
             is RealmList<T> -> data.removeChangeListener(emptyListener)
         }
     }
-
 }

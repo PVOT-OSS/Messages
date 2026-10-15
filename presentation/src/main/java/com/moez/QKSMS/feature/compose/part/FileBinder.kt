@@ -23,6 +23,7 @@ import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewHolder
@@ -34,12 +35,10 @@ import org.prauga.messages.databinding.MmsFileListItemBinding
 import org.prauga.messages.feature.compose.BubbleUtils
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import javax.inject.Inject
 
 class FileBinder @Inject constructor(colors: Colors, private val context: Context) : PartBinder() {
 
-    @Inject
-    lateinit var navigator: Navigator
+    @Inject lateinit var navigator: Navigator
 
     override val partLayout = R.layout.mms_file_list_item
     override var theme = colors.theme()
@@ -53,7 +52,7 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
         part: MmsPart,
         message: Message,
         canGroupWithPrevious: Boolean,
-        canGroupWithNext: Boolean
+        canGroupWithNext: Boolean,
     ) {
         val binding = MmsFileListItemBinding.bind(holder.containerView)
 
@@ -85,14 +84,17 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
             binding.size.setTextColor(theme.textTertiary)
         } else {
             binding.fileBackground.setBackgroundTint(
-                holder.containerView.context.resolveThemeColor(
-                    R.attr.bubbleColor
-                )
+                holder.containerView.context.resolveThemeColor(R.attr.bubbleColor)
             )
-            binding.icon.setTint(holder.containerView.context.resolveThemeColor(android.R.attr.textColorSecondary))
-            binding.filename.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary))
-            binding.size.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorTertiary))
+            binding.icon.setTint(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorSecondary)
+            )
+            binding.filename.setTextColor(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary)
+            )
+            binding.size.setTextColor(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorTertiary)
+            )
         }
     }
-
 }

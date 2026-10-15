@@ -22,9 +22,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.interactor.RetrySending
 import org.prauga.messages.repository.MessageRepository
-import javax.inject.Inject
 
 class SendSmsReceiver : BroadcastReceiver() {
 
@@ -39,5 +39,4 @@ class SendSmsReceiver : BroadcastReceiver() {
         val result = goAsync()
         retrySending.execute(messageId) { result.finish() }
     }
-
 }

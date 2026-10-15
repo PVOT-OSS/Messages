@@ -10,9 +10,9 @@ import org.junit.Test
 /**
  * Unit tests for CopyOtpReceiver.
  *
- * These tests verify the data contract and Intent extra handling logic.
- * Full integration tests with Android components (ClipboardManager, Toast, Context)
- * should be done via instrumentation tests since they require the Android framework.
+ * These tests verify the data contract and Intent extra handling logic. Full integration tests with
+ * Android components (ClipboardManager, Toast, Context) should be done via instrumentation tests
+ * since they require the Android framework.
  */
 class CopyOtpReceiverTest {
 
@@ -33,8 +33,7 @@ class CopyOtpReceiverTest {
         val wrongKeys = listOf("otpcode", "OTPCode", "OTPCODE", "otp_code")
 
         wrongKeys.forEach { wrongKey ->
-            assertNotEquals("Key should not match incorrect case: $wrongKey",
-                correctKey, wrongKey)
+            assertNotEquals("Key should not match incorrect case: $wrongKey", correctKey, wrongKey)
         }
     }
 
@@ -67,8 +66,10 @@ class CopyOtpReceiverTest {
     fun givenAlphanumericOtp_whenValidated_thenContainsBothLettersAndDigits() {
         val otpCode = "A1B2C3"
 
-        assertTrue("Alphanumeric OTP should contain both letters and digits",
-            otpCode.any { it.isLetter() } && otpCode.any { it.isDigit() })
+        assertTrue(
+            "Alphanumeric OTP should contain both letters and digits",
+            otpCode.any { it.isLetter() } && otpCode.any { it.isDigit() },
+        )
         assertEquals("OTP length should be 6", 6, otpCode.length)
     }
 
@@ -87,8 +88,7 @@ class CopyOtpReceiverTest {
         val otpCode = ""
 
         assertTrue("Empty string should be empty", otpCode.isEmpty())
-        assertFalse("Empty string should not match OTP pattern",
-            otpCode.matches(Regex("\\d{4,8}")))
+        assertFalse("Empty string should not match OTP pattern", otpCode.matches(Regex("\\d{4,8}")))
     }
 
     @Test
@@ -102,8 +102,7 @@ class CopyOtpReceiverTest {
     fun givenWhitespaceOnlyString_whenValidated_thenNotValidOtp() {
         val otpCode = "   "
 
-        assertTrue("Whitespace string should not match OTP pattern",
-            otpCode.trim().isEmpty())
+        assertTrue("Whitespace string should not match OTP pattern", otpCode.trim().isEmpty())
     }
 
     @Test
@@ -112,8 +111,7 @@ class CopyOtpReceiverTest {
         val trimmedOtp = otpCodeWithSpace.trim()
 
         assertEquals("Trimmed OTP should be valid", "123456", trimmedOtp)
-        assertTrue("Trimmed OTP should match pattern",
-            trimmedOtp.matches(Regex("\\d{6}")))
+        assertTrue("Trimmed OTP should match pattern", trimmedOtp.matches(Regex("\\d{6}")))
     }
 
     // With special characters
@@ -121,16 +119,14 @@ class CopyOtpReceiverTest {
     fun givenOtpWithSpecialCharacters_whenChecked_thenIdentifiable() {
         val otpCode = "12#45@"
 
-        assertTrue("Should contain special characters",
-            otpCode.any { !it.isLetterOrDigit() })
+        assertTrue("Should contain special characters", otpCode.any { !it.isLetterOrDigit() })
     }
 
     @Test
     fun givenOtpWithOnlyDigits_whenChecked_thenPureNumeric() {
         val otpCode = "123456"
 
-        assertTrue("Should contain only digits",
-            otpCode.all { it.isDigit() })
+        assertTrue("Should contain only digits", otpCode.all { it.isDigit() })
     }
 
     // Clipboard label
@@ -147,7 +143,9 @@ class CopyOtpReceiverTest {
         val receiver = CopyOtpReceiver()
 
         assertNotNull("Receiver should be instantiable", receiver)
-        assertTrue("Receiver should be a BroadcastReceiver",
-            receiver is android.content.BroadcastReceiver)
+        assertTrue(
+            "Receiver should be a BroadcastReceiver",
+            receiver is android.content.BroadcastReceiver,
+        )
     }
 }

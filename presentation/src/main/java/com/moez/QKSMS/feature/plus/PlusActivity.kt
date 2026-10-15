@@ -22,9 +22,10 @@ import android.graphics.Typeface
 import android.os.Bundle
 import androidx.core.view.children
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.jakewharton.rxbinding2.view.clicks
 import dagger.android.AndroidInjection
-import androidx.lifecycle.lifecycleScope
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
@@ -39,30 +40,41 @@ import org.prauga.messages.databinding.QksmsPlusActivityBinding
 import org.prauga.messages.feature.plus.experiment.UpgradeButtonExperiment
 import org.prauga.messages.manager.BillingManager
 import timber.log.Timber
-import javax.inject.Inject
 
-class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivityBinding::inflate),
-    PlusView {
+class PlusActivity :
+    QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivityBinding::inflate), PlusView {
 
-    @Inject
-    lateinit var fontProvider: FontProvider
-    @Inject
-    lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var fontProvider: FontProvider
+    @Inject lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PlusViewModel::class.java]
     }
 
-    override val upgradeIntent get() = binding.upgrade.clicks()
-    override val upgradeDonateIntent get() = binding.upgradeDonate.clicks()
-    override val donateIntent get() = binding.donate.clicks()
-    override val themeClicks get() = binding.themes.clicks()
-    override val scheduleClicks get() = binding.schedule.clicks()
-    override val backupClicks get() = binding.backup.clicks()
-    override val delayedClicks get() = binding.delayed.clicks()
-    override val nightClicks get() = binding.night.clicks()
+    override val upgradeIntent
+        get() = binding.upgrade.clicks()
+
+    override val upgradeDonateIntent
+        get() = binding.upgradeDonate.clicks()
+
+    override val donateIntent
+        get() = binding.donate.clicks()
+
+    override val themeClicks
+        get() = binding.themes.clicks()
+
+    override val scheduleClicks
+        get() = binding.schedule.clicks()
+
+    override val backupClicks
+        get() = binding.backup.clicks()
+
+    override val delayedClicks
+        get() = binding.delayed.clicks()
+
+    override val nightClicks
+        get() = binding.night.clicks()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -128,5 +140,4 @@ class PlusActivity : QkThemedActivity<QksmsPlusActivityBinding>(QksmsPlusActivit
             }
         }
     }
-
 }

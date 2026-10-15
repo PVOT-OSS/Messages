@@ -32,19 +32,17 @@ import androidx.core.content.getSystemService
 import org.prauga.messages.util.tryOrNull
 
 fun Context.getColorCompat(colorRes: Int): Int {
-    //return black as a default color, in case an invalid color ID was passed in
+    // return black as a default color, in case an invalid color ID was passed in
     return tryOrNull { ContextCompat.getColor(this, colorRes) } ?: Color.BLACK
 }
 
 fun Context.getColorStateListCompat(colorStateListRes: Int): ColorStateList {
-    //return black as a default color, in case an invalid color ID was passed in
+    // return black as a default color, in case an invalid color ID was passed in
     return tryOrNull { ContextCompat.getColorStateList(this, colorStateListRes) }
-            ?: ColorStateList.valueOf(Color.BLACK)
+        ?: ColorStateList.valueOf(Color.BLACK)
 }
 
-/**
- * Tries to resolve a resource id from the current theme, based on the [attributeId]
- */
+/** Tries to resolve a resource id from the current theme, based on the [attributeId] */
 fun Context.resolveThemeAttribute(attributeId: Int, default: Int = 0): Int {
     val outValue = TypedValue()
     val wasResolved = theme.resolveAttribute(attributeId, outValue, true)
@@ -70,7 +68,6 @@ fun Context.resolveThemeColorStateList(attributeId: Int, default: Int = 0): Colo
     val outValue = TypedValue()
     val wasResolved = theme.resolveAttribute(attributeId, outValue, true)
 
-
     return getColorStateListCompat(if (wasResolved) outValue.resourceId else default)
 }
 
@@ -89,7 +86,10 @@ fun Context.isInstalled(packageName: String): Boolean {
 val Context.versionCode: Int
     get() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0)).longVersionCode.toInt()
+            packageManager
+                .getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+                .longVersionCode
+                .toInt()
         } else {
             packageManager.getPackageInfo(packageName, 0).versionCode
         }

@@ -28,7 +28,8 @@ import org.prauga.messages.common.base.QkBindingViewHolder
 import org.prauga.messages.databinding.ChangelogListItemBinding
 import org.prauga.messages.manager.ChangelogManager
 
-class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapter.ChangelogItem, QkBindingViewHolder<ChangelogListItemBinding>>() {
+class ChangelogAdapter(private val context: Context) :
+    QkAdapter<ChangelogAdapter.ChangelogItem, QkBindingViewHolder<ChangelogListItemBinding>>() {
 
     data class ChangelogItem(val type: Int, val label: String)
 
@@ -57,8 +58,12 @@ class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapte
         data = changes
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkBindingViewHolder<ChangelogListItemBinding> {
-        val binding = ChangelogListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): QkBindingViewHolder<ChangelogListItemBinding> {
+        val binding =
+            ChangelogListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             if (viewType == 0) {
                 binding.changelogItem.setTypeface(binding.changelogItem.typeface, Typeface.BOLD)
@@ -66,7 +71,10 @@ class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapte
         }
     }
 
-    override fun onBindViewHolder(holder: QkBindingViewHolder<ChangelogListItemBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: QkBindingViewHolder<ChangelogListItemBinding>,
+        position: Int,
+    ) {
         val item = getItem(position)
         holder.binding.changelogItem.text = item.label
     }
@@ -74,5 +82,4 @@ class ChangelogAdapter(private val context: Context) : QkAdapter<ChangelogAdapte
     override fun getItemViewType(position: Int): Int {
         return getItem(position).type
     }
-
 }

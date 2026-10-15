@@ -29,8 +29,8 @@ import io.reactivex.functions.Consumer
 /**
  * Create an observable of the open state of the drawer of `view`.
  *
- * *Warning:* The created observable keeps a strong reference to `view`. Unsubscribe
- * to free this reference.
+ * *Warning:* The created observable keeps a strong reference to `view`. Unsubscribe to free this
+ * reference.
  *
  * *Note:* A value will be emitted immediately on subscribe.
  */
@@ -41,8 +41,8 @@ inline fun DrawerLayout.drawerOpen(gravity: Int): InitialValueObservable<Boolean
 /**
  * An action which sets whether the drawer with `gravity` of `view` is open.
  *
- * *Warning:* The created observable keeps a strong reference to `view`. Unsubscribe
- * to free this reference.
+ * *Warning:* The created observable keeps a strong reference to `view`. Unsubscribe to free this
+ * reference.
  */
 @CheckResult
 inline fun DrawerLayout.open(gravity: Int): Consumer<in Boolean> =

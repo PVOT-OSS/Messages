@@ -25,5 +25,4 @@ interface CursorToContactGroupMember : Mapper<Cursor, CursorToContactGroupMember
     data class GroupMember(val lookupKey: String, val groupId: Long)
 
     fun getGroupMembersCursor(): Cursor?
-
 }

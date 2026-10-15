@@ -24,9 +24,9 @@ import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import javax.inject.Named
 import org.prauga.messages.injection.ViewModelKey
 import org.prauga.messages.model.Attachment
-import javax.inject.Named
 
 @Module
 class ComposeActivityModule {
@@ -50,14 +50,13 @@ class ComposeActivityModule {
     @Named("addresses")
     fun provideAddresses(activity: ComposeActivity): List<String> =
         if ((activity.intent?.data?.scheme == "sms") || (activity.intent?.data?.scheme == "smsto"))
-            activity.intent?.data
+            activity.intent
+                ?.data
                 ?.schemeSpecificPart
                 ?.removeSuffix("?${activity.intent?.data?.query}")
                 ?.split(",", ";")
-                ?.filter { it.isNotEmpty() }
-                ?: listOf()
-        else
-            listOf()
+                ?.filter { it.isNotEmpty() } ?: listOf()
+        else listOf()
 
     @Provides
     @Named("text")
@@ -66,8 +65,7 @@ class ComposeActivityModule {
 
         // from subject, if passed in intent
         retVal.append(activity.intent?.getStringExtra(Intent.EXTRA_SUBJECT) ?: "")
-        if (retVal.isNotEmpty())
-            retVal.append("\n")
+        if (retVal.isNotEmpty()) retVal.append("\n")
 
         // from extra_text or sms_body extras, if passed in intent
         retVal.append(
@@ -80,11 +78,12 @@ class ComposeActivityModule {
         // sms:12345678?body=hello%20there&body=goodbye
         if ((activity.intent?.data?.scheme == "sms") || (activity.intent?.data?.scheme == "smsto"))
             retVal.append(
-                activity.intent?.data?.query
+                activity.intent
+                    ?.data
+                    ?.query
                     ?.split("&")
                     ?.filter { it.startsWith("body=") }
-                    ?.joinToString("\n") { it.removePrefix("body=") }
-                    ?: ""
+                    ?.joinToString("\n") { it.removePrefix("body=") } ?: ""
             )
 
         return retVal.toString()
@@ -125,5 +124,4 @@ class ComposeActivityModule {
     @IntoMap
     @ViewModelKey(ComposeViewModel::class)
     fun provideComposeViewModel(viewModel: ComposeViewModel): ViewModel = viewModel
-
 }

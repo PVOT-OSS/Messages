@@ -92,5 +92,4 @@ abstract class ActivityBuilderModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = [])
     abstract fun bindBlockingActivity(): BlockingActivity
-
 }

@@ -33,10 +33,11 @@ sealed class ComposeItem {
     }
 
     data class Recent(val value: Conversation) : ComposeItem() {
-        override fun getContacts(): List<Contact> = value.recipients.map { recipient ->
-            recipient.contact
-                ?: Contact(numbers = RealmList(PhoneNumber(address = recipient.address)))
-        }
+        override fun getContacts(): List<Contact> =
+            value.recipients.map { recipient ->
+                recipient.contact
+                    ?: Contact(numbers = RealmList(PhoneNumber(address = recipient.address)))
+            }
     }
 
     data class Starred(val value: Contact) : ComposeItem() {

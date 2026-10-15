@@ -20,9 +20,7 @@ package org.prauga.messages.extensions
 
 import java.text.Normalizer
 
-/**
- * Strip the accents from a string
- */
+/** Strip the accents from a string */
 fun CharSequence.removeAccents(): String =
     Normalizer.normalize(this, Normalizer.Form.NFKD).replace(Regex("\\p{M}"), "")
 
@@ -40,8 +38,8 @@ fun String.truncateWithEllipses(maxLengthIncEllipses: Int) =
     }
 
 /**
- * Basic Levenshtein-distance fuzzy match with a cut-off to avoid expensive work.
- * Returns true if the distance is within [maxDistance].
+ * Basic Levenshtein-distance fuzzy match with a cut-off to avoid expensive work. Returns true if
+ * the distance is within [maxDistance].
  */
 fun CharSequence.fuzzyMatch(other: CharSequence, maxDistance: Int = 2): Boolean {
     val lhs = this.toString().lowercase()
@@ -59,11 +57,12 @@ fun CharSequence.fuzzyMatch(other: CharSequence, maxDistance: Int = 2): Boolean 
         var bestInRow = curr[0]
         for (j in rhs.indices) {
             val cost = if (lhs[i] == rhs[j]) 0 else 1
-            curr[j + 1] = minOf(
-                prev[j + 1] + 1, // deletion
-                curr[j] + 1,     // insertion
-                prev[j] + cost   // substitution
-            )
+            curr[j + 1] =
+                minOf(
+                    prev[j + 1] + 1, // deletion
+                    curr[j] + 1, // insertion
+                    prev[j] + cost, // substitution
+                )
             bestInRow = minOf(bestInRow, curr[j + 1])
         }
         if (bestInRow > maxDistance) return false

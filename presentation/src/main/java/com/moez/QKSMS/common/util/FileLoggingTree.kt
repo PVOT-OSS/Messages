@@ -22,23 +22,23 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import io.reactivex.schedulers.Schedulers
-import org.prauga.messages.util.FileUtils
-import org.prauga.messages.util.Preferences
-import timber.log.Timber
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.prauga.messages.util.FileUtils
+import org.prauga.messages.util.Preferences
+import timber.log.Timber
 
 /**
- * Based off Vipin Kumar's FileLoggingTree: https://medium.com/@vicky7230/file-logging-with-timber-4e63a1b86a66
+ * Based off Vipin Kumar's FileLoggingTree:
+ * https://medium.com/@vicky7230/file-logging-with-timber-4e63a1b86a66
  */
 @Singleton
-class FileLoggingTree @Inject constructor(
-    private val prefs: Preferences,
-    private val context: Context
-) : Timber.DebugTree() {
+class FileLoggingTree
+@Inject
+constructor(private val prefs: Preferences, private val context: Context) : Timber.DebugTree() {
     companion object {
         val TAG: String? = FileLoggingTree::class.simpleName
     }
@@ -49,12 +49,12 @@ class FileLoggingTree @Inject constructor(
         if (!prefs.logging.get()) return
 
         Schedulers.io().scheduleDirect {
-            synchronized(this) {    // one thread can access file at a time
+            synchronized(this) { // one thread can access file at a time
                 val logItem =
                     "${    // date/time
                         SimpleDateFormat(
                             "yyyy-MM-dd HH:mm:ss:SSS",
-                            Locale.getDefault()
+                            Locale.getDefault(),
                         ).format(System.currentTimeMillis())
                     } ${    // priority
                         when (priority) {
@@ -75,31 +75,30 @@ class FileLoggingTree @Inject constructor(
 
                 // if uri of log file not yet determined, get one now
                 if (logFileUri == null) {
-                    val filename = "Quik-log-${
+                    val filename =
+                        "Quik-log-${
                         SimpleDateFormat(
                             "yyyy-MM-dd",
-                            Locale.getDefault()
+                            Locale.getDefault(),
                         ).format(System.currentTimeMillis())
                     }.log"
 
-                    val (uri, e) = FileUtils.create(
-                        FileUtils.Companion.Location.Downloads,
-                        context,
-                        filename,
-                        "text/plain"
-                    )
-                    if (e is Exception)
-                        Log.e(TAG, "Error opening log file", e)
-                    else
-                        logFileUri = uri
+                    val (uri, e) =
+                        FileUtils.create(
+                            FileUtils.Companion.Location.Downloads,
+                            context,
+                            filename,
+                            "text/plain",
+                        )
+                    if (e is Exception) Log.e(TAG, "Error opening log file", e)
+                    else logFileUri = uri
                 }
 
                 logFileUri?.let {
                     val e = FileUtils.append(context, it, logItem.toByteArray())
                     if (e is FileNotFoundException)
                         Log.e(TAG, "Log file went away. Lost log file item: $logItem", e)
-                    else if (e is Exception)
-                        Log.e(TAG, "Error while logging into file", e)
+                    else if (e is Exception) Log.e(TAG, "Error while logging into file", e)
                 }
             }
         }

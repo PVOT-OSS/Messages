@@ -10,9 +10,7 @@ import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 import org.prauga.messages.common.base.QkView
 
-abstract class PvotViewModel<State : Any>(
-    initialState: State
-) : ViewModel() {
+abstract class PvotViewModel<State : Any>(initialState: State) : ViewModel() {
 
     private val _state = MutableStateFlow(initialState)
     val state: StateFlow<State> = _state
@@ -28,15 +26,11 @@ abstract class PvotViewModel<State : Any>(
     }
 
     protected fun newState(reducer: State.() -> State) {
-        viewModelScope.launch {
-            reducers.emit(reducer)
-        }
+        viewModelScope.launch { reducers.emit(reducer) }
     }
 
     @CallSuper
     open fun bindView(view: QkView<State>) {
-        viewModelScope.launch {
-            state.collect { view.render(it) }
-        }
+        viewModelScope.launch { state.collect { view.render(it) } }
     }
 }

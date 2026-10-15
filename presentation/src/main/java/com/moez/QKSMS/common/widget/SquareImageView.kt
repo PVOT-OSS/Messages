@@ -28,5 +28,4 @@ class SquareImageView @JvmOverloads constructor(context: Context, attrs: Attribu
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec)
     }
-
 }

@@ -19,10 +19,10 @@
 package org.prauga.messages.repository
 
 import android.net.Uri
+import io.realm.RealmResults
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import io.realm.RealmResults
 
 interface MessageRepository {
 
@@ -45,14 +45,14 @@ interface MessageRepository {
     fun savePart(id: Long): Uri?
 
     /**
-     * Retrieves the list of messages which should be shown in the notification
-     * for a given conversation
+     * Retrieves the list of messages which should be shown in the notification for a given
+     * conversation
      */
     fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message>
 
     /**
-     * Retrieves the list of messages which should be shown in the quickreply popup
-     * for a given conversation
+     * Retrieves the list of messages which should be shown in the quickreply popup for a given
+     * conversation
      */
     fun getUnreadMessages(threadId: Long): RealmResults<Message>
 
@@ -75,24 +75,27 @@ interface MessageRepository {
     )
 
     /**
-     * Attempts to send the SMS message. This can be called if the message has already been persisted
+     * Attempts to send the SMS message. This can be called if the message has already been
+     * persisted
      */
     fun sendSms(message: Message)
 
     fun resendMms(message: Message)
 
-    /**
-     * Attempts to cancel sending the message with the given id
-     */
+    /** Attempts to cancel sending the message with the given id */
     fun cancelDelayedSms(id: Long)
 
-    fun insertSentSms(subId: Int, threadId: Long, address: String, body: String, date: Long): Message
+    fun insertSentSms(
+        subId: Int,
+        threadId: Long,
+        address: String,
+        body: String,
+        date: Long,
+    ): Message
 
     fun insertReceivedSms(subId: Int, address: String, body: String, sentTime: Long): Message
 
-    /**
-     * Marks the message as sending, in case we need to retry sending it
-     */
+    /** Marks the message as sending, in case we need to retry sending it */
     fun markSending(id: Long)
 
     fun markSent(id: Long)
@@ -105,14 +108,9 @@ interface MessageRepository {
 
     fun deleteMessages(messageIds: Collection<Long>)
 
-    /**
-     * Returns the number of messages older than [maxAgeDays] per conversation
-     */
+    /** Returns the number of messages older than [maxAgeDays] per conversation */
     fun getOldMessageCounts(maxAgeDays: Int): Map<Long, Int>
 
-    /**
-     * Deletes all messages older than [maxAgeDays]
-     */
+    /** Deletes all messages older than [maxAgeDays] */
     fun deleteOldMessages(maxAgeDays: Int)
-
 }

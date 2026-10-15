@@ -20,21 +20,22 @@ package org.prauga.messages.feature.settings.about
 
 import android.view.View
 import com.jakewharton.rxbinding2.view.clicks
+import io.reactivex.Observable
+import javax.inject.Inject
 import org.prauga.messages.BuildConfig
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.databinding.AboutControllerBinding
 import org.prauga.messages.injection.appComponent
-import io.reactivex.Observable
-import javax.inject.Inject
 
 class AboutController : QkController<AboutView, Unit, AboutPresenter>(), AboutView {
 
     @Inject override lateinit var presenter: AboutPresenter
 
     private var _binding: AboutControllerBinding? = null
-    private val binding get() = _binding!!
+    private val binding
+        get() = _binding!!
 
     init {
         appComponent.inject(this)
@@ -55,7 +56,8 @@ class AboutController : QkController<AboutView, Unit, AboutPresenter>(), AboutVi
         _binding = null
     }
 
-    override fun preferenceClicks(): Observable<PreferenceView> = (0 until binding.preferences.childCount)
+    override fun preferenceClicks(): Observable<PreferenceView> =
+        (0 until binding.preferences.childCount)
             .map { index -> binding.preferences.getChildAt(index) }
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
@@ -64,5 +66,4 @@ class AboutController : QkController<AboutView, Unit, AboutPresenter>(), AboutVi
     override fun render(state: Unit) {
         // No special rendering required
     }
-
 }

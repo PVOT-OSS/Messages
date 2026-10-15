@@ -20,16 +20,14 @@
 
 plugins {
     alias(libs.plugins.android.application)
-    id("realm-android")   // must come before Kotlin plugins
+    id("realm-android") // must come before Kotlin plugins
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
 }
 
 android {
     namespace = "org.prauga.messages"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk { version = release(36) }
 
     defaultConfig {
         applicationId = "org.prauga.messages"
@@ -42,7 +40,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    extensions.getByType(BasePluginExtension::class.java)
+    extensions
+        .getByType(BasePluginExtension::class.java)
         .archivesName
         .set("Messages-v${defaultConfig.versionName}")
 
@@ -71,10 +70,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("platform")
         }
     }
@@ -85,9 +81,7 @@ android {
         includeInBundle = false
     }
 
-    lint {
-        abortOnError = false
-    }
+    lint { abortOnError = false }
 }
 
 dependencies {

@@ -23,12 +23,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.RemoteInput
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.compat.SubscriptionManagerCompat
 import org.prauga.messages.interactor.MarkRead
 import org.prauga.messages.interactor.SendMessage
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
-import javax.inject.Inject
 
 class RemoteMessagingReceiver : BroadcastReceiver() {
 
@@ -49,12 +49,16 @@ class RemoteMessagingReceiver : BroadcastReceiver() {
         markRead.execute(listOf(threadId))
 
         val lastMessage = messageRepo.getMessages(threadId).lastOrNull()
-        val subId = subscriptionManager.activeSubscriptionInfoList
+        val subId =
+            subscriptionManager.activeSubscriptionInfoList
                 .firstOrNull { it.subscriptionId == lastMessage?.subId }
                 ?.subscriptionId ?: -1
-        val addresses = conversationRepo.getConversation(threadId)?.recipients?.map { it.address } ?: return
+        val addresses =
+            conversationRepo.getConversation(threadId)?.recipients?.map { it.address } ?: return
 
         val pendingRepository = goAsync()
-        sendMessage.execute(SendMessage.Params(subId, threadId, addresses, body)) { pendingRepository.finish() }
+        sendMessage.execute(SendMessage.Params(subId, threadId, addresses, body)) {
+            pendingRepository.finish()
+        }
     }
 }

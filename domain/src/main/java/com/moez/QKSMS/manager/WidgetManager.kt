@@ -21,11 +21,11 @@ package org.prauga.messages.manager
 interface WidgetManager {
 
     companion object {
-        const val ACTION_NOTIFY_DATASET_CHANGED = "org.prauga.messages.intent.action.ACTION_NOTIFY_DATASET_CHANGED"
+        const val ACTION_NOTIFY_DATASET_CHANGED =
+            "org.prauga.messages.intent.action.ACTION_NOTIFY_DATASET_CHANGED"
     }
 
     fun sendDatasetChanged()
 
     fun updateTheme()
-
 }

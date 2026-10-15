@@ -25,6 +25,9 @@ import android.text.style.BackgroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import javax.inject.Inject
+import kotlin.math.abs
+import kotlin.math.min
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
@@ -33,15 +36,14 @@ import org.prauga.messages.databinding.SearchItemMessageBinding
 import org.prauga.messages.extensions.removeAccents
 import org.prauga.messages.model.SearchItem
 import org.prauga.messages.repository.ConversationRepository
-import javax.inject.Inject
-import kotlin.math.abs
-import kotlin.math.min
 
-class SearchAdapter @Inject constructor(
+class SearchAdapter
+@Inject
+constructor(
     colors: Colors,
     private val context: Context,
     private val dateFormatter: DateFormatter,
-    private val conversationRepo: ConversationRepository
+    private val conversationRepo: ConversationRepository,
 ) : QkAdapter<SearchItem, RecyclerView.ViewHolder>() {
 
     companion object {
@@ -90,46 +92,41 @@ class SearchAdapter @Inject constructor(
         return when {
             old is SearchItem.Header && new is SearchItem.Header ->
                 old.conversationId == new.conversationId
-            old is SearchItem.Message && new is SearchItem.Message ->
-                old.messageId == new.messageId
+            old is SearchItem.Message && new is SearchItem.Message -> old.messageId == new.messageId
             else -> false
         }
     }
 
     override fun areContentsTheSame(old: SearchItem, new: SearchItem): Boolean {
         return when {
-            old is SearchItem.Header && new is SearchItem.Header ->
-                old.title == new.title
+            old is SearchItem.Header && new is SearchItem.Header -> old.title == new.title
             old is SearchItem.Message && new is SearchItem.Message ->
                 old.body == new.body && old.timestamp == new.timestamp
             else -> false
         }
     }
 
-    inner class HeaderViewHolder(
-        private val binding: SearchItemHeaderBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class HeaderViewHolder(private val binding: SearchItemHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(header: SearchItem.Header) {
             binding.headerTitle.text = highlightText(header.title, query)
-            
+
             // Get conversation to access recipients for avatar and phone number
             val conversation = conversationRepo.getConversation(header.conversationId)
             conversation?.let {
                 binding.headerAvatar.recipients = it.recipients
-                
+
                 // Show phone number(s) as subtitle
-                val phoneNumbers = it.recipients.joinToString(", ") { recipient -> 
-                    recipient.address 
-                }
+                val phoneNumbers =
+                    it.recipients.joinToString(", ") { recipient -> recipient.address }
                 binding.headerSubtitle.text = phoneNumbers
             }
         }
     }
 
-    inner class MessageViewHolder(
-        private val binding: SearchItemMessageBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class MessageViewHolder(private val binding: SearchItemMessageBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.root.setOnClickListener {
@@ -168,7 +165,7 @@ class SearchAdapter @Inject constructor(
                 BackgroundColorSpan(highlightColor),
                 start,
                 end,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
             )
         }
 
@@ -215,13 +212,14 @@ class SearchAdapter @Inject constructor(
             var bestInRow = curr[0]
             rhs.forEachIndexed { j, rChar ->
                 val cost = if (lChar == rChar) 0 else 1
-                curr[j + 1] = min(
-                    prev[j + 1] + 1, // deletion
+                curr[j + 1] =
                     min(
-                        curr[j] + 1, // insertion
-                        prev[j] + cost // substitution
+                        prev[j + 1] + 1, // deletion
+                        min(
+                            curr[j] + 1, // insertion
+                            prev[j] + cost, // substitution
+                        ),
                     )
-                )
                 bestInRow = min(bestInRow, curr[j + 1])
             }
             if (bestInRow > maxDistance) return maxDistance + 1

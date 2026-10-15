@@ -40,7 +40,6 @@ abstract class PartBinder {
         part: MmsPart,
         message: Message,
         canGroupWithPrevious: Boolean,
-        canGroupWithNext: Boolean
+        canGroupWithNext: Boolean,
     )
-
 }

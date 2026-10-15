@@ -25,6 +25,10 @@ import android.content.DialogInterface
 import android.os.Build
 import android.text.format.DateFormat
 import android.view.View
+import android.widget.CompoundButton
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.RouterTransaction
@@ -32,6 +36,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.view.longClicks
 import com.uber.autodispose.android.lifecycle.scope
+import com.uber.autodispose.autoDispose
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
 import org.prauga.messages.BuildConfig
 import org.prauga.messages.R
 import org.prauga.messages.common.MenuItem
@@ -52,21 +65,9 @@ import org.prauga.messages.feature.themepicker.ThemePickerController
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.SyncRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import android.widget.CompoundButton
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import com.uber.autodispose.autoDispose
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlinx.coroutines.withContext
-import javax.inject.Inject
-import kotlin.coroutines.resume
 
-class SettingsController : QkController<SettingsView, SettingsState, SettingsPresenter>(), SettingsView {
+class SettingsController :
+    QkController<SettingsView, SettingsState, SettingsPresenter>(), SettingsView {
 
     @Inject lateinit var context: Context
     @Inject lateinit var colors: Colors
@@ -102,7 +103,11 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     private lateinit var syncingProgress: ProgressBar
 
     private val signatureDialog: TextInputDialog by lazy {
-        TextInputDialog(activity!!, context.getString(R.string.settings_signature_title), signatureSubject::onNext)
+        TextInputDialog(
+            activity!!,
+            context.getString(R.string.settings_signature_title),
+            signatureSubject::onNext,
+        )
     }
     private val autoDeleteDialog: AutoDeleteDialog by lazy {
         AutoDeleteDialog(activity!!, autoDeleteSubject::onNext)
@@ -127,9 +132,7 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         retainViewMode = RetainViewMode.RETAIN_DETACH
         layoutRes = R.layout.settings_controller
 
-        colors.themeObservable()
-            .autoDispose(scope())
-            .subscribe { activity?.recreate() }
+        colors.themeObservable().autoDispose(scope()).subscribe { activity?.recreate() }
     }
 
     override fun onViewCreated() {
@@ -163,13 +166,19 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
         when (Build.VERSION.SDK_INT >= 29) {
             true -> nightModeDialog.adapter.setData(R.array.night_modes)
-            false -> nightModeDialog.adapter.data = context.resources.getStringArray(R.array.night_modes)
-                    .mapIndexed { index, title -> MenuItem(title, index) }
-                    .drop(1)
+            false ->
+                nightModeDialog.adapter.data =
+                    context.resources
+                        .getStringArray(R.array.night_modes)
+                        .mapIndexed { index, title -> MenuItem(title, index) }
+                        .drop(1)
         }
         sendDelayDialog.adapter.setData(R.array.delayed_sending_labels)
         mmsSizeDialog.adapter.setData(R.array.mms_sizes, R.array.mms_sizes_ids)
-        messageLinkHandlingDialog.adapter.setData(R.array.messageLinkHandlings, R.array.messageLinkHandling_ids)
+        messageLinkHandlingDialog.adapter.setData(
+            R.array.messageLinkHandlings,
+            R.array.messageLinkHandling_ids,
+        )
 
         about.summary = context.getString(R.string.settings_version, BuildConfig.VERSION_NAME)
     }
@@ -181,7 +190,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         showBackButton(true)
     }
 
-    override fun preferenceClicks(): Observable<PreferenceView> = (0 until preferences.childCount)
+    override fun preferenceClicks(): Observable<PreferenceView> =
+        (0 until preferences.childCount)
             .map { index -> preferences.getChildAt(index) }
             .mapNotNull { view -> view as? PreferenceView }
             .map { preference -> preference.clicks().map { preference } }
@@ -205,7 +215,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
     override fun mmsSizeSelected(): Observable<Int> = mmsSizeDialog.adapter.menuItemClicks
 
-    override fun messageLinkHandlingSelected(): Observable<Int> = messageLinkHandlingDialog.adapter.menuItemClicks
+    override fun messageLinkHandlingSelected(): Observable<Int> =
+        messageLinkHandlingDialog.adapter.menuItemClicks
 
     private fun PreferenceView.checkbox(): CompoundButton? = findViewById(R.id.checkbox)
 
@@ -227,7 +238,8 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
         unreadAtTop.checkbox()?.isChecked = state.unreadAtTopEnabled
 
-        signature.summary = state.signature.takeIf { it.isNotBlank() }
+        signature.summary =
+            state.signature.takeIf { it.isNotBlank() }
                 ?: context.getString(R.string.settings_signature_summary)
 
         systemFont.checkbox()?.isChecked = state.systemFontEnabled
@@ -235,11 +247,16 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
         unicode.checkbox()?.isChecked = state.stripUnicodeEnabled
         mobileOnly.checkbox()?.isChecked = state.mobileOnly
 
-        autoDelete.summary = when (state.autoDelete) {
-            0 -> context.getString(R.string.settings_auto_delete_never)
-            else -> context.resources.getQuantityString(
-                    R.plurals.settings_auto_delete_summary, state.autoDelete, state.autoDelete)
-        }
+        autoDelete.summary =
+            when (state.autoDelete) {
+                0 -> context.getString(R.string.settings_auto_delete_never)
+                else ->
+                    context.resources.getQuantityString(
+                        R.plurals.settings_auto_delete_summary,
+                        state.autoDelete,
+                        state.autoDelete,
+                    )
+            }
 
         longAsMms.checkbox()?.isChecked = state.longAsMms
 
@@ -257,7 +274,9 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
             is SyncRepository.SyncProgress.Running -> {
                 syncingProgress.isVisible = true
                 syncingProgress.max = state.syncProgress.max
-                progressAnimator?.apply { setIntValues(syncingProgress.progress, state.syncProgress.progress) }?.start()
+                progressAnimator
+                    ?.apply { setIntValues(syncingProgress.progress, state.syncProgress.progress) }
+                    ?.start()
                 syncingProgress.isIndeterminate = state.syncProgress.indeterminate
             }
         }
@@ -277,21 +296,35 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
     override fun showNightModeDialog() = nightModeDialog.show(activity!!)
 
     override fun showStartTimePicker(hour: Int, minute: Int) {
-        TimePickerDialog(activity, { _, newHour, newMinute ->
-            startTimeSelectedSubject.onNext(Pair(newHour, newMinute))
-        }, hour, minute, DateFormat.is24HourFormat(activity)).apply {
-            tintDialogButtons(this)
-            show()
-        }
+        TimePickerDialog(
+                activity,
+                { _, newHour, newMinute ->
+                    startTimeSelectedSubject.onNext(Pair(newHour, newMinute))
+                },
+                hour,
+                minute,
+                DateFormat.is24HourFormat(activity),
+            )
+            .apply {
+                tintDialogButtons(this)
+                show()
+            }
     }
 
     override fun showEndTimePicker(hour: Int, minute: Int) {
-        TimePickerDialog(activity, { _, newHour, newMinute ->
-            endTimeSelectedSubject.onNext(Pair(newHour, newMinute))
-        }, hour, minute, DateFormat.is24HourFormat(activity)).apply {
-            tintDialogButtons(this)
-            show()
-        }
+        TimePickerDialog(
+                activity,
+                { _, newHour, newMinute ->
+                    endTimeSelectedSubject.onNext(Pair(newHour, newMinute))
+                },
+                hour,
+                minute,
+                DateFormat.is24HourFormat(activity),
+            )
+            .apply {
+                tintDialogButtons(this)
+                show()
+            }
     }
 
     override fun showDelayDurationDialog() = sendDelayDialog.show(activity!!)
@@ -300,60 +333,73 @@ class SettingsController : QkController<SettingsView, SettingsState, SettingsPre
 
     override fun showAutoDeleteDialog(days: Int) = autoDeleteDialog.setExpiry(days).show()
 
-    override suspend fun showAutoDeleteWarningDialog(messages: Int): Boolean = withContext(Dispatchers.Main) {
-        suspendCancellableCoroutine<Boolean> { cont ->
-            val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-                    .setTitle(R.string.settings_auto_delete_warning)
-                    .setMessage(context.resources.getString(R.string.settings_auto_delete_warning_message, messages))
-                    .setOnCancelListener { cont.resume(false) }
-                    .setNegativeButton(R.string.button_cancel) { _, _ -> cont.resume(false) }
-                    .setPositiveButton(R.string.button_yes) { _, _ -> cont.resume(true) }
-                    .create()
+    override suspend fun showAutoDeleteWarningDialog(messages: Int): Boolean =
+        withContext(Dispatchers.Main) {
+            suspendCancellableCoroutine<Boolean> { cont ->
+                val dialog =
+                    AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+                        .setTitle(R.string.settings_auto_delete_warning)
+                        .setMessage(
+                            context.resources.getString(
+                                R.string.settings_auto_delete_warning_message,
+                                messages,
+                            )
+                        )
+                        .setOnCancelListener { cont.resume(false) }
+                        .setNegativeButton(R.string.button_cancel) { _, _ -> cont.resume(false) }
+                        .setPositiveButton(R.string.button_yes) { _, _ -> cont.resume(true) }
+                        .create()
 
-            dialog.show()
+                dialog.show()
 
-            themedActivity?.theme?.take(1)
-                ?.autoDispose(scope())
-                ?.subscribe { theme ->
+                themedActivity?.theme?.take(1)?.autoDispose(scope())?.subscribe { theme ->
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
                 }
+            }
         }
-    }
 
     override fun showMmsSizePicker() = mmsSizeDialog.show(activity!!)
 
     override fun showMessageLinkHandlingDialogPicker() = messageLinkHandlingDialog.show(activity!!)
 
     override fun showSwipeActions() {
-        router.pushController(RouterTransaction.with(SwipeActionsController())
+        router.pushController(
+            RouterTransaction.with(SwipeActionsController())
                 .pushChangeHandler(QkChangeHandler())
-                .popChangeHandler(QkChangeHandler()))
+                .popChangeHandler(QkChangeHandler())
+        )
     }
 
     override fun showThemePicker() {
-        router.pushController(RouterTransaction.with(ThemePickerController())
+        router.pushController(
+            RouterTransaction.with(ThemePickerController())
                 .pushChangeHandler(QkChangeHandler())
-                .popChangeHandler(QkChangeHandler()))
+                .popChangeHandler(QkChangeHandler())
+        )
     }
 
     override fun showAbout() {
-        router.pushController(RouterTransaction.with(AboutController())
+        router.pushController(
+            RouterTransaction.with(AboutController())
                 .pushChangeHandler(QkChangeHandler())
-                .popChangeHandler(QkChangeHandler()))
+                .popChangeHandler(QkChangeHandler())
+        )
     }
 
     private fun tintDialogButtons(dialog: android.app.TimePickerDialog) {
         dialog.setOnShowListener {
-            val color = activity?.resolveThemeColor(android.R.attr.textColorPrimary, colors.theme().textPrimary)
-                ?: colors.theme().textPrimary
+            val color =
+                activity?.resolveThemeColor(
+                    android.R.attr.textColorPrimary,
+                    colors.theme().textPrimary,
+                ) ?: colors.theme().textPrimary
             listOf(
-                DialogInterface.BUTTON_POSITIVE,
-                DialogInterface.BUTTON_NEGATIVE,
-                DialogInterface.BUTTON_NEUTRAL
-            ).forEach { type ->
-                dialog.getButton(type)?.setTextColor(color)
-            }
+                    DialogInterface.BUTTON_POSITIVE,
+                    DialogInterface.BUTTON_NEGATIVE,
+                    DialogInterface.BUTTON_NEUTRAL,
+                )
+                .forEach { type -> dialog.getButton(type)?.setTextColor(color) }
         }
     }
 }

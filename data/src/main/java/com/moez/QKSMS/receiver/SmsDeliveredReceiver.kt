@@ -23,9 +23,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.interactor.MarkDelivered
 import org.prauga.messages.interactor.MarkDeliveryFailed
-import javax.inject.Inject
 
 class SmsDeliveredReceiver : BroadcastReceiver() {
 
@@ -47,9 +47,10 @@ class SmsDeliveredReceiver : BroadcastReceiver() {
             // TODO notify about delivery failure
             Activity.RESULT_CANCELED -> {
                 val pendingResult = goAsync()
-                markDeliveryFailed.execute(MarkDeliveryFailed.Params(id, resultCode)) { pendingResult.finish() }
+                markDeliveryFailed.execute(MarkDeliveryFailed.Params(id, resultCode)) {
+                    pendingResult.finish()
+                }
             }
         }
     }
-
 }

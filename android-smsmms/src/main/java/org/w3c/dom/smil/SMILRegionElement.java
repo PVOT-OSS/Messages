@@ -58,4 +58,3 @@ public interface SMILRegionElement extends SMILElement, ElementLayout {
                                       throws DOMException;
 
 }
-

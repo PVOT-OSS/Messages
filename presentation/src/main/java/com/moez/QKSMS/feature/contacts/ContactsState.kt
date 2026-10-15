@@ -24,5 +24,5 @@ import org.prauga.messages.model.Contact
 data class ContactsState(
     val query: String = "",
     val composeItems: List<ComposeItem> = ArrayList(),
-    val selectedContact: Contact? = null // For phone number picker
+    val selectedContact: Contact? = null, // For phone number picker
 )

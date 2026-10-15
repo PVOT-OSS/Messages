@@ -18,15 +18,14 @@
  */
 package org.prauga.messages.util
 
-import org.prauga.messages.compat.SubscriptionInfoCompat
-import org.prauga.messages.compat.SubscriptionManagerCompat
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import org.prauga.messages.compat.SubscriptionInfoCompat
+import org.prauga.messages.compat.SubscriptionManagerCompat
 
-class ActiveSubscriptionObservable(
-    private val subscriptionManager: SubscriptionManagerCompat
-) : Observable<List<SubscriptionInfoCompat>>() {
+class ActiveSubscriptionObservable(private val subscriptionManager: SubscriptionManagerCompat) :
+    Observable<List<SubscriptionInfoCompat>>() {
 
     override fun subscribeActual(observer: Observer<in List<SubscriptionInfoCompat>>) {
         observer.onNext(subscriptionManager.activeSubscriptionInfoList)
@@ -38,7 +37,7 @@ class ActiveSubscriptionObservable(
 
     internal class Listener(
         private val subscriptionManager: SubscriptionManagerCompat,
-        private val observer: Observer<in List<SubscriptionInfoCompat>>
+        private val observer: Observer<in List<SubscriptionInfoCompat>>,
     ) : Disposable, SubscriptionManagerCompat.OnSubscriptionsChangedListener() {
 
         private var disposed: Boolean = false
@@ -55,7 +54,5 @@ class ActiveSubscriptionObservable(
             disposed = true
             subscriptionManager.removeOnSubscriptionsChangedListener(this)
         }
-
     }
-
 }

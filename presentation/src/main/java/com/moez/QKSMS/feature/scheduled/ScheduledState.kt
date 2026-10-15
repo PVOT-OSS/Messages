@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.scheduled
 
-import org.prauga.messages.model.ScheduledMessage
 import io.realm.RealmResults
+import org.prauga.messages.model.ScheduledMessage
 
 data class ScheduledState(
     val scheduledMessages: RealmResults<ScheduledMessage>? = null,

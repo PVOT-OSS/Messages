@@ -39,5 +39,4 @@ class LiveRealmData<T : RealmModel>(private val results: RealmResults<T>) :
         super.onInactive()
         results.removeChangeListener(listener)
     }
-
 }

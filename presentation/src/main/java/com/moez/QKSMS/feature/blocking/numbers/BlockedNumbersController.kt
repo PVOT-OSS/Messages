@@ -20,8 +20,17 @@ package org.prauga.messages.feature.blocking.numbers
 
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
+import com.uber.autodispose.android.lifecycle.scope
+import com.uber.autodispose.autoDispose
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
@@ -29,17 +38,9 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.util.PhoneNumberUtils
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
-import javax.inject.Inject
 
-class BlockedNumbersController : QkController<BlockedNumbersView, BlockedNumbersState, BlockedNumbersPresenter>(),
+class BlockedNumbersController :
+    QkController<BlockedNumbersView, BlockedNumbersState, BlockedNumbersPresenter>(),
     BlockedNumbersView {
 
     @Inject override lateinit var presenter: BlockedNumbersPresenter
@@ -86,14 +87,18 @@ class BlockedNumbersController : QkController<BlockedNumbersView, BlockedNumbers
     }
 
     override fun unblockAddress(): Observable<Long> = adapter.unblockAddress
+
     override fun addAddress(): Observable<*> = add.clicks()
+
     override fun saveAddress(): Observable<String> = saveAddressSubject
 
     override fun showAddDialog() {
-        val layout = LayoutInflater.from(activity).inflate(R.layout.blocked_numbers_add_dialog, null)
+        val layout =
+            LayoutInflater.from(activity).inflate(R.layout.blocked_numbers_add_dialog, null)
         val input = layout.findViewById<android.widget.EditText>(R.id.input)
         val textWatcher = BlockedNumberTextWatcher(input, phoneNumberUtils)
-        val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+        val dialog =
+            AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
                 .setView(layout)
                 .setPositiveButton(R.string.blocked_numbers_dialog_block) { _, _ ->
                     saveAddressSubject.onNext(input.text.toString())
@@ -104,11 +109,9 @@ class BlockedNumbersController : QkController<BlockedNumbersView, BlockedNumbers
 
         dialog.show()
 
-        themedActivity?.theme?.take(1)
-            ?.autoDispose(scope())
-            ?.subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        themedActivity?.theme?.take(1)?.autoDispose(scope())?.subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 }

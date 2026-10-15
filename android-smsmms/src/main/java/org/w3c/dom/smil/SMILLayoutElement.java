@@ -45,4 +45,3 @@ public interface SMILLayoutElement extends SMILElement {
      */
     public NodeList getRegions();
 }
-

@@ -27,10 +27,8 @@ class QkFileObserver(path: String) : FileObserver(path, CREATE or DELETE or MODI
 
     private val subject = BehaviorSubject.createDefault<String>(path).toSerialized()
 
-    val observable: Observable<String> = subject
-            .doOnSubscribe { startWatching() }
-            .doOnDispose { stopWatching() }
-            .share()
+    val observable: Observable<String> =
+        subject.doOnSubscribe { startWatching() }.doOnDispose { stopWatching() }.share()
 
     init {
         // Make sure that the directory exists
@@ -40,5 +38,4 @@ class QkFileObserver(path: String) : FileObserver(path, CREATE or DELETE or MODI
     override fun onEvent(event: Int, path: String?) {
         path?.let(subject::onNext)
     }
-
 }

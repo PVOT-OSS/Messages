@@ -69,13 +69,10 @@ abstract class FlowableAdapter<T> : QkAdapter<T, QkViewHolder>() {
     }
 
     private fun subscribe() {
-        disposable = flowable?.subscribe {
-            data = it
-        }
+        disposable = flowable?.subscribe { data = it }
     }
 
     private fun dispose() {
         disposable?.dispose()
     }
-
 }

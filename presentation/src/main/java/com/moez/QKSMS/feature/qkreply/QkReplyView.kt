@@ -29,6 +29,6 @@ interface QkReplyView : QkView<QkReplyState> {
     val sendIntent: Observable<Unit>
 
     fun setDraft(draft: String)
-    fun finish()
 
+    fun finish()
 }

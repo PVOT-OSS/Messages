@@ -48,4 +48,3 @@ public interface SMILDocument extends Document, ElementSequentialTimeContainer {
      */
     public SMILLayoutElement getLayout();
 }
-

@@ -21,12 +21,12 @@ package org.prauga.messages.worker
 import android.content.Context
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import javax.inject.Inject
 import org.prauga.messages.interactor.ReceiveSms
 import timber.log.Timber
-import javax.inject.Inject
 
-class ReceiveSmsWorker(appContext: Context, workerParams: WorkerParameters)
-    : Worker(appContext, workerParams) {
+class ReceiveSmsWorker(appContext: Context, workerParams: WorkerParameters) :
+    Worker(appContext, workerParams) {
     companion object {
         const val INPUT_DATA_KEY_MESSAGE_ID = "messageId"
     }
@@ -49,5 +49,4 @@ class ReceiveSmsWorker(appContext: Context, workerParams: WorkerParameters)
 
         return Result.success()
     }
-
 }

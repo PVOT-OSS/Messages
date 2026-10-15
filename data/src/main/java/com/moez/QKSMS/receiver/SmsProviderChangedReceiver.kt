@@ -22,8 +22,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
-import org.prauga.messages.interactor.SyncMessage
 import javax.inject.Inject
+import org.prauga.messages.interactor.SyncMessage
 
 /**
  * When the SMS contentprovider is changed by a process other than us, we need to sync the Uri that
@@ -51,5 +51,4 @@ class SmsProviderChangedReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         syncMessage.execute(uri) { pendingResult.finish() }
     }
-
 }

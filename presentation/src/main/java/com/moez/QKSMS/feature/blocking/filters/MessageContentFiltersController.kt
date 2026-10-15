@@ -32,6 +32,7 @@ import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
@@ -40,16 +41,17 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.model.MessageContentFilterData
-import javax.inject.Inject
 
 class MessageContentFiltersController :
-    QkController<MessageContentFiltersView, MessageContentFiltersState,
-            MessageContentFiltersPresenter>(), MessageContentFiltersView {
+    QkController<
+        MessageContentFiltersView,
+        MessageContentFiltersState,
+        MessageContentFiltersPresenter,
+    >(),
+    MessageContentFiltersView {
 
-    @Inject
-    override lateinit var presenter: MessageContentFiltersPresenter
-    @Inject
-    lateinit var colors: Colors
+    @Inject override lateinit var presenter: MessageContentFiltersPresenter
+    @Inject lateinit var colors: Colors
 
     private lateinit var add: ImageView
     private lateinit var filters: RecyclerView
@@ -91,7 +93,9 @@ class MessageContentFiltersController :
     }
 
     override fun removeFilter(): Observable<Long> = adapter.removeMessageContentFilter
+
     override fun addFilter(): Observable<*> = add.clicks()
+
     override fun saveFilter(): Observable<MessageContentFilterData> = saveFilterSubject
 
     override fun showAddDialog() {
@@ -117,28 +121,34 @@ class MessageContentFiltersController :
                     !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ?: false)
             }
 
-        val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-            .setView(layout)
-            .setPositiveButton(R.string.message_content_filters_dialog_create) { _, _ ->
-                var text = input.text.toString();
-                if (!text.isBlank()) {
-                    if (!(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked
-                            ?: false)
-                    ) text = text.trim()
-                    saveFilterSubject.onNext(
-                        MessageContentFilterData(
-                            text,
-                            (caseSensitivity.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true) &&
+        val dialog =
+            AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+                .setView(layout)
+                .setPositiveButton(R.string.message_content_filters_dialog_create) { _, _ ->
+                    var text = input.text.toString()
+                    if (!text.isBlank()) {
+                        if (
+                            !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked
+                                ?: false)
+                        )
+                            text = text.trim()
+                        saveFilterSubject.onNext(
+                            MessageContentFilterData(
+                                text,
+                                (caseSensitivity
+                                    .findViewById<CompoundButton>(R.id.checkbox)
+                                    ?.isChecked == true) &&
                                     !(regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked
                                         ?: false),
-                            regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true,
-                            contacts.findViewById<CompoundButton>(R.id.checkbox)?.isChecked == true
+                                regexp.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ==
+                                    true,
+                                contacts.findViewById<CompoundButton>(R.id.checkbox)?.isChecked ==
+                                    true,
+                            )
                         )
-                    )
+                    }
                 }
-            }
-            .setNegativeButton(R.string.button_cancel) { _, _ -> }
+                .setNegativeButton(R.string.button_cancel) { _, _ -> }
         dialog.show()
     }
-
 }

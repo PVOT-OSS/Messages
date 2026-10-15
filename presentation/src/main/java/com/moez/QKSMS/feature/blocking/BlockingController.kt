@@ -24,6 +24,7 @@ import android.widget.CompoundButton
 import android.widget.LinearLayout
 import com.bluelinelabs.conductor.RouterTransaction
 import com.jakewharton.rxbinding2.view.clicks
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.QkChangeHandler
 import org.prauga.messages.common.base.QkController
@@ -35,15 +36,12 @@ import org.prauga.messages.feature.blocking.manager.BlockingManagerController
 import org.prauga.messages.feature.blocking.messages.BlockedMessagesController
 import org.prauga.messages.feature.blocking.numbers.BlockedNumbersController
 import org.prauga.messages.injection.appComponent
-import javax.inject.Inject
 
-class BlockingController : QkController<BlockingView, BlockingState, BlockingPresenter>(),
-    BlockingView {
+class BlockingController :
+    QkController<BlockingView, BlockingState, BlockingPresenter>(), BlockingView {
 
-    @Inject
-    lateinit var colors: Colors
-    @Inject
-    override lateinit var presenter: BlockingPresenter
+    @Inject lateinit var colors: Colors
+    @Inject override lateinit var presenter: BlockingPresenter
 
     private lateinit var parent: LinearLayout
     private lateinit var blockingManager: PreferenceView
@@ -123,5 +121,4 @@ class BlockingController : QkController<BlockingView, BlockingState, BlockingPre
                 .popChangeHandler(QkChangeHandler())
         )
     }
-
 }

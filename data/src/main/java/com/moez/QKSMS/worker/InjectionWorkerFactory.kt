@@ -23,25 +23,26 @@ import androidx.work.ListenableWorker
 import androidx.work.Worker
 import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
+import javax.inject.Inject
 import org.prauga.messages.interactor.ReceiveSms
 import org.prauga.messages.repository.ScheduledMessageRepository
-import javax.inject.Inject
 
-class InjectionWorkerFactory @Inject constructor(
+class InjectionWorkerFactory
+@Inject
+constructor(
     private val receiveSms: ReceiveSms,
-    private val scheduledMessageRepository: ScheduledMessageRepository
-)
-: WorkerFactory() {
+    private val scheduledMessageRepository: ScheduledMessageRepository,
+) : WorkerFactory() {
     override fun createWorker(
         appContext: Context,
         workerClassName: String,
-        workerParameters: WorkerParameters
+        workerParameters: WorkerParameters,
     ): ListenableWorker? {
-        val instance = Class
-            .forName(workerClassName)
-            .asSubclass(Worker::class.java)
-            .getDeclaredConstructor(Context::class.java, WorkerParameters::class.java)
-            .newInstance(appContext, workerParameters)
+        val instance =
+            Class.forName(workerClassName)
+                .asSubclass(Worker::class.java)
+                .getDeclaredConstructor(Context::class.java, WorkerParameters::class.java)
+                .newInstance(appContext, workerParameters)
 
         when (instance) {
             is HousekeepingWorker -> {

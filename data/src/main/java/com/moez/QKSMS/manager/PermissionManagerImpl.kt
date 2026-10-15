@@ -31,11 +31,13 @@ import javax.inject.Inject
 
 class PermissionManagerImpl @Inject constructor(private val context: Context) : PermissionManager {
 
-    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val notificationManager =
+        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     override fun isDefaultSms(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            context.getSystemService(RoleManager::class.java)?.isRoleHeld(RoleManager.ROLE_SMS) == true
+            context.getSystemService(RoleManager::class.java)?.isRoleHeld(RoleManager.ROLE_SMS) ==
+                true
         } else {
             Telephony.Sms.getDefaultSmsPackage(context) == context.packageName
         }
@@ -86,7 +88,7 @@ class PermissionManagerImpl @Inject constructor(private val context: Context) : 
     }
 
     private fun hasPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(context, permission) ==
+            PackageManager.PERMISSION_GRANTED
     }
-
 }

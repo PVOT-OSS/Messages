@@ -22,9 +22,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.interactor.SendScheduledMessage
 import org.prauga.messages.repository.MessageRepository
-import javax.inject.Inject
 
 class SendScheduledMessageReceiver : BroadcastReceiver() {
 
@@ -34,10 +34,12 @@ class SendScheduledMessageReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
 
-        intent.getLongExtra("id", -1L).takeIf { it >= 0 }?.let { id ->
-            val result = goAsync()
-            sendScheduledMessage.execute(id) { result.finish() }
-        }
+        intent
+            .getLongExtra("id", -1L)
+            .takeIf { it >= 0 }
+            ?.let { id ->
+                val result = goAsync()
+                sendScheduledMessage.execute(id) { result.finish() }
+            }
     }
-
 }

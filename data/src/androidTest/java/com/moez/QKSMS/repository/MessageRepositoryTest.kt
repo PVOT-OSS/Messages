@@ -29,5 +29,4 @@ class MessageRepositoryTest {
     fun testRuns() {
         assert(1 == 1)
     }
-
 }

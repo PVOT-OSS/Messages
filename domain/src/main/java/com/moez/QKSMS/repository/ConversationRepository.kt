@@ -18,26 +18,24 @@
  */
 package org.prauga.messages.repository
 
-import org.prauga.messages.model.Conversation
-import org.prauga.messages.model.Recipient
-import org.prauga.messages.model.SearchResult
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.realm.RealmResults
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.Recipient
+import org.prauga.messages.model.SearchResult
 
 interface ConversationRepository {
 
     fun getConversations(
         unreadAtTop: Boolean,
         archived: Boolean = false,
-        onlyUnread: Boolean = false
+        onlyUnread: Boolean = false,
     ): RealmResults<Conversation>
 
     fun getConversationsSnapshot(unreadAtTop: Boolean): List<Conversation>
 
-    /**
-     * Returns the top conversations that were active in the last week
-     */
+    /** Returns the top conversations that were active in the last week */
     fun getTopConversations(): List<Conversation>
 
     fun setConversationName(id: Long, name: String): Completable
@@ -60,9 +58,7 @@ interface ConversationRepository {
 
     fun getConversationAndLastSenderContactName(threadId: Long): Pair<Conversation?, String?>?
 
-    /**
-     * Returns all conversations with an id in [threadIds]
-     */
+    /** Returns all conversations with an id in [threadIds] */
     fun getConversations(vararg threadIds: Long): RealmResults<Conversation>
 
     fun getUnmanagedConversations(): Observable<List<Conversation>>
@@ -85,9 +81,7 @@ interface ConversationRepository {
 
     fun saveDraft(threadId: Long, draft: String)
 
-    /**
-     * Updates message-related fields in the conversation, like the date and snippet
-     */
+    /** Updates message-related fields in the conversation, like the date and snippet */
     fun updateConversations(vararg threadIds: Long)
 
     fun markArchived(vararg threadIds: Long)
@@ -103,5 +97,4 @@ interface ConversationRepository {
     fun markUnblocked(vararg threadIds: Long)
 
     fun deleteConversations(vararg threadIds: Long)
-
 }

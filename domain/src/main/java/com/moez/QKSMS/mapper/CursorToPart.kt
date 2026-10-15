@@ -24,5 +24,4 @@ import org.prauga.messages.model.MmsPart
 interface CursorToPart : Mapper<Cursor, MmsPart> {
 
     fun getPartsCursor(messageId: Long? = null): Cursor?
-
 }

@@ -33,9 +33,7 @@ abstract class Experiment<T>(val context: Context) {
     protected abstract val variants: List<Variant<T>>
     protected abstract val default: T
 
-    /**
-     * Returns true if the current device qualifies for the experiment
-     */
+    /** Returns true if the current device qualifies for the experiment */
     protected open val qualifies: Boolean by lazy { Locale.getDefault().language.startsWith("en") }
 
     val variant: T by lazy {
@@ -47,11 +45,10 @@ abstract class Experiment<T>(val context: Context) {
             }
 
             else -> { // Variant hasn't been set yet
-                variants[Random().nextInt(variants.size)].also { variant ->
-                    prefs.edit().putString(prefKey, variant.key).apply()
-                }.value
+                variants[Random().nextInt(variants.size)]
+                    .also { variant -> prefs.edit().putString(prefKey, variant.key).apply() }
+                    .value
             }
         } ?: default
     }
-
 }

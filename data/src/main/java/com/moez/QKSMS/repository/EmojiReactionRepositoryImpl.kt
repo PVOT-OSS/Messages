@@ -20,32 +20,43 @@ package org.prauga.messages.repository
 
 import android.content.Context
 import com.squareup.moshi.Moshi
+import io.realm.Realm
+import io.realm.Sort
+import javax.inject.Inject
 import org.prauga.messages.extensions.insertOrUpdate
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
 import org.prauga.messages.model.Message
 import org.prauga.messages.util.EmojiPatternStrings
-import io.realm.Realm
-import io.realm.Sort
 import timber.log.Timber
-import javax.inject.Inject
 
-class EmojiReactionRepositoryImpl @Inject constructor(
+class EmojiReactionRepositoryImpl
+@Inject
+constructor(
     private val context: Context,
     private val keyManager: KeyManager,
     private val moshi: Moshi,
 ) : EmojiReactionRepository {
     // We use an ordered map to make sure we can test tapback regexes before generic ones
-    private val reactionPatterns: LinkedHashMap<Regex, (MatchResult) -> ParsedEmojiReaction?> = linkedMapOf(
-        Regex( // Google Messages
-            "(?s)^\u200a[^\u200b\u200a]*\u200b([^\u200b]*)\u200b[^\u200b\u200a]*\u200a(.*)\u200a[^\u200b\u200a]*\u200a\\Z"
-        ) to { match -> ParsedEmojiReaction(match.groupValues[1], match.groupValues[2]) }
-    )
-    private val removalPatterns: LinkedHashMap<Regex, (MatchResult) -> ParsedEmojiReaction?> = linkedMapOf(
-        Regex( // Google Messages
-            "(?s)^\u200a[^\u200c\u200a]*\u200c([^\u200c]*)\u200c[^\u200c\u200a]*\u200a(.*)\u200a[^\u200c\u200a]*\u200a\\Z"
-        ) to { match -> ParsedEmojiReaction(match.groupValues[1], match.groupValues[2], isRemoval = true) }
-    )
+    private val reactionPatterns: LinkedHashMap<Regex, (MatchResult) -> ParsedEmojiReaction?> =
+        linkedMapOf(
+            Regex( // Google Messages
+                "(?s)^\u200a[^\u200b\u200a]*\u200b([^\u200b]*)\u200b[^\u200b\u200a]*\u200a(.*)\u200a[^\u200b\u200a]*\u200a\\Z"
+            ) to { match -> ParsedEmojiReaction(match.groupValues[1], match.groupValues[2]) }
+        )
+    private val removalPatterns: LinkedHashMap<Regex, (MatchResult) -> ParsedEmojiReaction?> =
+        linkedMapOf(
+            Regex( // Google Messages
+                "(?s)^\u200a[^\u200c\u200a]*\u200c([^\u200c]*)\u200c[^\u200c\u200a]*\u200a(.*)\u200a[^\u200c\u200a]*\u200a\\Z"
+            ) to
+                { match ->
+                    ParsedEmojiReaction(
+                        match.groupValues[1],
+                        match.groupValues[2],
+                        isRemoval = true,
+                    )
+                }
+        )
 
     init {
         val assetEntries = loadEmojiPatternEntriesFromAssets()
@@ -63,31 +74,36 @@ class EmojiReactionRepositoryImpl @Inject constructor(
         localeTag: String,
         strings: EmojiPatternStrings,
         reactionPatterns: LinkedHashMap<Regex, (MatchResult) -> ParsedEmojiReaction?>,
-        removalPatterns: LinkedHashMap<Regex, (MatchResult) -> ParsedEmojiReaction?>
+        removalPatterns: LinkedHashMap<Regex, (MatchResult) -> ParsedEmojiReaction?>,
     ) {
-        // iOS tapbacks (important to add these before generic emoji patterns as the regexes may overlap)
+        // iOS tapbacks (important to add these before generic emoji patterns as the regexes may
+        // overlap)
         listOf(
-            Triple("❤️", strings.iosHeartAdded, strings.iosHeartRemoved),
-            Triple("👍", strings.iosLikeAdded, strings.iosLikeRemoved),
-            Triple("👎", strings.iosDislikeAdded, strings.iosDislikeRemoved),
-            Triple("😂", strings.iosLaughAdded, strings.iosLaughRemoved),
-            Triple("‼️", strings.iosExclamationAdded, strings.iosExclamationRemoved),
-            Triple("❓", strings.iosQuestionMarkAdded, strings.iosQuestionMarkRemoved)
-        ).forEach { (emoji, added, removed) ->
-            added?.let {
-                reactionPatterns[Regex(it)] =
-                    { match -> ParsedEmojiReaction(emoji, match.groupValues[1]) }
+                Triple("❤️", strings.iosHeartAdded, strings.iosHeartRemoved),
+                Triple("👍", strings.iosLikeAdded, strings.iosLikeRemoved),
+                Triple("👎", strings.iosDislikeAdded, strings.iosDislikeRemoved),
+                Triple("😂", strings.iosLaughAdded, strings.iosLaughRemoved),
+                Triple("‼️", strings.iosExclamationAdded, strings.iosExclamationRemoved),
+                Triple("❓", strings.iosQuestionMarkAdded, strings.iosQuestionMarkRemoved),
+            )
+            .forEach { (emoji, added, removed) ->
+                added?.let {
+                    reactionPatterns[Regex(it)] = { match ->
+                        ParsedEmojiReaction(emoji, match.groupValues[1])
+                    }
+                }
+                removed?.let {
+                    removalPatterns[Regex(it)] = { match ->
+                        ParsedEmojiReaction(emoji, match.groupValues[1], isRemoval = true)
+                    }
+                }
             }
-            removed?.let {
-                removalPatterns[Regex(it)] =
-                    { match -> ParsedEmojiReaction(emoji, match.groupValues[1], isRemoval = true) }
-            }
-        }
 
         // Generic iOS emoji patterns
         strings.iosGenericAdded?.let { pattern ->
             reactionPatterns[Regex(pattern)] = { match ->
-                if (match.groupValues.getOrNull(1) == "with a sticker") null // TODO: localize "with a sticker"
+                if (match.groupValues.getOrNull(1) == "with a sticker")
+                    null // TODO: localize "with a sticker"
                 else ParsedEmojiReaction(match.groupValues[1], match.groupValues[2])
             }
         }
@@ -103,11 +119,13 @@ class EmojiReactionRepositoryImpl @Inject constructor(
     private fun loadEmojiPatternEntriesFromAssets(): List<Pair<String, EmojiPatternStrings>> {
         val dir = "emojis"
         val files = context.assets.list(dir) ?: emptyArray()
-        return files.filter { it.endsWith(".json", ignoreCase = true) }
+        return files
+            .filter { it.endsWith(".json", ignoreCase = true) }
             .mapNotNull { filename ->
                 val localeTag = filename.removeSuffix(".json")
                 try {
-                    val json = context.assets.open("$dir/$filename").bufferedReader().use { it.readText() }
+                    val json =
+                        context.assets.open("$dir/$filename").bufferedReader().use { it.readText() }
                     val data = parseEmojiPatternsJson(json)
                     localeTag to data
                 } catch (e: Exception) {
@@ -125,20 +143,21 @@ class EmojiReactionRepositoryImpl @Inject constructor(
     override fun buildOutgoingReactionBody(
         emoji: String,
         targetMessageText: String,
-        isRemoval: Boolean
+        isRemoval: Boolean,
     ): String? {
         if (targetMessageText.isBlank()) return null
 
         val text = targetMessageText.trim()
-        val (added, removed) = when (emoji) {
-            "❤️" -> "Loved “$text”" to "Removed a heart from “$text”"
-            "👍" -> "Liked “$text”" to "Removed a like from “$text”"
-            "👎" -> "Disliked “$text”" to "Removed a dislike from “$text”"
-            "😂" -> "Laughed at “$text”" to "Removed a laugh from “$text”"
-            "‼️" -> "Emphasized “$text”" to "Removed an exclamation from “$text”"
-            "❓" -> "Questioned “$text”" to "Removed a question mark from “$text”"
-            else -> "Reacted $emoji to “$text”" to "Removed $emoji from “$text”"
-        }
+        val (added, removed) =
+            when (emoji) {
+                "❤️" -> "Loved “$text”" to "Removed a heart from “$text”"
+                "👍" -> "Liked “$text”" to "Removed a like from “$text”"
+                "👎" -> "Disliked “$text”" to "Removed a dislike from “$text”"
+                "😂" -> "Laughed at “$text”" to "Removed a laugh from “$text”"
+                "‼️" -> "Emphasized “$text”" to "Removed an exclamation from “$text”"
+                "❓" -> "Questioned “$text”" to "Removed a question mark from “$text”"
+                else -> "Reacted $emoji to “$text”" to "Removed $emoji from “$text”"
+            }
 
         return if (isRemoval) removed else added
     }
@@ -151,7 +170,7 @@ class EmojiReactionRepositoryImpl @Inject constructor(
 
         for ((pattern, parser) in reactionPatterns) {
             val match = pattern.find(body)
-            if (match == null) continue;
+            if (match == null) continue
 
             val result = parser(match)
             if (result == null) continue
@@ -167,7 +186,7 @@ class EmojiReactionRepositoryImpl @Inject constructor(
     private fun parseRemoval(body: String): ParsedEmojiReaction? {
         for ((pattern, parser) in removalPatterns) {
             val match = pattern.find(body)
-            if (match == null) continue;
+            if (match == null) continue
 
             val result = parser(match)
             if (result == null) continue
@@ -180,37 +199,44 @@ class EmojiReactionRepositoryImpl @Inject constructor(
     }
 
     /**
-     * Search for messages in the same thread with matching text content
-     * We'll search recent messages first
+     * Search for messages in the same thread with matching text content We'll search recent
+     * messages first
      */
     override fun findTargetMessage(
         threadId: Long,
         originalMessageText: String,
-        realm: Realm
+        realm: Realm,
     ): Message? {
         val startTime = System.currentTimeMillis()
-        val messages = realm.where(Message::class.java)
-            .equalTo("threadId", threadId)
-            .sort("date", Sort.DESCENDING)
-            .findAll()
+        val messages =
+            realm
+                .where(Message::class.java)
+                .equalTo("threadId", threadId)
+                .sort("date", Sort.DESCENDING)
+                .findAll()
         val endTime = System.currentTimeMillis()
-        Timber.d("Searching for target message in thread $threadId: found ${messages.size} messages in ${endTime - startTime}ms")
+        Timber.d(
+            "Searching for target message in thread $threadId: found ${messages.size} messages in ${endTime - startTime}ms"
+        )
         Timber.d("Looking for message text: '$originalMessageText'")
 
-        val match = messages.find { message ->
-            val msgText = message.getText(false).trim()
-            val matches = msgText == originalMessageText.trim()
-            if (!matches && msgText.isNotEmpty()) {
-                Timber.v("  Checked message ${message.id}: '$msgText' - no match")
+        val match =
+            messages.find { message ->
+                val msgText = message.getText(false).trim()
+                val matches = msgText == originalMessageText.trim()
+                if (!matches && msgText.isNotEmpty()) {
+                    Timber.v("  Checked message ${message.id}: '$msgText' - no match")
+                }
+                matches
             }
-            matches
-        }
         if (match != null) {
             Timber.d("Found match for reaction target: message ID ${match.id}")
             return match
         }
 
-        Timber.w("No target message found for reaction text: '$originalMessageText' in thread $threadId")
+        Timber.w(
+            "No target message found for reaction text: '$originalMessageText' in thread $threadId"
+        )
         return null
     }
 
@@ -225,15 +251,19 @@ class EmojiReactionRepositoryImpl @Inject constructor(
             return
         }
 
-        val existingReaction = targetMessage.emojiReactions.find { candidate ->
-            candidate.senderAddress == reactionMessage.address && candidate.emoji == reaction.emoji
-        }
+        val existingReaction =
+            targetMessage.emojiReactions.find { candidate ->
+                candidate.senderAddress == reactionMessage.address &&
+                    candidate.emoji == reaction.emoji
+            }
 
         if (existingReaction != null) {
             existingReaction.deleteFromRealm()
             Timber.d("Removed emoji reaction: ${reaction.emoji} to message ${targetMessage.id}")
         } else {
-            Timber.w("No existing emoji reaction found to remove: ${reaction.emoji} to message ${targetMessage.id}")
+            Timber.w(
+                "No existing emoji reaction found to remove: ${reaction.emoji} to message ${targetMessage.id}"
+            )
         }
 
         reactionMessage.isEmojiReaction = true
@@ -251,14 +281,15 @@ class EmojiReactionRepositoryImpl @Inject constructor(
             return
         }
 
-        val reaction = EmojiReaction().apply {
-            id = keyManager.newId()
-            reactionMessageId = reactionMessage.id
-            senderAddress = reactionMessage.address
-            emoji = parsedReaction.emoji
-            originalMessageText = parsedReaction.originalMessage
-            threadId = reactionMessage.threadId
-        }
+        val reaction =
+            EmojiReaction().apply {
+                id = keyManager.newId()
+                reactionMessageId = reactionMessage.id
+                senderAddress = reactionMessage.address
+                emoji = parsedReaction.emoji
+                originalMessageText = parsedReaction.originalMessage
+                threadId = reactionMessage.threadId
+            }
         realm.insertOrUpdate(reaction)
 
         if (targetMessage != null) {
@@ -266,7 +297,8 @@ class EmojiReactionRepositoryImpl @Inject constructor(
             realm.insertOrUpdate(reactionMessage)
 
             // Overwrite any previous reaction from this sender for this target
-            val priorFromSender = targetMessage.emojiReactions.filter { it.senderAddress == reaction.senderAddress }
+            val priorFromSender =
+                targetMessage.emojiReactions.filter { it.senderAddress == reaction.senderAddress }
             priorFromSender.forEach { it.deleteFromRealm() }
 
             targetMessage.emojiReactions.add(reaction)
@@ -281,46 +313,40 @@ class EmojiReactionRepositoryImpl @Inject constructor(
         val startTime = System.currentTimeMillis()
 
         realm.delete(EmojiReaction::class.java)
-        realm.where(Message::class.java).findAll().map {
-            it.isEmojiReaction = false
-        }
+        realm.where(Message::class.java).findAll().map { it.isEmojiReaction = false }
 
-        val allMessages = realm.where(Message::class.java)
-            .beginGroup()
+        val allMessages =
+            realm
+                .where(Message::class.java)
                 .beginGroup()
-                    .equalTo("type", "sms")
-                    .isNotEmpty("body")
+                .beginGroup()
+                .equalTo("type", "sms")
+                .isNotEmpty("body")
                 .endGroup()
                 .or()
                 .beginGroup()
-                    .equalTo("type", "mms")
-                    .notEqualTo("messageType", 130.toLong())
-                    .isNotEmpty("parts.text")
+                .equalTo("type", "mms")
+                .notEqualTo("messageType", 130.toLong())
+                .isNotEmpty("parts.text")
                 .endGroup()
-            .endGroup()
-            .sort("date", Sort.ASCENDING) // parse oldest to newest to handle reactions & removals properly
-            .findAll()
+                .endGroup()
+                .sort(
+                    "date",
+                    Sort.ASCENDING,
+                ) // parse oldest to newest to handle reactions & removals properly
+                .findAll()
 
         allMessages.forEach { message ->
             val text = message.getText(false)
             val parsedReaction = parseEmojiReaction(text)
             if (parsedReaction != null) {
-                val targetMessage = findTargetMessage(
-                    message.threadId,
-                    parsedReaction.originalMessage,
-                    realm
-                )
-                saveEmojiReaction(
-                    message,
-                    parsedReaction,
-                    targetMessage,
-                    realm,
-                )
+                val targetMessage =
+                    findTargetMessage(message.threadId, parsedReaction.originalMessage, realm)
+                saveEmojiReaction(message, parsedReaction, targetMessage, realm)
             }
         }
 
         val endTime = System.currentTimeMillis()
         Timber.d("Deleted and reparsed all emoji reactions in ${endTime - startTime}ms")
     }
-
 }

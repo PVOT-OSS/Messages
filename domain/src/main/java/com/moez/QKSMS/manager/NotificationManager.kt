@@ -35,5 +35,4 @@ interface NotificationManager {
     fun cancel(i: Int)
 
     fun showDeleteConfirmation(threadId: Long)
-
 }

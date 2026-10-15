@@ -26,6 +26,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -39,12 +40,11 @@ import org.prauga.messages.model.ContactGroup
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.repository.ConversationRepository
-import javax.inject.Inject
 
-class ComposeItemAdapter @Inject constructor(
-    private val colors: Colors,
-    private val conversationRepo: ConversationRepository
-) : QkAdapter<ComposeItem, QkViewHolder>() {
+class ComposeItemAdapter
+@Inject
+constructor(private val colors: Colors, private val conversationRepo: ConversationRepository) :
+    QkAdapter<ComposeItem, QkViewHolder>() {
 
     val clicks: Subject<ComposeItem> = PublishSubject.create()
     val longClicks: Subject<ComposeItem> = PublishSubject.create()
@@ -123,15 +123,17 @@ class ComposeItemAdapter @Inject constructor(
         binding.title.text = conversation.getTitle()
 
         binding.subtitle.isVisible = conversation.recipients.size > 1 && conversation.name.isBlank()
-        binding.subtitle.text = conversation.recipients.joinToString(", ") { recipient ->
-            recipient.contact?.name ?: recipient.address
-        }
+        binding.subtitle.text =
+            conversation.recipients.joinToString(", ") { recipient ->
+                recipient.contact?.name ?: recipient.address
+            }
         binding.subtitle.collapseEnabled = conversation.recipients.size > 1
 
         binding.numbers.isVisible = conversation.recipients.size == 1
-        (binding.numbers.adapter as PhoneNumberAdapter).data = conversation.recipients
-            .mapNotNull { recipient -> recipient.contact }
-            .flatMap { contact -> contact.numbers }
+        (binding.numbers.adapter as PhoneNumberAdapter).data =
+            conversation.recipients
+                .mapNotNull { recipient -> recipient.contact }
+                .flatMap { contact -> contact.numbers }
     }
 
     private fun bindStarred(holder: QkViewHolder, contact: Contact, prev: ComposeItem?) {
@@ -177,11 +179,10 @@ class ComposeItemAdapter @Inject constructor(
         binding.index.isVisible = true
         binding.index.text =
             if (contact.name.getOrNull(0)?.isLetter() == true) contact.name[0].toString() else "#"
-        binding.index.isVisible = prev !is ComposeItem.Person ||
-                (contact.name[0].isLetter() && !contact.name[0].equals(
-                    prev.value.name[0],
-                    ignoreCase = true
-                )) ||
+        binding.index.isVisible =
+            prev !is ComposeItem.Person ||
+                (contact.name[0].isLetter() &&
+                    !contact.name[0].equals(prev.value.name[0], ignoreCase = true)) ||
                 (!contact.name[0].isLetter() && prev.value.name[0].isLetter())
 
         binding.icon.isVisible = false
@@ -197,16 +198,18 @@ class ComposeItemAdapter @Inject constructor(
     }
 
     private fun createRecipient(contact: Contact): Recipient {
-        return recipients[contact.lookupKey] ?: Recipient(
-            address = contact.numbers.firstOrNull()?.address ?: "",
-            contact = contact
-        )
+        return recipients[contact.lookupKey]
+            ?: Recipient(address = contact.numbers.firstOrNull()?.address ?: "", contact = contact)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        disposables += conversationRepo.getUnmanagedRecipients()
-            .map { recipients -> recipients.associateByNotNull { recipient -> recipient.contact?.lookupKey } }
-            .subscribe { recipients -> this@ComposeItemAdapter.recipients = recipients }
+        disposables +=
+            conversationRepo
+                .getUnmanagedRecipients()
+                .map { recipients ->
+                    recipients.associateByNotNull { recipient -> recipient.contact?.lookupKey }
+                }
+                .subscribe { recipients -> this@ComposeItemAdapter.recipients = recipients }
     }
 
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
@@ -222,5 +225,4 @@ class ComposeItemAdapter @Inject constructor(
     override fun areContentsTheSame(old: ComposeItem, new: ComposeItem): Boolean {
         return false
     }
-
 }

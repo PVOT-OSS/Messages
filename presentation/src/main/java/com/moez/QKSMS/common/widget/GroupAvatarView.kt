@@ -30,9 +30,8 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.databinding.GroupAvatarViewBinding
 import org.prauga.messages.model.Recipient
 
-class GroupAvatarView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : ConstraintLayout(context, attrs) {
+class GroupAvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    ConstraintLayout(context, attrs) {
 
     private var layout: GroupAvatarViewBinding =
         GroupAvatarViewBinding.inflate(LayoutInflater.from(context), this)
@@ -63,9 +62,7 @@ class GroupAvatarView @JvmOverloads constructor(
         }
         layout.avatar2.isVisible = recipients.size > 1
 
-
         recipients.getOrNull(0).run(layout.avatar1::setRecipient)
         recipients.getOrNull(1).run(layout.avatar2::setRecipient)
     }
-
 }

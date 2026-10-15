@@ -38,7 +38,7 @@ class QkChangeHandler : AnimatorChangeHandler(250, true) {
         @Nullable from: View?,
         @Nullable to: View?,
         isPush: Boolean,
-        toAddedToContainer: Boolean
+        toAddedToContainer: Boolean,
     ): Animator {
         val animatorSet = AnimatorSet()
         animatorSet.interpolator = DecelerateInterpolator()
@@ -46,45 +46,27 @@ class QkChangeHandler : AnimatorChangeHandler(250, true) {
         if (isPush) {
             if (from != null) {
                 animatorSet.play(
-                    ObjectAnimator.ofFloat(
-                        from,
-                        View.TRANSLATION_X,
-                        -from.width.toFloat() / 4
-                    )
+                    ObjectAnimator.ofFloat(from, View.TRANSLATION_X, -from.width.toFloat() / 4)
                 )
             }
             if (to != null) {
                 to.translationZ = 8.dpToPx(to.context).toFloat()
                 animatorSet.play(
-                    ObjectAnimator.ofFloat(
-                        to,
-                        View.TRANSLATION_X,
-                        to.width.toFloat(),
-                        0f
-                    )
+                    ObjectAnimator.ofFloat(to, View.TRANSLATION_X, to.width.toFloat(), 0f)
                 )
             }
         } else {
             if (from != null) {
                 from.translationZ = 8.dpToPx(from.context).toFloat()
                 animatorSet.play(
-                    ObjectAnimator.ofFloat(
-                        from,
-                        View.TRANSLATION_X,
-                        from.width.toFloat()
-                    )
+                    ObjectAnimator.ofFloat(from, View.TRANSLATION_X, from.width.toFloat())
                 )
             }
             if (to != null) {
                 // Allow this to have a nice transition when coming off an aborted push animation
                 val fromLeft = from?.translationX ?: 0f
                 animatorSet.play(
-                    ObjectAnimator.ofFloat(
-                        to,
-                        View.TRANSLATION_X,
-                        fromLeft - to.width / 4,
-                        0f
-                    )
+                    ObjectAnimator.ofFloat(to, View.TRANSLATION_X, fromLeft - to.width / 4, 0f)
                 )
             }
         }
@@ -101,5 +83,4 @@ class QkChangeHandler : AnimatorChangeHandler(250, true) {
     override fun copy(): ControllerChangeHandler {
         return QkChangeHandler()
     }
-
 }

@@ -5,15 +5,15 @@ package org.prauga.messages.receiver
 
 import android.content.Context
 import android.content.Intent
-import org.prauga.messages.interactor.DeleteMessages
 import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.interactor.DeleteMessages
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -21,14 +21,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class DeleteMessagesReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var intent: Intent
+    @Mock private lateinit var intent: Intent
 
-    @Mock
-    private lateinit var deleteMessages: DeleteMessages
+    @Mock private lateinit var deleteMessages: DeleteMessages
 
     @Before
     fun setUp() {
@@ -48,7 +45,9 @@ class DeleteMessagesReceiverTest {
         // Simulate receiver behavior
         val extractedThreadId = intent.getLongExtra("threadId", 0)
         val extractedMessageIds = intent.getLongArrayExtra("messageIds") ?: longArrayOf()
-        deleteMessages.buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId)).subscribe()
+        deleteMessages
+            .buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId))
+            .subscribe()
 
         verify(deleteMessages).buildObservable(params)
     }
@@ -65,7 +64,9 @@ class DeleteMessagesReceiverTest {
         // Simulate receiver behavior
         val extractedThreadId = intent.getLongExtra("threadId", 0)
         val extractedMessageIds = intent.getLongArrayExtra("messageIds") ?: longArrayOf()
-        deleteMessages.buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId)).subscribe()
+        deleteMessages
+            .buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId))
+            .subscribe()
 
         verify(deleteMessages).buildObservable(params)
     }
@@ -81,7 +82,9 @@ class DeleteMessagesReceiverTest {
 
         val extractedThreadId = intent.getLongExtra("threadId", 0)
         val extractedMessageIds = intent.getLongArrayExtra("messageIds") ?: longArrayOf()
-        deleteMessages.buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId)).subscribe()
+        deleteMessages
+            .buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId))
+            .subscribe()
 
         verify(deleteMessages).buildObservable(params)
     }
@@ -98,7 +101,9 @@ class DeleteMessagesReceiverTest {
 
         val extractedThreadId = intent.getLongExtra("threadId", 0)
         val extractedMessageIds = intent.getLongArrayExtra("messageIds") ?: longArrayOf()
-        deleteMessages.buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId)).subscribe()
+        deleteMessages
+            .buildObservable(DeleteMessages.Params(extractedMessageIds.toList(), extractedThreadId))
+            .subscribe()
 
         verify(deleteMessages).buildObservable(params)
     }

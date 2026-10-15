@@ -38,8 +38,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
 import androidx.annotation.ColorInt
-import org.prauga.messages.R
 import kotlin.math.roundToInt
+import org.prauga.messages.R
 
 class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     /**
@@ -48,32 +48,21 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
      * - PLAY_STATE: Animation speed is set to default, but can be overridden.
      */
     enum class ViewState {
-        /**
-         * Animation speed is set to zero.
-         */
+        /** Animation speed is set to zero. */
         PAUSED_STATE,
 
-        /**
-         * Animation speed is set to default, but can be overridden.
-         */
-        PLAY_STATE
+        /** Animation speed is set to default, but can be overridden. */
+        PLAY_STATE,
     }
 
-    @ColorInt
-    private var primaryColor: Int = Color.WHITE
+    @ColorInt private var primaryColor: Int = Color.WHITE
 
     private var pauseIcon: Drawable? = null
 
     private var playIcon: Drawable? = null
 
     init {
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.MicInputCloudView,
-            0,
-            0
-        ).apply {
-
+        context.theme.obtainStyledAttributes(attrs, R.styleable.MicInputCloudView, 0, 0).apply {
             try {
                 pauseIcon = getDrawable(R.styleable.MicInputCloudView_pauseIcon)
                 playIcon = getDrawable(R.styleable.MicInputCloudView_playIcon)
@@ -101,11 +90,12 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
     private var centerX: Float = 0f
     private var centerY: Float = 0f
 
-    private val bottomCirclePaint = Paint(ANTI_ALIAS_FLAG).apply {
-        color = primaryColor
-        style = Paint.Style.FILL
-        alpha = DEFAULT_OPACITY
-    }
+    private val bottomCirclePaint =
+        Paint(ANTI_ALIAS_FLAG).apply {
+            color = primaryColor
+            style = Paint.Style.FILL
+            alpha = DEFAULT_OPACITY
+        }
 
     private val topCircleBounds = Rect(0, 0, 0, 0)
     private val iconBounds = topCircleBounds
@@ -121,45 +111,32 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
     }
 
     private fun createAnimators() {
-        ovalOneAnimator = ValueAnimator.ofInt(
-            o1h,
-            OVAL_ONE_DEFAULT_HEIGHT + ANIMATION_CAP,
-            o1h
-        ).apply {
-            duration = OVAL_ONE_ANIMATION_LENGTH
-            interpolator = LinearInterpolator()
-            repeatCount = ValueAnimator.INFINITE
-            addUpdateListener { valueAnimator ->
-                o1h = valueAnimator.animatedValue as Int
+        ovalOneAnimator =
+            ValueAnimator.ofInt(o1h, OVAL_ONE_DEFAULT_HEIGHT + ANIMATION_CAP, o1h).apply {
+                duration = OVAL_ONE_ANIMATION_LENGTH
+                interpolator = LinearInterpolator()
+                repeatCount = ValueAnimator.INFINITE
+                addUpdateListener { valueAnimator -> o1h = valueAnimator.animatedValue as Int }
             }
-        }
 
-        ovalTwoAnimator = ValueAnimator.ofInt(
-            o2h,
-            OVAL_TWO_DEFAULT_HEIGHT + ANIMATION_CAP,
-            o2h
-        ).apply {
-            duration = OVAL_TWO_ANIMATION_LENGTH
-            interpolator = LinearInterpolator()
-            repeatCount = ValueAnimator.INFINITE
-            addUpdateListener { valueAnimator ->
-                o2h = valueAnimator.animatedValue as Int
+        ovalTwoAnimator =
+            ValueAnimator.ofInt(o2h, OVAL_TWO_DEFAULT_HEIGHT + ANIMATION_CAP, o2h).apply {
+                duration = OVAL_TWO_ANIMATION_LENGTH
+                interpolator = LinearInterpolator()
+                repeatCount = ValueAnimator.INFINITE
+                addUpdateListener { valueAnimator -> o2h = valueAnimator.animatedValue as Int }
             }
-        }
 
-        ovalThreeAnimator = ValueAnimator.ofInt(
-            o3h,
-            OVAL_THREE_DEFAULT_HEIGHT + ANIMATION_CAP,
-            o3h
-        ).apply {
-            duration = OVAL_THREE_ANIMATION_LENGTH
-            interpolator = LinearInterpolator()
-            repeatCount = ValueAnimator.INFINITE
-            addUpdateListener { valueAnimator ->
-                o3h = valueAnimator.animatedValue as Int
-                invalidate() // needed to animate the other listeners as well
+        ovalThreeAnimator =
+            ValueAnimator.ofInt(o3h, OVAL_THREE_DEFAULT_HEIGHT + ANIMATION_CAP, o3h).apply {
+                duration = OVAL_THREE_ANIMATION_LENGTH
+                interpolator = LinearInterpolator()
+                repeatCount = ValueAnimator.INFINITE
+                addUpdateListener { valueAnimator ->
+                    o3h = valueAnimator.animatedValue as Int
+                    invalidate() // needed to animate the other listeners as well
+                }
             }
-        }
     }
 
     private fun destroyAnimators() {
@@ -178,16 +155,14 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        circlePath.apply {
-            addCircle(centerX, centerY, DEFAULT_RADIUS, Path.Direction.CCW)
-        }
+        circlePath.apply { addCircle(centerX, centerY, DEFAULT_RADIUS, Path.Direction.CCW) }
         ovalOnePath.apply {
             addOval(
                 centerX - (radius + o1w),
                 centerY - o1h,
                 centerX + (radius + o1w),
                 centerY + o1h,
-                Path.Direction.CCW
+                Path.Direction.CCW,
             )
             op(this, circlePath, Path.Op.DIFFERENCE)
         }
@@ -197,7 +172,7 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
                 centerY - o2h,
                 centerX + (radius + o2w),
                 centerY + o2h,
-                Path.Direction.CCW
+                Path.Direction.CCW,
             )
             op(this, circlePath, Path.Op.DIFFERENCE)
         }
@@ -207,7 +182,7 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
                 centerY - o3h,
                 centerX + (radius + o3w),
                 centerY + o3h,
-                Path.Direction.CCW
+                Path.Direction.CCW,
             )
             op(this, circlePath, Path.Op.DIFFERENCE)
         }
@@ -263,33 +238,35 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
-        val width: Int = when (widthMode) {
-            MeasureSpec.EXACTLY -> {
-                widthSize
+        val width: Int =
+            when (widthMode) {
+                MeasureSpec.EXACTLY -> {
+                    widthSize
+                }
+
+                MeasureSpec.AT_MOST -> {
+                    desiredWidth.coerceAtMost(widthSize)
+                }
+
+                else -> {
+                    desiredWidth
+                }
             }
 
-            MeasureSpec.AT_MOST -> {
-                desiredWidth.coerceAtMost(widthSize)
-            }
+        val height: Int =
+            when (heightMode) {
+                MeasureSpec.EXACTLY -> {
+                    heightSize
+                }
 
-            else -> {
-                desiredWidth
-            }
-        }
+                MeasureSpec.AT_MOST -> {
+                    desiredHeight.coerceAtMost(heightSize)
+                }
 
-        val height: Int = when (heightMode) {
-            MeasureSpec.EXACTLY -> {
-                heightSize
+                else -> {
+                    desiredHeight
+                }
             }
-
-            MeasureSpec.AT_MOST -> {
-                desiredHeight.coerceAtMost(heightSize)
-            }
-
-            else -> {
-                desiredHeight
-            }
-        }
 
         centerX = (width / 2).toFloat()
         centerY = (height / 2).toFloat()
@@ -301,8 +278,9 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
         }
 
         /**
-         * Drawables are drawn the same way as the canvas is drawn, as both originate from the top-left corner.
-         * Because of this, the icon's width = (right - left) and height = (bottom - top).
+         * Drawables are drawn the same way as the canvas is drawn, as both originate from the
+         * top-left corner. Because of this, the icon's width = (right - left) and height =
+         * (bottom - top).
          */
         iconBounds.apply {
             left = (centerX - DEFAULT_RADIUS + ICON_SIZE.dp).toInt()
@@ -315,24 +293,23 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
     }
 
     override fun performClick(): Boolean {
-        state = if (state == ViewState.PAUSED_STATE) {
-            ovalOneAnimator?.resume()
-            ovalTwoAnimator?.resume()
-            ovalThreeAnimator?.resume()
-            ViewState.PLAY_STATE
-        } else {
-            ovalOneAnimator?.pause()
-            ovalTwoAnimator?.pause()
-            ovalThreeAnimator?.pause()
-            ViewState.PAUSED_STATE
-        }
+        state =
+            if (state == ViewState.PAUSED_STATE) {
+                ovalOneAnimator?.resume()
+                ovalTwoAnimator?.resume()
+                ovalThreeAnimator?.resume()
+                ViewState.PLAY_STATE
+            } else {
+                ovalOneAnimator?.pause()
+                ovalTwoAnimator?.pause()
+                ovalThreeAnimator?.pause()
+                ViewState.PAUSED_STATE
+            }
         invalidate()
         return super.performClick()
     }
 
-    /**
-     *  Sets the color of the cloud to the parameter, opacity is still set to 50%.
-     */
+    /** Sets the color of the cloud to the parameter, opacity is still set to 50%. */
     fun setColor(primary: Int) {
         primaryColor = primary
         bottomCirclePaint.apply {
@@ -343,9 +320,7 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
         invalidate()
     }
 
-    /**
-     * Sets state of the component to the parameter, must be of type MicInputCloud.ViewState.
-     */
+    /** Sets state of the component to the parameter, must be of type MicInputCloud.ViewState. */
     fun setState(s: ViewState) {
         state = s
         invalidate()
@@ -355,18 +330,14 @@ class MicInputCloudView(context: Context, attrs: AttributeSet) : View(context, a
         return state
     }
 
-    /**
-     * Sets the rotation speed and radius to the parameters, defaults are left unchanged.
-     */
+    /** Sets the rotation speed and radius to the parameters, defaults are left unchanged. */
     fun setRotationSpeed(speed: Float, r: Float) {
         rotationSpeedMultiplier = speed
         radius = r
         invalidate()
     }
 
-    /**
-     * Starts the growing and shrinking animation
-     */
+    /** Starts the growing and shrinking animation */
     fun startAnimators() {
         ovalOneAnimator?.start()
         ovalTwoAnimator?.start()

@@ -19,30 +19,33 @@
 package org.prauga.messages.migration
 
 import android.content.Context
+import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.prauga.messages.blocking.QksmsBlockingClient
 import org.prauga.messages.common.util.extensions.versionCode
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
-class QkMigration @Inject constructor(
+class QkMigration
+@Inject
+constructor(
     private val context: Context,
     private val conversationRepo: ConversationRepository,
     private val prefs: Preferences,
-    private val qksmsBlockingClient: QksmsBlockingClient
+    private val qksmsBlockingClient: QksmsBlockingClient,
 ) {
 
-    fun performMigration() = runBlocking(Dispatchers.IO) {
-        val oldVersion = prefs.version.get()
+    fun performMigration() =
+        runBlocking(Dispatchers.IO) {
+            val oldVersion = prefs.version.get()
 
-        if (oldVersion < 2199) {
-            upgradeTo370()
+            if (oldVersion < 2199) {
+                upgradeTo370()
+            }
+
+            prefs.version.set(context.versionCode)
         }
-
-        prefs.version.set(context.versionCode)
-    }
 
     private fun upgradeTo370() {
         // Migrate changelog version
@@ -55,12 +58,13 @@ class QkMigration @Inject constructor(
         }
 
         // Migrate blocked conversations into QK blocking client
-        val addresses = conversationRepo.getBlockedConversations()
+        val addresses =
+            conversationRepo
+                .getBlockedConversations()
                 .flatMap { conversation -> conversation.recipients }
                 .map { recipient -> recipient.address }
                 .distinct()
 
         qksmsBlockingClient.block(addresses).blockingAwait()
     }
-
 }

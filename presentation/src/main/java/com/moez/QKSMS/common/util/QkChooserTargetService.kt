@@ -24,6 +24,7 @@ import android.graphics.drawable.Icon
 import android.service.chooser.ChooserTarget
 import android.service.chooser.ChooserTargetService
 import androidx.core.os.bundleOf
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.feature.compose.ComposeActivity
 import org.prauga.messages.injection.appComponent
@@ -31,12 +32,10 @@ import org.prauga.messages.model.Conversation
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.GlideApp
 import org.prauga.messages.util.tryOrNull
-import javax.inject.Inject
 
 class QkChooserTargetService : ChooserTargetService() {
 
-    @Inject
-    lateinit var conversationRepo: ConversationRepository
+    @Inject lateinit var conversationRepo: ConversationRepository
 
     override fun onCreate() {
         appComponent.inject(this)
@@ -45,30 +44,29 @@ class QkChooserTargetService : ChooserTargetService() {
 
     override fun onGetChooserTargets(
         targetActivityName: ComponentName?,
-        matchedFilter: IntentFilter?
+        matchedFilter: IntentFilter?,
     ): List<ChooserTarget> {
-        return conversationRepo.getTopConversations()
+        return conversationRepo
+            .getTopConversations()
             .take(3)
             .map(this::createShortcutForConversation)
     }
 
     private fun createShortcutForConversation(conversation: Conversation): ChooserTarget {
-        val icon = when (conversation.recipients.size) {
-            1 -> {
-                val photoUri = conversation.recipients.first()?.contact?.photoUri
-                val request = GlideApp.with(this)
-                    .asBitmap()
-                    .circleCrop()
-                    .load(photoUri)
-                    .submit()
-                val bitmap = tryOrNull(false) { request.get() }
+        val icon =
+            when (conversation.recipients.size) {
+                1 -> {
+                    val photoUri = conversation.recipients.first()?.contact?.photoUri
+                    val request =
+                        GlideApp.with(this).asBitmap().circleCrop().load(photoUri).submit()
+                    val bitmap = tryOrNull(false) { request.get() }
 
-                if (bitmap != null) Icon.createWithBitmap(bitmap)
-                else Icon.createWithResource(this, R.mipmap.ic_shortcut_person)
+                    if (bitmap != null) Icon.createWithBitmap(bitmap)
+                    else Icon.createWithResource(this, R.mipmap.ic_shortcut_person)
+                }
+
+                else -> Icon.createWithResource(this, R.mipmap.ic_shortcut_people)
             }
-
-            else -> Icon.createWithResource(this, R.mipmap.ic_shortcut_people)
-        }
 
         val componentName = ComponentName(this, ComposeActivity::class.java)
 
@@ -77,8 +75,7 @@ class QkChooserTargetService : ChooserTargetService() {
             icon,
             1f,
             componentName,
-            bundleOf("threadId" to conversation.id)
+            bundleOf("threadId" to conversation.id),
         )
     }
-
 }

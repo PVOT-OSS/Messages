@@ -13,16 +13,15 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.prauga.messages.R
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import org.prauga.messages.R
 
-class FastScrollerView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : FrameLayout(context, attrs, defStyleAttr) {
+class FastScrollerView
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+    FrameLayout(context, attrs, defStyleAttr) {
 
     interface SectionTitleProvider {
         fun getSectionTitle(position: Int): String
@@ -52,13 +51,15 @@ class FastScrollerView @JvmOverloads constructor(
     fun setupWithRecyclerView(recyclerView: RecyclerView) {
         this.recyclerView = recyclerView
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
-                if (!isDragging) {
-                    updateThumbPosition()
+        recyclerView.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                    if (!isDragging) {
+                        updateThumbPosition()
+                    }
                 }
             }
-        })
+        )
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
@@ -117,7 +118,8 @@ class FastScrollerView @JvmOverloads constructor(
                     return true
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_UP,
+            MotionEvent.ACTION_CANCEL -> {
                 if (isDragging) {
                     isDragging = false
                     thumb.isPressed = false
@@ -140,7 +142,8 @@ class FastScrollerView @JvmOverloads constructor(
 
         // Grab height from the first visible view safely
         val firstView = rv.getChildAt(0)
-        cachedItemHeight = firstView?.height?.takeIf { it > 0 } ?: (72 * resources.displayMetrics.density).toInt()
+        cachedItemHeight =
+            firstView?.height?.takeIf { it > 0 } ?: (72 * resources.displayMetrics.density).toInt()
 
         val visibleItemCount = max(1, rv.height / cachedItemHeight)
         cachedMaxTargetPos = max(0, itemCount - visibleItemCount)

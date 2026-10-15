@@ -36,10 +36,9 @@ class TextInputDialog(context: Activity, hint: String, listener: (String) -> Uni
 
         setView(layout.root)
         setButton(BUTTON_NEUTRAL, context.getString(R.string.button_cancel)) { _, _ -> }
-        setButton(
-            BUTTON_NEGATIVE,
-            context.getString(R.string.button_delete)
-        ) { _, _ -> listener("") }
+        setButton(BUTTON_NEGATIVE, context.getString(R.string.button_delete)) { _, _ ->
+            listener("")
+        }
         setButton(BUTTON_POSITIVE, context.getString(R.string.button_save)) { _, _ ->
             listener(layout.field.text.toString())
         }
@@ -57,5 +56,4 @@ class TextInputDialog(context: Activity, hint: String, listener: (String) -> Uni
         layout.field.setText(text)
         return this
     }
-
 }

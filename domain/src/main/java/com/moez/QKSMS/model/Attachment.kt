@@ -36,10 +36,10 @@ import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVCard
 
 @SuppressLint("Range")
-class Attachment (
+class Attachment(
     context: Context,
     var uri: Uri = Uri.EMPTY,
-    inputContent: InputContentInfoCompat? = null
+    inputContent: InputContentInfoCompat? = null,
 ) {
     private var resourceBytes: ByteArray? = null
 
@@ -48,8 +48,7 @@ class Attachment (
             uri = inputContent?.contentUri ?: uri
 
         // if constructed with a uri to a contact, convert uri to associated vcard uri
-        if (uri.isContact(context))
-            uri = uri.contactToVCard(context)
+        if (uri.isContact(context)) uri = uri.contactToVCard(context)
     }
 
     fun isVCard(context: Context): Boolean = uri.isVCard(context)
@@ -71,8 +70,7 @@ class Attachment (
 
     fun getResourceBytes(context: Context): ByteArray {
         // cache resource bytes by loading first time only
-        if (resourceBytes != null)
-            return resourceBytes!!
+        if (resourceBytes != null) return resourceBytes!!
 
         resourceBytes = uri.getResourceBytes(context)
 
@@ -84,8 +82,7 @@ class Attachment (
     }
 
     fun removeCacheFile(context: Context): Boolean {
-        if (uri.scheme != ContentResolver.SCHEME_FILE)
-            return false
+        if (uri.scheme != ContentResolver.SCHEME_FILE) return false
 
         return try {
             val file = uri.toFile().canonicalFile

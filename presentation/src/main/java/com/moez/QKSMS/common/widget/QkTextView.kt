@@ -21,24 +21,21 @@ package org.prauga.messages.common.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+import javax.inject.Inject
 import org.prauga.messages.common.util.TextViewStyler
 import org.prauga.messages.injection.appComponent
-import javax.inject.Inject
 
-open class QkTextView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : AppCompatTextView(context, attrs) {
+open class QkTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    AppCompatTextView(context, attrs) {
 
-    @Inject
-    lateinit var textViewStyler: TextViewStyler
+    @Inject lateinit var textViewStyler: TextViewStyler
 
     /**
      * Collapse a multiline list of strings into a single line
      *
      * Ex.
      *
-     * Toronto, New York, Los Angeles,
-     * Seattle, Portland
+     * Toronto, New York, Los Angeles, Seattle, Portland
      *
      * Will be converted to
      *
@@ -76,5 +73,4 @@ open class QkTextView @JvmOverloads constructor(
         super.setTextColor(color)
         setLinkTextColor(color)
     }
-
 }

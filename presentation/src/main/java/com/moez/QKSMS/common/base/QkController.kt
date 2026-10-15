@@ -29,10 +29,10 @@ import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import org.prauga.messages.R
 
 abstract class QkController<
-        ViewContract : QkViewContract<State>,
-        State : Any,
-        Presenter : QkPresenter<ViewContract, State>> :
-    LifecycleController() {
+    ViewContract : QkViewContract<State>,
+    State : Any,
+    Presenter : QkPresenter<ViewContract, State>,
+> : LifecycleController() {
 
     abstract var presenter: Presenter
 
@@ -44,18 +44,20 @@ abstract class QkController<
 
     protected var containerView: View? = null
 
-    @LayoutRes
-    var layoutRes: Int = 0
+    @LayoutRes var layoutRes: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup,
+        savedViewState: Bundle?,
+    ): View {
         return inflater.inflate(layoutRes, container, false).also {
             containerView = it
             onViewCreated()
         }
     }
 
-    open fun onViewCreated() {
-    }
+    open fun onViewCreated() {}
 
     fun setTitle(@StringRes titleId: Int) {
         setTitle(activity?.getString(titleId))

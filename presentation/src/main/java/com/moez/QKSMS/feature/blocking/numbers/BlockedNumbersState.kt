@@ -18,9 +18,7 @@
  */
 package org.prauga.messages.feature.blocking.numbers
 
-import org.prauga.messages.model.BlockedNumber
 import io.realm.RealmResults
+import org.prauga.messages.model.BlockedNumber
 
-data class BlockedNumbersState(
-    val numbers: RealmResults<BlockedNumber>? = null
-)
+data class BlockedNumbersState(val numbers: RealmResults<BlockedNumber>? = null)

@@ -29,19 +29,23 @@ import org.prauga.messages.databinding.MessageContentFilterListItemBinding
 import org.prauga.messages.model.MessageContentFilter
 
 class MessageContentFiltersAdapter :
-    QkRealmAdapter<MessageContentFilter, QkBindingViewHolder<MessageContentFilterListItemBinding>>() {
+    QkRealmAdapter<
+        MessageContentFilter,
+        QkBindingViewHolder<MessageContentFilterListItemBinding>,
+    >() {
 
     val removeMessageContentFilter: Subject<Long> = PublishSubject.create()
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): QkBindingViewHolder<MessageContentFilterListItemBinding> {
-        val binding = MessageContentFilterListItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding =
+            MessageContentFilterListItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false,
+            )
         return QkBindingViewHolder(binding).apply {
             binding.removeFilter.setOnClickListener {
                 val filter = getItem(adapterPosition) ?: return@setOnClickListener
@@ -52,7 +56,7 @@ class MessageContentFiltersAdapter :
 
     override fun onBindViewHolder(
         holder: QkBindingViewHolder<MessageContentFilterListItemBinding>,
-        position: Int
+        position: Int,
     ) {
         val item = getItem(position)!!
         holder.binding.caseIcon.visibility = if (item.caseSensitive) View.VISIBLE else View.GONE
@@ -61,5 +65,4 @@ class MessageContentFiltersAdapter :
             if (item.includeContacts) View.VISIBLE else View.GONE
         holder.binding.filter.text = item.value
     }
-
 }

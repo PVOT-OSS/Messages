@@ -25,9 +25,10 @@ import org.prauga.messages.model.MessageContentFilterData
 interface MessageContentFiltersView : QkViewContract<MessageContentFiltersState> {
 
     fun removeFilter(): Observable<Long>
+
     fun addFilter(): Observable<*>
+
     fun saveFilter(): Observable<MessageContentFilterData>
 
     fun showAddDialog()
-
 }

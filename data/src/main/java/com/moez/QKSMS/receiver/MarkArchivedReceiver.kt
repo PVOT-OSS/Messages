@@ -22,8 +22,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
-import org.prauga.messages.interactor.MarkArchived
 import javax.inject.Inject
+import org.prauga.messages.interactor.MarkArchived
 
 class MarkArchivedReceiver : BroadcastReceiver() {
 
@@ -36,5 +36,4 @@ class MarkArchivedReceiver : BroadcastReceiver() {
         val threadId = intent.getLongExtra("threadId", 0)
         markArchived.execute(listOf(threadId)) { pendingResult.finish() }
     }
-
 }

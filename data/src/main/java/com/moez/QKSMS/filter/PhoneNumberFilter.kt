@@ -18,17 +18,18 @@
  */
 package org.prauga.messages.filter
 
-import org.prauga.messages.util.PhoneNumberUtils
 import javax.inject.Inject
+import org.prauga.messages.util.PhoneNumberUtils
 
-class PhoneNumberFilter @Inject constructor(
-    private val phoneNumberUtils: PhoneNumberUtils
-) : Filter<String>() {
+class PhoneNumberFilter @Inject constructor(private val phoneNumberUtils: PhoneNumberUtils) :
+    Filter<String>() {
 
     override fun filter(item: String, query: CharSequence): Boolean {
         val allCharactersDialable = query.all { phoneNumberUtils.isReallyDialable(it) }
-        return allCharactersDialable && (phoneNumberUtils.compare(item, query.toString()) ||
-                phoneNumberUtils.normalizeNumber(item).contains(phoneNumberUtils.normalizeNumber(query.toString())))
+        return allCharactersDialable &&
+            (phoneNumberUtils.compare(item, query.toString()) ||
+                phoneNumberUtils
+                    .normalizeNumber(item)
+                    .contains(phoneNumberUtils.normalizeNumber(query.toString())))
     }
-
 }

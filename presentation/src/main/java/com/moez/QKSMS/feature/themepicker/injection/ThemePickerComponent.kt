@@ -31,7 +31,7 @@ interface ThemePickerComponent {
     @Subcomponent.Builder
     interface Builder {
         fun themePickerModule(module: ThemePickerModule): Builder
+
         fun build(): ThemePickerComponent
     }
-
 }

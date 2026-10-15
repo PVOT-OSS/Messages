@@ -18,18 +18,22 @@
  */
 package org.prauga.messages.feature.themepicker
 
-import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
+import org.prauga.messages.common.base.QkViewContract
 
 interface ThemePickerView : QkViewContract<ThemePickerState> {
 
     fun themeSelected(): Observable<Int>
+
     fun hsvThemeSelected(): Observable<Int>
+
     fun clearHsvThemeClicks(): Observable<*>
+
     fun applyHsvThemeClicks(): Observable<*>
+
     fun viewQksmsPlusClicks(): Observable<*>
 
     fun setCurrentTheme(color: Int)
-    fun showQksmsPlusSnackbar()
 
+    fun showQksmsPlusSnackbar()
 }

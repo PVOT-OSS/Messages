@@ -22,8 +22,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
-import org.prauga.messages.interactor.MarkRead
 import javax.inject.Inject
+import org.prauga.messages.interactor.MarkRead
 
 class MarkReadReceiver : BroadcastReceiver() {
 
@@ -36,5 +36,4 @@ class MarkReadReceiver : BroadcastReceiver() {
         val threadId = intent.getLongExtra("threadId", 0)
         markRead.execute(listOf(threadId)) { pendingResult.finish() }
     }
-
 }

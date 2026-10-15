@@ -5,15 +5,15 @@ package org.prauga.messages.receiver
 
 import android.content.Context
 import android.content.Intent
-import org.prauga.messages.interactor.MarkArchived
 import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.interactor.MarkArchived
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -21,14 +21,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class MarkArchivedReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var intent: Intent
+    @Mock private lateinit var intent: Intent
 
-    @Mock
-    private lateinit var markArchived: MarkArchived
+    @Mock private lateinit var markArchived: MarkArchived
 
     @Before
     fun setUp() {

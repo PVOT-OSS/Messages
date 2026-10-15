@@ -22,22 +22,19 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.Telephony.Threads
+import javax.inject.Inject
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Recipient
-import javax.inject.Inject
 
-class CursorToConversationImpl @Inject constructor(
-    private val context: Context,
-    private val permissionManager: PermissionManager
-) : CursorToConversation {
+class CursorToConversationImpl
+@Inject
+constructor(private val context: Context, private val permissionManager: PermissionManager) :
+    CursorToConversation {
 
     companion object {
         val URI: Uri = Uri.parse("content://mms-sms/conversations?simple=true")
-        val PROJECTION = arrayOf(
-                Threads._ID,
-                Threads.RECIPIENT_IDS
-        )
+        val PROJECTION = arrayOf(Threads._ID, Threads.RECIPIENT_IDS)
 
         const val ID = 0
         const val RECIPIENT_IDS = 1
@@ -46,11 +43,14 @@ class CursorToConversationImpl @Inject constructor(
     override fun map(from: Cursor): Conversation {
         return Conversation().apply {
             id = from.getLong(ID)
-            recipients.addAll(from.getString(RECIPIENT_IDS)
+            recipients.addAll(
+                from
+                    .getString(RECIPIENT_IDS)
                     .split(" ")
                     .filter { it.isNotBlank() }
                     .map { recipientId -> recipientId.toLong() }
-                    .map { recipientId -> Recipient().apply { id = recipientId } })
+                    .map { recipientId -> Recipient().apply { id = recipientId } }
+            )
         }
     }
 
@@ -60,5 +60,4 @@ class CursorToConversationImpl @Inject constructor(
             false -> null
         }
     }
-
 }

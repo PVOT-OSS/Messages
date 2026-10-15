@@ -26,5 +26,5 @@ open class PhoneNumber(
     var accountType: String? = "",
     var address: String = "",
     var type: String = "",
-    var isDefault: Boolean = false
+    var isDefault: Boolean = false,
 ) : RealmObject()

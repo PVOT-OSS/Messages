@@ -39,5 +39,4 @@ interface PermissionManager {
     fun hasRecordAudio(): Boolean
 
     fun hasExactAlarms(): Boolean
-
 }

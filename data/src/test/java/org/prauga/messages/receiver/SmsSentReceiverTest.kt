@@ -6,15 +6,13 @@ package org.prauga.messages.receiver
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import org.prauga.messages.interactor.MarkFailed
-import org.prauga.messages.interactor.MarkSent
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.never
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.interactor.MarkFailed
+import org.prauga.messages.interactor.MarkSent
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -22,14 +20,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class SmsSentReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var markSent: MarkSent
+    @Mock private lateinit var markSent: MarkSent
 
-    @Mock
-    private lateinit var markFailed: MarkFailed
+    @Mock private lateinit var markFailed: MarkFailed
 
     private lateinit var receiver: SmsSentReceiver
 
@@ -45,9 +40,7 @@ class SmsSentReceiverTest {
     @Test
     fun givenResultOk_whenOnReceive_thenExecutesMarkSent() {
         val messageId = 123L
-        val intent = Intent().apply {
-            putExtra("id", messageId)
-        }
+        val intent = Intent().apply { putExtra("id", messageId) }
 
         // Use reflection to set the result code since it's protected
         setResultCode(receiver, Activity.RESULT_OK)
@@ -64,8 +57,10 @@ class SmsSentReceiverTest {
         val receiver = SmsSentReceiver()
 
         org.junit.Assert.assertNotNull("Receiver should be instantiable", receiver)
-        org.junit.Assert.assertTrue("Receiver should be a BroadcastReceiver",
-            receiver is android.content.BroadcastReceiver)
+        org.junit.Assert.assertTrue(
+            "Receiver should be a BroadcastReceiver",
+            receiver is android.content.BroadcastReceiver,
+        )
     }
 
     @Test
@@ -80,9 +75,7 @@ class SmsSentReceiverTest {
     @Test
     fun givenIntent_whenExtraIdSet_thenRetrievesCorrectly() {
         val expectedId = 12345L
-        val intent = Intent().apply {
-            putExtra("id", expectedId)
-        }
+        val intent = Intent().apply { putExtra("id", expectedId) }
 
         val id = intent.getLongExtra("id", 0L)
 
@@ -92,9 +85,7 @@ class SmsSentReceiverTest {
     @Test
     fun givenIntentWithNegativeId_whenExtraIdRetrieved_thenReturnsNegativeValue() {
         val expectedId = -1L
-        val intent = Intent().apply {
-            putExtra("id", expectedId)
-        }
+        val intent = Intent().apply { putExtra("id", expectedId) }
 
         val id = intent.getLongExtra("id", 0L)
 

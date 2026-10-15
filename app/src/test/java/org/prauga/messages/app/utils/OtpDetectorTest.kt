@@ -20,33 +20,76 @@ class OtpDetectorTest {
     @Before
     fun setup() {
         // Create a test resource provider with default English keywords
-        resourceProvider = object : OtpResourceProvider {
-            override fun getOtpKeywords(): List<String> = listOf(
-                "otp", "one time password", "one-time password", "verification code",
-                "verification number", "login code", "login otp", "security code",
-                "2-step code", "2 factor code", "2fa code", "mfa code", "auth code",
-                "passcode", "access code", "reset code", "transaction code",
-                "confirm code", "confirmation code", "code"
-            )
+        resourceProvider =
+            object : OtpResourceProvider {
+                override fun getOtpKeywords(): List<String> =
+                    listOf(
+                        "otp",
+                        "one time password",
+                        "one-time password",
+                        "verification code",
+                        "verification number",
+                        "login code",
+                        "login otp",
+                        "security code",
+                        "2-step code",
+                        "2 factor code",
+                        "2fa code",
+                        "mfa code",
+                        "auth code",
+                        "passcode",
+                        "access code",
+                        "reset code",
+                        "transaction code",
+                        "confirm code",
+                        "confirmation code",
+                        "code",
+                    )
 
-            override fun getSafetyKeywords(): List<String> = listOf(
-                "do not share", "don't share", "never share", "do not disclose",
-                "do not forward", "keep this code secret", "valid for",
-                "expires in", "expires within", "expires after"
-            )
+                override fun getSafetyKeywords(): List<String> =
+                    listOf(
+                        "do not share",
+                        "don't share",
+                        "never share",
+                        "do not disclose",
+                        "do not forward",
+                        "keep this code secret",
+                        "valid for",
+                        "expires in",
+                        "expires within",
+                        "expires after",
+                    )
 
-            override fun getMoneyIndicators(): List<String> = listOf(
-                "rs", "inr", "usd", "eur", "gbp", "₹", "$", "€", "£", "balance",
-                "amount", "debited", "credited", "txn", "transaction id", "order id"
-            )
+                override fun getMoneyIndicators(): List<String> =
+                    listOf(
+                        "rs",
+                        "inr",
+                        "usd",
+                        "eur",
+                        "gbp",
+                        "₹",
+                        "$",
+                        "€",
+                        "£",
+                        "balance",
+                        "amount",
+                        "debited",
+                        "credited",
+                        "txn",
+                        "transaction id",
+                        "order id",
+                    )
 
-            override fun getErrorMessage(errorType: OtpErrorType): String = when (errorType) {
-                OtpErrorType.EMPTY_MESSAGE -> "Empty message"
-                OtpErrorType.NO_OTP_KEYWORD -> "No OTP-like keywords and no candidate code found"
-                OtpErrorType.KEYWORD_BUT_NO_CODE -> "Contains OTP-like keywords but no numeric/alphanumeric candidate code found"
+                override fun getErrorMessage(errorType: OtpErrorType): String =
+                    when (errorType) {
+                        OtpErrorType.EMPTY_MESSAGE -> "Empty message"
+                        OtpErrorType.NO_OTP_KEYWORD ->
+                            "No OTP-like keywords and no candidate code found"
+                        OtpErrorType.KEYWORD_BUT_NO_CODE ->
+                            "Contains OTP-like keywords but no numeric/alphanumeric candidate code found"
+                    }
             }
-        }
-        
+
         otpDetector = OtpDetector(resourceProvider)
     }
 
@@ -215,7 +258,8 @@ class OtpDetectorTest {
     // Some Real Message Tests
     @Test
     fun givenTypicalBankMessage_whenDetected_thenExtractsOtp() {
-        val result = otpDetector.detect("Your OTP for transaction is 456789. Do not share this code.")
+        val result =
+            otpDetector.detect("Your OTP for transaction is 456789. Do not share this code.")
 
         assertTrue("Should detect OTP", result.isOtp)
         assertEquals("Should extract code", "456789", result.code)
@@ -223,7 +267,10 @@ class OtpDetectorTest {
 
     @Test
     fun givenTypicalAppSignupMessage_whenDetected_thenExtractsOtp() {
-        val result = otpDetector.detect("Welcome! Your verification code is 987654. Use this to complete your registration.")
+        val result =
+            otpDetector.detect(
+                "Welcome! Your verification code is 987654. Use this to complete your registration."
+            )
 
         assertTrue("Should detect OTP", result.isOtp)
         assertEquals("Should extract code", "987654", result.code)
@@ -414,14 +461,17 @@ class OtpDetectorTest {
         val result = otpDetector.detect("Code: 123456789") // 9 digits might be too long
 
         // Should have lower confidence or not detect at all
-        assertTrue("Should have lower confidence or not detect",
-            !result.isOtp || result.confidence < 0.75)
+        assertTrue(
+            "Should have lower confidence or not detect",
+            !result.isOtp || result.confidence < 0.75,
+        )
     }
 
     // Performance and robustness
     @Test
     fun givenVeryLongMessage_whenDetected_thenExtractsOtp() {
-        val longMessage = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ".repeat(10) +
+        val longMessage =
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ".repeat(10) +
                 "Your OTP is 123456. " +
                 "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ".repeat(10)
 

@@ -24,5 +24,5 @@ import org.prauga.messages.model.MmsPart
 data class GalleryState(
     val navigationVisible: Boolean = true,
     val title: String? = "",
-    val parts: RealmResults<MmsPart>? = null
+    val parts: RealmResults<MmsPart>? = null,
 )

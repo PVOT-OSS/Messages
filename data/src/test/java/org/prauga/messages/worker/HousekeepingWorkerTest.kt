@@ -3,9 +3,9 @@
  */
 package org.prauga.messages.worker
 
-import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Test
 
 class HousekeepingWorkerTest {
 

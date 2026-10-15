@@ -19,14 +19,16 @@
 package org.prauga.messages.repository
 
 import android.net.Uri
-import org.prauga.messages.model.Message
 import io.reactivex.Observable
+import org.prauga.messages.model.Message
 
 interface SyncRepository {
 
     sealed class SyncProgress {
         object Idle : SyncProgress()
-        data class Running(val max: Int, val progress: Int, val indeterminate: Boolean) : SyncProgress()
+
+        data class Running(val max: Int, val progress: Int, val indeterminate: Boolean) :
+            SyncProgress()
     }
 
     val syncProgress: Observable<SyncProgress>
@@ -36,5 +38,4 @@ interface SyncRepository {
     fun syncMessage(uri: Uri): Message?
 
     fun syncContacts()
-
 }

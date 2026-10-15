@@ -51,9 +51,7 @@ abstract class BroadcastReceiverBuilderModule {
     @ContributesAndroidInjector()
     abstract fun bindBlockThreadReceiver(): BlockThreadReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindBootReceiver(): BootReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindBootReceiver(): BootReceiver
 
     @ActivityScope
     @ContributesAndroidInjector()
@@ -91,13 +89,9 @@ abstract class BroadcastReceiverBuilderModule {
     @ContributesAndroidInjector()
     abstract fun bindMmsReceivedReceiver(): MmsReceivedReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindMmsReceiver(): MmsReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindMmsReceiver(): MmsReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindMmsSentReceiver(): MmsSentReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindMmsSentReceiver(): MmsSentReceiver
 
     @ActivityScope
     @ContributesAndroidInjector()
@@ -123,16 +117,9 @@ abstract class BroadcastReceiverBuilderModule {
     @ContributesAndroidInjector()
     abstract fun bindSmsProviderChangedReceiver(): SmsProviderChangedReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindSmsReceiver(): SmsReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindSmsReceiver(): SmsReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindSmsSentReceiver(): SmsSentReceiver
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindSmsSentReceiver(): SmsSentReceiver
 
-    @ActivityScope
-    @ContributesAndroidInjector()
-    abstract fun bindWidgetProvider(): WidgetProvider
-
+    @ActivityScope @ContributesAndroidInjector() abstract fun bindWidgetProvider(): WidgetProvider
 }

@@ -18,19 +18,18 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.ConversationRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
+import org.prauga.messages.repository.ConversationRepository
 
-class MarkArchived @Inject constructor(
-    private val conversationRepo: ConversationRepository,
-    private val markRead: MarkRead
-) : Interactor<List<Long>>() {
+class MarkArchived
+@Inject
+constructor(private val conversationRepo: ConversationRepository, private val markRead: MarkRead) :
+    Interactor<List<Long>>() {
 
     override fun buildObservable(params: List<Long>): Flowable<*> {
         return Flowable.just(params.toLongArray())
-                .doOnNext { threadIds -> conversationRepo.markArchived(*threadIds) }
-                .flatMap { markRead.buildObservable(params) }
+            .doOnNext { threadIds -> conversationRepo.markArchived(*threadIds) }
+            .flatMap { markRead.buildObservable(params) }
     }
-
 }

@@ -20,10 +20,12 @@ package org.prauga.messages.compat
 
 import android.content.Context
 import android.telephony.SubscriptionManager
-import org.prauga.messages.manager.PermissionManager
 import javax.inject.Inject
+import org.prauga.messages.manager.PermissionManager
 
-class SubscriptionManagerCompat @Inject constructor(context: Context, private val permissions: PermissionManager) {
+class SubscriptionManagerCompat
+@Inject
+constructor(context: Context, private val permissions: PermissionManager) {
 
     private val subscriptionManager: SubscriptionManager?
         get() = field?.takeIf { permissions.hasPhone() }
@@ -66,7 +68,5 @@ class SubscriptionManagerCompat @Inject constructor(context: Context, private va
             }
 
         abstract fun onSubscriptionsChanged()
-
     }
-
 }

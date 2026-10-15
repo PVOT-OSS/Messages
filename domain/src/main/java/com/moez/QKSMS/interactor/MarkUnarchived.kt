@@ -18,15 +18,16 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.ConversationRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
+import org.prauga.messages.repository.ConversationRepository
 
-class MarkUnarchived @Inject constructor(private val conversationRepo: ConversationRepository) : Interactor<List<Long>>() {
+class MarkUnarchived @Inject constructor(private val conversationRepo: ConversationRepository) :
+    Interactor<List<Long>>() {
 
     override fun buildObservable(params: List<Long>): Flowable<*> {
-        return Flowable.just(params.toLongArray())
-                .doOnNext { threadIds -> conversationRepo.markUnarchived(*threadIds) }
+        return Flowable.just(params.toLongArray()).doOnNext { threadIds ->
+            conversationRepo.markUnarchived(*threadIds)
+        }
     }
-
 }

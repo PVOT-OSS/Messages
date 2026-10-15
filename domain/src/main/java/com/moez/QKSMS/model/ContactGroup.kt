@@ -25,5 +25,5 @@ import io.realm.annotations.PrimaryKey
 open class ContactGroup(
     @PrimaryKey var id: Long = 0,
     var title: String = "",
-    var contacts: RealmList<Contact> = RealmList()
+    var contacts: RealmList<Contact> = RealmList(),
 ) : RealmObject()

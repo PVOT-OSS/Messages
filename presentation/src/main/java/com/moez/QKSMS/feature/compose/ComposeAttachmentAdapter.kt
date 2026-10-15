@@ -26,6 +26,7 @@ import androidx.core.view.isVisible
 import ezvcard.Ezvcard
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -36,12 +37,9 @@ import org.prauga.messages.extensions.getName
 import org.prauga.messages.feature.extensions.LoadBestIconIntoImageView
 import org.prauga.messages.feature.extensions.loadBestIconIntoImageView
 import org.prauga.messages.model.Attachment
-import javax.inject.Inject
 
-
-class ComposeAttachmentAdapter @Inject constructor(
-    private val context: Context
-) : QkAdapter<Attachment, QkViewHolder>() {
+class ComposeAttachmentAdapter @Inject constructor(private val context: Context) :
+    QkAdapter<Attachment, QkViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_FILE = 0
@@ -53,12 +51,13 @@ class ComposeAttachmentAdapter @Inject constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        val view = inflater.inflate(
-            if (viewType == VIEW_TYPE_CONTACT) R.layout.attachment_contact_list_item
-            else R.layout.attachment_file_list_item,
-            parent,
-            false
-        )
+        val view =
+            inflater.inflate(
+                if (viewType == VIEW_TYPE_CONTACT) R.layout.attachment_contact_list_item
+                else R.layout.attachment_file_list_item,
+                parent,
+                false,
+            )
 
         return QkViewHolder(view).apply {
             view.setOnClickListener {
@@ -74,9 +73,10 @@ class ComposeAttachmentAdapter @Inject constructor(
         if (attachment.isVCard(context)) {
             val binding = AttachmentContactListItemBinding.bind(holder.containerView)
             try {
-                val displayName = Ezvcard.parse(
-                    String(attachment.getResourceBytes(context))
-                ).first().getDisplayName() ?: ""
+                val displayName =
+                    Ezvcard.parse(String(attachment.getResourceBytes(context)))
+                        .first()
+                        .getDisplayName() ?: ""
                 binding.name.text = displayName
                 binding.name.isVisible = displayName.isNotEmpty()
             } catch (e: Throwable) {
@@ -111,9 +111,9 @@ class ComposeAttachmentAdapter @Inject constructor(
         }
     }
 
-    override fun getItemViewType(position: Int) = when (getItem(position).isVCard(context)) {
-        true -> VIEW_TYPE_CONTACT
-        else -> VIEW_TYPE_FILE
-    }
-
+    override fun getItemViewType(position: Int) =
+        when (getItem(position).isVCard(context)) {
+            true -> VIEW_TYPE_CONTACT
+            else -> VIEW_TYPE_FILE
+        }
 }

@@ -33,25 +33,22 @@ import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkActivity
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.GalleryActivityBinding
 import org.prauga.messages.model.MmsPart
-import javax.inject.Inject
 
-class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate),
-    GalleryView {
+class GalleryActivity :
+    QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate), GalleryView {
 
-    @Inject
-    lateinit var dateFormatter: DateFormatter
+    @Inject lateinit var dateFormatter: DateFormatter
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var pagerAdapter: GalleryPagerAdapter
+    @Inject lateinit var pagerAdapter: GalleryPagerAdapter
 
     val partId by lazy { intent.getLongExtra("partId", 0L) }
 
@@ -69,28 +66,38 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
         viewModel.bindView(this)
 
         binding.pager.adapter = pagerAdapter
-        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                this@GalleryActivity.onPageSelected(position)
+        binding.pager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    this@GalleryActivity.onPageSelected(position)
+                }
             }
-        })
+        )
 
-        pagerAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                pagerAdapter.data?.takeIf { pagerAdapter.itemCount > 0 }
-                    ?.indexOfFirst { part -> part.id == partId }
-                    ?.let { index ->
-                        onPageSelected(index)
-                        binding.pager.setCurrentItem(index, false)
-                        pagerAdapter.unregisterAdapterDataObserver(this)
-                    }
+        pagerAdapter.registerAdapterDataObserver(
+            object : RecyclerView.AdapterDataObserver() {
+                override fun onChanged() {
+                    pagerAdapter.data
+                        ?.takeIf { pagerAdapter.itemCount > 0 }
+                        ?.indexOfFirst { part -> part.id == partId }
+                        ?.let { index ->
+                            onPageSelected(index)
+                            binding.pager.setCurrentItem(index, false)
+                            pagerAdapter.unregisterAdapterDataObserver(this)
+                        }
+                }
             }
-        })
+        )
     }
 
     fun onPageSelected(position: Int) {
-        binding.toolbarSubtitle.text = pagerAdapter.getItem(position)?.messages?.firstOrNull()?.date
-            ?.let(dateFormatter::getDetailedTimestamp)
+        binding.toolbarSubtitle.text =
+            pagerAdapter
+                .getItem(position)
+                ?.messages
+                ?.firstOrNull()
+                ?.date
+                ?.let(dateFormatter::getDetailedTimestamp)
         binding.toolbarSubtitle.isVisible = binding.toolbarTitle.text.isNotBlank()
 
         pagerAdapter.getItem(position)?.run(pageChangedSubject::onNext)
@@ -113,7 +120,7 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            0
+            0,
         )
     }
 

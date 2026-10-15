@@ -29,5 +29,4 @@ class MainViewModelTest {
     fun insertedSentMessageEqualsSyncResult() {
         assert(1 == 1)
     }
-
 }

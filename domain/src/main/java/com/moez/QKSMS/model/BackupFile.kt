@@ -18,7 +18,4 @@
  */
 package org.prauga.messages.model
 
-data class BackupFile(
-    val date: Long,
-    val messages: Int
-)
+data class BackupFile(val date: Long, val messages: Int)

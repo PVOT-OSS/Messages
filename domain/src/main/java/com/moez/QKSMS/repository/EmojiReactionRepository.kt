@@ -18,18 +18,24 @@
  */
 package org.prauga.messages.repository
 
-import org.prauga.messages.model.Message
 import io.realm.Realm
+import org.prauga.messages.model.Message
 
-data class ParsedEmojiReaction(val emoji: String, val originalMessage: String, val isRemoval: Boolean = false)
+data class ParsedEmojiReaction(
+    val emoji: String,
+    val originalMessage: String,
+    val isRemoval: Boolean = false,
+)
 
 interface EmojiReactionRepository {
     fun parseEmojiReaction(body: String): ParsedEmojiReaction?
 
-    /**
-     * Builds an outgoing reaction/tapback body that matches iOS-style SMS fallback formatting.
-     */
-    fun buildOutgoingReactionBody(emoji: String, targetMessageText: String, isRemoval: Boolean = false): String?
+    /** Builds an outgoing reaction/tapback body that matches iOS-style SMS fallback formatting. */
+    fun buildOutgoingReactionBody(
+        emoji: String,
+        targetMessageText: String,
+        isRemoval: Boolean = false,
+    ): String?
 
     fun findTargetMessage(threadId: Long, originalMessageText: String, realm: Realm): Message?
 

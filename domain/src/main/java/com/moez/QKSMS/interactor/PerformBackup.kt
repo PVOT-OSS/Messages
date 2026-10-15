@@ -18,17 +18,14 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.BackupRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
+import org.prauga.messages.repository.BackupRepository
 
-class PerformBackup @Inject constructor(
-    private val backupRepo: BackupRepository
-) : Interactor<Unit>() {
+class PerformBackup @Inject constructor(private val backupRepo: BackupRepository) :
+    Interactor<Unit>() {
 
     override fun buildObservable(params: Unit): Flowable<*> {
-        return Flowable.just(params)
-                .doOnNext { backupRepo.performBackup() }
+        return Flowable.just(params).doOnNext { backupRepo.performBackup() }
     }
-
 }

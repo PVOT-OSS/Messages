@@ -26,6 +26,8 @@ import androidx.core.text.buildSpannedString
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.moez.QKSMS.common.widget.FastScrollerView
+import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkRealmAdapter
@@ -33,21 +35,20 @@ import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.resolveThemeColor
-import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.ConversationListItemBinding
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.repository.ScheduledMessageRepository
 import org.prauga.messages.util.PhoneNumberUtils
-import io.reactivex.disposables.CompositeDisposable
-import javax.inject.Inject
 
-class ConversationsAdapter @Inject constructor(
+class ConversationsAdapter
+@Inject
+constructor(
     private val colors: Colors,
     private val context: Context,
     private val dateFormatter: DateFormatter,
     private val scheduledMessageRepo: ScheduledMessageRepository,
     private val navigator: Navigator,
-    private val phoneNumberUtils: PhoneNumberUtils
+    private val phoneNumberUtils: PhoneNumberUtils,
 ) : QkRealmAdapter<Conversation, QkViewHolder>(), FastScrollerView.SectionTitleProvider {
     private val disposables = CompositeDisposable()
 
@@ -98,39 +99,42 @@ class ConversationsAdapter @Inject constructor(
 
         // If the last message wasn't incoming, then the colour doesn't really matter anyway
         val lastMessage = conversation.lastMessage
-        val recipient = when {
-            conversation.recipients.size == 1 || lastMessage == null -> conversation.recipients.firstOrNull()
-            else -> conversation.recipients.find { recipient ->
-                phoneNumberUtils.compare(recipient.address, lastMessage.address)
+        val recipient =
+            when {
+                conversation.recipients.size == 1 || lastMessage == null ->
+                    conversation.recipients.firstOrNull()
+                else ->
+                    conversation.recipients.find { recipient ->
+                        phoneNumberUtils.compare(recipient.address, lastMessage.address)
+                    }
             }
-        }
         val theme = colors.theme(recipient).theme
 
         holder.containerView.isActivated = isSelected(conversation.id)
 
         binding.avatars.recipients = conversation.recipients
         binding.title.collapseEnabled = conversation.recipients.size > 1
-        binding.title.text = buildSpannedString {
-            append(conversation.getTitle())
-        }
-        binding.date.text = conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
-        binding.snippet.text = when {
-            conversation.draft.isNotEmpty() -> context.getString(R.string.main_sender_draft, conversation.draft)
-            conversation.me -> context.getString(R.string.main_sender_you, conversation.snippet)
-            else -> conversation.snippet
-        }
+        binding.title.text = buildSpannedString { append(conversation.getTitle()) }
+        binding.date.text =
+            conversation.date.takeIf { it > 0 }?.let(dateFormatter::getConversationTimestamp)
+        binding.snippet.text =
+            when {
+                conversation.draft.isNotEmpty() ->
+                    context.getString(R.string.main_sender_draft, conversation.draft)
+                conversation.me -> context.getString(R.string.main_sender_you, conversation.snippet)
+                else -> conversation.snippet
+            }
 
         // Make the preview in italics if draft
         if (conversation.draft.isNotEmpty()) binding.snippet.setTypeface(null, Typeface.ITALIC)
 
         // Get Scheduled Messages
-        val disposable = scheduledMessageRepo
-            .getScheduledMessagesForConversation(conversation.id)
-            .asFlowable()
-            .toObservable()
-            .subscribe { messages ->
-                binding.scheduled.isVisible = messages.isNotEmpty()
-            }
+        val disposable =
+            scheduledMessageRepo
+                .getScheduledMessagesForConversation(conversation.id)
+                .asFlowable()
+                .toObservable()
+                .subscribe { messages -> binding.scheduled.isVisible = messages.isNotEmpty() }
         disposables.add(disposable)
 
         binding.pinned.isVisible = conversation.pinned
@@ -149,9 +153,7 @@ class ConversationsAdapter @Inject constructor(
         disposables.clear()
     }
 
-    /**
-     * Public method to start selection mode by selecting the first item
-     */
+    /** Public method to start selection mode by selecting the first item */
     fun startSelectionMode() {
         if (itemCount > 0) {
             val firstId = getItemId(0)
@@ -169,5 +171,4 @@ class ConversationsAdapter @Inject constructor(
             ""
         }
     }
-
 }

@@ -20,9 +20,9 @@ package org.prauga.messages.feature.themepicker.injection
 
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 import org.prauga.messages.feature.themepicker.ThemePickerController
 import org.prauga.messages.injection.scope.ControllerScope
-import javax.inject.Named
 
 @Module
 class ThemePickerModule(private val controller: ThemePickerController) {
@@ -31,5 +31,4 @@ class ThemePickerModule(private val controller: ThemePickerController) {
     @ControllerScope
     @Named("recipientId")
     fun provideThreadId(): Long = controller.recipientId
-
 }

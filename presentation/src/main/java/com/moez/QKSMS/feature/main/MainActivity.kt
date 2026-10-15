@@ -53,6 +53,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.androidxcompat.drawerOpen
@@ -72,33 +73,24 @@ import org.prauga.messages.feature.conversations.ConversationItemTouchCallback
 import org.prauga.messages.feature.conversations.ConversationsAdapter
 import org.prauga.messages.manager.ChangelogManager
 import org.prauga.messages.repository.SyncRepository
-import javax.inject.Inject
 
 class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::inflate), MainView {
 
-    @Inject
-    lateinit var blockingDialog: BlockingDialog
+    @Inject lateinit var blockingDialog: BlockingDialog
 
-    @Inject
-    lateinit var disposables: CompositeDisposable
+    @Inject lateinit var disposables: CompositeDisposable
 
-    @Inject
-    lateinit var navigator: Navigator
+    @Inject lateinit var navigator: Navigator
 
-    @Inject
-    lateinit var conversationsAdapter: ConversationsAdapter
+    @Inject lateinit var conversationsAdapter: ConversationsAdapter
 
-    @Inject
-    lateinit var drawerBadgesExperiment: DrawerBadgesExperiment
+    @Inject lateinit var drawerBadgesExperiment: DrawerBadgesExperiment
 
-    @Inject
-    lateinit var searchAdapter: SearchAdapter
+    @Inject lateinit var searchAdapter: SearchAdapter
 
-    @Inject
-    lateinit var itemTouchCallback: ConversationItemTouchCallback
+    @Inject lateinit var itemTouchCallback: ConversationItemTouchCallback
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override val onNewIntentIntent: Subject<Intent> = PublishSubject.create()
     override val activityResumedIntent: Subject<Boolean> = PublishSubject.create()
@@ -108,7 +100,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         Observable.merge(
             binding.filterAll.clicks().map { MessageCategory.ALL },
             binding.filterUnread.clicks().map { MessageCategory.UNREAD },
-            binding.filterArchived.clicks().map { MessageCategory.ARCHIVED }
+            binding.filterArchived.clicks().map { MessageCategory.ARCHIVED },
         )
     }
     override val drawerToggledIntent: Observable<Boolean> by lazy {
@@ -127,9 +119,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 binding.drawer.scheduled.clicks().map { NavItem.SCHEDULED },
                 binding.drawer.blocking.clicks().map { NavItem.BLOCKING },
                 binding.drawer.settings.clicks().map { NavItem.SETTINGS },
-//                plus.clicks().map { NavItem.PLUS },
-//                help.clicks().map { NavItem.HELP },
-                binding.drawer.invite.clicks().map { NavItem.INVITE })
+                //                plus.clicks().map { NavItem.PLUS },
+                //                help.clicks().map { NavItem.HELP },
+                binding.drawer.invite.clicks().map { NavItem.INVITE },
+            )
         )
     }
     override val optionsItemIntent: Subject<Int> = PublishSubject.create()
@@ -154,7 +147,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             binding.drawerLayout,
             binding.toolbar,
             R.string.main_drawer_open_cd,
-            0
+            0,
         )
     }
     private val itemTouchHelper by lazy { ItemTouchHelper(itemTouchCallback) }
@@ -168,7 +161,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         onNewIntentIntent.onNext(intent)
 
         (binding.snackbar as? ViewStub)?.setOnInflateListener { _, inflated ->
-            inflated.findViewById<View>(R.id.snackbarButton).clicks()
+            inflated
+                .findViewById<View>(R.id.snackbarButton)
+                .clicks()
                 .autoDispose(scope(Lifecycle.Event.ON_DESTROY))
                 .subscribe(snackbarButtonIntent)
         }
@@ -180,19 +175,13 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             }
         }
 
-        binding.btnChangeDefaultSms.setOnClickListener {
-            requestDefaultSms()
+        binding.btnChangeDefaultSms.setOnClickListener { requestDefaultSms() }
+
+        binding.clearSearch.clicks().autoDispose(scope()).subscribe { clearSearch() }
+
+        binding.toolbarSearch.textChanges().autoDispose(scope()).subscribe { text ->
+            binding.clearSearch.isVisible = text.isNotEmpty()
         }
-
-        binding.clearSearch.clicks()
-            .autoDispose(scope())
-            .subscribe { clearSearch() }
-
-        binding.toolbarSearch.textChanges()
-            .autoDispose(scope())
-            .subscribe { text ->
-                binding.clearSearch.isVisible = text.isNotEmpty()
-            }
 
         toggle.syncState()
         title = ""
@@ -201,11 +190,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             homeIntent.onNext(Unit)
         }
 
-        binding.cVTopBar3.clicks()
-            .autoDispose(scope())
-            .subscribe {
-                showDrawerMenu()
-            }
+        binding.cVTopBar3.clicks().autoDispose(scope()).subscribe { showDrawerMenu() }
 
         itemTouchCallback.adapter = conversationsAdapter
         conversationsAdapter.autoScrollToStart(binding.recyclerView)
@@ -217,79 +202,92 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         binding.fastScroller.setupWithRecyclerView(binding.recyclerView)
 
-        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
+        binding.recyclerView.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
 
-                if (dy > 0 && binding.cVTopBar2.translationY == 0f) {
-                    // Hide
-                    val translationY =
-                        -binding.cVTopBar2.height.toFloat() - 8f * resources.displayMetrics.density
-                    binding.cVTopBar2.animate().translationY(translationY).setDuration(200).start()
-                    binding.cVTopBar3.animate().translationY(translationY).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(translationY).setDuration(200)
-                        .start()
-                    binding.recyclerView.animate().translationY(translationY).setDuration(200)
-                        .start()
-                } else if (dy < 0 && binding.cVTopBar2.translationY != 0f) {
-                    // Show
-                    binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
-                    binding.cVTopBar3.animate().translationY(0f).setDuration(200).start()
-                    binding.filterGroup.animate().translationY(0f).setDuration(200).start()
-                    binding.recyclerView.animate().translationY(0f).setDuration(200).start()
+                    if (dy > 0 && binding.cVTopBar2.translationY == 0f) {
+                        // Hide
+                        val translationY =
+                            -binding.cVTopBar2.height.toFloat() -
+                                8f * resources.displayMetrics.density
+                        binding.cVTopBar2
+                            .animate()
+                            .translationY(translationY)
+                            .setDuration(200)
+                            .start()
+                        binding.cVTopBar3
+                            .animate()
+                            .translationY(translationY)
+                            .setDuration(200)
+                            .start()
+                        binding.filterGroup
+                            .animate()
+                            .translationY(translationY)
+                            .setDuration(200)
+                            .start()
+                        binding.recyclerView
+                            .animate()
+                            .translationY(translationY)
+                            .setDuration(200)
+                            .start()
+                    } else if (dy < 0 && binding.cVTopBar2.translationY != 0f) {
+                        // Show
+                        binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
+                        binding.cVTopBar3.animate().translationY(0f).setDuration(200).start()
+                        binding.filterGroup.animate().translationY(0f).setDuration(200).start()
+                        binding.recyclerView.animate().translationY(0f).setDuration(200).start()
+                    }
                 }
             }
-        })
+        )
 
         // Don't allow clicks to pass through the drawer layout
         binding.drawer.root.clicks().autoDispose(scope()).subscribe()
 
         // Set the theme color tint to the recyclerView, progressbar, and FAB
-        theme
-            .autoDispose(scope())
-            .subscribe { theme ->
-                // Set the color for the drawer icons
-                val states = arrayOf(
+        theme.autoDispose(scope()).subscribe { theme ->
+            // Set the color for the drawer icons
+            val states =
+                arrayOf(
                     intArrayOf(android.R.attr.state_activated),
-                    intArrayOf(-android.R.attr.state_activated)
+                    intArrayOf(-android.R.attr.state_activated),
                 )
 
-                ColorStateList(
-                    states, intArrayOf(
-                        theme.theme,
-                        resolveThemeColor(android.R.attr.textColorSecondary)
-                    )
+            ColorStateList(
+                    states,
+                    intArrayOf(theme.theme, resolveThemeColor(android.R.attr.textColorSecondary)),
                 )
-                    .let { tintList ->
-                        binding.drawer.inboxIcon.imageTintList = tintList
-                        binding.drawer.archivedIcon.imageTintList = tintList
-                    }
-
-                // Miscellaneous views
-                listOf(binding.drawer.plusBadge1, binding.drawer.plusBadge2).forEach { badge ->
-                    badge.setBackgroundTint(theme.theme)
-                    badge.setTextColor(theme.textPrimary)
+                .let { tintList ->
+                    binding.drawer.inboxIcon.imageTintList = tintList
+                    binding.drawer.archivedIcon.imageTintList = tintList
                 }
-                (binding.syncing as? ViewStub)?.findViewById<ProgressBar>(R.id.syncingProgress)
-                    ?.let {
-                        it.progressTintList = ColorStateList.valueOf(theme.theme)
-                        it.indeterminateTintList = ColorStateList.valueOf(theme.theme)
-                    }
-                binding.drawer.plusIcon.setTint(theme.theme)
-                binding.drawer.rateIcon.setTint(theme.theme)
 
-                val primaryTextColor = resolveThemeColor(android.R.attr.textColorPrimary)
-                val secondaryTextColor = resolveThemeColor(android.R.attr.textColorSecondary)
-                binding.searchIcon.setTint(primaryTextColor)
-                binding.clearSearch.setTint(primaryTextColor)
-                binding.toolbarSearch.setTextColor(primaryTextColor)
-                binding.toolbarSearch.setHintTextColor(secondaryTextColor)
-
-                binding.messagesText.setTextColor(primaryTextColor)
-                binding.menuIcon.setTint(primaryTextColor)
-
-                binding.compose.setTint(primaryTextColor)
+            // Miscellaneous views
+            listOf(binding.drawer.plusBadge1, binding.drawer.plusBadge2).forEach { badge ->
+                badge.setBackgroundTint(theme.theme)
+                badge.setTextColor(theme.textPrimary)
             }
+            (binding.syncing as? ViewStub)?.findViewById<ProgressBar>(R.id.syncingProgress)?.let {
+                it.progressTintList = ColorStateList.valueOf(theme.theme)
+                it.indeterminateTintList = ColorStateList.valueOf(theme.theme)
+            }
+            binding.drawer.plusIcon.setTint(theme.theme)
+            binding.drawer.rateIcon.setTint(theme.theme)
+
+            val primaryTextColor = resolveThemeColor(android.R.attr.textColorPrimary)
+            val secondaryTextColor = resolveThemeColor(android.R.attr.textColorSecondary)
+            binding.searchIcon.setTint(primaryTextColor)
+            binding.clearSearch.setTint(primaryTextColor)
+            binding.toolbarSearch.setTextColor(primaryTextColor)
+            binding.toolbarSearch.setHintTextColor(secondaryTextColor)
+
+            binding.messagesText.setTextColor(primaryTextColor)
+            binding.menuIcon.setTint(primaryTextColor)
+
+            binding.compose.setTint(primaryTextColor)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) =
@@ -316,29 +314,33 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             binding.notDefaultSmsView.setVisible(false)
         }
 
-        val addContact = when (state.page) {
-            is Inbox -> state.page.addContact
-            is Archived -> state.page.addContact
-            else -> false
-        }
+        val addContact =
+            when (state.page) {
+                is Inbox -> state.page.addContact
+                is Archived -> state.page.addContact
+                else -> false
+            }
 
-        val markPinned = when (state.page) {
-            is Inbox -> state.page.markPinned
-            is Archived -> state.page.markPinned
-            else -> true
-        }
+        val markPinned =
+            when (state.page) {
+                is Inbox -> state.page.markPinned
+                is Archived -> state.page.markPinned
+                else -> true
+            }
 
-        val markRead = when (state.page) {
-            is Inbox -> state.page.markRead
-            is Archived -> state.page.markRead
-            else -> true
-        }
+        val markRead =
+            when (state.page) {
+                is Inbox -> state.page.markRead
+                is Archived -> state.page.markRead
+                else -> true
+            }
 
-        val selectedConversations = when (state.page) {
-            is Inbox -> state.page.selected
-            is Archived -> state.page.selected
-            else -> 0
-        }
+        val selectedConversations =
+            when (state.page) {
+                is Inbox -> state.page.selected
+                is Archived -> state.page.selected
+                else -> 0
+            }
 
         val hasSelection = selectedConversations > 0
         binding.toolbar.setVisible(hasSelection)
@@ -348,8 +350,8 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         binding.toolbarSearch.setVisible(
             (state.page is Inbox && state.page.selected == 0) ||
-                    (state.page is Archived && state.page.selected == 0) ||
-                    state.page is Searching
+                (state.page is Archived && state.page.selected == 0) ||
+                state.page is Searching
         )
         binding.toolbarTitle.setVisible(true)
         binding.filterGroup.setVisible(state.page is Inbox || state.page is Archived)
@@ -357,18 +359,17 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         binding.toolbar.menu.apply {
             findItem(R.id.select_all)?.isVisible =
                 (conversationsAdapter.itemCount > 1) && selectedConversations != 0
-            findItem(R.id.archive)?.isVisible =
-                state.page is Inbox && selectedConversations != 0
+            findItem(R.id.archive)?.isVisible = state.page is Inbox && selectedConversations != 0
             findItem(R.id.unarchive)?.isVisible =
                 state.page is Archived && selectedConversations != 0
             findItem(R.id.delete)?.isVisible = selectedConversations != 0
             findItem(R.id.add)?.isVisible = addContact && selectedConversations != 0
             findItem(R.id.pin)?.isVisible = markPinned && selectedConversations != 0
             findItem(R.id.unpin)?.isVisible = !markPinned && selectedConversations != 0
-            findItem(R.id.read)?.isVisible = (markRead && selectedConversations != 0) ||
-                    selectedConversations > 1
-            findItem(R.id.unread)?.isVisible = (!markRead && selectedConversations != 0) ||
-                    selectedConversations > 1
+            findItem(R.id.read)?.isVisible =
+                (markRead && selectedConversations != 0) || selectedConversations > 1
+            findItem(R.id.unread)?.isVisible =
+                (!markRead && selectedConversations != 0) || selectedConversations > 1
             findItem(R.id.block)?.isVisible = selectedConversations != 0
             findItem(R.id.rename)?.isVisible = selectedConversations == 1
         }
@@ -376,27 +377,25 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         listOf(binding.drawer.plusBadge1, binding.drawer.plusBadge2).forEach { badge ->
             badge.isVisible = drawerBadgesExperiment.variant && !state.upgraded
         }
-//        plus.isVisible = state.upgraded
+        //        plus.isVisible = state.upgraded
         binding.drawer.plusBanner.isVisible = !state.upgraded
         binding.drawer.rateLayout.setVisible(state.showRating)
 
         binding.compose.setVisible(state.page is Inbox || state.page is Archived)
-        conversationsAdapter.emptyView = binding.empty.takeIf {
-            state.page is Inbox || state.page is Archived
-        }
+        conversationsAdapter.emptyView =
+            binding.empty.takeIf { state.page is Inbox || state.page is Archived }
         searchAdapter.emptyView = binding.empty.takeIf { state.page is Searching }
 
         when (state.page) {
             is Inbox -> {
                 showBackButton(state.page.selected > 0)
-                binding.toolbarTitle.text = when {
-                    state.page.selected > 0 -> getString(
-                        R.string.main_title_selected,
-                        state.page.selected
-                    )
+                binding.toolbarTitle.text =
+                    when {
+                        state.page.selected > 0 ->
+                            getString(R.string.main_title_selected, state.page.selected)
 
-                    else -> getString(R.string.app_name)
-                }
+                        else -> getString(R.string.app_name)
+                    }
                 if (binding.recyclerView.adapter !== conversationsAdapter)
                     binding.recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
@@ -407,8 +406,8 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             is Searching -> {
                 showBackButton(true)
                 binding.toolbarTitle.text = getString(R.string.title_conversations)
-                if (binding.recyclerView.adapter !== searchAdapter) binding.recyclerView.adapter =
-                    searchAdapter
+                if (binding.recyclerView.adapter !== searchAdapter)
+                    binding.recyclerView.adapter = searchAdapter
                 searchAdapter.data = state.page.data ?: listOf()
                 searchAdapter.setQuery(binding.toolbarSearch.text.toString())
                 itemTouchHelper.attachToRecyclerView(null)
@@ -417,14 +416,13 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
             is Archived -> {
                 showBackButton(state.page.selected > 0)
-                binding.toolbarTitle.text = when {
-                    state.page.selected > 0 -> getString(
-                        R.string.main_title_selected,
-                        state.page.selected
-                    )
+                binding.toolbarTitle.text =
+                    when {
+                        state.page.selected > 0 ->
+                            getString(R.string.main_title_selected, state.page.selected)
 
-                    else -> getString(R.string.title_archived)
-                }
+                        else -> getString(R.string.title_archived)
+                    }
                 if (binding.recyclerView.adapter !== conversationsAdapter)
                     binding.recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
@@ -452,7 +450,8 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         when (state.syncing) {
             is SyncRepository.SyncProgress.Idle -> {
                 binding.syncing.isVisible = false
-                binding.snackbar.isVisible = (!state.defaultSms ||
+                binding.snackbar.isVisible =
+                    (!state.defaultSms ||
                         !state.smsPermission ||
                         !state.contactPermission ||
                         !state.notificationPermission)
@@ -463,11 +462,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 findViewById<ProgressBar>(R.id.syncingProgress)?.let { progress ->
                     progress.max = state.syncing.max
                     ObjectAnimator.ofInt(
-                        progress,
-                        "progress",
-                        progress.progress,
-                        state.syncing.progress
-                    ).start()
+                            progress,
+                            "progress",
+                            progress.progress,
+                            state.syncing.progress,
+                        )
+                        .start()
                     progress.isIndeterminate = state.syncing.indeterminate
                 }
                 binding.snackbar.isVisible = false
@@ -477,74 +477,95 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         when {
             !state.defaultSms -> {
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarTitle)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_default_sms_title)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_default_sms_title
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarMessage)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_default_sms_message)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_default_sms_message
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarButton)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_default_sms_change)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_default_sms_change
+                    )
                 }
             }
 
             !state.smsPermission -> {
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarTitle)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_required)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_required
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarMessage)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_sms)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_sms
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarButton)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_allow)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_allow
+                    )
                 }
             }
 
             !state.contactPermission -> {
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarTitle)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_required)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_required
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarMessage)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_contacts)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_contacts
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarButton)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_allow)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_allow
+                    )
                 }
             }
 
             !state.notificationPermission -> {
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarTitle)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_required)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_required
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarMessage)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_notifications)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_notifications
+                    )
                 }
                 (binding.snackbar as? ViewStub)?.findViewById<View>(R.id.snackbarButton)?.let {
-                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(R.string.main_permission_allow)
+                    (it as? org.prauga.messages.common.widget.QkTextView)?.setText(
+                        R.string.main_permission_allow
+                    )
                 }
             }
         }
     }
 
-    override fun onResume() =
-        super.onResume().also { activityResumedIntent.onNext(true) }
+    override fun onResume() = super.onResume().also { activityResumedIntent.onNext(true) }
 
-    override fun onPause() =
-        super.onPause().also { activityResumedIntent.onNext(false) }
+    override fun onPause() = super.onPause().also { activityResumedIntent.onNext(false) }
 
-    override fun onDestroy() =
-        super.onDestroy().also { disposables.dispose() }
+    override fun onDestroy() = super.onDestroy().also { disposables.dispose() }
 
     override fun showBackButton(show: Boolean) =
         toggle.let {
             it.onDrawerSlide(binding.drawer.root, if (show) 1f else 0f)
-            it.drawerArrowDrawable.color = when (show) {
-                true -> resolveThemeColor(android.R.attr.textColorSecondary)
-                false -> resolveThemeColor(android.R.attr.textColorPrimary)
-            }
+            it.drawerArrowDrawable.color =
+                when (show) {
+                    true -> resolveThemeColor(android.R.attr.textColorSecondary)
+                    false -> resolveThemeColor(android.R.attr.textColorPrimary)
+                }
         }
 
-    override fun requestDefaultSms() =
-        navigator.showDefaultSmsDialog(this)
+    override fun requestDefaultSms() = navigator.showDefaultSmsDialog(this)
 
     override fun restartActivity() {
         finish()
@@ -552,11 +573,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     }
 
     override fun requestPermissions() {
-        val permissions = mutableListOf(
-            Manifest.permission.READ_SMS,
-            Manifest.permission.SEND_SMS,
-            Manifest.permission.READ_CONTACTS
-        )
+        val permissions =
+            mutableListOf(
+                Manifest.permission.READ_SMS,
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.READ_CONTACTS,
+            )
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
             permissions += Manifest.permission.POST_NOTIFICATIONS
@@ -581,39 +603,32 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     }
 
     override fun showDeleteDialog(conversations: List<Long>) {
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.dialog_delete_title)
-            .setMessage(
-                resources.getQuantityString(
-                    R.plurals.dialog_delete_message,
-                    conversations.size,
-                    conversations.size
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.dialog_delete_title)
+                .setMessage(
+                    resources.getQuantityString(
+                        R.plurals.dialog_delete_message,
+                        conversations.size,
+                        conversations.size,
+                    )
                 )
-            )
-            .setPositiveButton(R.string.button_delete) { _, _ ->
-                confirmDeleteIntent.onNext(
-                    conversations
-                )
-            }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+                .setPositiveButton(R.string.button_delete) { _, _ ->
+                    confirmDeleteIntent.onNext(conversations)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun showRenameDialog(conversationName: String) =
-        TextInputDialog(
-            this,
-            getString(R.string.info_name),
-            renameConversationIntent::onNext
-        )
+        TextInputDialog(this, getString(R.string.info_name), renameConversationIntent::onNext)
             .setText(conversationName)
             .show()
 
@@ -622,27 +637,28 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
     override fun showArchivedSnackbar(countConversationsArchived: Int, isArchiving: Boolean) =
         Snackbar.make(
-            binding.drawerLayout,
-            if (isArchiving) {
-                resources.getQuantityString(
-                    R.plurals.toast_archived,
-                    countConversationsArchived,
-                    countConversationsArchived
-                )
-            } else {
-                resources.getQuantityString(
-                    R.plurals.toast_unarchived,
-                    countConversationsArchived,
-                    countConversationsArchived
-                )
-            },
-            if (countConversationsArchived < 10) Snackbar.LENGTH_LONG
-            else Snackbar.LENGTH_INDEFINITE
-        ).let {
-            it.setAction(R.string.button_undo) { undoArchiveIntent.onNext(Unit) }
-            it.setActionTextColor(colors.theme().theme)
-            it.show()
-        }
+                binding.drawerLayout,
+                if (isArchiving) {
+                    resources.getQuantityString(
+                        R.plurals.toast_archived,
+                        countConversationsArchived,
+                        countConversationsArchived,
+                    )
+                } else {
+                    resources.getQuantityString(
+                        R.plurals.toast_unarchived,
+                        countConversationsArchived,
+                        countConversationsArchived,
+                    )
+                },
+                if (countConversationsArchived < 10) Snackbar.LENGTH_LONG
+                else Snackbar.LENGTH_INDEFINITE,
+            )
+            .let {
+                it.setAction(R.string.button_undo) { undoArchiveIntent.onNext(Unit) }
+                it.setActionTextColor(colors.theme().theme)
+                it.show()
+            }
 
     override fun onCreateOptionsMenu(menu: Menu?) =
         menu?.let {
@@ -658,10 +674,8 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override fun drawerToggled(opened: Boolean) {
         if (opened) {
             dismissKeyboard()
-            if (!binding.drawer.inbox.isInTouchMode)
-                binding.drawer.inbox.requestFocus()
-        } else
-            binding.toolbarSearch.requestFocus()
+            if (!binding.drawer.inbox.isInTouchMode) binding.drawer.inbox.requestFocus()
+        } else binding.toolbarSearch.requestFocus()
     }
 
     private fun showDrawerMenu() {
@@ -707,10 +721,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     true
                 }
 
-//                R.id.menu_invite -> {
-//                    backPressedSubject.onNext(NavItem.INVITE)
-//                    true
-//                }
+                //                R.id.menu_invite -> {
+                //                    backPressedSubject.onNext(NavItem.INVITE)
+                //                    true
+                //                }
 
                 else -> false
             }

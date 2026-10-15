@@ -27,7 +27,8 @@ import dagger.android.AndroidInjection
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.databinding.ContainerActivityBinding
 
-class SettingsActivity : QkThemedActivity<ContainerActivityBinding>(ContainerActivityBinding::inflate) {
+class SettingsActivity :
+    QkThemedActivity<ContainerActivityBinding>(ContainerActivityBinding::inflate) {
 
     private lateinit var router: Router
 

@@ -23,8 +23,8 @@ import android.content.Intent
 import android.net.Uri
 import com.klinker.android.send_message.MmsReceivedReceiver
 import dagger.android.AndroidInjection
-import org.prauga.messages.interactor.ReceiveMms
 import javax.inject.Inject
+import org.prauga.messages.interactor.ReceiveMms
 
 class MmsReceivedReceiver : MmsReceivedReceiver() {
 
@@ -41,5 +41,4 @@ class MmsReceivedReceiver : MmsReceivedReceiver() {
             receiveMms.execute(uri) { pendingResult.finish() }
         }
     }
-
 }

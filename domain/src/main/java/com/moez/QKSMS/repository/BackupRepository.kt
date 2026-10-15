@@ -20,17 +20,22 @@ package org.prauga.messages.repository
 
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import org.prauga.messages.model.BackupFile
 import io.reactivex.Observable
+import org.prauga.messages.model.BackupFile
 
 interface BackupRepository {
 
     sealed class Progress(val running: Boolean = false, val indeterminate: Boolean = true) {
         class Idle : Progress()
+
         class Parsing : Progress(true)
+
         class Running(val max: Int, val count: Int) : Progress(true, false)
+
         class Saving : Progress(true)
+
         class Syncing : Progress(true)
+
         class Finished : Progress(true, false)
     }
 
@@ -53,5 +58,4 @@ interface BackupRepository {
     fun getRestoreProgress(): Observable<Progress>
 
     fun stopRestore()
-
 }

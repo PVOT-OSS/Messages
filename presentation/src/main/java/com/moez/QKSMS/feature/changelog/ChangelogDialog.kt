@@ -20,13 +20,13 @@ package org.prauga.messages.feature.changelog
 
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.BuildConfig
 import org.prauga.messages.R
 import org.prauga.messages.databinding.ChangelogDialogBinding
 import org.prauga.messages.feature.main.MainActivity
 import org.prauga.messages.manager.ChangelogManager
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 
 class ChangelogDialog(activity: MainActivity) {
 
@@ -38,14 +38,19 @@ class ChangelogDialog(activity: MainActivity) {
     init {
         val layout = ChangelogDialogBinding.inflate(LayoutInflater.from(activity))
 
-        dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+        dialog =
+            AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
                 .setCancelable(true)
                 .setView(layout.root)
                 .create()
 
-        layout.version.text = activity.getString(R.string.changelog_version, BuildConfig.VERSION_NAME)
+        layout.version.text =
+            activity.getString(R.string.changelog_version, BuildConfig.VERSION_NAME)
         layout.changelog.adapter = adapter
-        layout.more.setOnClickListener { dialog.dismiss(); moreClicks.onNext(Unit) }
+        layout.more.setOnClickListener {
+            dialog.dismiss()
+            moreClicks.onNext(Unit)
+        }
         layout.dismiss.setOnClickListener { dialog.dismiss() }
     }
 
@@ -53,5 +58,4 @@ class ChangelogDialog(activity: MainActivity) {
         adapter.setChangelog(changelog)
         dialog.show()
     }
-
 }

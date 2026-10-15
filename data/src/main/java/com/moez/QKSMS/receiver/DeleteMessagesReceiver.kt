@@ -22,8 +22,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
-import org.prauga.messages.interactor.DeleteMessages
 import javax.inject.Inject
+import org.prauga.messages.interactor.DeleteMessages
 
 class DeleteMessagesReceiver : BroadcastReceiver() {
 
@@ -35,7 +35,8 @@ class DeleteMessagesReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         val threadId = intent.getLongExtra("threadId", 0)
         val messageIds = intent.getLongArrayExtra("messageIds") ?: longArrayOf()
-        deleteMessages.execute(DeleteMessages.Params(messageIds.toList(), threadId)) { pendingResult.finish() }
+        deleteMessages.execute(DeleteMessages.Params(messageIds.toList(), threadId)) {
+            pendingResult.finish()
+        }
     }
-
 }

@@ -21,19 +21,17 @@ package org.prauga.messages.mapper
 import android.content.Context
 import android.database.Cursor
 import android.provider.ContactsContract
-import org.prauga.messages.model.ContactGroup
 import javax.inject.Inject
+import org.prauga.messages.model.ContactGroup
 
-class CursorToContactGroupImpl @Inject constructor(
-    private val context: Context
-) : CursorToContactGroup {
+class CursorToContactGroupImpl @Inject constructor(private val context: Context) :
+    CursorToContactGroup {
 
     companion object {
         private val URI = ContactsContract.Groups.CONTENT_URI
-        private val PROJECTION = arrayOf(
-                ContactsContract.Groups._ID,
-                ContactsContract.Groups.TITLE)
-        private const val SELECTION = "${ContactsContract.Groups.AUTO_ADD}=0 " +
+        private val PROJECTION = arrayOf(ContactsContract.Groups._ID, ContactsContract.Groups.TITLE)
+        private const val SELECTION =
+            "${ContactsContract.Groups.AUTO_ADD}=0 " +
                 "AND ${ContactsContract.Groups.DELETED}=0 " +
                 "AND ${ContactsContract.Groups.FAVORITES}=0 " +
                 "AND ${ContactsContract.Groups.TITLE} IS NOT NULL"
@@ -49,5 +47,4 @@ class CursorToContactGroupImpl @Inject constructor(
     override fun getContactGroupsCursor(): Cursor? {
         return context.contentResolver.query(URI, PROJECTION, SELECTION, null, null)
     }
-
 }

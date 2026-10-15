@@ -163,11 +163,12 @@ class MmsPartTest {
     @Test
     fun givenPartId_whenBuildingUri_thenReturnsCorrectUri() {
         val partId = 100L
-        val uri = android.net.Uri.Builder()
-            .scheme(android.content.ContentResolver.SCHEME_CONTENT)
-            .authority("mms")
-            .encodedPath("part/$partId")
-            .build()
+        val uri =
+            android.net.Uri.Builder()
+                .scheme(android.content.ContentResolver.SCHEME_CONTENT)
+                .authority("mms")
+                .encodedPath("part/$partId")
+                .build()
 
         assertNotNull(uri)
         assertEquals("content", uri.scheme)
@@ -178,11 +179,12 @@ class MmsPartTest {
     @Test
     fun givenZeroPartId_whenBuildingUri_thenReturnsUriWithZero() {
         val partId = 0L
-        val uri = android.net.Uri.Builder()
-            .scheme(android.content.ContentResolver.SCHEME_CONTENT)
-            .authority("mms")
-            .encodedPath("part/$partId")
-            .build()
+        val uri =
+            android.net.Uri.Builder()
+                .scheme(android.content.ContentResolver.SCHEME_CONTENT)
+                .authority("mms")
+                .encodedPath("part/$partId")
+                .build()
 
         assertTrue(uri.path?.contains("part/0") == true)
     }
@@ -240,7 +242,7 @@ class MmsPartTest {
         type: String = "",
         seq: Int = -1,
         name: String? = null,
-        text: String? = null
+        text: String? = null,
     ): MmsPart {
         return MmsPart().apply {
             this.id = id

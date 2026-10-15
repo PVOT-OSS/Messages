@@ -32,12 +32,12 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.feature.blocking.BlockingDialog
 import org.prauga.messages.injection.appComponent
-import javax.inject.Inject
 
 class BlockedMessagesController :
     QkController<BlockedMessagesView, BlockedMessagesState, BlockedMessagesPresenter>(),
@@ -50,16 +50,11 @@ class BlockedMessagesController :
     override val confirmDeleteIntent: Subject<List<Long>> = PublishSubject.create()
     override val backClicked: Subject<Unit> = PublishSubject.create()
 
-    @Inject
-    lateinit var blockedMessagesAdapter: BlockedMessagesAdapter
-    @Inject
-    lateinit var blockingDialog: BlockingDialog
-    @Inject
-    lateinit var colors: Colors
-    @Inject
-    lateinit var context: Context
-    @Inject
-    override lateinit var presenter: BlockedMessagesPresenter
+    @Inject lateinit var blockedMessagesAdapter: BlockedMessagesAdapter
+    @Inject lateinit var blockingDialog: BlockingDialog
+    @Inject lateinit var colors: Colors
+    @Inject lateinit var context: Context
+    @Inject override lateinit var presenter: BlockedMessagesPresenter
 
     private lateinit var conversations: RecyclerView
     private lateinit var empty: TextView
@@ -128,29 +123,27 @@ class BlockedMessagesController :
 
     override fun showDeleteDialog(conversations: List<Long>) {
         val count = conversations.size
-        val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-            .setTitle(R.string.dialog_delete_title)
-            .setMessage(resources?.getQuantityString(R.plurals.dialog_delete_message, count, count))
-            .setPositiveButton(R.string.button_delete) { _, _ ->
-                confirmDeleteIntent.onNext(
-                    conversations
+        val dialog =
+            AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+                .setTitle(R.string.dialog_delete_title)
+                .setMessage(
+                    resources?.getQuantityString(R.plurals.dialog_delete_message, count, count)
                 )
-            }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+                .setPositiveButton(R.string.button_delete) { _, _ ->
+                    confirmDeleteIntent.onNext(conversations)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        themedActivity?.theme?.take(1)
-            ?.autoDispose(scope())
-            ?.subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        themedActivity?.theme?.take(1)?.autoDispose(scope())?.subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun goBack() {
         router.popCurrentController()
     }
-
 }

@@ -34,7 +34,7 @@ class GlideAppModule : AppGlideModule() {
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        // registry.prepend(GifDrawable::class.java, ReEncodingGifResourceEncoder(context, glide.bitmapPool))
+        // registry.prepend(GifDrawable::class.java, ReEncodingGifResourceEncoder(context,
+        // glide.bitmapPool))
     }
-
 }

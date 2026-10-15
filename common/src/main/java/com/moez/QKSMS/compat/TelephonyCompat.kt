@@ -60,5 +60,4 @@ class TelephonyCompat {
             return match.matches()
         }
     }
-
 }

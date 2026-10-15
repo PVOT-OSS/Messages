@@ -4,12 +4,11 @@
 package org.prauga.messages.extensions
 
 import com.google.android.mms.ContentType
-import org.prauga.messages.model.MmsPart
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.prauga.messages.model.MmsPart
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -315,8 +314,6 @@ class MmsPartExtensionsTest {
 
     // Helper function
     private fun createMmsPart(type: String): MmsPart {
-        return MmsPart().apply {
-            this.type = type
-        }
+        return MmsPart().apply { this.type = type }
     }
 }

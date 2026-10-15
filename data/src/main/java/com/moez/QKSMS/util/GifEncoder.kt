@@ -35,13 +35,14 @@ import java.io.OutputStream
 import java.nio.ByteBuffer
 
 /**
- * Allows converting an animated [GifDrawable] to an [OutputStream]
- * Based on Glide's ReEncodingGifResourceEncoder
+ * Allows converting an animated [GifDrawable] to an [OutputStream] Based on Glide's
+ * ReEncodingGifResourceEncoder
  */
-class GifEncoder internal constructor(
+class GifEncoder
+internal constructor(
     private val context: Context,
     private val bitmapPool: BitmapPool,
-    private val factory: Factory = Factory()
+    private val factory: Factory = Factory(),
 ) {
 
     private val provider = GifBitmapProvider(bitmapPool)
@@ -89,12 +90,17 @@ class GifEncoder internal constructor(
     private fun getTransformedFrame(
         currentFrame: Bitmap?,
         transformation: Transformation<Bitmap>,
-        drawable: GifDrawable
+        drawable: GifDrawable,
     ): Resource<Bitmap> {
         // TODO: what if current frame is null?
         val bitmapResource = factory.buildFrameResource(currentFrame!!, bitmapPool)
-        val transformedResource = transformation.transform(
-                context, bitmapResource, drawable.intrinsicWidth, drawable.intrinsicHeight)
+        val transformedResource =
+            transformation.transform(
+                context,
+                bitmapResource,
+                drawable.intrinsicWidth,
+                drawable.intrinsicHeight,
+            )
         if (bitmapResource != transformedResource) {
             bitmapResource.recycle()
         }
@@ -103,12 +109,14 @@ class GifEncoder internal constructor(
 
     @VisibleForTesting
     internal class Factory {
-        fun buildDecoder(bitmapProvider: GifDecoder.BitmapProvider) = StandardGifDecoder(bitmapProvider)
+        fun buildDecoder(bitmapProvider: GifDecoder.BitmapProvider) =
+            StandardGifDecoder(bitmapProvider)
 
         fun buildParser() = GifHeaderParser()
 
         fun buildEncoder() = AnimatedGifEncoder()
 
-        fun buildFrameResource(bitmap: Bitmap, bitmapPool: BitmapPool) = BitmapResource(bitmap, bitmapPool)
+        fun buildFrameResource(bitmap: Bitmap, bitmapPool: BitmapPool) =
+            BitmapResource(bitmap, bitmapPool)
     }
 }

@@ -24,5 +24,4 @@ import org.prauga.messages.model.Conversation
 interface CursorToConversation : Mapper<Cursor, Conversation> {
 
     fun getConversationsCursor(): Cursor?
-
 }

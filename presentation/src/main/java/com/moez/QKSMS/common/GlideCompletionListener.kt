@@ -28,7 +28,7 @@ class GlideCompletionListener<T>(private val listener: () -> Unit) : RequestList
         e: GlideException?,
         model: Any?,
         target: Target<T>,
-        isFirstResource: Boolean
+        isFirstResource: Boolean,
     ): Boolean {
         listener()
         return false
@@ -39,10 +39,9 @@ class GlideCompletionListener<T>(private val listener: () -> Unit) : RequestList
         model: Any,
         target: Target<T>?,
         dataSource: DataSource,
-        isFirstResource: Boolean
+        isFirstResource: Boolean,
     ): Boolean {
         listener()
         return false
     }
-
 }

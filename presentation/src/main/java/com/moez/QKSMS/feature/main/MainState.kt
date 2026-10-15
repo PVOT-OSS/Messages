@@ -21,7 +21,6 @@ package org.prauga.messages.feature.main
 
 import io.realm.RealmResults
 import org.prauga.messages.model.Conversation
-import org.prauga.messages.model.SearchResult
 import org.prauga.messages.model.SearchItem
 import org.prauga.messages.repository.SyncRepository
 
@@ -37,7 +36,7 @@ data class MainState(
     val contactPermission: Boolean = true,
     val notificationPermission: Boolean = true,
     val currentFilter: ConversationFilterType = ConversationFilterType.ALL,
-    val activeChip: MessageCategory = MessageCategory.ALL
+    val activeChip: MessageCategory = MessageCategory.ALL,
 )
 
 sealed class MainPage
@@ -47,21 +46,26 @@ data class Inbox(
     val markPinned: Boolean = true,
     val markRead: Boolean = false,
     val data: RealmResults<Conversation>? = null,
-    val selected: Int = 0
+    val selected: Int = 0,
 ) : MainPage()
 
-data class Searching(
-    val loading: Boolean = false,
-    val data: List<SearchItem>? = null
-) : MainPage()
+data class Searching(val loading: Boolean = false, val data: List<SearchItem>? = null) : MainPage()
 
 data class Archived(
     val addContact: Boolean = false,
     val markPinned: Boolean = true,
     val markRead: Boolean = false,
     val data: RealmResults<Conversation>? = null,
-    val selected: Int = 0
+    val selected: Int = 0,
 ) : MainPage()
 
-enum class ConversationFilterType { ALL, UNREAD }
-enum class MessageCategory { ALL, UNREAD, ARCHIVED }
+enum class ConversationFilterType {
+    ALL,
+    UNREAD,
+}
+
+enum class MessageCategory {
+    ALL,
+    UNREAD,
+    ARCHIVED,
+}

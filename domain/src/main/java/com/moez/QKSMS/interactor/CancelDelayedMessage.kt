@@ -18,14 +18,16 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.ConversationRepository
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
 
-class CancelDelayedMessage @Inject constructor(
+class CancelDelayedMessage
+@Inject
+constructor(
     private val conversationRepo: ConversationRepository,
-    private val messageRepo: MessageRepository
+    private val messageRepo: MessageRepository,
 ) : Interactor<CancelDelayedMessage.Params>() {
 
     data class Params(val messageId: Long, val threadId: Long)
@@ -34,7 +36,8 @@ class CancelDelayedMessage @Inject constructor(
         return Flowable.just(Unit)
             .doOnNext { messageRepo.cancelDelayedSms(params.messageId) }
             .doOnNext { messageRepo.deleteMessages(listOf(params.messageId)) }
-            .doOnNext { conversationRepo.updateConversations(params.threadId) } // Update the conversation
+            .doOnNext {
+                conversationRepo.updateConversations(params.threadId)
+            } // Update the conversation
     }
-
 }

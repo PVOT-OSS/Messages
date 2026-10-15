@@ -32,11 +32,7 @@ class MMSPartTest {
     @Test
     fun givenAllParameters_whenCreated_thenHasAllValues() {
         val testData = "Hello World".toByteArray()
-        val part = MMSPart(
-            name = "message.txt",
-            mimeType = ContentType.TEXT_PLAIN,
-            data = testData
-        )
+        val part = MMSPart(name = "message.txt", mimeType = ContentType.TEXT_PLAIN, data = testData)
 
         assertEquals("message.txt", part.name)
         assertEquals(ContentType.TEXT_PLAIN, part.mimeType)
@@ -46,11 +42,7 @@ class MMSPartTest {
     @Test
     fun givenImagePart_whenCreated_thenHasCorrectMimeType() {
         val imageData = ByteArray(100) { it.toByte() }
-        val part = MMSPart(
-            name = "photo.jpg",
-            mimeType = ContentType.IMAGE_JPEG,
-            data = imageData
-        )
+        val part = MMSPart(name = "photo.jpg", mimeType = ContentType.IMAGE_JPEG, data = imageData)
 
         assertEquals("photo.jpg", part.name)
         assertEquals(ContentType.IMAGE_JPEG, part.mimeType)
@@ -60,11 +52,7 @@ class MMSPartTest {
     @Test
     fun givenAudioPart_whenCreated_thenHasCorrectMimeType() {
         val audioData = ByteArray(500) { it.toByte() }
-        val part = MMSPart(
-            name = "voice.mp3",
-            mimeType = ContentType.AUDIO_MP3,
-            data = audioData
-        )
+        val part = MMSPart(name = "voice.mp3", mimeType = ContentType.AUDIO_MP3, data = audioData)
 
         assertEquals("voice.mp3", part.name)
         assertEquals(ContentType.AUDIO_MP3, part.mimeType)
@@ -74,11 +62,7 @@ class MMSPartTest {
     @Test
     fun givenVideoPart_whenCreated_thenHasCorrectMimeType() {
         val videoData = ByteArray(1000) { it.toByte() }
-        val part = MMSPart(
-            name = "clip.mp4",
-            mimeType = ContentType.VIDEO_MP4,
-            data = videoData
-        )
+        val part = MMSPart(name = "clip.mp4", mimeType = ContentType.VIDEO_MP4, data = videoData)
 
         assertEquals("clip.mp4", part.name)
         assertEquals(ContentType.VIDEO_MP4, part.mimeType)
@@ -87,19 +71,19 @@ class MMSPartTest {
 
     @Test
     fun givenVCardPart_whenCreated_thenHasCorrectMimeType() {
-        val vCardData = """
+        val vCardData =
+            """
             BEGIN:VCARD
             VERSION:3.0
             FN:John Doe
             TEL:+1234567890
             END:VCARD
-        """.trimIndent().toByteArray()
+        """
+                .trimIndent()
+                .toByteArray()
 
-        val part = MMSPart(
-            name = "contact.vcf",
-            mimeType = ContentType.TEXT_VCARD,
-            data = vCardData
-        )
+        val part =
+            MMSPart(name = "contact.vcf", mimeType = ContentType.TEXT_VCARD, data = vCardData)
 
         assertEquals("contact.vcf", part.name)
         assertEquals(ContentType.TEXT_VCARD, part.mimeType)
@@ -107,7 +91,8 @@ class MMSPartTest {
 
     @Test
     fun givenSmilPart_whenCreated_thenHasCorrectMimeType() {
-        val smilData = """
+        val smilData =
+            """
             <smil>
                 <body>
                     <par dur="5000ms">
@@ -115,13 +100,11 @@ class MMSPartTest {
                     </par>
                 </body>
             </smil>
-        """.trimIndent().toByteArray()
+        """
+                .trimIndent()
+                .toByteArray()
 
-        val part = MMSPart(
-            name = "smil.xml",
-            mimeType = ContentType.APP_SMIL,
-            data = smilData
-        )
+        val part = MMSPart(name = "smil.xml", mimeType = ContentType.APP_SMIL, data = smilData)
 
         assertEquals("smil.xml", part.name)
         assertEquals(ContentType.APP_SMIL, part.mimeType)
@@ -174,55 +157,44 @@ class MMSPartTest {
     fun givenLargeData_whenCreated_thenHandlesCorrectly() {
         val largeData = ByteArray(1024 * 1024) { it.toByte() } // 1MB
 
-        val part = MMSPart(
-            name = "large_file.bin",
-            mimeType = "application/octet-stream",
-            data = largeData
-        )
+        val part =
+            MMSPart(
+                name = "large_file.bin",
+                mimeType = "application/octet-stream",
+                data = largeData,
+            )
 
         assertEquals(1024 * 1024, part.data?.size)
     }
 
     @Test
     fun givenGifImage_whenCreated_thenHasCorrectMimeType() {
-        val part = MMSPart(
-            name = "animation.gif",
-            mimeType = ContentType.IMAGE_GIF,
-            data = ByteArray(50)
-        )
+        val part =
+            MMSPart(name = "animation.gif", mimeType = ContentType.IMAGE_GIF, data = ByteArray(50))
 
         assertEquals(ContentType.IMAGE_GIF, part.mimeType)
     }
 
     @Test
     fun givenPngImage_whenCreated_thenHasCorrectMimeType() {
-        val part = MMSPart(
-            name = "screenshot.png",
-            mimeType = ContentType.IMAGE_PNG,
-            data = ByteArray(75)
-        )
+        val part =
+            MMSPart(name = "screenshot.png", mimeType = ContentType.IMAGE_PNG, data = ByteArray(75))
 
         assertEquals(ContentType.IMAGE_PNG, part.mimeType)
     }
 
     @Test
     fun givenAmrAudio_whenCreated_thenHasCorrectMimeType() {
-        val part = MMSPart(
-            name = "recording.amr",
-            mimeType = ContentType.AUDIO_AMR,
-            data = ByteArray(200)
-        )
+        val part =
+            MMSPart(name = "recording.amr", mimeType = ContentType.AUDIO_AMR, data = ByteArray(200))
 
         assertEquals(ContentType.AUDIO_AMR, part.mimeType)
     }
 
     @Test
     fun given3gppVideo_whenCreated_thenHasCorrectMimeType() {
-        val part = MMSPart(
-            name = "video.3gp",
-            mimeType = ContentType.VIDEO_3GPP,
-            data = ByteArray(300)
-        )
+        val part =
+            MMSPart(name = "video.3gp", mimeType = ContentType.VIDEO_3GPP, data = ByteArray(300))
 
         assertEquals(ContentType.VIDEO_3GPP, part.mimeType)
     }

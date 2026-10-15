@@ -24,13 +24,12 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 import org.prauga.messages.app.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkBindingViewHolder
-import org.prauga.messages.common.util.extensions.dpToPx
 import org.prauga.messages.databinding.ContactChipBinding
 import org.prauga.messages.model.Recipient
-import javax.inject.Inject
 
 class ChipsAdapter @Inject constructor() :
     QkAdapter<Recipient, QkBindingViewHolder<ContactChipBinding>>() {
@@ -40,7 +39,7 @@ class ChipsAdapter @Inject constructor() :
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): QkBindingViewHolder<ContactChipBinding> {
         val binding = ContactChipBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
@@ -68,13 +67,15 @@ class ChipsAdapter @Inject constructor() :
 
         val rootView = view?.rootView as ViewGroup
 
-        val layoutParams = RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
+        val layoutParams =
+            RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            )
 
         layoutParams.topMargin = context.resources.getDimensionPixelSize(R.dimen.margin_chip_top)
-        layoutParams.marginStart = context.resources.getDimensionPixelSize(R.dimen.margin_chip_start)
+        layoutParams.marginStart =
+            context.resources.getDimensionPixelSize(R.dimen.margin_chip_start)
 
         rootView.addView(detailedChipView, layoutParams)
         detailedChipView.show()

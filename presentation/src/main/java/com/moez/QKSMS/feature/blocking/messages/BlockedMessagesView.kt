@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.blocking.messages
 
-import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
+import org.prauga.messages.common.base.QkViewContract
 
 interface BlockedMessagesView : QkViewContract<BlockedMessagesState> {
 
@@ -31,8 +31,10 @@ interface BlockedMessagesView : QkViewContract<BlockedMessagesState> {
     val backClicked: Observable<*>
 
     fun clearSelection()
-    fun showBlockingDialog(conversations: List<Long>, block: Boolean)
-    fun showDeleteDialog(conversations: List<Long>)
-    fun goBack()
 
+    fun showBlockingDialog(conversations: List<Long>, block: Boolean)
+
+    fun showDeleteDialog(conversations: List<Long>)
+
+    fun goBack()
 }

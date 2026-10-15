@@ -3,31 +3,27 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.manager.NotificationManager
-import org.prauga.messages.repository.ConversationRepository
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.Flowable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.manager.NotificationManager
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
 
 class DeleteMessagesTest {
 
-    @Mock
-    private lateinit var conversationRepo: ConversationRepository
+    @Mock private lateinit var conversationRepo: ConversationRepository
 
-    @Mock
-    private lateinit var messageRepo: MessageRepository
+    @Mock private lateinit var messageRepo: MessageRepository
 
-    @Mock
-    private lateinit var notificationManager: NotificationManager
+    @Mock private lateinit var notificationManager: NotificationManager
 
-    @Mock
-    private lateinit var updateBadge: UpdateBadge
+    @Mock private lateinit var updateBadge: UpdateBadge
 
     private lateinit var deleteMessages: DeleteMessages
 
@@ -35,7 +31,8 @@ class DeleteMessagesTest {
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         `when`(updateBadge.buildObservable(Unit)).thenReturn(Flowable.just(Unit))
-        deleteMessages = DeleteMessages(conversationRepo, messageRepo, notificationManager, updateBadge)
+        deleteMessages =
+            DeleteMessages(conversationRepo, messageRepo, notificationManager, updateBadge)
     }
 
     @Test

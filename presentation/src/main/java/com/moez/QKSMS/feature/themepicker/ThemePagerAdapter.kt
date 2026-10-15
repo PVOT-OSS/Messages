@@ -22,8 +22,8 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
-import org.prauga.messages.R
 import javax.inject.Inject
+import org.prauga.messages.R
 
 class ThemePagerAdapter @Inject constructor(private val context: Context) : PagerAdapter() {
 
@@ -45,11 +45,9 @@ class ThemePagerAdapter @Inject constructor(private val context: Context) : Page
         return view == `object`
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-    }
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {}
 
     override fun getCount(): Int {
         return 2
     }
-
 }

@@ -36,6 +36,7 @@ import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.QkActivityResultContracts
@@ -48,12 +49,10 @@ import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.BackupRepository
-import javax.inject.Inject
 
 class BackupController : QkController<BackupView, BackupState, BackupPresenter>(), BackupView {
 
-    @Inject
-    override lateinit var presenter: BackupPresenter
+    @Inject override lateinit var presenter: BackupPresenter
 
     private lateinit var linearLayout: LinearLayout
     private lateinit var location: PreferenceView
@@ -121,7 +120,8 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
     }
 
     private lateinit var openDirectory: ActivityResultLauncher<Uri?>
-    private lateinit var openDocument: ActivityResultLauncher<QkActivityResultContracts.OpenDocumentParams>
+    private lateinit var openDocument:
+        ActivityResultLauncher<QkActivityResultContracts.OpenDocumentParams>
 
     init {
         appComponent.inject(this)
@@ -130,13 +130,16 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
 
     override fun onContextAvailable(context: Context) {
         // Init activity result contracts
-        openDirectory = themedActivity!!
-            .registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        openDirectory =
+            themedActivity!!.registerForActivityResult(
+                ActivityResultContracts.OpenDocumentTree()
+            ) { uri ->
                 uri?.let(documentTreeSelectedSubject::onNext)
             }
 
-        openDocument = themedActivity!!
-            .registerForActivityResult(QkActivityResultContracts.OpenDocument()) { uri ->
+        openDocument =
+            themedActivity!!.registerForActivityResult(QkActivityResultContracts.OpenDocument()) {
+                uri ->
                 uri?.let(documentSelectedSubject::onNext)
             }
     }
@@ -277,9 +280,8 @@ class BackupController : QkController<BackupView, BackupState, BackupPresenter>(
         openDocument.launch(
             QkActivityResultContracts.OpenDocumentParams(
                 mimeTypes = listOf("application/json", "application/octet-stream"),
-                initialUri = initialUri
+                initialUri = initialUri,
             )
         )
     }
-
 }

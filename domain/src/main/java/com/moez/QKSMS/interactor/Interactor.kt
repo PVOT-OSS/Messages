@@ -33,7 +33,8 @@ abstract class Interactor<in Params> : Disposable {
     abstract fun buildObservable(params: Params): Flowable<*>
 
     fun execute(params: Params, onComplete: () -> Unit = {}) {
-        disposables += buildObservable(params)
+        disposables +=
+            buildObservable(params)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(onComplete)
@@ -47,5 +48,4 @@ abstract class Interactor<in Params> : Disposable {
     override fun isDisposed(): Boolean {
         return disposables.isDisposed
     }
-
 }

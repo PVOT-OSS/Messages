@@ -3,18 +3,17 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.repository.MessageRepository
 
 class MarkAllSeenTest {
 
-    @Mock
-    private lateinit var messageRepo: MessageRepository
+    @Mock private lateinit var messageRepo: MessageRepository
 
     private lateinit var markAllSeen: MarkAllSeen
 

@@ -30,6 +30,7 @@ import com.uber.autodispose.android.ViewScopeProvider
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.forEach
 import org.prauga.messages.common.util.extensions.resolveThemeColor
@@ -37,15 +38,12 @@ import org.prauga.messages.databinding.TabViewBinding
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.repository.ConversationRepository
-import javax.inject.Inject
 
 class PagerTitleView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     LinearLayout(context, attrs) {
 
-    @Inject
-    lateinit var colors: Colors
-    @Inject
-    lateinit var conversationRepo: ConversationRepository
+    @Inject lateinit var colors: Colors
+    @Inject lateinit var conversationRepo: ConversationRepository
 
     private val recipientId: Subject<Long> = BehaviorSubject.create()
 
@@ -76,26 +74,27 @@ class PagerTitleView @JvmOverloads constructor(context: Context, attrs: Attribut
             addView(view.root)
         }
 
-        childCount.forEach { index ->
-            getChildAt(index).isActivated = index == pager?.currentItem
-        }
+        childCount.forEach { index -> getChildAt(index).isActivated = index == pager?.currentItem }
 
-        pager?.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
-            override fun onPageSelected(position: Int) {
-                childCount.forEach { index ->
-                    getChildAt(index).isActivated = index == position
+        pager?.addOnPageChangeListener(
+            object : ViewPager.SimpleOnPageChangeListener() {
+                override fun onPageSelected(position: Int) {
+                    childCount.forEach { index ->
+                        getChildAt(index).isActivated = index == position
+                    }
                 }
             }
-        })
+        )
     }
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        val states = arrayOf(
-            intArrayOf(android.R.attr.state_activated),
-            intArrayOf(-android.R.attr.state_activated)
-        )
+        val states =
+            arrayOf(
+                intArrayOf(android.R.attr.state_activated),
+                intArrayOf(-android.R.attr.state_activated),
+            )
 
         recipientId
             .distinctUntilChanged()
@@ -112,5 +111,4 @@ class PagerTitleView @JvmOverloads constructor(context: Context, attrs: Attribut
                 }
             }
     }
-
 }

@@ -24,16 +24,18 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import org.prauga.messages.common.util.extensions.versionCode
-import org.prauga.messages.util.Preferences
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
+import org.prauga.messages.common.util.extensions.versionCode
+import org.prauga.messages.util.Preferences
 
-class ChangelogManagerImpl @Inject constructor(
+class ChangelogManagerImpl
+@Inject
+constructor(
     private val context: Context,
     private val moshi: Moshi,
-    private val prefs: Preferences
+    private val prefs: Preferences,
 ) : ChangelogManager {
 
     override fun didUpdate(): Boolean = (prefs.changelogVersion.get() ?: 0) != context.versionCode
@@ -44,24 +46,45 @@ class ChangelogManagerImpl @Inject constructor(
 
         return withContext(Dispatchers.IO) {
             try {
-                val changelogs = context.assets.open("changelog.json").bufferedReader().use { it.readText() }
+                val changelogs =
+                    context.assets
+                        .open("changelog.json")
+                        .bufferedReader()
+                        .use { it.readText() }
                         .let(adapter::fromJson)
                         .orEmpty()
                         .sortedBy { changelog -> changelog.versionCode }
                         .filter { changelog ->
-                            changelog.versionCode in (prefs.changelogVersion.get() ?: 0).inc()..context.versionCode
+                            changelog.versionCode in
+                                (prefs.changelogVersion.get() ?: 0).inc()..context.versionCode
                         }
 
                 ChangelogManager.CumulativeChangelog(
-                        added = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.added.orEmpty()},
-                        improved = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.improved.orEmpty()},
-                        removed = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.removed.orEmpty()},
-                        fixed = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.fixed.orEmpty()}
+                    added =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.added.orEmpty()
+                        },
+                    improved =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.improved.orEmpty()
+                        },
+                    removed =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.removed.orEmpty()
+                        },
+                    fixed =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.fixed.orEmpty()
+                        },
                 )
-
             } catch (e: Exception) {
                 Log.e("ChangelogManager", "Error parsing changelog JSON", e)
-                ChangelogManager.CumulativeChangelog(emptyList(), emptyList(), emptyList(), emptyList())
+                ChangelogManager.CumulativeChangelog(
+                    emptyList(),
+                    emptyList(),
+                    emptyList(),
+                    emptyList(),
+                )
             }
         }
     }
@@ -77,7 +100,6 @@ class ChangelogManagerImpl @Inject constructor(
         @Json(name = "removed") val removed: List<String>?,
         @Json(name = "fixed") val fixed: List<String>?,
         @Json(name = "versionName") val versionName: String,
-        @Json(name = "versionCode") val versionCode: Int
+        @Json(name = "versionCode") val versionCode: Int,
     )
-
 }
