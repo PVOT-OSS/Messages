@@ -1150,6 +1150,45 @@ constructor(
             data = part.data
         }
 
+    private fun deleteReplacedSms(subId: Int, address: String, protocol: Int) {
+        val subscription = if (prefs.canUseSubId.get()) " AND ${Sms.SUBSCRIPTION_ID} = ?" else ""
+        val args =
+            listOfNotNull(
+                address,
+                address,
+                protocol.toString(),
+                subId.toString().takeIf { subscription.isNotEmpty() },
+            )
+        val query = { addressMatch: String ->
+            context.contentResolver.query(
+                Sms.CONTENT_URI,
+                arrayOf(Sms._ID),
+                "($addressMatch) AND ${Sms.PROTOCOL} = ?$subscription",
+                args.toTypedArray(),
+                null,
+            )
+        }
+        // Older providers may not know PHONE_NUMBERS_EQUAL with a minimum match
+        val replaced =
+            (tryOrNull(false) {
+                    query("${Sms.ADDRESS} = ? OR PHONE_NUMBERS_EQUAL(?, ${Sms.ADDRESS}, 1, 7)")
+                } ?: query("${Sms.ADDRESS} = ? OR ${Sms.ADDRESS} = ?"))
+                ?.use { cursor -> if (cursor.moveToFirst()) cursor.getLong(0) else null } ?: return
+
+        val uri = ContentUris.withAppendedId(Sms.CONTENT_URI, replaced)
+        context.contentResolver.delete(uri, null, null)
+        Realm.getDefaultInstance().use { realm ->
+            realm.executeTransaction {
+                realm
+                    .where(Message::class.java)
+                    .equalTo("type", "sms")
+                    .equalTo("contentId", replaced)
+                    .findAll()
+                    .deleteAllFromRealm()
+            }
+        }
+    }
+
     override fun insertReceivedSms(
         subId: Int,
         address: String,
@@ -1163,6 +1202,8 @@ constructor(
         val date =
             if (Calendar.getInstance().get(Calendar.YEAR) < 2025 && sentTime > 0) sentTime
             else System.currentTimeMillis()
+
+        if (details.replace) tryOrNull { deleteReplacedSms(subId, address, details.protocol) }
 
         val values =
             contentValuesOf(
