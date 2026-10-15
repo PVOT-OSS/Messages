@@ -18,15 +18,14 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
+import org.prauga.messages.repository.MessageRepository
 
-class MarkSent @Inject constructor(private val messageRepo: MessageRepository) : Interactor<Long>() {
+class MarkSent @Inject constructor(private val messageRepo: MessageRepository) :
+    Interactor<Long>() {
 
     override fun buildObservable(params: Long): Flowable<Unit> {
-        return Flowable.just(Unit)
-                .doOnNext { messageRepo.markSent(params) }
+        return Flowable.just(Unit).doOnNext { messageRepo.markSent(params) }
     }
-
 }

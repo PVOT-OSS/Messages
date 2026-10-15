@@ -19,17 +19,14 @@
 package org.prauga.messages.interactor
 
 import android.net.Uri
-import org.prauga.messages.repository.BackupRepository
 import io.reactivex.Flowable
 import javax.inject.Inject
+import org.prauga.messages.repository.BackupRepository
 
-class PerformRestore @Inject constructor(
-    private val backupRepo: BackupRepository
-) : Interactor<Uri>() {
+class PerformRestore @Inject constructor(private val backupRepo: BackupRepository) :
+    Interactor<Uri>() {
 
     override fun buildObservable(params: Uri): Flowable<*> {
-        return Flowable.just(params)
-                .doOnNext(backupRepo::performRestore)
+        return Flowable.just(params).doOnNext(backupRepo::performRestore)
     }
-
 }

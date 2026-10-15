@@ -47,18 +47,41 @@ interface MainView : QkView<MainState> {
     val snackbarButtonIntent: Observable<Unit>
 
     fun requestDefaultSms()
+
     fun requestPermissions()
+
     fun restartActivity()
+
     fun clearSearch()
+
     fun clearSelection()
+
     fun toggleSelectAll()
+
     fun themeChanged()
+
     fun showBlockingDialog(conversations: List<Long>, block: Boolean)
+
     fun showDeleteDialog(conversations: List<Long>)
+
     fun showRenameDialog(conversationName: String)
+
     fun showChangelog(changelog: ChangelogManager.CumulativeChangelog)
+
     fun showArchivedSnackbar(countConversationsArchived: Int, isArchiving: Boolean)
+
     fun drawerToggled(opened: Boolean)
 }
 
-enum class NavItem { BACK, INBOX, ARCHIVED, BACKUP, SCHEDULED, BLOCKING, SETTINGS, PLUS, HELP, INVITE }
+enum class NavItem {
+    BACK,
+    INBOX,
+    ARCHIVED,
+    BACKUP,
+    SCHEDULED,
+    BLOCKING,
+    SETTINGS,
+    PLUS,
+    HELP,
+    INVITE,
+}

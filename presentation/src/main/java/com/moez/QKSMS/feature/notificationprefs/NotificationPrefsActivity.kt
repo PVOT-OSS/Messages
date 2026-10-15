@@ -31,6 +31,10 @@ import com.jakewharton.rxbinding2.view.clicks
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
 import org.prauga.messages.common.base.QkThemedActivity
@@ -38,23 +42,16 @@ import org.prauga.messages.common.util.extensions.animateLayoutChanges
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.widget.PreferenceView
 import org.prauga.messages.databinding.NotificationPrefsActivityBinding
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
-import javax.inject.Inject
 
-class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBinding>(
-    NotificationPrefsActivityBinding::inflate
-), NotificationPrefsView {
+class NotificationPrefsActivity :
+    QkThemedActivity<NotificationPrefsActivityBinding>(NotificationPrefsActivityBinding::inflate),
+    NotificationPrefsView {
 
-    @Inject
-    lateinit var previewModeDialog: QkDialog
+    @Inject lateinit var previewModeDialog: QkDialog
 
-    @Inject
-    lateinit var actionsDialog: QkDialog
+    @Inject lateinit var actionsDialog: QkDialog
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override val preferenceClickIntent: Subject<PreferenceView> = PublishSubject.create()
     override val previewModeSelectedIntent by lazy { previewModeDialog.adapter.menuItemClicks }
@@ -100,13 +97,19 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
             title = state.conversationTitle
         }
 
-        binding.notifications.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.notificationsEnabled
+        binding.notifications
+            .findViewById<android.widget.CompoundButton>(R.id.checkbox)
+            ?.isChecked = state.notificationsEnabled
         binding.previews.summary = state.previewSummary
         previewModeDialog.adapter.selectedItem = state.previewId
-        binding.wake.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.wakeEnabled
-        binding.silentNotContact.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.silentNotContact
+        binding.wake.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked =
+            state.wakeEnabled
+        binding.silentNotContact
+            .findViewById<android.widget.CompoundButton>(R.id.checkbox)
+            ?.isChecked = state.silentNotContact
         binding.silentNotContact.isVisible = state.threadId == 0L
-        binding.vibration.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.vibrationEnabled
+        binding.vibration.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked =
+            state.vibrationEnabled
         binding.ringtone.summary = state.ringtoneName
 
         binding.actionsDivider.isVisible = state.threadId == 0L
@@ -120,11 +123,14 @@ class NotificationPrefsActivity : QkThemedActivity<NotificationPrefsActivityBind
 
         binding.qkreplyDivider.isVisible = state.threadId == 0L
         binding.qkreplyTitle.isVisible = state.threadId == 0L
-        binding.qkreply.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.qkReplyEnabled
+        binding.qkreply.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked =
+            state.qkReplyEnabled
         binding.qkreply.isVisible = state.threadId == 0L
         binding.qkreplyTapDismiss.isVisible = state.threadId == 0L
         binding.qkreplyTapDismiss.isEnabled = state.qkReplyEnabled
-        binding.qkreplyTapDismiss.findViewById<android.widget.CompoundButton>(R.id.checkbox)?.isChecked = state.qkReplyTapDismiss
+        binding.qkreplyTapDismiss
+            .findViewById<android.widget.CompoundButton>(R.id.checkbox)
+            ?.isChecked = state.qkReplyTapDismiss
     }
 
     override fun showPreviewModeDialog() = previewModeDialog.show(this)

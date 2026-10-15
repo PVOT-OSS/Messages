@@ -32,13 +32,13 @@ import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.PreferenceViewBinding
 import org.prauga.messages.injection.appComponent
 
-class PreferenceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : LinearLayoutCompat(context, attrs) {
+class PreferenceView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    LinearLayoutCompat(context, attrs) {
 
     private var layout: PreferenceViewBinding
 
-    val titleTextView: TextView get() = layout.titleView
+    val titleTextView: TextView
+        get() = layout.titleView
 
     var title: String? = null
         set(value) {
@@ -54,7 +54,6 @@ class PreferenceView @JvmOverloads constructor(
     var summary: String? = null
         set(value) {
             field = value
-
 
             if (isInEditMode) {
                 findViewById<TextView>(R.id.summaryView).run {
@@ -85,18 +84,19 @@ class PreferenceView @JvmOverloads constructor(
             summary = getString(R.styleable.PreferenceView_summary)
 
             // If there's a custom view used for the preference's widget, inflate it
-            getResourceId(R.styleable.PreferenceView_widget, -1).takeIf { it != -1 }?.let { id ->
-                View.inflate(context, id, layout.widgetFrame)
-            }
+            getResourceId(R.styleable.PreferenceView_widget, -1)
+                .takeIf { it != -1 }
+                ?.let { id -> View.inflate(context, id, layout.widgetFrame) }
 
             // If an icon is being used, set up the icon view
-            getResourceId(R.styleable.PreferenceView_icon, -1).takeIf { it != -1 }?.let { id ->
-                layout.icon.setVisible(true)
-                layout.icon.setImageResource(id)
-            }
+            getResourceId(R.styleable.PreferenceView_icon, -1)
+                .takeIf { it != -1 }
+                ?.let { id ->
+                    layout.icon.setVisible(true)
+                    layout.icon.setImageResource(id)
+                }
 
             recycle()
         }
     }
-
 }

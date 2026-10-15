@@ -28,19 +28,27 @@ import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.Convers
 
 class GridSpacingItemDecoration(
     private val adapter: ConversationInfoAdapter,
-    private val context: Context
+    private val context: Context,
 ) : RecyclerView.ItemDecoration() {
 
     private val spanCount = 3
     private val spacing = 2.dpToPx(context)
 
-    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State,
+    ) {
         super.getItemOffsets(outRect, view, parent, state)
 
         val position = parent.getChildAdapterPosition(view)
         val item = adapter.getItem(position)
 
-        if (item is ConversationInfoRecipient && adapter.getItem(position + 1) !is ConversationInfoRecipient) {
+        if (
+            item is ConversationInfoRecipient &&
+                adapter.getItem(position + 1) !is ConversationInfoRecipient
+        ) {
             outRect.bottom = 8.dpToPx(context)
         } else if (item is ConversationInfoMedia) {
             val firstPartIndex = adapter.data.indexOfFirst { it is ConversationInfoMedia }
@@ -53,5 +61,4 @@ class GridSpacingItemDecoration(
             outRect.right = spacing - (column + 1) * spacing / spanCount
         }
     }
-
 }

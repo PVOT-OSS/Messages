@@ -23,5 +23,4 @@ import io.reactivex.Observable
 interface ContactAddedListener {
 
     fun listen(): Observable<*>
-
 }

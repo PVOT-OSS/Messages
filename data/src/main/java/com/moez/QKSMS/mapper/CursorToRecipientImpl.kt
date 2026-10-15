@@ -21,14 +21,14 @@ package org.prauga.messages.mapper
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import javax.inject.Inject
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.model.Recipient
-import javax.inject.Inject
 
-class CursorToRecipientImpl @Inject constructor(
-    private val context: Context,
-    private val permissionManager: PermissionManager
-) : CursorToRecipient {
+class CursorToRecipientImpl
+@Inject
+constructor(private val context: Context, private val permissionManager: PermissionManager) :
+    CursorToRecipient {
 
     companion object {
         val URI = Uri.parse("content://mms-sms/canonical-addresses")
@@ -37,10 +37,12 @@ class CursorToRecipientImpl @Inject constructor(
         const val COLUMN_ADDRESS = 1
     }
 
-    override fun map(from: Cursor) = Recipient(
+    override fun map(from: Cursor) =
+        Recipient(
             id = from.getLong(COLUMN_ID),
             address = from.getString(COLUMN_ADDRESS),
-            lastUpdate = System.currentTimeMillis())
+            lastUpdate = System.currentTimeMillis(),
+        )
 
     override fun getRecipientCursor(): Cursor? {
         return when (permissionManager.hasReadSms()) {
@@ -52,5 +54,4 @@ class CursorToRecipientImpl @Inject constructor(
     override fun getRecipientCursor(id: Long): Cursor? {
         return context.contentResolver.query(URI, null, "_id = ?", arrayOf(id.toString()), null)
     }
-
 }

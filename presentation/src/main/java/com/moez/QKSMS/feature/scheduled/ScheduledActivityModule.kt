@@ -22,8 +22,8 @@ import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import org.prauga.messages.injection.ViewModelKey
 import javax.inject.Named
+import org.prauga.messages.injection.ViewModelKey
 
 @Module
 class ScheduledActivityModule {
@@ -35,7 +35,6 @@ class ScheduledActivityModule {
 
     @Provides
     @Named("conversationId")
-    fun getConversationId(activity: ScheduledActivity):
-            Long? = activity.intent.extras?.getLong("conversationId")
-
+    fun getConversationId(activity: ScheduledActivity): Long? =
+        activity.intent.extras?.getLong("conversationId")
 }

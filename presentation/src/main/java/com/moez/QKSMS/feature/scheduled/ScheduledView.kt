@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.scheduled
 
-import org.prauga.messages.common.base.QkView
 import io.reactivex.Observable
+import org.prauga.messages.common.base.QkView
 
 interface ScheduledView : QkView<ScheduledState> {
 
@@ -33,10 +33,14 @@ interface ScheduledView : QkView<ScheduledState> {
     val backPressedIntent: Observable<Unit>
 
     fun clearSelection()
-    fun toggleSelectAll()
-    fun showDeleteDialog(messages: List<Long>)
-    fun showSendNowDialog(messages: List<Long>)
-    fun showEditMessageDialog(message: Long)
-    fun finishActivity()
 
+    fun toggleSelectAll()
+
+    fun showDeleteDialog(messages: List<Long>)
+
+    fun showSendNowDialog(messages: List<Long>)
+
+    fun showEditMessageDialog(message: Long)
+
+    fun finishActivity()
 }

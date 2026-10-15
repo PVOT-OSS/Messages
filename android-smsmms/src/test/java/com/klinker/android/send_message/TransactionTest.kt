@@ -43,7 +43,10 @@ class TransactionTest {
 
     @Test
     fun givenNotifyOfDeliveryAction_thenHasCorrectValue() {
-        assertEquals("com.klinker.android.send_message.NOTIFY_DELIVERY", Transaction.NOTIFY_OF_DELIVERY)
+        assertEquals(
+            "com.klinker.android.send_message.NOTIFY_DELIVERY",
+            Transaction.NOTIFY_OF_DELIVERY,
+        )
     }
 
     @Test
@@ -89,16 +92,17 @@ class TransactionTest {
     // Action uniqueness Tests
     @Test
     fun givenAllActions_whenCompared_thenAllUnique() {
-        val actions = listOf(
-            Transaction.MMS_SENT,
-            Transaction.NOTIFY_SMS_FAILURE,
-            Transaction.MMS_UPDATED,
-            Transaction.MMS_ERROR,
-            Transaction.REFRESH,
-            Transaction.MMS_PROGRESS,
-            Transaction.NOTIFY_OF_DELIVERY,
-            Transaction.NOTIFY_OF_MMS
-        )
+        val actions =
+            listOf(
+                Transaction.MMS_SENT,
+                Transaction.NOTIFY_SMS_FAILURE,
+                Transaction.MMS_UPDATED,
+                Transaction.MMS_ERROR,
+                Transaction.REFRESH,
+                Transaction.MMS_PROGRESS,
+                Transaction.NOTIFY_OF_DELIVERY,
+                Transaction.NOTIFY_OF_MMS,
+            )
         assertEquals(actions.size, actions.toSet().size)
     }
 

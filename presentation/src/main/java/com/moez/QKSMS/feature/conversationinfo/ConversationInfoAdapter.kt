@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -20,12 +21,11 @@ import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.Convers
 import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoRecipient
 import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoSettings
 import org.prauga.messages.util.GlideApp
-import javax.inject.Inject
 
-class ConversationInfoAdapter @Inject constructor(
-    private val context: Context,
-    private val colors: Colors
-) : QkAdapter<ConversationInfoItem, QkViewHolder>() {
+class ConversationInfoAdapter
+@Inject
+constructor(private val context: Context, private val colors: Colors) :
+    QkAdapter<ConversationInfoItem, QkViewHolder>() {
 
     val recipientClicks: Subject<Long> = PublishSubject.create()
     val recipientLongClicks: Subject<Long> = PublishSubject.create()
@@ -105,25 +105,28 @@ class ConversationInfoAdapter @Inject constructor(
                 binding.notifications.isEnabled = !item.blocked
 
                 binding.archive.isEnabled = !item.blocked
-                binding.archive.title = context.getString(when (item.archived) {
-                    true -> R.string.info_unarchive
-                    false -> R.string.info_archive
-                })
+                binding.archive.title =
+                    context.getString(
+                        when (item.archived) {
+                            true -> R.string.info_unarchive
+                            false -> R.string.info_archive
+                        }
+                    )
 
-                binding.block.title = context.getString(when (item.blocked) {
-                    true -> R.string.info_unblock
-                    false -> R.string.info_block
-                })
+                binding.block.title =
+                    context.getString(
+                        when (item.blocked) {
+                            true -> R.string.info_unblock
+                            false -> R.string.info_block
+                        }
+                    )
             }
 
             is ConversationInfoMedia -> {
                 val binding = ConversationMediaListItemBinding.bind(holder.containerView)
                 val part = item.value
 
-                GlideApp.with(context)
-                        .load(part.getUri())
-                        .fitCenter()
-                        .into(binding.thumbnail)
+                GlideApp.with(context).load(part.getUri()).fitCenter().into(binding.thumbnail)
 
                 binding.video.isVisible = part.isVideo()
             }
@@ -141,7 +144,7 @@ class ConversationInfoAdapter @Inject constructor(
     override fun areItemsTheSame(old: ConversationInfoItem, new: ConversationInfoItem): Boolean {
         return when {
             old is ConversationInfoRecipient && new is ConversationInfoRecipient -> {
-               old.value.id == new.value.id
+                old.value.id == new.value.id
             }
 
             old is ConversationInfoSettings && new is ConversationInfoSettings -> {
@@ -155,5 +158,4 @@ class ConversationInfoAdapter @Inject constructor(
             else -> false
         }
     }
-
 }

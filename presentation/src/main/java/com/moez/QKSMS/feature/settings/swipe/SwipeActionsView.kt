@@ -18,16 +18,19 @@
  */
 package org.prauga.messages.feature.settings.swipe
 
-import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
+import org.prauga.messages.common.base.QkViewContract
 
 interface SwipeActionsView : QkViewContract<SwipeActionsState> {
 
-    enum class Action { LEFT, RIGHT }
+    enum class Action {
+        LEFT,
+        RIGHT,
+    }
 
     fun actionClicks(): Observable<Action>
+
     fun actionSelected(): Observable<Int>
 
     fun showSwipeActions(selected: Int)
-
 }

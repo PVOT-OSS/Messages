@@ -158,4 +158,3 @@ public interface ElementTime {
                      throws DOMException;
 
 }
-

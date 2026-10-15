@@ -28,9 +28,8 @@ open class Contact(
     var name: String = "",
     var photoUri: String? = null,
     var starred: Boolean = false,
-    var lastUpdate: Long = 0
+    var lastUpdate: Long = 0,
 ) : RealmObject() {
 
     fun getDefaultNumber(): PhoneNumber? = numbers.find { number -> number.isDefault }
-
 }

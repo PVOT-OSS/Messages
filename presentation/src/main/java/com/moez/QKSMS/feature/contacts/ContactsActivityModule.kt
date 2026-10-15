@@ -34,14 +34,14 @@ class ContactsActivityModule {
 
     @Provides
     fun provideChips(activity: ContactsActivity): HashMap<String, String?> {
-        return activity.intent.extras?.getSerializable(ContactsActivity.ChipsKey)
-                ?.let { serializable -> serializable as? HashMap<String, String?> }
-                ?: hashMapOf()
+        return activity.intent.extras?.getSerializable(ContactsActivity.ChipsKey)?.let {
+            serializable ->
+            serializable as? HashMap<String, String?>
+        } ?: hashMapOf()
     }
 
     @Provides
     @IntoMap
     @ViewModelKey(ContactsViewModel::class)
     fun provideContactsViewModel(viewModel: ContactsViewModel): ViewModel = viewModel
-
 }

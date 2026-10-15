@@ -25,7 +25,7 @@ import org.prauga.messages.util.PhoneNumberUtils
 
 class BlockedNumberTextWatcher(
     private val editText: EditText,
-    private val phoneNumberUtils: PhoneNumberUtils
+    private val phoneNumberUtils: PhoneNumberUtils,
 ) : TextWatcher {
 
     init {
@@ -46,11 +46,9 @@ class BlockedNumberTextWatcher(
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-    }
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
     fun dispose() {
         editText.removeTextChangedListener(this)
     }
-
 }

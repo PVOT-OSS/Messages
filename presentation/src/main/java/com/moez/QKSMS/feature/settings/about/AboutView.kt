@@ -18,12 +18,11 @@
  */
 package org.prauga.messages.feature.settings.about
 
+import io.reactivex.Observable
 import org.prauga.messages.common.base.QkViewContract
 import org.prauga.messages.common.widget.PreferenceView
-import io.reactivex.Observable
 
 interface AboutView : QkViewContract<Unit> {
 
     fun preferenceClicks(): Observable<PreferenceView>
-
 }

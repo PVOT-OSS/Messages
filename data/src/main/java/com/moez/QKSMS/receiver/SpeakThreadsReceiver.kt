@@ -22,15 +22,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.interactor.SpeakThreads
 import org.prauga.messages.repository.ConversationRepository
-import javax.inject.Inject
 
 class SpeakThreadsReceiver : BroadcastReceiver() {
 
     @Inject lateinit var speakThread: SpeakThreads
     @Inject lateinit var conversationRepo: ConversationRepository
-
 
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
@@ -38,13 +37,13 @@ class SpeakThreadsReceiver : BroadcastReceiver() {
         val pendingResult = goAsync()
         val threadId = intent.getLongExtra("threadId", 0)
 
-        val threads = when {
-            (threadId == -1L) -> conversationRepo.getUnseenIds()
-            (threadId == -2L) -> conversationRepo.getUnreadIds()
-            else -> listOf(threadId)
-        }
+        val threads =
+            when {
+                (threadId == -1L) -> conversationRepo.getUnseenIds()
+                (threadId == -2L) -> conversationRepo.getUnreadIds()
+                else -> listOf(threadId)
+            }
 
         speakThread.execute(threads) { pendingResult.finish() }
     }
-
 }

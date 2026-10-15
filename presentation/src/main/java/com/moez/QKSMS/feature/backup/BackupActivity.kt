@@ -26,7 +26,6 @@ import dagger.android.AndroidInjection
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.databinding.ContainerActivityBinding
 
-
 class BackupActivity :
     QkThemedActivity<ContainerActivityBinding>(ContainerActivityBinding::inflate) {
 
@@ -47,5 +46,4 @@ class BackupActivity :
             super.onBackPressed()
         }
     }
-
 }

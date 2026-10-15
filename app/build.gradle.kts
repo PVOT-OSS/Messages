@@ -5,22 +5,16 @@ plugins {
 
 android {
     namespace = "org.prauga.messages.app"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk { version = release(36) }
 
-    buildFeatures {
-        viewBinding = true
-    }
+    buildFeatures { viewBinding = true }
 
     defaultConfig {
         minSdk = 23
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    testOptions {
-        unitTests.isIncludeAndroidResources = true
-    }
+    testOptions { unitTests.isIncludeAndroidResources = true }
 }
 
 dependencies {

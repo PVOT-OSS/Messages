@@ -21,5 +21,5 @@ package org.prauga.messages.feature.compose.editing
 enum class PhoneNumberAction {
     CANCEL,
     JUST_ONCE,
-    ALWAYS
+    ALWAYS,
 }

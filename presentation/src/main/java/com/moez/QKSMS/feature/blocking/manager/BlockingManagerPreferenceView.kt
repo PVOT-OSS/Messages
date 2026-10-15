@@ -32,9 +32,9 @@ import org.prauga.messages.common.util.extensions.resolveThemeAttribute
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.BlockingManagerPreferenceViewBinding
 
-class BlockingManagerPreferenceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : ConstraintLayout(context, attrs) {
+class BlockingManagerPreferenceView
+@JvmOverloads
+constructor(context: Context, attrs: AttributeSet? = null) : ConstraintLayout(context, attrs) {
 
     private val binding: BlockingManagerPreferenceViewBinding =
         BlockingManagerPreferenceViewBinding.inflate(LayoutInflater.from(context), this)
@@ -85,9 +85,9 @@ class BlockingManagerPreferenceView @JvmOverloads constructor(
             summary = getString(R.styleable.BlockingManagerPreferenceView_summary)
 
             // If there's a custom view used for the preference's widget, inflate it
-            getResourceId(R.styleable.BlockingManagerPreferenceView_widget, -1).takeIf { it != -1 }?.let { id ->
-                View.inflate(context, id, binding.widgetFrame)
-            }
+            getResourceId(R.styleable.BlockingManagerPreferenceView_widget, -1)
+                .takeIf { it != -1 }
+                ?.let { id -> View.inflate(context, id, binding.widgetFrame) }
 
             recycle()
         }

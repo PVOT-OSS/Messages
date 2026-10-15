@@ -30,7 +30,7 @@ class PhoneNumberAdapter :
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): QkBindingViewHolder<ContactNumberListItemBinding> {
         val binding =
             ContactNumberListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -39,7 +39,7 @@ class PhoneNumberAdapter :
 
     override fun onBindViewHolder(
         holder: QkBindingViewHolder<ContactNumberListItemBinding>,
-        position: Int
+        position: Int,
     ) {
         val number = getItem(position)
 
@@ -54,5 +54,4 @@ class PhoneNumberAdapter :
     override fun areContentsTheSame(old: PhoneNumber, new: PhoneNumber): Boolean {
         return old.type == new.type && old.address == new.address
     }
-
 }

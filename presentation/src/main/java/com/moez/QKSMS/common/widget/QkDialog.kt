@@ -73,9 +73,7 @@ class QkDialog(private val context: Activity) : AlertDialog(context) {
             field = value
             value?.run(view.positiveButton::setText)
             view.positiveButton.isVisible = value != null
-            view.positiveButton.setOnClickListener {
-                positiveButtonListener?.invoke() ?: dismiss()
-            }
+            view.positiveButton.setOnClickListener { positiveButtonListener?.invoke() ?: dismiss() }
         }
 
     var negativeButtonListener: (() -> Unit)? = null
@@ -86,9 +84,7 @@ class QkDialog(private val context: Activity) : AlertDialog(context) {
             field = value
             value?.run(view.negativeButton::setText)
             view.negativeButton.isVisible = value != null
-            view.negativeButton.setOnClickListener {
-                negativeButtonListener?.invoke() ?: dismiss()
-            }
+            view.negativeButton.setOnClickListener { negativeButtonListener?.invoke() ?: dismiss() }
         }
 
     var cancelListener: (() -> Unit)? = null
@@ -100,5 +96,4 @@ class QkDialog(private val context: Activity) : AlertDialog(context) {
     init {
         setView(view.root)
     }
-
 }

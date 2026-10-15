@@ -34,5 +34,4 @@ interface PlusView : QkView<PlusState> {
     val nightClicks: Observable<*>
 
     fun initiatePurchaseFlow(billingManager: BillingManager, sku: String)
-
 }

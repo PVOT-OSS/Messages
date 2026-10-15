@@ -19,20 +19,22 @@
 package org.prauga.messages.interactor
 
 import com.moez.QKSMS.manager.SpeakManager
-import org.prauga.messages.extensions.mapNotNull
-import org.prauga.messages.repository.ConversationRepository
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.Flowable
 import io.reactivex.Single
 import javax.inject.Inject
+import org.prauga.messages.extensions.mapNotNull
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.MessageRepository
 
-class SpeakThreads @Inject constructor(
+class SpeakThreads
+@Inject
+constructor(
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository,
 ) : Interactor<List<Long>>() {
 
     companion object {
-        private var noMessagesStr = "No messages"       // default value
+        private var noMessagesStr = "No messages" // default value
 
         fun setNoMessagesString(newNoMessagesString: String) {
             noMessagesStr = newNoMessagesString
@@ -43,20 +45,23 @@ class SpeakThreads @Inject constructor(
         val speakManager = SpeakManager()
 
         if (threadIds.isEmpty())
-              return Single.just(0)
-                  .doOnSubscribe { speakManager.startSpeakSession(noMessagesStr) }
-                  .map { speakManager.speak(noMessagesStr) }
-                  .doOnTerminate { speakManager.endSpeakSession() }
-                  .toFlowable()
+            return Single.just(0)
+                .doOnSubscribe { speakManager.startSpeakSession(noMessagesStr) }
+                .map { speakManager.speak(noMessagesStr) }
+                .doOnTerminate { speakManager.endSpeakSession() }
+                .toFlowable()
 
         return Flowable.fromIterable(threadIds)
-            .doOnSubscribe { speakManager.startSpeakSession("threads:" + threadIds.sorted().joinToString()) }
-            .mapNotNull { threadId -> conversationRepo.getConversationAndLastSenderContactName(threadId) }
+            .doOnSubscribe {
+                speakManager.startSpeakSession("threads:" + threadIds.sorted().joinToString())
+            }
+            .mapNotNull { threadId ->
+                conversationRepo.getConversationAndLastSenderContactName(threadId)
+            }
             .map { conversationAndSender ->
-                    if (speakManager.speakConversationLastSms(conversationAndSender))
-                        messageRepo.markSeen(conversationAndSender.first!!.id)
+                if (speakManager.speakConversationLastSms(conversationAndSender))
+                    messageRepo.markSeen(conversationAndSender.first!!.id)
             }
             .doOnTerminate { speakManager.endSpeakSession() }
     }
-
 }

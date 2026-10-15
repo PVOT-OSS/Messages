@@ -7,7 +7,6 @@
 package org.prauga.messages.testutil
 
 import com.google.android.mms.pdu_alt.PduHeaders
-import com.google.android.mms.pdu_alt.SendConf
 
 /**
  * Mock HTTP client for simulating MMS network operations in tests.
@@ -33,6 +32,7 @@ class MockMmsHttpClient {
 
     /**
      * Simulates sending an MMS PDU.
+     *
      * @param pduData The PDU data to "send"
      * @return Response PDU (typically SendConf) or throws if configured to fail
      */
@@ -52,6 +52,7 @@ class MockMmsHttpClient {
 
     /**
      * Simulates retrieving an MMS from a content location.
+     *
      * @param contentLocation The URL to "retrieve" from
      * @return Response PDU (typically RetrieveConf) or throws if configured to fail
      */
@@ -69,27 +70,19 @@ class MockMmsHttpClient {
         return retrieveResponse
     }
 
-    /**
-     * Gets all send requests made to this mock.
-     */
+    /** Gets all send requests made to this mock. */
     fun getSendRequests(): List<ByteArray> = sendRequests.toList()
 
-    /**
-     * Gets all retrieve requests made to this mock.
-     */
+    /** Gets all retrieve requests made to this mock. */
     fun getRetrieveRequests(): List<String> = retrieveRequests.toList()
 
-    /**
-     * Clears all tracked requests.
-     */
+    /** Clears all tracked requests. */
     fun clearRequests() {
         sendRequests.clear()
         retrieveRequests.clear()
     }
 
-    /**
-     * Resets all configuration to defaults.
-     */
+    /** Resets all configuration to defaults. */
     fun reset() {
         sendResponse = createSuccessSendConfPdu()
         retrieveResponse = createSuccessRetrieveConfPdu()
@@ -100,73 +93,112 @@ class MockMmsHttpClient {
     }
 
     companion object {
-        /**
-         * Creates a minimal successful SendConf PDU.
-         */
+        /** Creates a minimal successful SendConf PDU. */
         fun createSuccessSendConfPdu(): ByteArray {
             return byteArrayOf(
                 // Message type: SendConf (0x81)
-                0x8C.toByte(), PduHeaders.MESSAGE_TYPE_SEND_CONF.toByte(),
+                0x8C.toByte(),
+                PduHeaders.MESSAGE_TYPE_SEND_CONF.toByte(),
                 // Transaction ID
-                0x98.toByte(), 't'.code.toByte(), 'x'.code.toByte(), 'n'.code.toByte(),
-                '1'.code.toByte(), '2'.code.toByte(), '3'.code.toByte(), 0x00,
+                0x98.toByte(),
+                't'.code.toByte(),
+                'x'.code.toByte(),
+                'n'.code.toByte(),
+                '1'.code.toByte(),
+                '2'.code.toByte(),
+                '3'.code.toByte(),
+                0x00,
                 // MMS Version: 1.0
-                0x8D.toByte(), 0x90.toByte(),
+                0x8D.toByte(),
+                0x90.toByte(),
                 // Response status: OK
-                0x92.toByte(), 0x80.toByte(),
+                0x92.toByte(),
+                0x80.toByte(),
                 // Message ID
-                0x8B.toByte(), 'm'.code.toByte(), 's'.code.toByte(), 'g'.code.toByte(),
-                '_'.code.toByte(), 'i'.code.toByte(), 'd'.code.toByte(), 0x00
+                0x8B.toByte(),
+                'm'.code.toByte(),
+                's'.code.toByte(),
+                'g'.code.toByte(),
+                '_'.code.toByte(),
+                'i'.code.toByte(),
+                'd'.code.toByte(),
+                0x00,
             )
         }
 
-        /**
-         * Creates a minimal successful RetrieveConf PDU.
-         */
+        /** Creates a minimal successful RetrieveConf PDU. */
         fun createSuccessRetrieveConfPdu(): ByteArray {
             return byteArrayOf(
                 // Message type: RetrieveConf (0x84)
-                0x8C.toByte(), PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
+                0x8C.toByte(),
+                PduHeaders.MESSAGE_TYPE_RETRIEVE_CONF.toByte(),
                 // Transaction ID
-                0x98.toByte(), 't'.code.toByte(), 'x'.code.toByte(), 'n'.code.toByte(),
-                '4'.code.toByte(), '5'.code.toByte(), '6'.code.toByte(), 0x00,
+                0x98.toByte(),
+                't'.code.toByte(),
+                'x'.code.toByte(),
+                'n'.code.toByte(),
+                '4'.code.toByte(),
+                '5'.code.toByte(),
+                '6'.code.toByte(),
+                0x00,
                 // MMS Version: 1.0
-                0x8D.toByte(), 0x90.toByte(),
+                0x8D.toByte(),
+                0x90.toByte(),
                 // Date
-                0x85.toByte(), 0x04, 0x00, 0x00, 0x00, 0x01,
+                0x85.toByte(),
+                0x04,
+                0x00,
+                0x00,
+                0x00,
+                0x01,
                 // From
-                0x89.toByte(), 0x0E,
+                0x89.toByte(),
+                0x0E,
                 0x80.toByte(),
-                '+'.code.toByte(), '1'.code.toByte(), '5'.code.toByte(),
-                '5'.code.toByte(), '5'.code.toByte(), '1'.code.toByte(),
-                '2'.code.toByte(), '3'.code.toByte(), '4'.code.toByte(),
-                '5'.code.toByte(), '6'.code.toByte(), '7'.code.toByte(),
+                '+'.code.toByte(),
+                '1'.code.toByte(),
+                '5'.code.toByte(),
+                '5'.code.toByte(),
+                '5'.code.toByte(),
+                '1'.code.toByte(),
+                '2'.code.toByte(),
+                '3'.code.toByte(),
+                '4'.code.toByte(),
+                '5'.code.toByte(),
+                '6'.code.toByte(),
+                '7'.code.toByte(),
                 0x00,
                 // Content type
-                0x84.toByte(), 0x9F.toByte() // multipart/related
+                0x84.toByte(),
+                0x9F.toByte(), // multipart/related
             )
         }
 
-        /**
-         * Creates a SendConf PDU with an error status.
-         */
+        /** Creates a SendConf PDU with an error status. */
         fun createErrorSendConfPdu(errorStatus: Int = 0x81): ByteArray {
             return byteArrayOf(
                 // Message type: SendConf (0x81)
-                0x8C.toByte(), PduHeaders.MESSAGE_TYPE_SEND_CONF.toByte(),
+                0x8C.toByte(),
+                PduHeaders.MESSAGE_TYPE_SEND_CONF.toByte(),
                 // Transaction ID
-                0x98.toByte(), 't'.code.toByte(), 'x'.code.toByte(), 'n'.code.toByte(),
-                '1'.code.toByte(), '2'.code.toByte(), '3'.code.toByte(), 0x00,
+                0x98.toByte(),
+                't'.code.toByte(),
+                'x'.code.toByte(),
+                'n'.code.toByte(),
+                '1'.code.toByte(),
+                '2'.code.toByte(),
+                '3'.code.toByte(),
+                0x00,
                 // MMS Version: 1.0
-                0x8D.toByte(), 0x90.toByte(),
+                0x8D.toByte(),
+                0x90.toByte(),
                 // Response status: Error
-                0x92.toByte(), errorStatus.toByte()
+                0x92.toByte(),
+                errorStatus.toByte(),
             )
         }
 
-        /**
-         * Creates a NotificationInd PDU for receive testing.
-         */
+        /** Creates a NotificationInd PDU for receive testing. */
         fun createNotificationIndPdu(contentLocation: String): ByteArray {
             val locationBytes = contentLocation.toByteArray()
             val result = mutableListOf<Byte>()
@@ -215,7 +247,5 @@ class MockMmsHttpClient {
     }
 }
 
-/**
- * Exception thrown by MockMmsHttpClient when configured to fail.
- */
+/** Exception thrown by MockMmsHttpClient when configured to fail. */
 class MockMmsException(message: String) : Exception(message)

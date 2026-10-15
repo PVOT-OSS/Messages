@@ -18,6 +18,8 @@
  */
 package org.prauga.messages.interactor
 
+import io.reactivex.Flowable
+import javax.inject.Inject
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.manager.NotificationManager
@@ -27,11 +29,11 @@ import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageContentFilterRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Flowable
 import timber.log.Timber
-import javax.inject.Inject
 
-class ReceiveSms @Inject constructor(
+class ReceiveSms
+@Inject
+constructor(
     private val conversationRepo: ConversationRepository,
     private val blockingClient: BlockingClient,
     private val prefs: Preferences,
@@ -40,7 +42,7 @@ class ReceiveSms @Inject constructor(
     private val updateBadge: UpdateBadge,
     private val shortcutManager: ShortcutManager,
     private val filterRepo: MessageContentFilterRepository,
-    private val contactsRepo: ContactRepository
+    private val contactsRepo: ContactRepository,
 ) : Interactor<Long>() {
 
     override fun buildObservable(params: Long): Flowable<*> {
@@ -50,7 +52,7 @@ class ReceiveSms @Inject constructor(
                 val action = blockingClient.shouldBlock(it.address).blockingGet()
 
                 when {
-                    ((action is BlockingClient.Action.Block) && prefs.drop.get()) ->  {
+                    ((action is BlockingClient.Action.Block) && prefs.drop.get()) -> {
                         // blocked and 'drop blocked.' remove from db and don't continue
                         Timber.v("address is blocked and drop blocked is on. dropped")
                         messageRepo.deleteMessages(listOf(it.id))
@@ -63,7 +65,7 @@ class ReceiveSms @Inject constructor(
                         conversationRepo.markBlocked(
                             listOf(it.threadId),
                             prefs.blockingManager.get(),
-                            action.reason
+                            action.reason,
                         )
                     }
                     action is BlockingClient.Action.Unblock -> {
@@ -110,5 +112,4 @@ class ReceiveSms @Inject constructor(
                 updateBadge.buildObservable(Unit)
             }
     }
-
 }

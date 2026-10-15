@@ -16,12 +16,12 @@ import org.w3c.dom.DOMException;
 
 /**
  *  This interface is used by SMIL elements root-layout, top-layout and region.
- *  
+ *
  */
 public interface ElementLayout {
     /**
      * @exception DOMException
-     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly. 
+     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly.
      */
     public String getTitle();
     public void setTitle(String title)
@@ -29,7 +29,7 @@ public interface ElementLayout {
 
     /**
      * @exception DOMException
-     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly. 
+     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly.
      */
     public String getBackgroundColor();
     public void setBackgroundColor(String backgroundColor)
@@ -37,7 +37,7 @@ public interface ElementLayout {
 
     /**
      * @exception DOMException
-     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly. 
+     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly.
      */
     public int getHeight();
     public void setHeight(int height)
@@ -45,11 +45,10 @@ public interface ElementLayout {
 
     /**
      * @exception DOMException
-     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly. 
+     *    NO_MODIFICATION_ALLOWED_ERR: Raised if this attribute is readonly.
      */
     public int getWidth();
     public void setWidth(int width)
                                       throws DOMException;
 
 }
-

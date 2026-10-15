@@ -7,8 +7,8 @@ import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.contentValuesOf
 import androidx.core.net.toFile
-import org.prauga.messages.extensions.isEmpty
 import java.io.File
+import org.prauga.messages.extensions.isEmpty
 
 class FileUtils {
     companion object {
@@ -22,40 +22,35 @@ class FileUtils {
             NoBackup,
         }
 
-        fun create(
-            location: Location,
-            context: Context,
-            filename: String,
-            mimeType: String
-        ) =
+        fun create(location: Location, context: Context, filename: String, mimeType: String) =
             if (location == Location.Downloads) createDownloadsFile(context, filename, mimeType)
             else createLocation(location, context, filename)
 
         private fun createDownloadsFile(
             context: Context,
             filename: String,
-            mimeType: String
+            mimeType: String,
         ): Pair<Uri, Exception?> =
             try {
-                val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // use media store
-                    context.contentResolver.insert(
-                        MediaStore.Downloads.EXTERNAL_CONTENT_URI,
-                        contentValuesOf(
-                            MediaStore.MediaColumns.MIME_TYPE to mimeType,
-                            MediaStore.MediaColumns.RELATIVE_PATH to
+                val uri =
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // use media store
+                        context.contentResolver.insert(
+                            MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                            contentValuesOf(
+                                MediaStore.MediaColumns.MIME_TYPE to mimeType,
+                                MediaStore.MediaColumns.RELATIVE_PATH to
                                     Environment.DIRECTORY_DOWNLOADS,
-                            MediaStore.MediaColumns.DISPLAY_NAME to filename,
-                        )
-                    ) ?: Uri.EMPTY
-                } else { // use direct access to 'external' dir
-                    File(Environment.getExternalStorageDirectory(), filename).let {
-                        if (tryOrNull { it.createNewFile() } == true) Uri.fromFile(it)
-                        else Uri.EMPTY
+                                MediaStore.MediaColumns.DISPLAY_NAME to filename,
+                            ),
+                        ) ?: Uri.EMPTY
+                    } else { // use direct access to 'external' dir
+                        File(Environment.getExternalStorageDirectory(), filename).let {
+                            if (tryOrNull { it.createNewFile() } == true) Uri.fromFile(it)
+                            else Uri.EMPTY
+                        }
                     }
-                }
 
-                if (uri.isEmpty())
-                    throw Exception("Opening file returned an empty uri")
+                if (uri.isEmpty()) throw Exception("Opening file returned an empty uri")
 
                 Pair(uri, null)
             } catch (e: Exception) {
@@ -65,26 +60,27 @@ class FileUtils {
         private fun createLocation(
             location: Location,
             context: Context,
-            filename: String
+            filename: String,
         ): Pair<Uri, Exception?> =
             try {
-                val uri = File(
-                    when (location) {
-                        Location.ExternalCache -> context.externalCacheDir
-                        Location.Files -> context.filesDir
-                        Location.Obb -> context.obbDir
-                        Location.CodeCache -> context.codeCacheDir
-                        Location.NoBackup -> context.noBackupFilesDir
-                        else -> context.cacheDir
-                    },
-                    filename
-                ).let {
-                    if (tryOrNull { it.createNewFile() } == true) Uri.fromFile(it)
-                    else Uri.EMPTY
-                }
+                val uri =
+                    File(
+                            when (location) {
+                                Location.ExternalCache -> context.externalCacheDir
+                                Location.Files -> context.filesDir
+                                Location.Obb -> context.obbDir
+                                Location.CodeCache -> context.codeCacheDir
+                                Location.NoBackup -> context.noBackupFilesDir
+                                else -> context.cacheDir
+                            },
+                            filename,
+                        )
+                        .let {
+                            if (tryOrNull { it.createNewFile() } == true) Uri.fromFile(it)
+                            else Uri.EMPTY
+                        }
 
-                if (uri.isEmpty())
-                    throw Exception("Opening file returned an empty uri")
+                if (uri.isEmpty()) throw Exception("Opening file returned an empty uri")
 
                 Pair(uri, null)
             } catch (e: Exception) {
@@ -95,7 +91,7 @@ class FileUtils {
             context: Context,
             uri: Uri,
             bytes: ByteArray,
-            mode: String
+            mode: String,
         ): Exception? =
             try {
                 context.contentResolver.openOutputStream(uri, mode)?.use { it.write(bytes) }
@@ -118,7 +114,7 @@ class FileUtils {
             location: Location,
             filename: String,
             mimeType: String,
-            bytes: ByteArray
+            bytes: ByteArray,
         ): Pair<Uri, Exception?> =
             create(location, context, filename, mimeType).let { (uri, e) ->
                 if (e is Exception) Pair(Uri.EMPTY, e)
@@ -127,23 +123,23 @@ class FileUtils {
                     if (we is Exception) {
                         deleteFile(uri)
                         Pair(Uri.EMPTY, we)
-                    }
-                    else
-                        Pair(uri, null)
+                    } else Pair(uri, null)
                 }
             }
 
         fun deleteFile(uri: Uri): Boolean {
             return try {
-                if (uri == Uri.EMPTY) false
-                else uri.toFile().delete()
+                if (uri == Uri.EMPTY) false else uri.toFile().delete()
+            } catch (e: Exception) {
+                false
             }
-            catch (e: Exception) { false }
         }
 
         fun renameTo(fromUri: Uri, toUri: Uri): Boolean =
-            try { fromUri.toFile().renameTo(toUri.toFile()) }
-            catch (e: Exception) { false }
+            try {
+                fromUri.toFile().renameTo(toUri.toFile())
+            } catch (e: Exception) {
+                false
+            }
     }
-
 }

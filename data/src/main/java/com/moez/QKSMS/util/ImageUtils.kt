@@ -26,9 +26,15 @@ import java.io.ByteArrayOutputStream
 
 object ImageUtils {
 
-    fun getScaledGif(context: Context, uri: Uri, maxWidth: Int, maxHeight: Int, quality: Int = 90): ByteArray {
-        val gif = GlideApp
-                .with(context)
+    fun getScaledGif(
+        context: Context,
+        uri: Uri,
+        maxWidth: Int,
+        maxHeight: Int,
+        quality: Int = 90,
+    ): ByteArray {
+        val gif =
+            GlideApp.with(context)
                 .asGif()
                 .load(uri)
                 .centerInside()
@@ -37,24 +43,25 @@ object ImageUtils {
                 .get()
 
         val outputStream = ByteArrayOutputStream()
-        GifEncoder(context, GlideApp.get(context).bitmapPool).encodeTransformedToStream(gif, outputStream)
+        GifEncoder(context, GlideApp.get(context).bitmapPool)
+            .encodeTransformedToStream(gif, outputStream)
         return outputStream.toByteArray()
     }
 
-    fun getScaledImage(context: Context, uri: Uri, maxWidth: Int, maxHeight: Int, quality: Int = 90): ByteArray {
-        return GlideApp
-            .with(context)
+    fun getScaledImage(
+        context: Context,
+        uri: Uri,
+        maxWidth: Int,
+        maxHeight: Int,
+        quality: Int = 90,
+    ): ByteArray {
+        return GlideApp.with(context)
             .`as`(ByteArray::class.java)
             .load(uri)
-            .apply(
-                RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true)
-            )
+            .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true))
             .centerInside()
             .encodeQuality(quality)
             .submit(maxWidth, maxHeight)
             .get()
     }
-
 }

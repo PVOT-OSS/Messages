@@ -1,6 +1,5 @@
 package org.prauga.messages.repository
 
-import org.prauga.messages.model.ScheduledMessage
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -8,8 +7,9 @@ import io.reactivex.schedulers.Schedulers
 import io.realm.Realm
 import io.realm.RealmList
 import io.realm.RealmResults
-import timber.log.Timber
 import javax.inject.Inject
+import org.prauga.messages.model.ScheduledMessage
+import timber.log.Timber
 
 class ScheduledMessageRepositoryImpl @Inject constructor() : ScheduledMessageRepository {
 
@@ -22,20 +22,25 @@ class ScheduledMessageRepositoryImpl @Inject constructor() : ScheduledMessageRep
         sendAsGroup: Boolean,
         body: String,
         attachments: List<String>,
-        conversationId: Long
+        conversationId: Long,
     ): ScheduledMessage {
         Realm.getDefaultInstance().use { realm ->
-            val id = (realm
-                .where(ScheduledMessage::class.java)
-                .max("id")
-                ?.toLong() ?: -1
-                    ) + 1
+            val id = (realm.where(ScheduledMessage::class.java).max("id")?.toLong() ?: -1) + 1
 
             val recipientsRealmList = RealmList(*recipients.toTypedArray())
             val attachmentsRealmList = RealmList(*attachments.toTypedArray())
 
-            val message = ScheduledMessage(id, date, subId, recipientsRealmList, sendAsGroup, body,
-                attachmentsRealmList, conversationId)
+            val message =
+                ScheduledMessage(
+                    id,
+                    date,
+                    subId,
+                    recipientsRealmList,
+                    sendAsGroup,
+                    body,
+                    attachmentsRealmList,
+                    conversationId,
+                )
 
             realm.executeTransaction { realm.insertOrUpdate(message) }
 
@@ -50,10 +55,7 @@ class ScheduledMessageRepositoryImpl @Inject constructor() : ScheduledMessageRep
     }
 
     override fun getScheduledMessages(): RealmResults<ScheduledMessage> {
-        return Realm.getDefaultInstance()
-            .where(ScheduledMessage::class.java)
-            .sort("date")
-            .findAll()
+        return Realm.getDefaultInstance().where(ScheduledMessage::class.java).sort("date").findAll()
     }
 
     override fun getScheduledMessage(id: Long): ScheduledMessage? {
@@ -64,7 +66,9 @@ class ScheduledMessageRepositoryImpl @Inject constructor() : ScheduledMessageRep
             .findFirst()
     }
 
-    override fun getScheduledMessagesForConversation(conversationId: Long): RealmResults<ScheduledMessage> {
+    override fun getScheduledMessagesForConversation(
+        conversationId: Long
+    ): RealmResults<ScheduledMessage> {
         return Realm.getDefaultInstance()
             .where(ScheduledMessage::class.java)
             .equalTo("conversationId", conversationId)
@@ -72,21 +76,23 @@ class ScheduledMessageRepositoryImpl @Inject constructor() : ScheduledMessageRep
     }
 
     override fun deleteScheduledMessage(id: Long) {
-        val subscription = Completable.fromAction {
-            Realm.getDefaultInstance().use { realm ->
-                val message = realm.where(ScheduledMessage::class.java)
-                    .equalTo("id", id)
-                    .findFirst()
+        val subscription =
+            Completable.fromAction {
+                    Realm.getDefaultInstance().use { realm ->
+                        val message =
+                            realm.where(ScheduledMessage::class.java).equalTo("id", id).findFirst()
 
-                realm.executeTransaction { message?.deleteFromRealm() }
-            }
-        }.subscribeOn(Schedulers.io()) // Run on a background thread and switch to main if needed
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                Timber.v("Successfully deleted scheduled messages.")
-            }, {
-                Timber.e("Deleting scheduled messages failed.")
-            })
+                        realm.executeTransaction { message?.deleteFromRealm() }
+                    }
+                }
+                .subscribeOn(
+                    Schedulers.io()
+                ) // Run on a background thread and switch to main if needed
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { Timber.v("Successfully deleted scheduled messages.") },
+                    { Timber.e("Deleting scheduled messages failed.") },
+                )
 
         disposables.add(subscription)
     }

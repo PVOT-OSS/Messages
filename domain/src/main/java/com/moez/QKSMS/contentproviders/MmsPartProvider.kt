@@ -26,7 +26,6 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import java.io.FileNotFoundException
 
-
 // the primary use case for this provider is to re-provide mms attachments but with a file name
 // as the last part of the uri as opposed to the system mms provider uri which has a part id as
 // it's 'filename' component. with this provider external applications can save/display using the
@@ -36,8 +35,7 @@ class MmsPartProvider : ContentProvider() {
     companion object {
         private fun getMmsPartIdFromUri(uri: Uri): String? {
             // ensure at least 2 path segments exist
-            if (uri.pathSegments.size < 2)
-                return null
+            if (uri.pathSegments.size < 2) return null
 
             return try {
                 return uri.pathSegments[uri.pathSegments.size - 2]
@@ -48,8 +46,7 @@ class MmsPartProvider : ContentProvider() {
 
         private fun getUnderlyingUriFromUri(uri: Uri): Uri {
             val partId = getMmsPartIdFromUri(uri) ?: return Uri.EMPTY
-            return Uri
-                .Builder()
+            return Uri.Builder()
                 .scheme(ContentResolver.SCHEME_CONTENT)
                 .authority("mms")
                 .encodedPath("part/$partId")
@@ -57,8 +54,7 @@ class MmsPartProvider : ContentProvider() {
         }
 
         fun getUriForMmsPartId(partId: Long, partName: String): Uri {
-            return Uri
-                .Builder()
+            return Uri.Builder()
                 .scheme(ContentResolver.SCHEME_CONTENT)
                 .authority("org.prauga.messages.mmspart")
                 .encodedPath("part/$partId/$partName")
@@ -75,15 +71,11 @@ class MmsPartProvider : ContentProvider() {
         projection: Array<String>?,
         selection: String?,
         selectionArgs: Array<String>?,
-        sortOrder: String?
+        sortOrder: String?,
     ): Cursor? {
-        return context?.contentResolver?.query(
-            getUnderlyingUriFromUri(uri),
-            projection,
-            selection,
-            selectionArgs,
-            sortOrder
-        )
+        return context
+            ?.contentResolver
+            ?.query(getUnderlyingUriFromUri(uri), projection, selection, selectionArgs, sortOrder)
     }
 
     override fun getType(uri: Uri): String? {
@@ -98,32 +90,21 @@ class MmsPartProvider : ContentProvider() {
         uri: Uri,
         values: ContentValues?,
         selection: String?,
-        selectionArgs: Array<String>?
+        selectionArgs: Array<String>?,
     ): Int {
-        return context?.contentResolver?.update(
-            getUnderlyingUriFromUri(uri),
-            values,
-            selection,
-            selectionArgs
-        ) ?: 0
+        return context
+            ?.contentResolver
+            ?.update(getUnderlyingUriFromUri(uri), values, selection, selectionArgs) ?: 0
     }
 
-    override fun delete(
-        uri: Uri,
-        selection: String?,
-        selectionArgs: Array<String>?
-    ): Int {
-        return context?.contentResolver?.delete(
-            getUnderlyingUriFromUri(uri),
-            selection,
-            selectionArgs
-        ) ?: 0
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
+        return context
+            ?.contentResolver
+            ?.delete(getUnderlyingUriFromUri(uri), selection, selectionArgs) ?: 0
     }
 
     @Throws(FileNotFoundException::class)
     override fun openFile(uri: Uri, mode: String): ParcelFileDescriptor? {
-        return context?.contentResolver?.openFileDescriptor(
-            getUnderlyingUriFromUri(uri),
-            mode)
+        return context?.contentResolver?.openFileDescriptor(getUnderlyingUriFromUri(uri), mode)
     }
 }

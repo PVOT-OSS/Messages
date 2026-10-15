@@ -23,9 +23,9 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.interactor.MarkFailed
 import org.prauga.messages.interactor.MarkSent
-import javax.inject.Inject
 
 class SmsSentReceiver : BroadcastReceiver() {
 
@@ -49,5 +49,4 @@ class SmsSentReceiver : BroadcastReceiver() {
             }
         }
     }
-
 }

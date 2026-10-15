@@ -18,10 +18,10 @@
  */
 package org.prauga.messages.filter
 
+import javax.inject.Inject
 import org.prauga.messages.extensions.fuzzyMatch
 import org.prauga.messages.extensions.removeAccents
 import org.prauga.messages.model.Conversation
-import javax.inject.Inject
 
 class ConversationFilter @Inject constructor(private val recipientFilter: RecipientFilter) :
     Filter<Conversation>() {
@@ -32,10 +32,10 @@ class ConversationFilter @Inject constructor(private val recipientFilter: Recipi
             return true
         }
         val normalizedSnippet = item.snippet?.removeAccents().orEmpty()
-        if (normalizedSnippet.isNotEmpty() &&
-            (normalizedSnippet.contains(query, ignoreCase = true) || normalizedSnippet.fuzzyMatch(
-                query
-            ))
+        if (
+            normalizedSnippet.isNotEmpty() &&
+                (normalizedSnippet.contains(query, ignoreCase = true) ||
+                    normalizedSnippet.fuzzyMatch(query))
         ) {
             return true
         }

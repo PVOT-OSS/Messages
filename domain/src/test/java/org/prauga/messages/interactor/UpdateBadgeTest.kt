@@ -3,22 +3,20 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.manager.ShortcutManager
-import org.prauga.messages.manager.WidgetManager
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.manager.ShortcutManager
+import org.prauga.messages.manager.WidgetManager
 
 class UpdateBadgeTest {
 
-    @Mock
-    private lateinit var shortcutManager: ShortcutManager
+    @Mock private lateinit var shortcutManager: ShortcutManager
 
-    @Mock
-    private lateinit var widgetManager: WidgetManager
+    @Mock private lateinit var widgetManager: WidgetManager
 
     private lateinit var updateBadge: UpdateBadge
 

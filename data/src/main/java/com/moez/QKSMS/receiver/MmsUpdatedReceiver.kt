@@ -23,8 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import dagger.android.AndroidInjection
-import org.prauga.messages.interactor.SyncMessage
 import javax.inject.Inject
+import org.prauga.messages.interactor.SyncMessage
 
 class MmsUpdatedReceiver : BroadcastReceiver() {
 
@@ -42,5 +42,4 @@ class MmsUpdatedReceiver : BroadcastReceiver() {
             syncMessage.execute(Uri.parse(uriString)) { pendingResult.finish() }
         }
     }
-
 }

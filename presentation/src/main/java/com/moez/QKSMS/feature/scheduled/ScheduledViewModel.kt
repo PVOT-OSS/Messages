@@ -3,6 +3,11 @@ package org.prauga.messages.feature.scheduled
 import android.content.Context
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
+import javax.inject.Named
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -11,13 +16,10 @@ import org.prauga.messages.interactor.DeleteScheduledMessages
 import org.prauga.messages.interactor.SendScheduledMessage
 import org.prauga.messages.manager.BillingManager
 import org.prauga.messages.repository.ScheduledMessageRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.plusAssign
-import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
-import javax.inject.Named
 
-class ScheduledViewModel @Inject constructor(
+class ScheduledViewModel
+@Inject
+constructor(
     @Named("conversationId") private val conversationId: Long?,
     billingManager: BillingManager,
     private val context: Context,
@@ -25,15 +27,20 @@ class ScheduledViewModel @Inject constructor(
     private val scheduledMessageRepo: ScheduledMessageRepository,
     private val sendScheduledMessageInteractor: SendScheduledMessage,
     private val deleteScheduledMessagesInteractor: DeleteScheduledMessages,
-) : QkViewModel<ScheduledView, ScheduledState>(ScheduledState(
-    scheduledMessages = scheduledMessageRepo.getScheduledMessages(),
-    conversationId = conversationId
-)) {
+) :
+    QkViewModel<ScheduledView, ScheduledState>(
+        ScheduledState(
+            scheduledMessages = scheduledMessageRepo.getScheduledMessages(),
+            conversationId = conversationId,
+        )
+    ) {
 
     init {
         loadMessages(conversationId)
-        disposables += billingManager.upgradeStatus
-            .subscribe { upgraded -> newState { copy(upgraded = upgraded) } }
+        disposables +=
+            billingManager.upgradeStatus.subscribe { upgraded ->
+                newState { copy(upgraded = upgraded) }
+            }
     }
 
     override fun bindView(view: ScheduledView) {
@@ -54,36 +61,33 @@ class ScheduledViewModel @Inject constructor(
         // show the delete message dialog if one or more messages selected
         view.optionsItemIntent
             .filter { it == R.id.delete }
-            .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages ->
-                selectedMessages
-            }
+            .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages -> selectedMessages }
             .autoDispose(view.scope())
             .subscribe {
-                val ids = it.mapNotNull(scheduledMessageRepo::getScheduledMessage)
-                    .map { it.id }
+                val ids = it.mapNotNull(scheduledMessageRepo::getScheduledMessage).map { it.id }
                 view.showDeleteDialog(ids)
             }
-
 
         // copy the selected message text to the clipboard
         view.optionsItemIntent
             .filter { it == R.id.copy }
-            .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages ->
-                selectedMessages
-            }
+            .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages -> selectedMessages }
             .autoDispose(view.scope())
             .subscribe {
-                val messages = it
-                    .mapNotNull(scheduledMessageRepo::getScheduledMessage)
-                    .sortedBy { it.date }   // same order as messages on screen
-                val text = when (messages.size) {
-                    1 -> messages.first().body
-                    else -> messages.fold(StringBuilder()) { acc, message ->
-                        if (acc.isNotEmpty() && message.body.isNotEmpty())
-                            acc.append("\n\n")
-                        acc.append(message.body)
+                val messages =
+                    it.mapNotNull(scheduledMessageRepo::getScheduledMessage).sortedBy {
+                        it.date
+                    } // same order as messages on screen
+                val text =
+                    when (messages.size) {
+                        1 -> messages.first().body
+                        else ->
+                            messages.fold(StringBuilder()) { acc, message ->
+                                if (acc.isNotEmpty() && message.body.isNotEmpty())
+                                    acc.append("\n\n")
+                                acc.append(message.body)
+                            }
                     }
-                }
 
                 ClipboardUtils.copy(context, text.toString())
             }
@@ -91,9 +95,7 @@ class ScheduledViewModel @Inject constructor(
         // send the messages now menu item selected
         view.optionsItemIntent
             .filter { it == R.id.send_now }
-            .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages ->
-                selectedMessages
-            }
+            .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages -> selectedMessages }
             .autoDispose(view.scope())
             .subscribe { view.showSendNowDialog(it) }
 
@@ -126,7 +128,6 @@ class ScheduledViewModel @Inject constructor(
                 view.clearSelection()
             }
 
-
         // edit message (fired after the confirmation dialog has been shown)
         view.editScheduledMessage
             .observeOn(AndroidSchedulers.mainThread())
@@ -143,7 +144,7 @@ class ScheduledViewModel @Inject constructor(
         // navigate back or unselect
         view.optionsItemIntent
             .filter { it == android.R.id.home }
-            .map { }
+            .map {}
             .mergeWith(view.backPressedIntent)
             .withLatestFrom(state) { _, state -> state }
             .autoDispose(view.scope())
@@ -154,23 +155,21 @@ class ScheduledViewModel @Inject constructor(
                 }
             }
 
-        view.composeIntent
-            .autoDispose(view.scope())
-            .subscribe {
-                navigator.showCompose(mode = "scheduling")
-                view.clearSelection()
-            }
+        view.composeIntent.autoDispose(view.scope()).subscribe {
+            navigator.showCompose(mode = "scheduling")
+            view.clearSelection()
+        }
 
-        view.upgradeIntent
-            .autoDispose(view.scope())
-            .subscribe { navigator.showQksmsPlusActivity("schedule_fab") }
+        view.upgradeIntent.autoDispose(view.scope()).subscribe {
+            navigator.showQksmsPlusActivity("schedule_fab")
+        }
     }
 
     private fun loadMessages(conversationId: Long?) {
-        val results = if (conversationId != null)
-            scheduledMessageRepo.getScheduledMessagesForConversation(conversationId)
-        else
-            scheduledMessageRepo.getScheduledMessages()
+        val results =
+            if (conversationId != null)
+                scheduledMessageRepo.getScheduledMessagesForConversation(conversationId)
+            else scheduledMessageRepo.getScheduledMessages()
         newState { copy(scheduledMessages = results) }
     }
 }

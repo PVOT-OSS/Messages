@@ -44,11 +44,12 @@ class StartActivityFromWidgetReceiver : BroadcastReceiver() {
         var activityToStartName = intent.getStringExtra("activityToStart")
 
         // protect against invalid launch activity
-        activityToStartName = when (activityToStartName) {
-            COMPOSE_ACTIVITY -> activityToStartName
-            MAIN_ACTIVITY -> activityToStartName
-            else -> return
-        }
+        activityToStartName =
+            when (activityToStartName) {
+                COMPOSE_ACTIVITY -> activityToStartName
+                MAIN_ACTIVITY -> activityToStartName
+                else -> return
+            }
 
         context.startActivity(
             Intent(context, Class.forName(context.packageName + activityToStartName))
@@ -56,5 +57,4 @@ class StartActivityFromWidgetReceiver : BroadcastReceiver() {
                 .putExtra("threadId", intent.getLongExtra("threadId", 0L))
         )
     }
-
 }

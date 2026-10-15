@@ -46,23 +46,25 @@ fun Uri.isContact(context: Context): Boolean =
 
 fun Uri.getResourceBytes(context: Context): ByteArray =
     try {
-        context.contentResolver.openInputStream(this)?.use {
-            it.readBytes()
-        } ?: ByteArray(0)
-    } catch (e: Exception) { ByteArray(0) }
+        context.contentResolver.openInputStream(this)?.use { it.readBytes() } ?: ByteArray(0)
+    } catch (e: Exception) {
+        ByteArray(0)
+    }
 
 fun Uri.resourceExists(context: Context): Boolean {
     var retVal: Boolean? = null
     try {
         when (scheme) {
             ContentResolver.SCHEME_CONTENT -> {
-                retVal = context.contentResolver.query(
-                    this, null, null, null, null
-                )?.use { it.moveToFirst() }
+                retVal =
+                    context.contentResolver.query(this, null, null, null, null)?.use {
+                        it.moveToFirst()
+                    }
             }
             ContentResolver.SCHEME_FILE -> retVal = this.toFile().exists()
         }
-    } catch (e: Exception) { /* nothing */
+    } catch (e: Exception) {
+        /* nothing */
     }
 
     return retVal ?: false
@@ -72,8 +74,8 @@ fun Uri.getType(context: Context): String {
     var retVal: String? = null
     when (scheme) {
         ContentResolver.SCHEME_CONTENT -> retVal = context.contentResolver.getType(this)
-        ContentResolver.SCHEME_FILE -> retVal =
-            MimeTypeMap.getSingleton().getMimeTypeFromExtension(this.toFile().extension)
+        ContentResolver.SCHEME_FILE ->
+            retVal = MimeTypeMap.getSingleton().getMimeTypeFromExtension(this.toFile().extension)
     }
     return retVal ?: "application/octect-stream"
 }
@@ -84,16 +86,18 @@ fun Uri.getName(context: Context): String? {
     try {
         when (scheme) {
             ContentResolver.SCHEME_CONTENT -> {
-                context.contentResolver.query(
-                    this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null
-                )?.use {
-                    it.moveToFirst()
-                    retVal = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
+                context.contentResolver
+                    .query(this, arrayOf(OpenableColumns.DISPLAY_NAME), null, null, null)
+                    ?.use {
+                        it.moveToFirst()
+                        retVal = it.getString(it.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    }
             }
             ContentResolver.SCHEME_FILE -> retVal = this.toFile().name
         }
-    } catch (e: Exception) { /* nothing */ }
+    } catch (e: Exception) {
+        /* nothing */
+    }
 
     return retVal
 }
@@ -104,16 +108,17 @@ fun Uri.getSize(context: Context): Long {
     try {
         when (scheme) {
             ContentResolver.SCHEME_CONTENT -> {
-                context.contentResolver.query(
-                    this, arrayOf(OpenableColumns.SIZE), null, null, null
-                )?.use {
-                    it.moveToFirst()
-                    retVal = it.getLong(it.getColumnIndex(OpenableColumns.SIZE))
-                }
+                context.contentResolver
+                    .query(this, arrayOf(OpenableColumns.SIZE), null, null, null)
+                    ?.use {
+                        it.moveToFirst()
+                        retVal = it.getLong(it.getColumnIndex(OpenableColumns.SIZE))
+                    }
             }
             ContentResolver.SCHEME_FILE -> retVal = this.toFile().length()
         }
-    } catch (e: Exception) { /* nothing */
+    } catch (e: Exception) {
+        /* nothing */
     }
 
     return retVal ?: -1
@@ -124,12 +129,10 @@ fun Uri.contactToVCard(context: Context): Uri =
     try {
         Uri.withAppendedPath(
             ContactsContract.Contacts.CONTENT_VCARD_URI,
-            context.contentResolver.query(
-                this, null, null, null, null
-            )?.use {
+            context.contentResolver.query(this, null, null, null, null)?.use {
                 it.moveToFirst()
                 it.getString(it.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY)) ?: ""
-            }
+            },
         )
     } catch (e: Exception) {
         Uri.EMPTY
@@ -140,21 +143,15 @@ fun Uri.getDefaultActivityIconForMimeType(context: Context): Drawable? =
         context.packageManager
             .queryIntentActivities(
                 Intent(Intent.ACTION_VIEW).setDataAndType(this, getType(context)),
-                PackageManager.ResolveInfoFlags.of(
-                    PackageManager.MATCH_DEFAULT_ONLY.toLong()
-                )
-            ).let {
-                if (it.size > 0) it[0].loadIcon(context.packageManager)
-                else null
-            }
+                PackageManager.ResolveInfoFlags.of(PackageManager.MATCH_DEFAULT_ONLY.toLong()),
+            )
+            .let { if (it.size > 0) it[0].loadIcon(context.packageManager) else null }
     } else {
         // else, pre-tiramisu versions
         context.packageManager
             .queryIntentActivities(
                 Intent(Intent.ACTION_VIEW).setDataAndType(this, getType(context)),
-                PackageManager.MATCH_DEFAULT_ONLY
-            ).let {
-                if (it.size > 0) it[0].loadIcon(context.packageManager)
-                else null
-            }
+                PackageManager.MATCH_DEFAULT_ONLY,
+            )
+            .let { if (it.size > 0) it[0].loadIcon(context.packageManager) else null }
     }

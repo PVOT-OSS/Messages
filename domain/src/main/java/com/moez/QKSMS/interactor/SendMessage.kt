@@ -18,18 +18,20 @@
  */
 package org.prauga.messages.interactor
 
+import io.reactivex.Flowable
+import javax.inject.Inject
 import org.prauga.messages.manager.ShortcutManager
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
-import io.reactivex.Flowable
-import javax.inject.Inject
 
-class SendMessage @Inject constructor(
+class SendMessage
+@Inject
+constructor(
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository,
     private val updateBadge: UpdateBadge,
-    private val shortcutManager: ShortcutManager
+    private val shortcutManager: ShortcutManager,
 ) : Interactor<SendMessage.Params>() {
 
     data class Params(
@@ -42,29 +44,37 @@ class SendMessage @Inject constructor(
         val applySignature: Boolean = true,
     )
 
-    override fun buildObservable(params: Params): Flowable<*> = Flowable.just(Unit)
-        .filter { params.addresses.isNotEmpty() }
-        .doOnNext {
-            // If a threadId isn't provided, try to obtain one
-            val threadId = when (params.threadId) {
-                0L -> conversationRepo.getOrCreateConversation(params.addresses)?.id ?: 0
-                else -> params.threadId
+    override fun buildObservable(params: Params): Flowable<*> =
+        Flowable.just(Unit)
+            .filter { params.addresses.isNotEmpty() }
+            .doOnNext {
+                // If a threadId isn't provided, try to obtain one
+                val threadId =
+                    when (params.threadId) {
+                        0L -> conversationRepo.getOrCreateConversation(params.addresses)?.id ?: 0
+                        else -> params.threadId
+                    }
+
+                // if unable to find or create a conversation (and/or underlying threadId), fail
+                if (threadId == 0L) return@doOnNext
+
+                params.apply {
+                    messageRepo.sendMessage(
+                        subId,
+                        threadId,
+                        addresses,
+                        body,
+                        attachments,
+                        delay,
+                        applySignature,
+                    )
+                }
+
+                conversationRepo.updateConversations(threadId)
+
+                conversationRepo.markUnarchived(threadId)
+
+                shortcutManager.reportShortcutUsed(threadId)
             }
-
-            // if unable to find or create a conversation (and/or underlying threadId), fail
-            if (threadId == 0L)
-                return@doOnNext
-
-            params.apply {
-                messageRepo.sendMessage(subId, threadId, addresses, body, attachments, delay, applySignature)
-            }
-
-            conversationRepo.updateConversations(threadId)
-
-            conversationRepo.markUnarchived(threadId)
-
-            shortcutManager.reportShortcutUsed(threadId)
-        }
-        .flatMap { updateBadge.buildObservable(Unit) } // Update the widget
-
+            .flatMap { updateBadge.buildObservable(Unit) } // Update the widget
 }

@@ -21,10 +21,8 @@ package org.prauga.messages.common.widget
 import android.content.Context
 import android.util.AttributeSet
 
-class TightTextView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null
-) : QkTextView(context, attrs) {
+class TightTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    QkTextView(context, attrs) {
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -35,9 +33,7 @@ class TightTextView @JvmOverloads constructor(
             return
         }
 
-        val maxLineWidth = (0 until layout.lineCount)
-            .map(layout::getLineWidth)
-            .max() ?: 0f
+        val maxLineWidth = (0 until layout.lineCount).map(layout::getLineWidth).max() ?: 0f
 
         val width =
             Math.ceil(maxLineWidth.toDouble()).toInt() + compoundPaddingLeft + compoundPaddingRight
@@ -47,5 +43,4 @@ class TightTextView @JvmOverloads constructor(
             super.onMeasure(widthSpec, heightMeasureSpec)
         }
     }
-
 }

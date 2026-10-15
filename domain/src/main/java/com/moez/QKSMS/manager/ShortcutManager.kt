@@ -29,5 +29,4 @@ interface ShortcutManager {
     fun getShortcut(threadId: Long): ShortcutInfoCompat?
 
     fun reportShortcutUsed(threadId: Long)
-
 }

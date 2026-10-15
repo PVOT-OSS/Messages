@@ -19,12 +19,14 @@ import timber.log.Timber
 fun Conversation.getThemedIcon(context: Context, width: Int, height: Int): IconCompat {
     return try {
         val inflater = LayoutInflater.from(context)
-        val parent = ConstraintLayout(context).apply {
-            layoutParams = ConstraintLayout.LayoutParams(width, height)
-        }
-        val view = inflater.inflate(R.layout.group_avatar_view, parent, true).apply {
-            layoutParams = ConstraintLayout.LayoutParams(width, height)
-        }
+        val parent =
+            ConstraintLayout(context).apply {
+                layoutParams = ConstraintLayout.LayoutParams(width, height)
+            }
+        val view =
+            inflater.inflate(R.layout.group_avatar_view, parent, true).apply {
+                layoutParams = ConstraintLayout.LayoutParams(width, height)
+            }
 
         val avatar1 = view.findViewById<AvatarView>(R.id.avatar1)
         val avatar2 = view.findViewById<AvatarView>(R.id.avatar2)
@@ -33,10 +35,8 @@ fun Conversation.getThemedIcon(context: Context, width: Int, height: Int): IconC
         val multipleRecipients = recipients.size > 1
 
         avatar1Frame.setBackgroundTint(
-            if (multipleRecipients)
-                context.resolveThemeColor(android.R.attr.windowBackground)
-            else
-                context.getColorCompat(android.R.color.transparent)
+            if (multipleRecipients) context.resolveThemeColor(android.R.attr.windowBackground)
+            else context.getColorCompat(android.R.color.transparent)
         )
         avatar1Frame.updateLayoutParams<ConstraintLayout.LayoutParams> {
             matchConstraintPercentWidth = if (multipleRecipients) 0.75f else 1.0f
@@ -48,7 +48,7 @@ fun Conversation.getThemedIcon(context: Context, width: Int, height: Int): IconC
 
         view.measure(
             MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
         )
         view.layout(0, 0, view.measuredWidth, view.measuredHeight)
 

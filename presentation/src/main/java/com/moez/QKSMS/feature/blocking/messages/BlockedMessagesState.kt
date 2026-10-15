@@ -18,10 +18,10 @@
  */
 package org.prauga.messages.feature.blocking.messages
 
-import org.prauga.messages.model.Conversation
 import io.realm.RealmResults
+import org.prauga.messages.model.Conversation
 
 data class BlockedMessagesState(
     val data: RealmResults<Conversation>? = null,
-    val selected: Int = 0
+    val selected: Int = 0,
 )

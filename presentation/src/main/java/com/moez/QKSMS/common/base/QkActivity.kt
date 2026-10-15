@@ -31,16 +31,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.app.BaseViewBindingActivity
 import org.prauga.messages.util.Preferences
-import javax.inject.Inject
 
-abstract class QkActivity<Vb : ViewBinding>(
-    inflate: (LayoutInflater) -> Vb
-) : BaseViewBindingActivity<Vb>(inflate) {
-    @Inject
-    lateinit var prefs: Preferences
+abstract class QkActivity<Vb : ViewBinding>(inflate: (LayoutInflater) -> Vb) :
+    BaseViewBindingActivity<Vb>(inflate) {
+    @Inject lateinit var prefs: Preferences
 
     protected val menu: Subject<Menu> = BehaviorSubject.create()
 
@@ -104,7 +102,7 @@ abstract class QkActivity<Vb : ViewBinding>(
         if (disableScreenshots) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
+                WindowManager.LayoutParams.FLAG_SECURE,
             )
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -112,5 +110,6 @@ abstract class QkActivity<Vb : ViewBinding>(
     }
 
     protected fun findToolbar(): Toolbar? = findViewById(R.id.toolbar)
+
     protected fun findToolbarTitle(): TextView? = findViewById(R.id.toolbarTitle)
 }

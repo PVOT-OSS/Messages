@@ -24,20 +24,22 @@ import android.graphics.Color
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.graphics.ColorUtils
 import io.reactivex.Observable
+import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.math.absoluteValue
 import org.prauga.messages.R
 import org.prauga.messages.common.util.extensions.getColorCompat
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
-import javax.inject.Inject
-import javax.inject.Singleton
-import kotlin.math.absoluteValue
 
 @Singleton
-class Colors @Inject constructor(
+class Colors
+@Inject
+constructor(
     private val context: Context,
     private val phoneNumberUtils: PhoneNumberUtils,
-    private val prefs: Preferences
+    private val prefs: Preferences,
 ) {
 
     data class Theme(val theme: Int, private val colors: Colors) {
@@ -47,32 +49,35 @@ class Colors @Inject constructor(
         val textTertiary by lazy { colors.textTertiaryOnThemeForColor(theme) }
     }
 
-    val materialColors: List<List<Int>> = listOf(
-        R.array.material_red,
-        R.array.material_pink,
-        R.array.material_purple,
-        R.array.material_deep_purple,
-        R.array.material_indigo,
-        R.array.material_blue,
-        R.array.material_light_blue,
-        R.array.material_cyan,
-        R.array.material_teal,
-        R.array.material_green,
-        R.array.material_light_green,
-        R.array.material_lime,
-        R.array.material_yellow,
-        R.array.material_amber,
-        R.array.material_orange,
-        R.array.material_deep_orange,
-        R.array.material_brown,
-        R.array.material_gray,
-        R.array.material_blue_gray
-    )
-        .map { res -> context.resources.obtainTypedArray(res) }
-        .map { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
+    val materialColors: List<List<Int>> =
+        listOf(
+                R.array.material_red,
+                R.array.material_pink,
+                R.array.material_purple,
+                R.array.material_deep_purple,
+                R.array.material_indigo,
+                R.array.material_blue,
+                R.array.material_light_blue,
+                R.array.material_cyan,
+                R.array.material_teal,
+                R.array.material_green,
+                R.array.material_light_green,
+                R.array.material_lime,
+                R.array.material_yellow,
+                R.array.material_amber,
+                R.array.material_orange,
+                R.array.material_deep_orange,
+                R.array.material_brown,
+                R.array.material_gray,
+                R.array.material_blue_gray,
+            )
+            .map { res -> context.resources.obtainTypedArray(res) }
+            .map { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
 
-    private val randomColors: List<Int> = context.resources.obtainTypedArray(R.array.random_colors)
-        .let { typedArray -> (0 until typedArray.length()).map(typedArray::getColorOrThrow) }
+    private val randomColors: List<Int> =
+        context.resources.obtainTypedArray(R.array.random_colors).let { typedArray ->
+            (0 until typedArray.length()).map(typedArray::getColorOrThrow)
+        }
 
     private val minimumContrastRatio = 2
 
@@ -86,21 +91,22 @@ class Colors @Inject constructor(
 
     fun theme(recipient: Recipient? = null): Theme {
         val pref = prefs.theme(recipient?.id ?: 0)
-        val color = when {
-            pref.isSet -> pref.get()
-            recipient != null -> generateColor(recipient)
-            else -> pref.get()
-        }
+        val color =
+            when {
+                pref.isSet -> pref.get()
+                recipient != null -> generateColor(recipient)
+                else -> pref.get()
+            }
         return Theme(color, this)
     }
 
     fun themeObservable(recipient: Recipient? = null): Observable<Theme> {
-        val pref = when (recipient) {
-            null -> prefs.theme()
-            else -> prefs.theme(recipient.id, generateColor(recipient))
-        }
-        return pref.asObservable()
-            .map { color -> Theme(color, this) }
+        val pref =
+            when (recipient) {
+                null -> prefs.theme()
+                else -> prefs.theme(recipient.id, generateColor(recipient))
+            }
+        return pref.asObservable().map { color -> Theme(color, this) }
     }
 
     fun highlightColorForTheme(theme: Int): Int {
@@ -108,34 +114,45 @@ class Colors @Inject constructor(
         return ColorUtils.setAlphaComponent(blended, 160) // readable overlay
     }
 
-    fun textPrimaryOnThemeForColor(color: Int): Int = color
-        .let { theme -> measureLuminance(theme) }
-        .let { themeLuminance -> primaryTextLuminance / themeLuminance }
-        .let { contrastRatio -> contrastRatio < minimumContrastRatio }
-        .let { contrastRatio -> if (contrastRatio) R.color.textPrimary else R.color.textPrimaryDark }
-        .let { res -> context.getColorCompat(res) }
+    fun textPrimaryOnThemeForColor(color: Int): Int =
+        color
+            .let { theme -> measureLuminance(theme) }
+            .let { themeLuminance -> primaryTextLuminance / themeLuminance }
+            .let { contrastRatio -> contrastRatio < minimumContrastRatio }
+            .let { contrastRatio ->
+                if (contrastRatio) R.color.textPrimary else R.color.textPrimaryDark
+            }
+            .let { res -> context.getColorCompat(res) }
 
-    fun textSecondaryOnThemeForColor(color: Int): Int = color
-        .let { theme -> measureLuminance(theme) }
-        .let { themeLuminance -> secondaryTextLuminance / themeLuminance }
-        .let { contrastRatio -> contrastRatio < minimumContrastRatio }
-        .let { contrastRatio -> if (contrastRatio) R.color.textSecondary else R.color.textSecondaryDark }
-        .let { res -> context.getColorCompat(res) }
+    fun textSecondaryOnThemeForColor(color: Int): Int =
+        color
+            .let { theme -> measureLuminance(theme) }
+            .let { themeLuminance -> secondaryTextLuminance / themeLuminance }
+            .let { contrastRatio -> contrastRatio < minimumContrastRatio }
+            .let { contrastRatio ->
+                if (contrastRatio) R.color.textSecondary else R.color.textSecondaryDark
+            }
+            .let { res -> context.getColorCompat(res) }
 
-    fun textTertiaryOnThemeForColor(color: Int): Int = color
-        .let { theme -> measureLuminance(theme) }
-        .let { themeLuminance -> tertiaryTextLuminance / themeLuminance }
-        .let { contrastRatio -> contrastRatio < minimumContrastRatio }
-        .let { contrastRatio -> if (contrastRatio) R.color.textTertiary else R.color.textTertiaryDark }
-        .let { res -> context.getColorCompat(res) }
+    fun textTertiaryOnThemeForColor(color: Int): Int =
+        color
+            .let { theme -> measureLuminance(theme) }
+            .let { themeLuminance -> tertiaryTextLuminance / themeLuminance }
+            .let { contrastRatio -> contrastRatio < minimumContrastRatio }
+            .let { contrastRatio ->
+                if (contrastRatio) R.color.textTertiary else R.color.textTertiaryDark
+            }
+            .let { res -> context.getColorCompat(res) }
 
     /**
-     * Measures the luminance value of a color to be able to measure the contrast ratio between two materialColors
-     * Based on https://stackoverflow.com/a/9733420
+     * Measures the luminance value of a color to be able to measure the contrast ratio between two
+     * materialColors Based on https://stackoverflow.com/a/9733420
      */
     private fun measureLuminance(color: Int): Double {
-        val array = intArrayOf(Color.red(color), Color.green(color), Color.blue(color))
-            .map { if (it < 0.03928) it / 12.92 else Math.pow((it + 0.055) / 1.055, 2.4) }
+        val array =
+            intArrayOf(Color.red(color), Color.green(color), Color.blue(color)).map {
+                if (it < 0.03928) it / 12.92 else Math.pow((it + 0.055) / 1.055, 2.4)
+            }
 
         return 0.2126 * array[0] + 0.7152 * array[1] + 0.0722 * array[2] + 0.05
     }

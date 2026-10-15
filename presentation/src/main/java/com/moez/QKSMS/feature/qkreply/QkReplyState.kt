@@ -31,5 +31,5 @@ data class QkReplyState(
     val data: Pair<Conversation, RealmResults<Message>>? = null,
     val remaining: String = "",
     val subscription: SubscriptionInfoCompat? = null,
-    val canSend: Boolean = false
+    val canSend: Boolean = false,
 )

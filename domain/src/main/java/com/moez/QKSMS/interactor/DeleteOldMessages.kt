@@ -18,27 +18,31 @@
  */
 package org.prauga.messages.interactor
 
+import io.reactivex.Flowable
+import javax.inject.Inject
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.Flowable
 import timber.log.Timber
-import javax.inject.Inject
 
-class DeleteOldMessages @Inject constructor(
+class DeleteOldMessages
+@Inject
+constructor(
     private val conversationRepo: ConversationRepository,
     private val messageRepo: MessageRepository,
-    private val prefs: Preferences
+    private val prefs: Preferences,
 ) : Interactor<Unit>() {
 
-    override fun buildObservable(params: Unit): Flowable<*> = Flowable.fromCallable {
-        val maxAge = prefs.autoDelete.get().takeIf { it > 0 } ?: return@fromCallable
-        val counts = messageRepo.getOldMessageCounts(maxAge)
-        val threadIds = counts.keys.toLongArray()
+    override fun buildObservable(params: Unit): Flowable<*> =
+        Flowable.fromCallable {
+            val maxAge = prefs.autoDelete.get().takeIf { it > 0 } ?: return@fromCallable
+            val counts = messageRepo.getOldMessageCounts(maxAge)
+            val threadIds = counts.keys.toLongArray()
 
-        Timber.d("Deleting ${counts.values.sum()} old messages from ${threadIds.size} conversations")
-        messageRepo.deleteOldMessages(maxAge)
-        conversationRepo.updateConversations(*threadIds)
-    }
-
+            Timber.d(
+                "Deleting ${counts.values.sum()} old messages from ${threadIds.size} conversations"
+            )
+            messageRepo.deleteOldMessages(maxAge)
+            conversationRepo.updateConversations(*threadIds)
+        }
 }

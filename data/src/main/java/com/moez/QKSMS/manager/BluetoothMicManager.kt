@@ -27,20 +27,20 @@ import android.media.AudioManager
 import android.media.AudioManager.GET_DEVICES_INPUTS
 import androidx.core.content.ContextCompat
 
-
 // this class is, by design, as simplistic it can be to support easy and fast connection
 // for recording from first bluetooth mic found, if any
 
-class BluetoothMicManager(
-    private val context: Context,
-    private val callbacks: Callbacks
-)
-    : BroadcastReceiver() {
+class BluetoothMicManager(private val context: Context, private val callbacks: Callbacks) :
+    BroadcastReceiver() {
     interface Callbacks {
         fun onNoDeviceFound()
+
         fun onDeviceFound(device: AudioDeviceInfo?)
+
         fun onConnecting(device: AudioDeviceInfo?)
+
         fun onConnected(device: AudioDeviceInfo?)
+
         fun onDisconnected(device: AudioDeviceInfo?)
     }
 
@@ -50,14 +50,14 @@ class BluetoothMicManager(
             context,
             this,
             IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_UPDATED),
-            ContextCompat.RECEIVER_NOT_EXPORTED
+            ContextCompat.RECEIVER_NOT_EXPORTED,
         )
     }
 
     enum class StartBluetoothDevice {
         NoDevice,
         Connecting,
-        Connected
+        Connected,
     }
 
     var device: AudioDeviceInfo? = null
@@ -67,8 +67,7 @@ class BluetoothMicManager(
     private var closed: Boolean = false
 
     fun close() {
-        if (closed)
-            return
+        if (closed) return
         closed = true
 
         device = null
@@ -85,19 +84,18 @@ class BluetoothMicManager(
         // get all audio input devices
         val allAudioInputDevices = audioManager.getDevices(GET_DEVICES_INPUTS)
 
-// @TODO: below code can be used for BLE headset devices if and when one can be tested
-//      : also need to register for BLE headset intent broadcasts and other things later
-//        // firstly (highest priority), check for a connected BLE headset input device
-//        for (btInputDevice in allAudioInputDevices) {
-//            if (btInputDevice.type == AudioDeviceInfo.TYPE_BLE_HEADSET) {
-//                device = btInputDevice
-//                break
-//            }
-//        }
+        // @TODO: below code can be used for BLE headset devices if and when one can be tested
+        //      : also need to register for BLE headset intent broadcasts and other things later
+        //        // firstly (highest priority), check for a connected BLE headset input device
+        //        for (btInputDevice in allAudioInputDevices) {
+        //            if (btInputDevice.type == AudioDeviceInfo.TYPE_BLE_HEADSET) {
+        //                device = btInputDevice
+        //                break
+        //            }
+        //        }
 
         // if no ble device found, check if platform supports non-phone-call sco connections
-        if ((device == null) &&
-            (audioManager.isBluetoothScoAvailableOffCall)) {
+        if ((device == null) && (audioManager.isBluetoothScoAvailableOffCall)) {
             // find first SCO input device
             for (btInputDevice in allAudioInputDevices) {
                 if (btInputDevice.type == AudioDeviceInfo.TYPE_BLUETOOTH_SCO) {
@@ -117,14 +115,14 @@ class BluetoothMicManager(
         callbacks.onDeviceFound(device)
 
         // start sco connection on bluetooth device (even if already started by other app)
-        try {    // see https://stackoverflow.com/a/26929741 for try-catch reason
+        try { // see https://stackoverflow.com/a/26929741 for try-catch reason
             audioManager.startBluetoothSco()
+        } catch (e: Exception) {
+            /* nothing */
         }
-        catch (e: Exception) { /* nothing */ }
 
         // if sco device is already on (maybe by another app?) callback now
-        if (audioManager.isBluetoothScoOn)
-            callbacks.onConnected(device)
+        if (audioManager.isBluetoothScoOn) callbacks.onConnected(device)
     }
 
     override fun onReceive(context: Context, intent: Intent) {

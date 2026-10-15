@@ -18,9 +18,9 @@
  */
 package org.prauga.messages.feature.compose
 
+import java.util.concurrent.TimeUnit
 import org.prauga.messages.R
 import org.prauga.messages.model.Message
-import java.util.concurrent.TimeUnit
 
 object BubbleUtils {
 
@@ -37,15 +37,17 @@ object BubbleUtils {
         emojiOnly: Boolean,
         canGroupWithPrevious: Boolean,
         canGroupWithNext: Boolean,
-        isMe: Boolean
+        isMe: Boolean,
     ): Int {
         return when {
             emojiOnly -> R.drawable.message_emoji
-            !canGroupWithPrevious && canGroupWithNext -> if (isMe) R.drawable.message_out_first else R.drawable.message_in_first
-            canGroupWithPrevious && canGroupWithNext -> if (isMe) R.drawable.message_out_middle else R.drawable.message_in_middle
-            canGroupWithPrevious && !canGroupWithNext -> if (isMe) R.drawable.message_out_last else R.drawable.message_in_last
+            !canGroupWithPrevious && canGroupWithNext ->
+                if (isMe) R.drawable.message_out_first else R.drawable.message_in_first
+            canGroupWithPrevious && canGroupWithNext ->
+                if (isMe) R.drawable.message_out_middle else R.drawable.message_in_middle
+            canGroupWithPrevious && !canGroupWithNext ->
+                if (isMe) R.drawable.message_out_last else R.drawable.message_in_last
             else -> R.drawable.message_only
         }
     }
-
 }

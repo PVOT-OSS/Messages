@@ -22,9 +22,9 @@ import android.database.Cursor
 import android.provider.Telephony.Mms
 import android.provider.Telephony.MmsSms
 import android.provider.Telephony.Sms
+import java.util.Arrays
 import org.prauga.messages.model.Message
 import timber.log.Timber
-import java.util.Arrays
 
 interface CursorToMessage : Mapper<Pair<Cursor, CursorToMessage.MessageColumns>, Message> {
 
@@ -60,11 +60,14 @@ interface CursorToMessage : Mapper<Pair<Cursor, CursorToMessage.MessageColumns>,
         val mmsErrorType by lazy { getColumnIndex(MmsSms.PendingMessages.ERROR_TYPE) }
         val mmsStatus by lazy { getColumnIndex(Mms.STATUS) }
 
-        private fun getColumnIndex(columnsName: String) = try {
-            cursor.getColumnIndexOrThrow(columnsName)
-        } catch (e: Exception) {
-            Timber.e("Couldn't find column \'$columnsName\' in ${Arrays.toString(cursor.columnNames)}")
-            -1
-        }
+        private fun getColumnIndex(columnsName: String) =
+            try {
+                cursor.getColumnIndexOrThrow(columnsName)
+            } catch (e: Exception) {
+                Timber.e(
+                    "Couldn't find column \'$columnsName\' in ${Arrays.toString(cursor.columnNames)}"
+                )
+                -1
+            }
     }
 }

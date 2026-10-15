@@ -31,13 +31,18 @@ import org.prauga.messages.extensions.joinTo
 
 open class Message : RealmObject() {
 
-    enum class AttachmentType { TEXT, IMAGE, VIDEO, AUDIO, SLIDESHOW, NOT_LOADED }
+    enum class AttachmentType {
+        TEXT,
+        IMAGE,
+        VIDEO,
+        AUDIO,
+        SLIDESHOW,
+        NOT_LOADED,
+    }
 
-    @PrimaryKey
-    var id: Long = 0
+    @PrimaryKey var id: Long = 0
 
-    @Index
-    var threadId: Long = 0
+    @Index var threadId: Long = 0
 
     // The MMS-SMS content provider returns messages where duplicate ids can exist. This is because
     // SMS and MMS are stored in separate tables. We can't use these ids as our realm message id
@@ -99,28 +104,29 @@ open class Message : RealmObject() {
 
     fun isOutgoingMessage(): Boolean {
         val isOutgoingMms = isMms() && boxId == Mms.MESSAGE_BOX_OUTBOX
-        val isOutgoingSms = isSms() && (boxId == Sms.MESSAGE_TYPE_FAILED
-                || boxId == Sms.MESSAGE_TYPE_OUTBOX
-                || boxId == Sms.MESSAGE_TYPE_QUEUED)
+        val isOutgoingSms =
+            isSms() &&
+                (boxId == Sms.MESSAGE_TYPE_FAILED ||
+                    boxId == Sms.MESSAGE_TYPE_OUTBOX ||
+                    boxId == Sms.MESSAGE_TYPE_QUEUED)
 
         return isOutgoingMms || isOutgoingSms
     }
 
-    /**
-     * Returns the text that should be copied to the clipboard
-     */
+    /** Returns the text that should be copied to the clipboard */
     fun getText(withSubject: Boolean = true): String {
-        val messageText = when {
-            isSms() -> body
-            else -> parts
-                .filter { it.type.lowercase() == "text/plain" }
-                .mapNotNull { it.text }
-                .filter { it.isNotBlank() }
-                .joinToString("\n") { text -> text }
-        }
+        val messageText =
+            when {
+                isSms() -> body
+                else ->
+                    parts
+                        .filter { it.type.lowercase() == "text/plain" }
+                        .mapNotNull { it.text }
+                        .filter { it.isNotBlank() }
+                        .joinToString("\n") { text -> text }
+            }
 
-        if (!withSubject)
-            return messageText
+        if (!withSubject) return messageText
 
         return getCleansedSubject().joinTo(messageText, "\n")
     }
@@ -129,42 +135,36 @@ open class Message : RealmObject() {
     fun hasNonWhitespaceText(): Boolean {
         return when {
             isSms() -> body.isNotBlank()
-            else -> parts
-                .filter { it.type.lowercase() == "text/plain" }
-                .mapNotNull { it.text }
-                .any { it.isNotBlank() }
+            else ->
+                parts
+                    .filter { it.type.lowercase() == "text/plain" }
+                    .mapNotNull { it.text }
+                    .any { it.isNotBlank() }
         }
     }
 
     /**
-     * Returns the text that should be displayed when a preview of the message
-     * needs to be displayed, such as in the conversation view or in a notification
+     * Returns the text that should be displayed when a preview of the message needs to be
+     * displayed, such as in the conversation view or in a notification
      */
-    fun getSummary(): String = when {
-        isSms() -> body
+    fun getSummary(): String =
+        when {
+            isSms() -> body
 
-        else -> {
-            val sb = StringBuilder()
+            else -> {
+                val sb = StringBuilder()
 
-            // Add subject
-            getCleansedSubject().takeIf {
-                it.isNotEmpty()
-            }?.run(sb::appendLine)
+                // Add subject
+                getCleansedSubject().takeIf { it.isNotEmpty() }?.run(sb::appendLine)
 
-            // Add parts
-            parts.mapNotNull {
-                it.getSummary()
-            }.forEach { summary ->
-                sb.appendLine(summary)
+                // Add parts
+                parts.mapNotNull { it.getSummary() }.forEach { summary -> sb.appendLine(summary) }
+
+                sb.toString().trim()
             }
-
-            sb.toString().trim()
         }
-    }
 
-    /**
-     * Cleanses the subject in case it's useless, so that the UI doesn't have to show it
-     */
+    /** Cleanses the subject in case it's useless, so that the UI doesn't have to show it */
     fun getCleansedSubject(): String {
         val uselessSubjects = listOf("no subject", "NoSubject", "<not present>")
 
@@ -183,29 +183,30 @@ open class Message : RealmObject() {
 
     fun isFailedMessage(): Boolean {
         val isFailedMms =
-            isMms() && (errorType >= MmsSms.ERR_TYPE_GENERIC_PERMANENT || boxId == Mms.MESSAGE_BOX_FAILED)
+            isMms() &&
+                (errorType >= MmsSms.ERR_TYPE_GENERIC_PERMANENT || boxId == Mms.MESSAGE_BOX_FAILED)
         val isFailedSms = isSms() && boxId == Sms.MESSAGE_TYPE_FAILED
         return isFailedMms || isFailedSms
     }
 
-    fun compareSender(other: Message): Boolean = when {
-        isMe() && other.isMe() -> subId == other.subId
-        !isMe() && !other.isMe() -> subId == other.subId && address == other.address
-        else -> false
-    }
+    fun compareSender(other: Message): Boolean =
+        when {
+            isMe() && other.isMe() -> subId == other.subId
+            !isMe() && !other.isMe() -> subId == other.subId && address == other.address
+            else -> false
+        }
 }
 
 // extension function to get all text from a list of messages
 fun List<Message>.getText(withSubject: Boolean = true): String =
     foldIndexed(StringBuilder()) { index, acc, message ->
-        when {
-            index == 0 ->
-                acc.append(message.getText(withSubject))
+            when {
+                index == 0 -> acc.append(message.getText(withSubject))
 
-            this[index - 1].compareSender(message) ->
-                acc.appendLine().append(message.getText(withSubject))
+                this[index - 1].compareSender(message) ->
+                    acc.appendLine().append(message.getText(withSubject))
 
-            else ->
-                acc.appendLine().appendLine().append(message.getText(withSubject))
+                else -> acc.appendLine().appendLine().append(message.getText(withSubject))
+            }
         }
-    }.toString()
+        .toString()

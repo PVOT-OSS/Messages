@@ -6,8 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.Path
 import android.provider.ContactsContract
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.ContextThemeWrapper
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.MeasureSpec
@@ -20,28 +20,23 @@ import androidx.core.graphics.drawable.IconCompat
 import androidx.core.widget.TextViewCompat
 import org.prauga.messages.R
 import org.prauga.messages.common.util.Colors
-import org.prauga.messages.common.util.extensions.getColorCompat
 import org.prauga.messages.common.widget.QkTextView
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.util.GlideApp
 import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
 
-
 fun Recipient.getThemedIcon(
     context: Context,
     theme: Colors.Theme,
     width: Int,
-    height: Int
+    height: Int,
 ): IconCompat {
     var icon: IconCompat? = null
     val photoUri = contact?.photoUri
     if (photoUri != null) {
-        val req = GlideApp.with(context)
-            .asBitmap()
-            .circleCrop()
-            .load(photoUri)
-            .submit(width, height)
+        val req =
+            GlideApp.with(context).asBitmap().circleCrop().load(photoUri).submit(width, height)
 
         val bitmap = tryOrNull { req.get() }
         if (bitmap != null) {
@@ -67,25 +62,30 @@ fun Recipient.getThemedIcon(
             textView.setTextColor(context.getColorCompat(R.color.avatar_icon_color))
             TextViewCompat.setAutoSizeTextTypeWithDefaults(
                 textView,
-                TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE
+                TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE,
             )
             textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, height * 0.5f)
-            iconView.layoutParams = FrameLayout.LayoutParams(
-                (width * 0.5).toInt(), (height * 0.5).toInt(),
-                Gravity.CENTER
-            )
+            iconView.layoutParams =
+                FrameLayout.LayoutParams(
+                    (width * 0.5).toInt(),
+                    (height * 0.5).toInt(),
+                    Gravity.CENTER,
+                )
 
             if (contact != null) {
-                val initials = contact!!.name
-                    .substringBefore(',')
-                    .split(" ")
-                    .filter { name -> name.isNotEmpty() }
-                    .map { name -> name[0] }
-                    .filter { initial -> initial.isLetterOrDigit() }
-                    .map { initial -> initial.toString() }
+                val initials =
+                    contact!!
+                        .name
+                        .substringBefore(',')
+                        .split(" ")
+                        .filter { name -> name.isNotEmpty() }
+                        .map { name -> name[0] }
+                        .filter { initial -> initial.isLetterOrDigit() }
+                        .map { initial -> initial.toString() }
                 if (initials.isNotEmpty()) {
                     textView.text =
-                        if (initials.size > 1) initials.first() + initials.last() else initials.first()
+                        if (initials.size > 1) initials.first() + initials.last()
+                        else initials.first()
                     iconView.visibility = GONE
                 } else {
                     textView.text = null
@@ -100,25 +100,28 @@ fun Recipient.getThemedIcon(
             container.apply {
                 measure(
                     MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
-                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+                    MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
                 )
                 layout(0, 0, measuredWidth, measuredHeight)
             }
 
-            val bitmap = createBitmap(
-                container.measuredWidth,
-                container.measuredHeight,
-                Bitmap.Config.ARGB_8888
-            )
-            val canvas = android.graphics.Canvas(bitmap)
-            canvas.clipPath(Path().apply {
-                addCircle(
-                    (width / 2).toFloat(),
-                    (height / 2).toFloat(),
-                    (width / 2).toFloat(),
-                    Path.Direction.CW
+            val bitmap =
+                createBitmap(
+                    container.measuredWidth,
+                    container.measuredHeight,
+                    Bitmap.Config.ARGB_8888,
                 )
-            })
+            val canvas = android.graphics.Canvas(bitmap)
+            canvas.clipPath(
+                Path().apply {
+                    addCircle(
+                        (width / 2).toFloat(),
+                        (height / 2).toFloat(),
+                        (width / 2).toFloat(),
+                        Path.Direction.CW,
+                    )
+                }
+            )
             container.draw(canvas)
 
             icon = IconCompat.createWithBitmap(bitmap)
@@ -134,7 +137,7 @@ fun Recipient.getThemedIcon(
 fun Person.Builder.fromRecipient(
     recipient: Recipient,
     context: Context,
-    colors: Colors
+    colors: Colors,
 ): Person.Builder {
     setName(recipient.getDisplayName())
     setIcon(recipient.getThemedIcon(context, colors.theme(recipient), 512, 512))
@@ -148,9 +151,7 @@ fun Person.Builder.fromRecipient(
     return this
 }
 
-/**
- * Return a Person object corresponding to this recipient
- */
+/** Return a Person object corresponding to this recipient */
 @TargetApi(29)
 fun Recipient.toPerson(context: Context, colors: Colors): Person {
     val person = Person.Builder().fromRecipient(this, context, colors)

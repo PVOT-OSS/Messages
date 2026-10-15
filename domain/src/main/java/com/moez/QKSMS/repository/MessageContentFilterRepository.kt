@@ -18,9 +18,9 @@
  */
 package org.prauga.messages.repository
 
+import io.realm.RealmResults
 import org.prauga.messages.model.MessageContentFilter
 import org.prauga.messages.model.MessageContentFilterData
-import io.realm.RealmResults
 
 interface MessageContentFilterRepository {
 
@@ -33,5 +33,4 @@ interface MessageContentFilterRepository {
     fun isBlocked(messageBody: String, address: String, contactsRepo: ContactRepository): Boolean
 
     fun removeFilter(id: Long)
-
 }

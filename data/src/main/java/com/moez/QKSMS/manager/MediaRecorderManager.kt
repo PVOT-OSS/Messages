@@ -24,9 +24,9 @@ import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import androidx.core.net.toFile
+import java.util.UUID
 import org.prauga.messages.common.util.FileNamingConfig
 import org.prauga.messages.util.FileUtils
-import java.util.UUID
 
 object MediaRecorderManager : MediaRecorder() {
 
@@ -35,7 +35,7 @@ object MediaRecorderManager : MediaRecorder() {
         DataSourceConfigured,
         Prepared,
         Recording,
-        Error
+        Error,
     }
 
     const val AUDIO_FILE_PREFIX = FileNamingConfig.AUDIO_FILE_PREFIX
@@ -49,29 +49,27 @@ object MediaRecorderManager : MediaRecorder() {
 
     fun stopRecording(): Uri {
         return try {
-            if (recordingState == RecordingState.Recording)
-                stop()
+            if (recordingState == RecordingState.Recording) stop()
 
             reset()
             recordingState = RecordingState.Initial
 
             uri
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Uri.EMPTY
         }
     }
 
     fun startRecording(context: Context, preferredAudioDevice: AudioDeviceInfo? = null): Uri {
         return try {
-            val (newUri, e) = FileUtils.create(
-                FileUtils.Companion.Location.Cache,
-                context,
-                "$AUDIO_FILE_PREFIX${UUID.randomUUID()}$AUDIO_FILE_SUFFIX",
-                ""
-            )
-            if (e is Exception)
-                throw e
+            val (newUri, e) =
+                FileUtils.create(
+                    FileUtils.Companion.Location.Cache,
+                    context,
+                    "$AUDIO_FILE_PREFIX${UUID.randomUUID()}$AUDIO_FILE_SUFFIX",
+                    "",
+                )
+            if (e is Exception) throw e
 
             uri = newUri
 
@@ -97,10 +95,8 @@ object MediaRecorderManager : MediaRecorder() {
             recordingState = RecordingState.Recording
 
             uri
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Uri.EMPTY
         }
     }
-
 }

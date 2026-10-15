@@ -33,8 +33,8 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
     private val phoneNumberUtil = PhoneNumberUtil.createInstance(context)
 
     /**
-     * Android's implementation is too loose and causes false positives
-     * libphonenumber is stricter but too slow
+     * Android's implementation is too loose and causes false positives libphonenumber is stricter
+     * but too slow
      *
      * This method will run successfully stricter checks without compromising much speed
      */
@@ -75,5 +75,4 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
     private fun parse(number: CharSequence): Phonenumber.PhoneNumber? {
         return tryOrNull(false) { phoneNumberUtil.parse(number, countryCode) }
     }
-
 }

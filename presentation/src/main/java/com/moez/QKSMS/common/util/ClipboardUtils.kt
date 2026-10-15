@@ -32,15 +32,18 @@ class ClipboardUtils {
                     .setPrimaryClip(ClipData.newPlainText("SMS", string))
             } catch (e: Exception) {
                 Toast.makeText(
-                    context,
-                    if ((e is RuntimeException) &&
-                        e.message?.startsWith("android.os.TransactionTooLargeException") == true
-                    ) R.string.clipboard_too_large_to_copy
-                    else R.string.clipboard_unable_to_copy_to,
-                    Toast.LENGTH_LONG
-                ).show()
+                        context,
+                        if (
+                            (e is RuntimeException) &&
+                                e.message?.startsWith("android.os.TransactionTooLargeException") ==
+                                    true
+                        )
+                            R.string.clipboard_too_large_to_copy
+                        else R.string.clipboard_unable_to_copy_to,
+                        Toast.LENGTH_LONG,
+                    )
+                    .show()
             }
         }
     }
-
 }

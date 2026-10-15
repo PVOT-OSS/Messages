@@ -25,9 +25,9 @@ import android.os.Build
 import android.provider.Telephony
 import androidx.annotation.RequiresApi
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.interactor.SyncMessages
 import org.prauga.messages.util.Preferences
-import javax.inject.Inject
 
 class DefaultSmsChangedReceiver : BroadcastReceiver() {
 
@@ -43,5 +43,4 @@ class DefaultSmsChangedReceiver : BroadcastReceiver() {
             syncMessages.execute(Unit) { pendingResult.finish() }
         }
     }
-
 }

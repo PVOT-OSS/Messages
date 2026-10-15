@@ -21,6 +21,4 @@ package org.prauga.messages.feature.blocking.filters
 import io.realm.RealmResults
 import org.prauga.messages.model.MessageContentFilter
 
-data class MessageContentFiltersState(
-    val filters: RealmResults<MessageContentFilter>? = null
-)
+data class MessageContentFiltersState(val filters: RealmResults<MessageContentFilter>? = null)

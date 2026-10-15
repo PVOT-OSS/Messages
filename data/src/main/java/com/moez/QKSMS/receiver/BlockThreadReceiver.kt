@@ -23,13 +23,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.interactor.MarkBlocked
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.Preferences
-import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
-import javax.inject.Inject
 
 class BlockThreadReceiver : BroadcastReceiver() {
 
@@ -46,9 +46,7 @@ class BlockThreadReceiver : BroadcastReceiver() {
 
         blockingClient
             .block(
-                conversationRepo.getConversation(threadId)
-                    ?.recipients
-                    ?.map { it.address }
+                conversationRepo.getConversation(threadId)?.recipients?.map { it.address }
                     ?: listOf()
             )
             .subscribeOn(Schedulers.io())
@@ -58,13 +56,11 @@ class BlockThreadReceiver : BroadcastReceiver() {
                 )
             )
             .subscribe(
-                {
-                    goAsync().finish()
-                },
+                { goAsync().finish() },
                 { error ->
                     Timber.e("BlockThreadReceiver", "blocking failed")
                     goAsync().finish()
-                }
+                },
             )
     }
 }

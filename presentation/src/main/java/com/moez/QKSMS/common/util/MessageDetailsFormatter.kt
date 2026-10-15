@@ -23,16 +23,15 @@ import android.content.Context
 import com.google.android.mms.pdu_alt.EncodedStringValue
 import com.google.android.mms.pdu_alt.MultimediaMessagePdu
 import com.google.android.mms.pdu_alt.PduPersister
+import java.util.Locale.getDefault
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.model.Message
 import org.prauga.messages.util.tryOrNull
-import java.util.Locale.getDefault
-import javax.inject.Inject
 
-class MessageDetailsFormatter @Inject constructor(
-    private val context: Context,
-    private val dateFormatter: DateFormatter
-) {
+class MessageDetailsFormatter
+@Inject
+constructor(private val context: Context, private val dateFormatter: DateFormatter) {
 
     fun format(message: Message): String {
         val builder = StringBuilder()
@@ -55,12 +54,11 @@ class MessageDetailsFormatter @Inject constructor(
                 ?.let(builder::appendLine)
         } else {
             val pdu = tryOrNull {
-                PduPersister.getPduPersister(context)
-                    .load(message.getUri())
-                        as MultimediaMessagePdu
+                PduPersister.getPduPersister(context).load(message.getUri()) as MultimediaMessagePdu
             }
 
-            pdu?.from?.string
+            pdu?.from
+                ?.string
                 ?.takeIf { it.isNotBlank() }
                 ?.let { context.getString(R.string.compose_details_from, it) }
                 ?.let(builder::appendLine)

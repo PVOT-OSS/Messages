@@ -26,16 +26,16 @@ import org.w3c.dom.TypeInfo;
 public class AttrImpl extends NodeImpl implements Attr {
     private String mName;
     private String mValue;
-	
+
 	/*
      * Internal methods
      */
-	
+
 	protected AttrImpl(DocumentImpl owner, String name) {
 		super(owner);
 		mName = name;
 	}
-	
+
     /*
      * Attr Interface Methods
      */
@@ -63,7 +63,7 @@ public class AttrImpl extends NodeImpl implements Attr {
 	public void setValue(String value) throws DOMException {
 		mValue = value;
 	}
-	
+
     /*
      * Node Interface Methods
      */
@@ -77,22 +77,22 @@ public class AttrImpl extends NodeImpl implements Attr {
 	public short getNodeType() {
 		return Node.ATTRIBUTE_NODE;
 	}
-	
+
 	@Override
 	public Node getParentNode() {
 		return null;
 	}
-	
-	@Override 
+
+	@Override
 	public Node getPreviousSibling() {
 		return null;
 	}
-	
+
 	@Override
 	public Node getNextSibling() {
 		return null;
 	}
-	
+
 	@Override
 	public void setNodeValue(String nodeValue) throws DOMException {
         setValue(nodeValue);

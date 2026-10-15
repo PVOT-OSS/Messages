@@ -22,10 +22,12 @@ import android.telephony.SubscriptionInfo
 
 data class SubscriptionInfoCompat(private val subscriptionInfo: SubscriptionInfo) {
 
-    val subscriptionId get() = subscriptionInfo.subscriptionId
+    val subscriptionId
+        get() = subscriptionInfo.subscriptionId
 
-    val simSlotIndex get() = subscriptionInfo.simSlotIndex
+    val simSlotIndex
+        get() = subscriptionInfo.simSlotIndex
 
-    val displayName get() = subscriptionInfo.displayName
-
+    val displayName
+        get() = subscriptionInfo.displayName
 }

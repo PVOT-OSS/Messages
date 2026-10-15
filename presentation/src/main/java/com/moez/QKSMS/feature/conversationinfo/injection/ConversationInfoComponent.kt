@@ -31,7 +31,7 @@ interface ConversationInfoComponent {
     @Subcomponent.Builder
     interface Builder {
         fun conversationInfoModule(module: ConversationInfoModule): Builder
+
         fun build(): ConversationInfoComponent
     }
-
 }

@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.repository
 
-import org.prauga.messages.model.BlockedNumber
 import io.realm.RealmResults
+import org.prauga.messages.model.BlockedNumber
 
 interface BlockingRepository {
 
@@ -34,5 +34,4 @@ interface BlockingRepository {
     fun unblockNumber(id: Long)
 
     fun unblockNumbers(vararg addresses: String)
-
 }

@@ -16,13 +16,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.prauga.messages.model.Message
-import org.prauga.messages.model.MmsPart
 import org.prauga.messages.testutil.InstrumentedMmsTestDataFactory
 import org.prauga.messages.testutil.RealmTestHelper
 
 /**
- * Instrumented tests for MMS edge cases.
- * Tests boundary conditions, special characters, and unusual scenarios.
+ * Instrumented tests for MMS edge cases. Tests boundary conditions, special characters, and unusual
+ * scenarios.
  */
 @RunWith(AndroidJUnit4::class)
 class MmsEdgeCasesInstrumentedTest {
@@ -234,30 +233,22 @@ class MmsEdgeCasesInstrumentedTest {
 
     @Test
     fun givenInternationalNumber_whenCreateMms_thenPreserved() {
-        val message = InstrumentedMmsTestDataFactory.createTextMms(
-            realm,
-            address = "+14155551234"
-        )
+        val message = InstrumentedMmsTestDataFactory.createTextMms(realm, address = "+14155551234")
 
         assertThat(message.address).isEqualTo("+14155551234")
     }
 
     @Test
     fun givenLocalNumber_whenCreateMms_thenPreserved() {
-        val message = InstrumentedMmsTestDataFactory.createTextMms(
-            realm,
-            address = "5551234"
-        )
+        val message = InstrumentedMmsTestDataFactory.createTextMms(realm, address = "5551234")
 
         assertThat(message.address).isEqualTo("5551234")
     }
 
     @Test
     fun givenFormattedNumber_whenCreateMms_thenPreserved() {
-        val message = InstrumentedMmsTestDataFactory.createTextMms(
-            realm,
-            address = "(415) 555-1234"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createTextMms(realm, address = "(415) 555-1234")
 
         assertThat(message.address).isEqualTo("(415) 555-1234")
     }
@@ -266,10 +257,7 @@ class MmsEdgeCasesInstrumentedTest {
 
     @Test
     fun givenEmptySubject_whenCreateMms_thenNoSubjectSet() {
-        val message = InstrumentedMmsTestDataFactory.createMmsWithSubject(
-            realm,
-            subject = ""
-        )
+        val message = InstrumentedMmsTestDataFactory.createMmsWithSubject(realm, subject = "")
 
         assertThat(message.subject).isEmpty()
     }
@@ -277,10 +265,8 @@ class MmsEdgeCasesInstrumentedTest {
     @Test
     fun givenLongSubject_whenCreateMms_thenPreserved() {
         val longSubject = "This is a very long subject line that exceeds normal limits"
-        val message = InstrumentedMmsTestDataFactory.createMmsWithSubject(
-            realm,
-            subject = longSubject
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createMmsWithSubject(realm, subject = longSubject)
 
         assertThat(message.subject).isEqualTo(longSubject)
     }
@@ -288,10 +274,8 @@ class MmsEdgeCasesInstrumentedTest {
     @Test
     fun givenUnicodeSubject_whenCreateMms_thenPreserved() {
         val unicodeSubject = "重要なメッセージ 📧"
-        val message = InstrumentedMmsTestDataFactory.createMmsWithSubject(
-            realm,
-            subject = unicodeSubject
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createMmsWithSubject(realm, subject = unicodeSubject)
 
         assertThat(message.subject).isEqualTo(unicodeSubject)
     }
@@ -300,20 +284,14 @@ class MmsEdgeCasesInstrumentedTest {
 
     @Test
     fun givenZeroThreadId_whenCreateMms_thenStored() {
-        val message = InstrumentedMmsTestDataFactory.createTextMms(
-            realm,
-            threadId = 0L
-        )
+        val message = InstrumentedMmsTestDataFactory.createTextMms(realm, threadId = 0L)
 
         assertThat(message.threadId).isEqualTo(0L)
     }
 
     @Test
     fun givenMaxLongThreadId_whenCreateMms_thenStored() {
-        val message = InstrumentedMmsTestDataFactory.createTextMms(
-            realm,
-            threadId = Long.MAX_VALUE
-        )
+        val message = InstrumentedMmsTestDataFactory.createTextMms(realm, threadId = Long.MAX_VALUE)
 
         assertThat(message.threadId).isEqualTo(Long.MAX_VALUE)
     }
@@ -323,10 +301,7 @@ class MmsEdgeCasesInstrumentedTest {
     @Test
     fun givenManyParts_whenCreate_thenAllStored() {
         // Create image with caption (2 parts)
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            text = "Photo caption"
-        )
+        val message = InstrumentedMmsTestDataFactory.createImageMms(realm, text = "Photo caption")
 
         assertThat(message.parts.size).isGreaterThan(1)
     }
@@ -364,30 +339,24 @@ class MmsEdgeCasesInstrumentedTest {
 
     @Test
     fun givenDraftBoxId_whenCreate_thenStored() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_DRAFTS
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_DRAFTS)
 
         assertThat(message.boxId).isEqualTo(Mms.MESSAGE_BOX_DRAFTS)
     }
 
     @Test
     fun givenFailedBoxId_whenCreate_thenStored() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
 
         assertThat(message.boxId).isEqualTo(Mms.MESSAGE_BOX_FAILED)
     }
 
     @Test
     fun givenOutboxBoxId_whenCreate_thenStored() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_OUTBOX
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_OUTBOX)
 
         assertThat(message.boxId).isEqualTo(Mms.MESSAGE_BOX_OUTBOX)
     }
@@ -403,9 +372,7 @@ class MmsEdgeCasesInstrumentedTest {
 
     @Test
     fun givenNonExistentId_whenQuery_thenNull() {
-        val found = realm.where(Message::class.java)
-            .equalTo("id", 99999999L)
-            .findFirst()
+        val found = realm.where(Message::class.java).equalTo("id", 99999999L).findFirst()
 
         assertThat(found).isNull()
     }
@@ -420,15 +387,11 @@ class MmsEdgeCasesInstrumentedTest {
         val futureTime = System.currentTimeMillis() + 86400000 // +1 day
 
         realm.executeTransaction { r ->
-            val toUpdate = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val toUpdate = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             toUpdate?.date = futureTime
         }
 
-        val updated = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updated = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(updated!!.date).isEqualTo(futureTime)
     }
@@ -441,15 +404,11 @@ class MmsEdgeCasesInstrumentedTest {
         val pastTime = 946684800000L // Jan 1, 2000
 
         realm.executeTransaction { r ->
-            val toUpdate = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val toUpdate = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             toUpdate?.date = pastTime
         }
 
-        val updated = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updated = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(updated!!.date).isEqualTo(pastTime)
     }

@@ -24,9 +24,7 @@ import android.database.sqlite.SQLiteException
 import android.net.Uri
 import timber.log.Timber
 
-/**
- * Utility class to make ContentResolver queries with Kotlin more concise
- */
+/** Utility class to make ContentResolver queries with Kotlin more concise */
 object SqliteWrapper {
 
     fun query(
@@ -36,7 +34,7 @@ object SqliteWrapper {
         selection: String? = null,
         selectionArgs: Array<String>? = null,
         sortOrder: String? = null,
-        logError: Boolean = true
+        logError: Boolean = true,
     ): Cursor? {
         return try {
             context.contentResolver.query(uri, projection, selection, selectionArgs, sortOrder)
@@ -46,7 +44,5 @@ object SqliteWrapper {
             }
             null
         }
-
     }
-
 }

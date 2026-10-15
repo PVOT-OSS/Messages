@@ -20,20 +20,24 @@ package org.prauga.messages.feature.blocking.numbers
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import org.prauga.messages.R
-import org.prauga.messages.common.base.QkRealmAdapter
-import org.prauga.messages.common.base.QkBindingViewHolder
-import org.prauga.messages.model.BlockedNumber
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import org.prauga.messages.common.base.QkBindingViewHolder
+import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.databinding.BlockedNumberListItemBinding
+import org.prauga.messages.model.BlockedNumber
 
-class BlockedNumbersAdapter : QkRealmAdapter<BlockedNumber, QkBindingViewHolder<BlockedNumberListItemBinding>>() {
+class BlockedNumbersAdapter :
+    QkRealmAdapter<BlockedNumber, QkBindingViewHolder<BlockedNumberListItemBinding>>() {
 
     val unblockAddress: Subject<Long> = PublishSubject.create()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkBindingViewHolder<BlockedNumberListItemBinding> {
-        val binding = BlockedNumberListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): QkBindingViewHolder<BlockedNumberListItemBinding> {
+        val binding =
+            BlockedNumberListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             binding.unblock.setOnClickListener {
                 val number = getItem(adapterPosition) ?: return@setOnClickListener
@@ -42,10 +46,12 @@ class BlockedNumbersAdapter : QkRealmAdapter<BlockedNumber, QkBindingViewHolder<
         }
     }
 
-    override fun onBindViewHolder(holder: QkBindingViewHolder<BlockedNumberListItemBinding>, position: Int) {
+    override fun onBindViewHolder(
+        holder: QkBindingViewHolder<BlockedNumberListItemBinding>,
+        position: Int,
+    ) {
         val item = getItem(position)!!
 
         holder.binding.number.text = item.address
     }
-
 }

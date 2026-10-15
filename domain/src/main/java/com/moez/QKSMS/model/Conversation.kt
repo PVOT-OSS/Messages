@@ -32,20 +32,26 @@ open class Conversation(
     var lastMessage: Message? = null,
     var draft: String = "",
     var draftDate: Long = 0,
-
     var blockingClient: Int? = null,
     var blockReason: String? = null,
-
-    var name: String = "" // For group chats, the user is allowed to set a custom title for the conversation
+    var name: String =
+        "", // For group chats, the user is allowed to set a custom title for the conversation
 ) : RealmObject() {
 
-    val date: Long get() = lastMessage?.date ?: if (draft.isNotEmpty()) draftDate else 0
-    val snippet: String? get() = lastMessage?.getSummary()
-    val unread: Boolean get() = lastMessage?.read == false
-    val me: Boolean get() = lastMessage?.isMe() == true
+    val date: Long
+        get() = lastMessage?.date ?: if (draft.isNotEmpty()) draftDate else 0
+
+    val snippet: String?
+        get() = lastMessage?.getSummary()
+
+    val unread: Boolean
+        get() = lastMessage?.read == false
+
+    val me: Boolean
+        get() = lastMessage?.isMe() == true
 
     fun getTitle(): String {
-        return name.takeIf { it.isNotBlank() } ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
+        return name.takeIf { it.isNotBlank() }
+            ?: recipients.joinToString { recipient -> recipient.getDisplayName() }
     }
-
 }

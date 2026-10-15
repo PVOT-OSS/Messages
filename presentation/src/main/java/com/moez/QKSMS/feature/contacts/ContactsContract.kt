@@ -18,12 +18,12 @@
  */
 package org.prauga.messages.feature.contacts
 
+import io.reactivex.Observable
+import io.reactivex.subjects.Subject
 import org.prauga.messages.common.base.QkView
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.feature.compose.editing.ComposeItem
 import org.prauga.messages.feature.compose.editing.PhoneNumberAction
-import io.reactivex.Observable
-import io.reactivex.subjects.Subject
 
 interface ContactsContract : QkView<ContactsState> {
 
@@ -36,7 +36,8 @@ interface ContactsContract : QkView<ContactsState> {
     val phoneNumberActionIntent: Subject<PhoneNumberAction>
 
     fun clearQuery()
-    fun openKeyboard()
-    fun finish(result: HashMap<String, String?>)
 
+    fun openKeyboard()
+
+    fun finish(result: HashMap<String, String?>)
 }

@@ -31,20 +31,18 @@ import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.databinding.ScheduledActivityBinding
-import javax.inject.Inject
 
 class ScheduledActivity :
     QkThemedActivity<ScheduledActivityBinding>(ScheduledActivityBinding::inflate), ScheduledView {
 
-    @Inject
-    lateinit var scheduledMessageAdapter: ScheduledMessageAdapter
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var scheduledMessageAdapter: ScheduledMessageAdapter
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override val composeIntent by lazy { binding.compose.clicks() }
     override val upgradeIntent by lazy { binding.upgrade.clicks() }
@@ -117,68 +115,61 @@ class ScheduledActivity :
 
     override fun showDeleteDialog(messages: List<Long>) {
         val count = messages.size
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.dialog_delete_title)
-            .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
-            .setPositiveButton(R.string.button_delete) { _, _ ->
-                deleteScheduledMessages.onNext(
-                    messages
-                )
-            }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.dialog_delete_title)
+                .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
+                .setPositiveButton(R.string.button_delete) { _, _ ->
+                    deleteScheduledMessages.onNext(messages)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun showSendNowDialog(messages: List<Long>) {
         val count = messages.size
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.main_menu_send_now)
-            .setMessage(resources.getQuantityString(R.plurals.dialog_send_now, count, count))
-            .setPositiveButton(R.string.main_menu_send_now) { _, _ ->
-                sendScheduledMessages.onNext(
-                    messages
-                )
-            }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.main_menu_send_now)
+                .setMessage(resources.getQuantityString(R.plurals.dialog_send_now, count, count))
+                .setPositiveButton(R.string.main_menu_send_now) { _, _ ->
+                    sendScheduledMessages.onNext(messages)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun showEditMessageDialog(message: Long) {
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.dialog_edit_scheduled_message_title)
-            .setMessage(R.string.dialog_edit_scheduled_message)
-            .setPositiveButton(R.string.dialog_edit_scheduled_message_positive_button) { _, _ ->
-                editScheduledMessage.onNext(message)
-            }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.dialog_edit_scheduled_message_title)
+                .setMessage(R.string.dialog_edit_scheduled_message)
+                .setPositiveButton(R.string.dialog_edit_scheduled_message_positive_button) { _, _ ->
+                    editScheduledMessage.onNext(message)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

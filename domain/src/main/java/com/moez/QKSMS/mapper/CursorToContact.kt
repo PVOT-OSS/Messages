@@ -24,5 +24,4 @@ import org.prauga.messages.model.Contact
 interface CursorToContact : Mapper<Cursor, Contact> {
 
     fun getContactsCursor(): Cursor?
-
 }

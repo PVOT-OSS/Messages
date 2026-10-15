@@ -5,16 +5,16 @@ package org.prauga.messages.receiver
 
 import android.content.Context
 import android.content.Intent
-import org.prauga.messages.interactor.SendScheduledMessage
 import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.interactor.SendScheduledMessage
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -22,14 +22,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class SendScheduledMessageReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var intent: Intent
+    @Mock private lateinit var intent: Intent
 
-    @Mock
-    private lateinit var sendScheduledMessage: SendScheduledMessage
+    @Mock private lateinit var sendScheduledMessage: SendScheduledMessage
 
     @Before
     fun setUp() {

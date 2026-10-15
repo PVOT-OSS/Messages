@@ -4,35 +4,29 @@
 package org.prauga.messages.interactor
 
 import android.net.Uri
-import org.prauga.messages.model.Message
-import org.prauga.messages.repository.ConversationRepository
-import org.prauga.messages.repository.SyncRepository
 import io.reactivex.Flowable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.model.Message
+import org.prauga.messages.repository.ConversationRepository
+import org.prauga.messages.repository.SyncRepository
 
 class SyncMessageTest {
 
-    @Mock
-    private lateinit var conversationRepo: ConversationRepository
+    @Mock private lateinit var conversationRepo: ConversationRepository
 
-    @Mock
-    private lateinit var syncManager: SyncRepository
+    @Mock private lateinit var syncManager: SyncRepository
 
-    @Mock
-    private lateinit var updateBadge: UpdateBadge
+    @Mock private lateinit var updateBadge: UpdateBadge
 
-    @Mock
-    private lateinit var uri: Uri
+    @Mock private lateinit var uri: Uri
 
-    @Mock
-    private lateinit var message: Message
+    @Mock private lateinit var message: Message
 
     private lateinit var syncMessage: SyncMessage
 

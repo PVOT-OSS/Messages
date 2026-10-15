@@ -21,13 +21,13 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.prauga.messages.model.Message
 import org.prauga.messages.testutil.InstrumentedMmsTestDataFactory
-import org.prauga.messages.testutil.MockMmsHttpClient
 import org.prauga.messages.testutil.MockMmsException
+import org.prauga.messages.testutil.MockMmsHttpClient
 import org.prauga.messages.testutil.RealmTestHelper
 
 /**
- * Instrumented tests for simulating MMS network operations.
- * These tests verify behavior under various network conditions.
+ * Instrumented tests for simulating MMS network operations. These tests verify behavior under
+ * various network conditions.
  */
 @RunWith(AndroidJUnit4::class)
 class MmsNetworkSimulationTest {
@@ -120,7 +120,8 @@ class MmsNetworkSimulationTest {
 
     @Test
     fun givenErrorResponse_whenParseSendConf_thenStatusIsError() {
-        mockHttpClient.sendResponse = MockMmsHttpClient.createErrorSendConfPdu(0x81) // Unspecified error
+        mockHttpClient.sendResponse =
+            MockMmsHttpClient.createErrorSendConfPdu(0x81) // Unspecified error
         val testPdu = createTestSendReqPdu()
 
         val response = mockHttpClient.simulateSend(testPdu)
@@ -217,10 +218,8 @@ class MmsNetworkSimulationTest {
     @Test
     fun givenMessageInOutbox_whenSimulateSuccess_thenCanTransitionToSent() {
         // Create a message in OUTBOX state
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_OUTBOX
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_OUTBOX)
         val messageId = message.id
 
         assertThat(message.boxId).isEqualTo(Mms.MESSAGE_BOX_OUTBOX)
@@ -232,15 +231,11 @@ class MmsNetworkSimulationTest {
 
         // Update message state to SENT (simulating what MmsSentReceiver would do)
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_SENT
         }
 
-        val updatedMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updatedMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(updatedMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_SENT)
     }
@@ -248,10 +243,8 @@ class MmsNetworkSimulationTest {
     @Test
     fun givenMessageInOutbox_whenSimulateFailure_thenCanTransitionToFailed() {
         // Create a message in OUTBOX state
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_OUTBOX
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_OUTBOX)
         val messageId = message.id
 
         // Simulate network failure
@@ -269,16 +262,12 @@ class MmsNetworkSimulationTest {
 
         // Update message state to FAILED (simulating what MmsSentReceiver would do)
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_FAILED
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
-        val updatedMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updatedMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(updatedMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_FAILED)
         assertThat(updatedMessage.errorType).isEqualTo(MmsSms.ERR_TYPE_GENERIC_PERMANENT)
@@ -330,12 +319,13 @@ class MmsNetworkSimulationTest {
 
     @Test
     fun givenConcurrentSends_whenSimulate_thenAllTracked() {
-        val threads = (1..5).map { i ->
-            Thread {
-                val pdu = createTestSendReqPdu()
-                mockHttpClient.simulateSend(pdu)
+        val threads =
+            (1..5).map { i ->
+                Thread {
+                    val pdu = createTestSendReqPdu()
+                    mockHttpClient.simulateSend(pdu)
+                }
             }
-        }
 
         threads.forEach { it.start() }
         threads.forEach { it.join() }
@@ -347,71 +337,89 @@ class MmsNetworkSimulationTest {
 
     @Test
     fun givenErrorTypeGeneric_whenStored_thenCanQuery() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC
         }
 
-        val failedMessages = realm.where(Message::class.java)
-            .greaterThan("errorType", 0)
-            .findAll()
+        val failedMessages = realm.where(Message::class.java).greaterThan("errorType", 0).findAll()
 
         assertThat(failedMessages).isNotEmpty()
     }
 
     @Test
     fun givenErrorTypePermanent_whenStored_thenCanQuery() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
-        val permanentFailures = realm.where(Message::class.java)
-            .equalTo("errorType", MmsSms.ERR_TYPE_GENERIC_PERMANENT)
-            .findAll()
+        val permanentFailures =
+            realm
+                .where(Message::class.java)
+                .equalTo("errorType", MmsSms.ERR_TYPE_GENERIC_PERMANENT)
+                .findAll()
 
         assertThat(permanentFailures).isNotEmpty()
     }
 
     // ==================== Helper Methods ====================
 
-    /**
-     * Creates a minimal test SendReq PDU for testing.
-     */
+    /** Creates a minimal test SendReq PDU for testing. */
     private fun createTestSendReqPdu(): ByteArray {
         return byteArrayOf(
             // Message type: SendReq (0x80)
-            0x8C.toByte(), PduHeaders.MESSAGE_TYPE_SEND_REQ.toByte(),
+            0x8C.toByte(),
+            PduHeaders.MESSAGE_TYPE_SEND_REQ.toByte(),
             // Transaction ID
-            0x98.toByte(), 't'.code.toByte(), 'e'.code.toByte(), 's'.code.toByte(),
-            't'.code.toByte(), '1'.code.toByte(), '2'.code.toByte(), '3'.code.toByte(), 0x00,
+            0x98.toByte(),
+            't'.code.toByte(),
+            'e'.code.toByte(),
+            's'.code.toByte(),
+            't'.code.toByte(),
+            '1'.code.toByte(),
+            '2'.code.toByte(),
+            '3'.code.toByte(),
+            0x00,
             // MMS Version: 1.0
-            0x8D.toByte(), 0x90.toByte(),
+            0x8D.toByte(),
+            0x90.toByte(),
             // To: +15551234567
-            0x97.toByte(), '+'.code.toByte(), '1'.code.toByte(), '5'.code.toByte(),
-            '5'.code.toByte(), '5'.code.toByte(), '1'.code.toByte(), '2'.code.toByte(),
-            '3'.code.toByte(), '4'.code.toByte(), '5'.code.toByte(), '6'.code.toByte(),
-            '7'.code.toByte(), '/'.code.toByte(), 'T'.code.toByte(), 'Y'.code.toByte(),
-            'P'.code.toByte(), 'E'.code.toByte(), '='.code.toByte(), 'P'.code.toByte(),
-            'L'.code.toByte(), 'M'.code.toByte(), 'N'.code.toByte(), 0x00,
+            0x97.toByte(),
+            '+'.code.toByte(),
+            '1'.code.toByte(),
+            '5'.code.toByte(),
+            '5'.code.toByte(),
+            '5'.code.toByte(),
+            '1'.code.toByte(),
+            '2'.code.toByte(),
+            '3'.code.toByte(),
+            '4'.code.toByte(),
+            '5'.code.toByte(),
+            '6'.code.toByte(),
+            '7'.code.toByte(),
+            '/'.code.toByte(),
+            'T'.code.toByte(),
+            'Y'.code.toByte(),
+            'P'.code.toByte(),
+            'E'.code.toByte(),
+            '='.code.toByte(),
+            'P'.code.toByte(),
+            'L'.code.toByte(),
+            'M'.code.toByte(),
+            'N'.code.toByte(),
+            0x00,
             // Content type: application/vnd.wap.multipart.related
-            0x84.toByte(), 0xB3.toByte()
+            0x84.toByte(),
+            0xB3.toByte(),
         )
     }
 }

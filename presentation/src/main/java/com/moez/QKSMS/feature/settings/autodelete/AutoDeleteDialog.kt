@@ -35,24 +35,32 @@ class AutoDeleteDialog(context: Activity, listener: (Int) -> Unit) : AlertDialog
         setView(layout.root)
         setTitle(R.string.settings_auto_delete)
         setMessage(context.getString(R.string.settings_auto_delete_dialog_message))
-        setButton(DialogInterface.BUTTON_NEUTRAL, context.getString(R.string.button_cancel)) { _, _ -> }
-        setButton(DialogInterface.BUTTON_NEGATIVE, context.getString(R.string.settings_auto_delete_never)) { _, _ -> listener(0) }
-        setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.button_save)) { _, _ ->
+        setButton(DialogInterface.BUTTON_NEUTRAL, context.getString(R.string.button_cancel)) { _, _
+            ->
+        }
+        setButton(
+            DialogInterface.BUTTON_NEGATIVE,
+            context.getString(R.string.settings_auto_delete_never),
+        ) { _, _ ->
+            listener(0)
+        }
+        setButton(DialogInterface.BUTTON_POSITIVE, context.getString(R.string.button_save)) { _, _
+            ->
             listener(layout.field.text.toString().toIntOrNull() ?: 0)
         }
 
-        val buttonColor = context.resolveThemeColor(
-            android.R.attr.textColorPrimary,
-            context.getColorCompat(R.color.textPrimary)
-        )
+        val buttonColor =
+            context.resolveThemeColor(
+                android.R.attr.textColorPrimary,
+                context.getColorCompat(R.color.textPrimary),
+            )
         setOnShowListener {
             listOf(
-                DialogInterface.BUTTON_POSITIVE,
-                DialogInterface.BUTTON_NEGATIVE,
-                DialogInterface.BUTTON_NEUTRAL
-            ).forEach { type ->
-                getButton(type)?.setTextColor(buttonColor)
-            }
+                    DialogInterface.BUTTON_POSITIVE,
+                    DialogInterface.BUTTON_NEGATIVE,
+                    DialogInterface.BUTTON_NEUTRAL,
+                )
+                .forEach { type -> getButton(type)?.setTextColor(buttonColor) }
         }
     }
 
@@ -63,5 +71,4 @@ class AutoDeleteDialog(context: Activity, listener: (Int) -> Unit) : AlertDialog
         }
         return this
     }
-
 }

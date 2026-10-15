@@ -5,12 +5,12 @@ package org.prauga.messages.receiver
 
 import android.content.Context
 import android.content.Intent
-import org.prauga.messages.repository.MessageRepository
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.repository.MessageRepository
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -18,11 +18,9 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class SmsReceiverTest {
 
-    @Mock
-    private lateinit var context: Context
+    @Mock private lateinit var context: Context
 
-    @Mock
-    private lateinit var messageRepository: MessageRepository
+    @Mock private lateinit var messageRepository: MessageRepository
 
     private lateinit var receiver: SmsReceiver
 
@@ -39,8 +37,10 @@ class SmsReceiverTest {
         val receiver = SmsReceiver()
 
         org.junit.Assert.assertNotNull("Receiver should be instantiable", receiver)
-        org.junit.Assert.assertTrue("Receiver should be a BroadcastReceiver",
-            receiver is android.content.BroadcastReceiver)
+        org.junit.Assert.assertTrue(
+            "Receiver should be a BroadcastReceiver",
+            receiver is android.content.BroadcastReceiver,
+        )
     }
 
     @Test
@@ -60,9 +60,7 @@ class SmsReceiverTest {
     @Test
     fun givenIntent_whenSubscriptionExtraSet_thenRetrievesCorrectly() {
         val expectedSubscription = 0
-        val intent = Intent().apply {
-            putExtra("subscription", expectedSubscription)
-        }
+        val intent = Intent().apply { putExtra("subscription", expectedSubscription) }
 
         val subscription = intent.extras?.getInt("subscription", -1) ?: -1
 
@@ -72,9 +70,7 @@ class SmsReceiverTest {
     @Test
     fun givenIntentWithDualSimSubscription_whenExtraRetrieved_thenReturnsCorrectSubscription() {
         val subscriptionId = 1 // Second SIM slot
-        val intent = Intent().apply {
-            putExtra("subscription", subscriptionId)
-        }
+        val intent = Intent().apply { putExtra("subscription", subscriptionId) }
 
         val subscription = intent.extras?.getInt("subscription", -1) ?: -1
 
@@ -96,8 +92,10 @@ class SmsReceiverTest {
     fun givenWorkerInputDataKey_whenAccessed_thenIsCorrectValue() {
         val expectedKey = "messageId"
 
-        org.junit.Assert.assertEquals(expectedKey,
-            org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID)
+        org.junit.Assert.assertEquals(
+            expectedKey,
+            org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID,
+        )
     }
 
     @Test

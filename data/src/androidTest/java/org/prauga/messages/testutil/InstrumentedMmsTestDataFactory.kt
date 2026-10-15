@@ -8,16 +8,16 @@ package org.prauga.messages.testutil
 
 import android.provider.Telephony.Mms
 import io.realm.Realm
+import java.util.concurrent.atomic.AtomicLong
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.EmojiReaction
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.model.Recipient
-import java.util.concurrent.atomic.AtomicLong
 
 /**
- * Factory for creating test MMS-related domain objects in instrumented tests.
- * This factory can properly use Realm operations since it runs on a real device.
+ * Factory for creating test MMS-related domain objects in instrumented tests. This factory can
+ * properly use Realm operations since it runs on a real device.
  */
 object InstrumentedMmsTestDataFactory {
 
@@ -29,9 +29,7 @@ object InstrumentedMmsTestDataFactory {
 
     private const val DEFAULT_ADDRESS = "+1234567890"
 
-    /**
-     * Resets all ID generators.
-     */
+    /** Resets all ID generators. */
     fun resetIdGenerators() {
         messageIdGenerator.set(1000)
         partIdGenerator.set(2000)
@@ -42,14 +40,12 @@ object InstrumentedMmsTestDataFactory {
 
     // ==================== Message Creation ====================
 
-    /**
-     * Creates and persists a text MMS message.
-     */
+    /** Creates and persists a text MMS message. */
     fun createTextMms(
         realm: Realm,
         text: String = "Test MMS message",
         address: String = DEFAULT_ADDRESS,
-        threadId: Long = conversationIdGenerator.get()
+        threadId: Long = conversationIdGenerator.get(),
     ): Message {
         var message: Message? = null
         realm.executeTransaction { r ->
@@ -75,15 +71,13 @@ object InstrumentedMmsTestDataFactory {
         return message!!
     }
 
-    /**
-     * Creates and persists an MMS message with image.
-     */
+    /** Creates and persists an MMS message with image. */
     fun createImageMms(
         realm: Realm,
         text: String = "",
         imageType: String = "image/jpeg",
         address: String = DEFAULT_ADDRESS,
-        threadId: Long = conversationIdGenerator.get()
+        threadId: Long = conversationIdGenerator.get(),
     ): Message {
         var message: Message? = null
         realm.executeTransaction { r ->
@@ -100,13 +94,15 @@ object InstrumentedMmsTestDataFactory {
                 this.seen = false
 
                 if (text.isNotEmpty()) {
-                    val textPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                    val textPart =
+                        r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                     textPart.type = "text/plain"
                     textPart.text = text
                     this.parts.add(textPart)
                 }
 
-                val imagePart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                val imagePart =
+                    r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                 imagePart.type = imageType
                 imagePart.name = "image.jpg"
                 this.parts.add(imagePart)
@@ -115,15 +111,13 @@ object InstrumentedMmsTestDataFactory {
         return message!!
     }
 
-    /**
-     * Creates and persists an MMS message with video.
-     */
+    /** Creates and persists an MMS message with video. */
     fun createVideoMms(
         realm: Realm,
         text: String = "",
         videoType: String = "video/mp4",
         address: String = DEFAULT_ADDRESS,
-        threadId: Long = conversationIdGenerator.get()
+        threadId: Long = conversationIdGenerator.get(),
     ): Message {
         var message: Message? = null
         realm.executeTransaction { r ->
@@ -140,13 +134,15 @@ object InstrumentedMmsTestDataFactory {
                 this.seen = false
 
                 if (text.isNotEmpty()) {
-                    val textPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                    val textPart =
+                        r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                     textPart.type = "text/plain"
                     textPart.text = text
                     this.parts.add(textPart)
                 }
 
-                val videoPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                val videoPart =
+                    r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                 videoPart.type = videoType
                 videoPart.name = "video.mp4"
                 this.parts.add(videoPart)
@@ -155,15 +151,13 @@ object InstrumentedMmsTestDataFactory {
         return message!!
     }
 
-    /**
-     * Creates and persists an MMS message with audio.
-     */
+    /** Creates and persists an MMS message with audio. */
     fun createAudioMms(
         realm: Realm,
         text: String = "",
         audioType: String = "audio/mp3",
         address: String = DEFAULT_ADDRESS,
-        threadId: Long = conversationIdGenerator.get()
+        threadId: Long = conversationIdGenerator.get(),
     ): Message {
         var message: Message? = null
         realm.executeTransaction { r ->
@@ -180,13 +174,15 @@ object InstrumentedMmsTestDataFactory {
                 this.seen = false
 
                 if (text.isNotEmpty()) {
-                    val textPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                    val textPart =
+                        r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                     textPart.type = "text/plain"
                     textPart.text = text
                     this.parts.add(textPart)
                 }
 
-                val audioPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                val audioPart =
+                    r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                 audioPart.type = audioType
                 audioPart.name = "audio.mp3"
                 this.parts.add(audioPart)
@@ -195,14 +191,12 @@ object InstrumentedMmsTestDataFactory {
         return message!!
     }
 
-    /**
-     * Creates and persists a group MMS message.
-     */
+    /** Creates and persists a group MMS message. */
     fun createGroupMms(
         realm: Realm,
         recipients: List<String> = listOf("+15551111111", "+15552222222", "+15553333333"),
         text: String = "Group message",
-        threadId: Long = conversationIdGenerator.get()
+        threadId: Long = conversationIdGenerator.get(),
     ): Message {
         var message: Message? = null
         realm.executeTransaction { r ->
@@ -218,7 +212,8 @@ object InstrumentedMmsTestDataFactory {
                 this.read = false
                 this.seen = false
 
-                val textPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                val textPart =
+                    r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                 textPart.type = "text/plain"
                 textPart.text = text
                 this.parts.add(textPart)
@@ -227,15 +222,13 @@ object InstrumentedMmsTestDataFactory {
         return message!!
     }
 
-    /**
-     * Creates and persists an outgoing MMS message.
-     */
+    /** Creates and persists an outgoing MMS message. */
     fun createOutgoingMms(
         realm: Realm,
         text: String = "Outgoing MMS",
         address: String = DEFAULT_ADDRESS,
         threadId: Long = conversationIdGenerator.get(),
-        boxId: Int = Mms.MESSAGE_BOX_SENT
+        boxId: Int = Mms.MESSAGE_BOX_SENT,
     ): Message {
         var message: Message? = null
         realm.executeTransaction { r ->
@@ -251,7 +244,8 @@ object InstrumentedMmsTestDataFactory {
                 this.read = true
                 this.seen = true
 
-                val textPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                val textPart =
+                    r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                 textPart.type = "text/plain"
                 textPart.text = text
                 this.parts.add(textPart)
@@ -260,15 +254,13 @@ object InstrumentedMmsTestDataFactory {
         return message!!
     }
 
-    /**
-     * Creates and persists an MMS with subject.
-     */
+    /** Creates and persists an MMS with subject. */
     fun createMmsWithSubject(
         realm: Realm,
         subject: String = "Test Subject",
         text: String = "Message body",
         address: String = DEFAULT_ADDRESS,
-        threadId: Long = conversationIdGenerator.get()
+        threadId: Long = conversationIdGenerator.get(),
     ): Message {
         var message: Message? = null
         realm.executeTransaction { r ->
@@ -285,7 +277,8 @@ object InstrumentedMmsTestDataFactory {
                 this.read = false
                 this.seen = false
 
-                val textPart = r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
+                val textPart =
+                    r.createObject(MmsPart::class.java, partIdGenerator.incrementAndGet())
                 textPart.type = "text/plain"
                 textPart.text = text
                 this.parts.add(textPart)
@@ -296,37 +289,34 @@ object InstrumentedMmsTestDataFactory {
 
     // ==================== Conversation Creation ====================
 
-    /**
-     * Creates and persists a conversation.
-     */
-    fun createConversation(
-        realm: Realm,
-        address: String = DEFAULT_ADDRESS
-    ): Conversation {
+    /** Creates and persists a conversation. */
+    fun createConversation(realm: Realm, address: String = DEFAULT_ADDRESS): Conversation {
         var conversation: Conversation? = null
         realm.executeTransaction { r ->
-            conversation = r.createObject(Conversation::class.java, conversationIdGenerator.incrementAndGet())
+            conversation =
+                r.createObject(Conversation::class.java, conversationIdGenerator.incrementAndGet())
 
-            val recipient = r.createObject(Recipient::class.java, recipientIdGenerator.incrementAndGet())
+            val recipient =
+                r.createObject(Recipient::class.java, recipientIdGenerator.incrementAndGet())
             recipient.address = address
             conversation?.recipients?.add(recipient)
         }
         return conversation!!
     }
 
-    /**
-     * Creates and persists a group conversation.
-     */
+    /** Creates and persists a group conversation. */
     fun createGroupConversation(
         realm: Realm,
-        addresses: List<String> = listOf("+15551111111", "+15552222222", "+15553333333")
+        addresses: List<String> = listOf("+15551111111", "+15552222222", "+15553333333"),
     ): Conversation {
         var conversation: Conversation? = null
         realm.executeTransaction { r ->
-            conversation = r.createObject(Conversation::class.java, conversationIdGenerator.incrementAndGet())
+            conversation =
+                r.createObject(Conversation::class.java, conversationIdGenerator.incrementAndGet())
 
             addresses.forEach { address ->
-                val recipient = r.createObject(Recipient::class.java, recipientIdGenerator.incrementAndGet())
+                val recipient =
+                    r.createObject(Recipient::class.java, recipientIdGenerator.incrementAndGet())
                 recipient.address = address
                 conversation?.recipients?.add(recipient)
             }
@@ -336,18 +326,17 @@ object InstrumentedMmsTestDataFactory {
 
     // ==================== EmojiReaction Creation ====================
 
-    /**
-     * Creates and persists an emoji reaction.
-     */
+    /** Creates and persists an emoji reaction. */
     fun createEmojiReaction(
         realm: Realm,
         emoji: String = "👍",
         senderAddress: String = DEFAULT_ADDRESS,
-        threadId: Long = conversationIdGenerator.get()
+        threadId: Long = conversationIdGenerator.get(),
     ): EmojiReaction {
         var reaction: EmojiReaction? = null
         realm.executeTransaction { r ->
-            reaction = r.createObject(EmojiReaction::class.java, reactionIdGenerator.incrementAndGet())
+            reaction =
+                r.createObject(EmojiReaction::class.java, reactionIdGenerator.incrementAndGet())
             reaction?.apply {
                 this.emoji = emoji
                 this.senderAddress = senderAddress
@@ -359,9 +348,7 @@ object InstrumentedMmsTestDataFactory {
 
     // ==================== Helper Methods ====================
 
-    /**
-     * Creates standalone MmsPart (not persisted).
-     */
+    /** Creates standalone MmsPart (not persisted). */
     fun createTextPart(text: String = "Test text"): MmsPart {
         return MmsPart().apply {
             id = partIdGenerator.incrementAndGet()
@@ -370,9 +357,7 @@ object InstrumentedMmsTestDataFactory {
         }
     }
 
-    /**
-     * Creates standalone MmsPart for image (not persisted).
-     */
+    /** Creates standalone MmsPart for image (not persisted). */
     fun createImagePart(mimeType: String = "image/jpeg"): MmsPart {
         return MmsPart().apply {
             id = partIdGenerator.incrementAndGet()
@@ -381,9 +366,7 @@ object InstrumentedMmsTestDataFactory {
         }
     }
 
-    /**
-     * Creates standalone MmsPart for video (not persisted).
-     */
+    /** Creates standalone MmsPart for video (not persisted). */
     fun createVideoPart(mimeType: String = "video/mp4"): MmsPart {
         return MmsPart().apply {
             id = partIdGenerator.incrementAndGet()
@@ -392,9 +375,7 @@ object InstrumentedMmsTestDataFactory {
         }
     }
 
-    /**
-     * Creates standalone MmsPart for audio (not persisted).
-     */
+    /** Creates standalone MmsPart for audio (not persisted). */
     fun createAudioPart(mimeType: String = "audio/mp3"): MmsPart {
         return MmsPart().apply {
             id = partIdGenerator.incrementAndGet()

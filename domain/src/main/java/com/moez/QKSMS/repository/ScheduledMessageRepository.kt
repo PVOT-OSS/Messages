@@ -18,16 +18,12 @@
  */
 package org.prauga.messages.repository
 
-import org.prauga.messages.model.Recipient
-import org.prauga.messages.model.ScheduledMessage
-import io.realm.RealmList
 import io.realm.RealmResults
+import org.prauga.messages.model.ScheduledMessage
 
 interface ScheduledMessageRepository {
 
-    /**
-     * Saves a scheduled message
-     */
+    /** Saves a scheduled message */
     fun saveScheduledMessage(
         date: Long,
         subId: Int,
@@ -35,42 +31,27 @@ interface ScheduledMessageRepository {
         sendAsGroup: Boolean,
         body: String,
         attachments: List<String>,
-        conversationId: Long
+        conversationId: Long,
     ): ScheduledMessage
 
-    /**
-     * Updates scheduled messages with new uris
-     */
+    /** Updates scheduled messages with new uris */
     fun updateScheduledMessage(scheduledMessage: ScheduledMessage)
 
-    /**
-     * Returns all of the scheduled messages, sorted chronologically
-     */
+    /** Returns all of the scheduled messages, sorted chronologically */
     fun getScheduledMessages(): RealmResults<ScheduledMessage>
 
-    /**
-     * Returns the scheduled message with the given [id]
-     */
+    /** Returns the scheduled message with the given [id] */
     fun getScheduledMessage(id: Long): ScheduledMessage?
 
-    /**
-     * Returns all scheduled messages with the given [conversationId]
-     */
+    /** Returns all scheduled messages with the given [conversationId] */
     fun getScheduledMessagesForConversation(conversationId: Long): RealmResults<ScheduledMessage>
 
-    /**
-     * Deletes the scheduled message with the given [id]
-     */
+    /** Deletes the scheduled message with the given [id] */
     fun deleteScheduledMessage(id: Long)
 
-    /**
-     * Delete multiple scheduled messages by id list
-     */
+    /** Delete multiple scheduled messages by id list */
     fun deleteScheduledMessages(ids: List<Long>)
 
-    /**
-     * Get a list of all scheduled message ids (in scheduled date order)
-     */
+    /** Get a list of all scheduled message ids (in scheduled date order) */
     fun getAllScheduledMessageIdsSnapshot(): List<Long>
-
 }

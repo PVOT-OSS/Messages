@@ -12,5 +12,4 @@ class UriPreferenceConverter : Converter<Uri> {
     override fun serialize(value: Uri): String {
         return value.toString()
     }
-
 }

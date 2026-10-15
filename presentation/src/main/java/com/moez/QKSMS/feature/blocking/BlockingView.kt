@@ -18,8 +18,8 @@
  */
 package org.prauga.messages.feature.blocking
 
-import org.prauga.messages.common.base.QkViewContract
 import io.reactivex.Observable
+import org.prauga.messages.common.base.QkViewContract
 
 interface BlockingView : QkViewContract<BlockingState> {
 
@@ -30,7 +30,10 @@ interface BlockingView : QkViewContract<BlockingState> {
     val dropClickedIntent: Observable<*>
 
     fun openBlockingManager()
+
     fun openBlockedNumbers()
+
     fun openMessageContentFilters()
+
     fun openBlockedMessages()
 }

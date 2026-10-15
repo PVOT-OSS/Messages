@@ -3,18 +3,17 @@
  */
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.MessageRepository
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.repository.MessageRepository
 
 class MarkDeliveredTest {
 
-    @Mock
-    private lateinit var messageRepository: MessageRepository
+    @Mock private lateinit var messageRepository: MessageRepository
 
     private lateinit var markDelivered: MarkDelivered
 

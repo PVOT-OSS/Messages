@@ -33,5 +33,4 @@ class ActiveConversationManagerImpl @Inject constructor() : ActiveConversationMa
     override fun getActiveConversation(): Long? {
         return threadId
     }
-
 }

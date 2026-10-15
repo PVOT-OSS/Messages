@@ -30,6 +30,7 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.blocking.BlockingManager
 import org.prauga.messages.common.ViewModelFactory
@@ -92,16 +93,11 @@ import org.prauga.messages.repository.ScheduledMessageRepositoryImpl
 import org.prauga.messages.repository.SyncRepository
 import org.prauga.messages.repository.SyncRepositoryImpl
 import org.prauga.messages.worker.InjectionWorkerFactory
-import javax.inject.Singleton
 
-@Module(subcomponents = [
-    ConversationInfoComponent::class,
-    ThemePickerComponent::class])
+@Module(subcomponents = [ConversationInfoComponent::class, ThemePickerComponent::class])
 class AppModule(private var application: Application) {
 
-    @Provides
-    @Singleton
-    fun provideContext(): Context = application
+    @Provides @Singleton fun provideContext(): Context = application
 
     @Provides
     fun provideContentResolver(context: Context): ContentResolver = context.contentResolver
@@ -121,9 +117,7 @@ class AppModule(private var application: Application) {
     @Provides
     @Singleton
     fun provideMoshi(): Moshi {
-        return Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
-                .build()
+        return Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     }
 
     @Provides
@@ -132,27 +126,25 @@ class AppModule(private var application: Application) {
     // Listener
 
     @Provides
-    fun provideContactAddedListener(listener: ContactAddedListenerImpl): ContactAddedListener = listener
+    fun provideContactAddedListener(listener: ContactAddedListenerImpl): ContactAddedListener =
+        listener
 
     // Manager
 
-    @Provides
-    fun provideBillingManager(manager: BillingManagerImpl): BillingManager = manager
+    @Provides fun provideBillingManager(manager: BillingManagerImpl): BillingManager = manager
 
     @Provides
-    fun provideActiveConversationManager(manager: ActiveConversationManagerImpl): ActiveConversationManager = manager
+    fun provideActiveConversationManager(
+        manager: ActiveConversationManagerImpl
+    ): ActiveConversationManager = manager
 
-    @Provides
-    fun provideAlarmManager(manager: AlarmManagerImpl): AlarmManager = manager
+    @Provides fun provideAlarmManager(manager: AlarmManagerImpl): AlarmManager = manager
 
-    @Provides
-    fun blockingClient(manager: BlockingManager): BlockingClient = manager
+    @Provides fun blockingClient(manager: BlockingManager): BlockingClient = manager
 
-    @Provides
-    fun changelogManager(manager: ChangelogManagerImpl): ChangelogManager = manager
+    @Provides fun changelogManager(manager: ChangelogManagerImpl): ChangelogManager = manager
 
-    @Provides
-    fun provideKeyManager(manager: KeyManagerImpl): KeyManager = manager
+    @Provides fun provideKeyManager(manager: KeyManagerImpl): KeyManager = manager
 
     @Provides
     fun provideNotificationsManager(manager: NotificationManagerImpl): NotificationManager = manager
@@ -160,37 +152,32 @@ class AppModule(private var application: Application) {
     @Provides
     fun providePermissionsManager(manager: PermissionManagerImpl): PermissionManager = manager
 
-    @Provides
-    fun provideRatingManager(manager: RatingManagerImpl): RatingManager = manager
+    @Provides fun provideRatingManager(manager: RatingManagerImpl): RatingManager = manager
 
-    @Provides
-    fun provideShortcutManager(manager: ShortcutManagerImpl): ShortcutManager = manager
+    @Provides fun provideShortcutManager(manager: ShortcutManagerImpl): ShortcutManager = manager
 
-    @Provides
-    fun provideReferralManager(manager: ReferralManagerImpl): ReferralManager = manager
+    @Provides fun provideReferralManager(manager: ReferralManagerImpl): ReferralManager = manager
 
-    @Provides
-    fun provideWidgetManager(manager: WidgetManagerImpl): WidgetManager = manager
+    @Provides fun provideWidgetManager(manager: WidgetManagerImpl): WidgetManager = manager
 
     // Mapper
 
-    @Provides
-    fun provideCursorToContact(mapper: CursorToContactImpl): CursorToContact = mapper
+    @Provides fun provideCursorToContact(mapper: CursorToContactImpl): CursorToContact = mapper
 
     @Provides
     fun provideCursorToContactGroup(mapper: CursorToContactGroupImpl): CursorToContactGroup = mapper
 
     @Provides
-    fun provideCursorToContactGroupMember(mapper: CursorToContactGroupMemberImpl): CursorToContactGroupMember = mapper
+    fun provideCursorToContactGroupMember(
+        mapper: CursorToContactGroupMemberImpl
+    ): CursorToContactGroupMember = mapper
 
     @Provides
     fun provideCursorToConversation(mapper: CursorToConversationImpl): CursorToConversation = mapper
 
-    @Provides
-    fun provideCursorToMessage(mapper: CursorToMessageImpl): CursorToMessage = mapper
+    @Provides fun provideCursorToMessage(mapper: CursorToMessageImpl): CursorToMessage = mapper
 
-    @Provides
-    fun provideCursorToPart(mapper: CursorToPartImpl): CursorToPart = mapper
+    @Provides fun provideCursorToPart(mapper: CursorToPartImpl): CursorToPart = mapper
 
     @Provides
     fun provideCursorToRecipient(mapper: CursorToRecipientImpl): CursorToRecipient = mapper
@@ -201,28 +188,36 @@ class AppModule(private var application: Application) {
     fun provideBackupRepository(repository: BackupRepositoryImpl): BackupRepository = repository
 
     @Provides
-    fun provideBlockingRepository(repository: BlockingRepositoryImpl): BlockingRepository = repository
+    fun provideBlockingRepository(repository: BlockingRepositoryImpl): BlockingRepository =
+        repository
 
     @Provides
-    fun provideMessageContentFilterRepository(repository: MessageContentFilterRepositoryImpl): MessageContentFilterRepository = repository
+    fun provideMessageContentFilterRepository(
+        repository: MessageContentFilterRepositoryImpl
+    ): MessageContentFilterRepository = repository
 
     @Provides
     fun provideContactRepository(repository: ContactRepositoryImpl): ContactRepository = repository
 
     @Provides
-    fun provideConversationRepository(repository: ConversationRepositoryImpl): ConversationRepository = repository
+    fun provideConversationRepository(
+        repository: ConversationRepositoryImpl
+    ): ConversationRepository = repository
 
     @Provides
     fun provideMessageRepository(repository: MessageRepositoryImpl): MessageRepository = repository
 
     @Provides
-    fun provideScheduledMessagesRepository(repository: ScheduledMessageRepositoryImpl): ScheduledMessageRepository = repository
+    fun provideScheduledMessagesRepository(
+        repository: ScheduledMessageRepositoryImpl
+    ): ScheduledMessageRepository = repository
+
+    @Provides fun provideSyncRepository(repository: SyncRepositoryImpl): SyncRepository = repository
 
     @Provides
-    fun provideSyncRepository(repository: SyncRepositoryImpl): SyncRepository = repository
-
-    @Provides
-    fun provideEmojiReactionRepository(repository: EmojiReactionRepositoryImpl): EmojiReactionRepository = repository
+    fun provideEmojiReactionRepository(
+        repository: EmojiReactionRepositoryImpl
+    ): EmojiReactionRepository = repository
 
     // worker factory
     @Provides

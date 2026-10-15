@@ -20,16 +20,12 @@ package org.prauga.messages.feature.conversationinfo.injection
 
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 import org.prauga.messages.feature.conversationinfo.ConversationInfoController
 import org.prauga.messages.injection.scope.ControllerScope
-import javax.inject.Named
 
 @Module
 class ConversationInfoModule(private val controller: ConversationInfoController) {
 
-    @Provides
-    @ControllerScope
-    @Named("threadId")
-    fun provideThreadId(): Long = controller.threadId
-
+    @Provides @ControllerScope @Named("threadId") fun provideThreadId(): Long = controller.threadId
 }

@@ -34,7 +34,7 @@ import org.prauga.messages.feature.compose.editing.DetailedChipView
 
 class ComposeWindowCallback(
     private val localCallback: Window.Callback,
-    private val activity: Activity
+    private val activity: Activity,
 ) : Window.Callback {
 
     override fun dispatchKeyEvent(keyEvent: KeyEvent): Boolean {
@@ -69,7 +69,9 @@ class ComposeWindowCallback(
         return localCallback.dispatchGenericMotionEvent(motionEvent)
     }
 
-    override fun dispatchPopulateAccessibilityEvent(accessibilityEvent: AccessibilityEvent): Boolean {
+    override fun dispatchPopulateAccessibilityEvent(
+        accessibilityEvent: AccessibilityEvent
+    ): Boolean {
         return localCallback.dispatchPopulateAccessibilityEvent(accessibilityEvent)
     }
 

@@ -23,6 +23,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -30,20 +31,22 @@ import org.prauga.messages.common.util.extensions.forwardTouches
 import org.prauga.messages.databinding.PhoneNumberListItemBinding
 import org.prauga.messages.extensions.Optional
 import org.prauga.messages.model.PhoneNumber
-import javax.inject.Inject
 
-class PhoneNumberPickerAdapter @Inject constructor(
-    private val context: Context
-) : QkAdapter<PhoneNumber, QkViewHolder>() {
+class PhoneNumberPickerAdapter @Inject constructor(private val context: Context) :
+    QkAdapter<PhoneNumber, QkViewHolder>() {
 
     val selectedItemChanges: Subject<Optional<Long>> = BehaviorSubject.create()
 
     private var selectedItem: Long? = null
         set(value) {
-            data.indexOfFirst { number -> number.id == field }.takeIf { it != -1 }
+            data
+                .indexOfFirst { number -> number.id == field }
+                .takeIf { it != -1 }
                 ?.run(::notifyItemChanged)
             field = value
-            data.indexOfFirst { number -> number.id == field }.takeIf { it != -1 }
+            data
+                .indexOfFirst { number -> number.id == field }
+                .takeIf { it != -1 }
                 ?.run(::notifyItemChanged)
             selectedItemChanges.onNext(Optional(value))
         }
@@ -67,15 +70,15 @@ class PhoneNumberPickerAdapter @Inject constructor(
 
         binding.number.radioButton.isChecked = phoneNumber.id == selectedItem
         binding.number.titleView.text = phoneNumber.address
-        binding.number.summaryView.text = when (phoneNumber.isDefault) {
-            true -> context.getString(R.string.compose_number_picker_default, phoneNumber.type)
-            false -> phoneNumber.type
-        }
+        binding.number.summaryView.text =
+            when (phoneNumber.isDefault) {
+                true -> context.getString(R.string.compose_number_picker_default, phoneNumber.type)
+                false -> phoneNumber.type
+            }
     }
 
     override fun onDatasetChanged() {
         super.onDatasetChanged()
         selectedItem = data.find { number -> number.isDefault }?.id ?: data.firstOrNull()?.id
     }
-
 }

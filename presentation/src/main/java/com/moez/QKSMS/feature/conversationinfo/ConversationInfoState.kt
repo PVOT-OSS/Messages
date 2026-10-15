@@ -21,5 +21,5 @@ package org.prauga.messages.feature.conversationinfo
 data class ConversationInfoState(
     val threadId: Long = 0,
     val data: List<ConversationInfoItem> = listOf(),
-    val hasError: Boolean = false
+    val hasError: Boolean = false,
 )

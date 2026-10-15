@@ -27,12 +27,9 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
-/**
- * Listens for a contact being added, and then syncs it to Realm
- */
-class ContactAddedListenerImpl @Inject constructor(
-    private val context: Context
-) : ContactAddedListener {
+/** Listens for a contact being added, and then syncs it to Realm */
+class ContactAddedListenerImpl @Inject constructor(private val context: Context) :
+    ContactAddedListener {
 
     companion object {
         private val URI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -46,7 +43,8 @@ class ContactAddedListenerImpl @Inject constructor(
 
         private val subject = BehaviorSubject.createDefault<Unit>(Unit)
 
-        val observable: Observable<Unit> = subject
+        val observable: Observable<Unit> =
+            subject
                 .doOnSubscribe { context.contentResolver.registerContentObserver(URI, true, this) }
                 .doOnDispose { context.contentResolver.unregisterContentObserver(this) }
                 .share()
@@ -58,7 +56,5 @@ class ContactAddedListenerImpl @Inject constructor(
         override fun onChange(selfChange: Boolean, uri: Uri?) {
             subject.onNext(Unit)
         }
-
     }
-
 }

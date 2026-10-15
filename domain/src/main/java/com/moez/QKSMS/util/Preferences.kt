@@ -25,16 +25,18 @@ import android.os.Build
 import android.provider.Settings
 import com.f2prateek.rx.preferences2.Preference
 import com.f2prateek.rx.preferences2.RxSharedPreferences
-import org.prauga.messages.common.util.extensions.versionCode
 import io.reactivex.Observable
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.prauga.messages.common.util.extensions.versionCode
 
 @Singleton
-class Preferences @Inject constructor(
+class Preferences
+@Inject
+constructor(
     context: Context,
     private val rxPrefs: RxSharedPreferences,
-    private val sharedPrefs: SharedPreferences
+    private val sharedPrefs: SharedPreferences,
 ) {
 
     companion object {
@@ -92,17 +94,22 @@ class Preferences @Inject constructor(
     val canUseSubId = rxPrefs.getBoolean("canUseSubId", true)
     val version = rxPrefs.getInteger("version", context.versionCode)
     val changelogVersion = rxPrefs.getInteger("changelogVersion", context.versionCode)
-    val hasAskedForNotificationPermission = rxPrefs.getBoolean("hasAskedForNotificationPermission", false)
+    val hasAskedForNotificationPermission =
+        rxPrefs.getBoolean("hasAskedForNotificationPermission", false)
     val backupDirectory = rxPrefs.getObject("backupDirectory", Uri.EMPTY, UriPreferenceConverter())
     @Deprecated("This should only be accessed when migrating to @blockingManager")
     val sia = rxPrefs.getBoolean("sia", false)
 
     // User configurable
     val sendAsGroup = rxPrefs.getBoolean("sendAsGroup", true)
-    val nightMode = rxPrefs.getInteger("nightMode", when (Build.VERSION.SDK_INT >= 29) {
-        true -> NIGHT_MODE_SYSTEM
-        false -> NIGHT_MODE_OFF
-    })
+    val nightMode =
+        rxPrefs.getInteger(
+            "nightMode",
+            when (Build.VERSION.SDK_INT >= 29) {
+                true -> NIGHT_MODE_SYSTEM
+                false -> NIGHT_MODE_OFF
+            },
+        )
     val nightStart = rxPrefs.getString("nightStart", "18:00")
     val nightEnd = rxPrefs.getString("nightEnd", "6:00")
     val systemFont = rxPrefs.getBoolean("systemFont", false)
@@ -132,39 +139,42 @@ class Preferences @Inject constructor(
     val unreadAtTop = rxPrefs.getBoolean("unreadAtTop", false)
 
     init {
-        // Migrate from old night mode preference to new one, now that we support android Q night mode
+        // Migrate from old night mode preference to new one, now that we support android Q night
+        // mode
         val nightModeSummary = rxPrefs.getInteger("nightModeSummary")
         if (nightModeSummary.isSet) {
-            nightMode.set(when (nightModeSummary.get()) {
-                0 -> NIGHT_MODE_OFF
-                1 -> NIGHT_MODE_ON
-                2 -> NIGHT_MODE_AUTO
-                else -> NIGHT_MODE_OFF
-            })
+            nightMode.set(
+                when (nightModeSummary.get()) {
+                    0 -> NIGHT_MODE_OFF
+                    1 -> NIGHT_MODE_ON
+                    2 -> NIGHT_MODE_AUTO
+                    else -> NIGHT_MODE_OFF
+                }
+            )
             nightModeSummary.delete()
         }
     }
 
-    /**
-     * Returns a stream of preference keys for changing preferences
-     */
-    val keyChanges: Observable<String> = Observable.create<String> { emitter ->
-        // Making this a lambda would cause it to be GCd
-        val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key != null)
-                emitter.onNext(key)
-        }
+    /** Returns a stream of preference keys for changing preferences */
+    val keyChanges: Observable<String> =
+        Observable.create<String> { emitter ->
+                // Making this a lambda would cause it to be GCd
+                val listener =
+                    SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                        if (key != null) emitter.onNext(key)
+                    }
 
-        emitter.setCancellable {
-            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
-        }
+                emitter.setCancellable {
+                    sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener)
+                }
 
-        sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
-    }.share()
+                sharedPrefs.registerOnSharedPreferenceChangeListener(listener)
+            }
+            .share()
 
     fun theme(
         recipientId: Long = 0,
-        default: Int = rxPrefs.getInteger("theme", 0xFF0097A7.toInt()).get()
+        default: Int = rxPrefs.getInteger("theme", 0xFF0097A7.toInt()).get(),
     ): Preference<Int> {
         return when (recipientId) {
             0L -> rxPrefs.getInteger("theme", 0xFF0097A7.toInt())
@@ -209,7 +219,8 @@ class Preferences @Inject constructor(
     }
 
     fun ringtone(threadId: Long = 0): Preference<String> {
-        val default = rxPrefs.getString("ringtone", Settings.System.DEFAULT_NOTIFICATION_URI.toString())
+        val default =
+            rxPrefs.getString("ringtone", Settings.System.DEFAULT_NOTIFICATION_URI.toString())
 
         return when (threadId) {
             0L -> default

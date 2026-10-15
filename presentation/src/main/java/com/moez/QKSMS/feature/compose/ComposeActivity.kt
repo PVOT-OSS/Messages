@@ -65,6 +65,12 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkThemedActivity
@@ -72,12 +78,12 @@ import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.autoScrollToStart
 import org.prauga.messages.common.util.extensions.dpToPx
 import org.prauga.messages.common.util.extensions.hideKeyboard
+import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.util.extensions.scrapViews
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.common.util.extensions.showKeyboard
-import org.prauga.messages.common.util.extensions.resolveThemeColor
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.databinding.ComposeActivityBinding
 import org.prauga.messages.extensions.mapNotNull
@@ -85,30 +91,16 @@ import org.prauga.messages.feature.compose.editing.ChipsAdapter
 import org.prauga.messages.feature.contacts.ContactsActivity
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
-import org.prauga.messages.feature.compose.MessageLongPress
-import org.prauga.messages.feature.compose.ReactionSelection
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
-class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivityBinding::inflate),
-    ComposeView {
+class ComposeActivity :
+    QkThemedActivity<ComposeActivityBinding>(ComposeActivityBinding::inflate), ComposeView {
 
-    @Inject
-    lateinit var composeAttachmentAdapter: ComposeAttachmentAdapter
-    @Inject
-    lateinit var chipsAdapter: ChipsAdapter
-    @Inject
-    lateinit var dateFormatter: DateFormatter
-    @Inject
-    lateinit var messageAdapter: MessagesAdapter
-    @Inject
-    lateinit var navigator: Navigator
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var composeAttachmentAdapter: ComposeAttachmentAdapter
+    @Inject lateinit var chipsAdapter: ChipsAdapter
+    @Inject lateinit var dateFormatter: DateFormatter
+    @Inject lateinit var messageAdapter: MessagesAdapter
+    @Inject lateinit var navigator: Navigator
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override val activityVisibleIntent: Subject<Boolean> = PublishSubject.create()
     override val chipsSelectedIntent: Subject<HashMap<String, String?>> = PublishSubject.create()
@@ -119,48 +111,34 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     override val scheduleAction: Subject<Boolean> = PublishSubject.create()
     override val sendAsGroupIntent by lazy { binding.sendAsGroupBackground.clicks() }
     override val messagePartClickIntent: Subject<Long> by lazy { messageAdapter.partClicks }
-    override val messagePartContextMenuRegistrar: Subject<View> by lazy { messageAdapter.partContextMenuRegistrar }
+    override val messagePartContextMenuRegistrar: Subject<View> by lazy {
+        messageAdapter.partContextMenuRegistrar
+    }
     override val messagesSelectedIntent by lazy { messageAdapter.selectionChanges }
     override val cancelSendingIntent: Subject<Long> by lazy { messageAdapter.cancelSendingClicks }
     override val sendNowIntent: Subject<Long> by lazy { messageAdapter.sendNowClicks }
     override val resendIntent: Subject<Long> by lazy { messageAdapter.resendClicks }
-    override val attachmentDeletedIntent: Subject<Attachment> by lazy { composeAttachmentAdapter.attachmentDeleted }
+    override val attachmentDeletedIntent: Subject<Attachment> by lazy {
+        composeAttachmentAdapter.attachmentDeleted
+    }
     override val textChangedIntent by lazy { binding.message.textChanges() }
     override val attachIntent by lazy {
-        Observable.merge(
-            binding.attach.clicks(),
-            binding.shadeBackground.clicks()
-        )
+        Observable.merge(binding.attach.clicks(), binding.shadeBackground.clicks())
     }
     override val cameraIntent by lazy {
-        Observable.merge(
-            binding.camera.clicks(),
-            binding.cameraLabel.clicks()
-        )
+        Observable.merge(binding.camera.clicks(), binding.cameraLabel.clicks())
     }
     override val attachImageFileIntent by lazy {
-        Observable.merge(
-            binding.gallery.clicks(),
-            binding.galleryLabel.clicks()
-        )
+        Observable.merge(binding.gallery.clicks(), binding.galleryLabel.clicks())
     }
     override val attachAnyFileIntent by lazy {
-        Observable.merge(
-            binding.attachAFileIcon.clicks(),
-            binding.attachAFileLabel.clicks()
-        )
+        Observable.merge(binding.attachAFileIcon.clicks(), binding.attachAFileLabel.clicks())
     }
     override val scheduleIntent by lazy {
-        Observable.merge(
-            binding.schedule.clicks(),
-            binding.scheduleLabel.clicks()
-        )
+        Observable.merge(binding.schedule.clicks(), binding.scheduleLabel.clicks())
     }
     override val attachContactIntent by lazy {
-        Observable.merge(
-            binding.contact.clicks(),
-            binding.contactLabel.clicks()
-        )
+        Observable.merge(binding.contact.clicks(), binding.contactLabel.clicks())
     }
     override val attachAnyFileSelectedIntent: Subject<Uri> = PublishSubject.create()
     override val contactSelectedIntent: Subject<Uri> = PublishSubject.create()
@@ -169,10 +147,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     override val changeSimIntent by lazy { binding.sim.clicks() }
     override val scheduleCancelIntent by lazy { binding.scheduledCancel.clicks() }
     override val sendIntent by lazy {
-        Observable.merge(
-            binding.send.clicks(),
-            binding.scheduledSend.clicks()
-        )
+        Observable.merge(binding.send.clicks(), binding.scheduledSend.clicks())
     }
     override val viewQksmsPlusIntent: Subject<Unit> = PublishSubject.create()
     override val backPressedIntent: Subject<Unit> = PublishSubject.create()
@@ -185,7 +160,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         Observable.merge(
             binding.recordAudioMsg.clicks(),
             binding.attachAnAudioMessageIcon.clicks(),
-            binding.attachAnAudioMessageLabel.clicks()
+            binding.attachAnAudioMessageLabel.clicks(),
         )
     }
     override val recordAudioAbort by lazy { binding.audioMsgAbort.clicks() }
@@ -225,9 +200,8 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         showBackButton(true)
         viewModel.bindView(this)
 
-        binding.contentView.layoutTransition = LayoutTransition().apply {
-            disableTransitionType(LayoutTransition.CHANGING)
-        }
+        binding.contentView.layoutTransition =
+            LayoutTransition().apply { disableTransitionType(LayoutTransition.CHANGING) }
         chipsAdapter.view = binding.chips
 
         binding.chips.itemAnimator = null
@@ -248,27 +222,32 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
                 binding.loading.setTint(it.theme)
 
                 // entire attach menu
-                binding.attach.setBackgroundTint(it.theme); binding.attach.setTint(it.textPrimary)
-                binding.contact.setBackgroundTint(it.theme); binding.contact.setTint(it.textPrimary)
-                binding.contactLabel.setBackgroundTint(it.theme); binding.contactLabel.setTint(it.textPrimary)
-                binding.schedule.setBackgroundTint(it.theme); binding.schedule.setTint(it.textPrimary)
-                binding.scheduleLabel.setBackgroundTint(it.theme); binding.scheduleLabel.setTint(it.textPrimary)
-                binding.attachAFileIcon.setBackgroundTint(it.theme); binding.attachAFileIcon.setTint(
-                it.textPrimary
-            )
-                binding.attachAFileLabel.setBackgroundTint(it.theme); binding.attachAFileLabel.setTint(
-                it.textPrimary
-            )
-                binding.attachAnAudioMessageIcon.setBackgroundTint(it.theme); binding.attachAnAudioMessageIcon.setTint(
-                it.textPrimary
-            )
-                binding.attachAnAudioMessageLabel.setBackgroundTint(it.theme); binding.attachAnAudioMessageLabel.setTint(
-                it.textPrimary
-            )
-                binding.gallery.setBackgroundTint(it.theme); binding.gallery.setTint(it.textPrimary)
-                binding.galleryLabel.setBackgroundTint(it.theme); binding.galleryLabel.setTint(it.textPrimary)
-                binding.camera.setBackgroundTint(it.theme); binding.camera.setTint(it.textPrimary)
-                binding.cameraLabel.setBackgroundTint(it.theme); binding.cameraLabel.setTint(it.textPrimary)
+                binding.attach.setBackgroundTint(it.theme)
+                binding.attach.setTint(it.textPrimary)
+                binding.contact.setBackgroundTint(it.theme)
+                binding.contact.setTint(it.textPrimary)
+                binding.contactLabel.setBackgroundTint(it.theme)
+                binding.contactLabel.setTint(it.textPrimary)
+                binding.schedule.setBackgroundTint(it.theme)
+                binding.schedule.setTint(it.textPrimary)
+                binding.scheduleLabel.setBackgroundTint(it.theme)
+                binding.scheduleLabel.setTint(it.textPrimary)
+                binding.attachAFileIcon.setBackgroundTint(it.theme)
+                binding.attachAFileIcon.setTint(it.textPrimary)
+                binding.attachAFileLabel.setBackgroundTint(it.theme)
+                binding.attachAFileLabel.setTint(it.textPrimary)
+                binding.attachAnAudioMessageIcon.setBackgroundTint(it.theme)
+                binding.attachAnAudioMessageIcon.setTint(it.textPrimary)
+                binding.attachAnAudioMessageLabel.setBackgroundTint(it.theme)
+                binding.attachAnAudioMessageLabel.setTint(it.textPrimary)
+                binding.gallery.setBackgroundTint(it.theme)
+                binding.gallery.setTint(it.textPrimary)
+                binding.galleryLabel.setBackgroundTint(it.theme)
+                binding.galleryLabel.setTint(it.textPrimary)
+                binding.camera.setBackgroundTint(it.theme)
+                binding.camera.setTint(it.textPrimary)
+                binding.cameraLabel.setBackgroundTint(it.theme)
+                binding.cameraLabel.setTint(it.textPrimary)
 
                 // audio message recording
                 binding.audioMsgRecord.setColor(it.theme)
@@ -322,7 +301,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             .subscribe {
                 binding.audioMsgRecord.isVisible = it
                 binding.audioMsgDuration.isVisible =
-                    it   // chronometer follows record button visibility
+                    it // chronometer follows record button visibility
                 binding.audioMsgBluetooth.isVisible = !it
             }
 
@@ -345,10 +324,12 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
                         binding.audioMsgPlayerPlayPause.tag = QkMediaPlayer.PlayingState.Playing
                         QkMediaPlayer.start()
                         binding.audioMsgPlayerPlayPause.setImageResource(R.drawable.exo_icon_pause)
-                        seekBarUpdater = getSeekBarUpdater().subscribe {
-                            binding.audioMsgPlayerSeekBar.progress = QkMediaPlayer.currentPosition
-                            binding.audioMsgPlayerSeekBar.max = QkMediaPlayer.duration
-                        }
+                        seekBarUpdater =
+                            getSeekBarUpdater().subscribe {
+                                binding.audioMsgPlayerSeekBar.progress =
+                                    QkMediaPlayer.currentPosition
+                                binding.audioMsgPlayerSeekBar.max = QkMediaPlayer.duration
+                            }
                         binding.audioMsgPlayerSeekBar.isEnabled = true
                     }
 
@@ -374,22 +355,18 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(p0: SeekBar?, progress: Int, fromUser: Boolean) {
                     // if seek was initiated by the user and this part is currently playing
-                    if (fromUser)
-                        QkMediaPlayer.seekTo(progress)
+                    if (fromUser) QkMediaPlayer.seekTo(progress)
                 }
 
                 override fun onStartTrackingTouch(p0: SeekBar?) {}
+
                 override fun onStopTrackingTouch(p0: SeekBar?) {}
             }
         )
 
         window.callback = ComposeWindowCallback(window.callback, this)
 
-        disposables.add(
-            messageLongPressIntent.subscribe { payload ->
-                showReactionSheet(payload)
-            }
-        )
+        disposables.add(messageLongPressIntent.subscribe { payload -> showReactionSheet(payload) })
     }
 
     override fun onStart() {
@@ -420,21 +397,22 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
         threadId.onNext(state.threadId)
 
-        title = when {
-            state.selectedMessages > 0 -> getString(
-                R.string.compose_title_selected,
-                state.selectedMessages
-            )
+        title =
+            when {
+                state.selectedMessages > 0 ->
+                    getString(R.string.compose_title_selected, state.selectedMessages)
 
-            state.query.isNotEmpty() -> state.query
-            else -> state.conversationtitle
-        }
+                state.query.isNotEmpty() -> state.query
+                else -> state.conversationtitle
+            }
 
         binding.toolbarSubtitle.setVisible(state.query.isNotEmpty())
-        binding.toolbarSubtitle.text = getString(
-            R.string.compose_subtitle_results, state.searchSelectionPosition,
-            state.searchResults
-        )
+        binding.toolbarSubtitle.text =
+            getString(
+                R.string.compose_subtitle_results,
+                state.searchSelectionPosition,
+                state.searchResults,
+            )
 
         binding.toolbarTitle.setVisible(!state.editingMode)
         binding.chips.setVisible(state.editingMode)
@@ -444,17 +422,17 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         if (state.editingMode && binding.chips.adapter == null) binding.chips.adapter = chipsAdapter
 
         binding.toolbar.menu.findItem(R.id.viewScheduledMessages)?.isVisible =
-            !state.editingMode && state.selectedMessages == 0
-                    && state.query.isEmpty() && state.hasScheduledMessages
+            !state.editingMode &&
+                state.selectedMessages == 0 &&
+                state.query.isEmpty() &&
+                state.hasScheduledMessages
         binding.toolbar.menu.findItem(R.id.select_all)?.isVisible =
             !state.editingMode && (messageAdapter.itemCount > 1) && state.selectedMessages != 0
         binding.toolbar.menu.findItem(R.id.add)?.isVisible = state.editingMode
         binding.toolbar.menu.findItem(R.id.call)?.isVisible =
-            !state.editingMode && state.selectedMessages == 0
-                    && state.query.isEmpty()
+            !state.editingMode && state.selectedMessages == 0 && state.query.isEmpty()
         binding.toolbar.menu.findItem(R.id.info)?.isVisible =
-            !state.editingMode && state.selectedMessages == 0
-                    && state.query.isEmpty()
+            !state.editingMode && state.selectedMessages == 0 && state.query.isEmpty()
         binding.toolbar.menu.findItem(R.id.copy)?.isVisible =
             !state.editingMode && state.selectedMessages > 0 && state.selectedMessagesHaveText
         binding.toolbar.menu.findItem(R.id.share)?.isVisible =
@@ -483,7 +461,9 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         binding.sendAsGroup.setVisible(state.editingMode && state.selectedChips.size >= 2)
         binding.sendAsGroupSwitch.isChecked = state.sendAsGroup
 
-        binding.messageList.setVisible(!state.editingMode || state.sendAsGroup || state.selectedChips.size == 1)
+        binding.messageList.setVisible(
+            !state.editingMode || state.sendAsGroup || state.selectedChips.size == 1
+        )
         messageAdapter.data = state.messages
         messageAdapter.highlight = state.searchSelectionId
 
@@ -525,11 +505,13 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
         // show either send, audio msg record, or sendScheduled button
         binding.send.visibility =
-            if (state.canSend && !state.loading && state.scheduled == 0L) View.VISIBLE else View.INVISIBLE
+            if (state.canSend && !state.loading && state.scheduled == 0L) View.VISIBLE
+            else View.INVISIBLE
         binding.recordAudioMsg.visibility =
             if (state.canSend && !state.loading) View.INVISIBLE else View.VISIBLE
         binding.scheduledSend.visibility =
-            if (state.canSend && (state.scheduled != 0L) && !state.loading) View.VISIBLE else View.INVISIBLE
+            if (state.canSend && (state.scheduled != 0L) && !state.loading) View.VISIBLE
+            else View.INVISIBLE
 
         // if not in editing mode, and there are no non-me participants that can be sent to,
         // hide controls that allow constructing a reply and inform user no valid recipients
@@ -547,16 +529,14 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
                     ConstraintSet.BOTTOM,
                     R.id.noValidRecipients,
                     ConstraintSet.TOP,
-                    0
+                    0,
                 )
                 applyTo(binding.contentView)
             }
         }
 
         // if scheduling mode is set, show schedule dialog
-        if (state.scheduling)
-            scheduleAction.onNext(true)
-
+        if (state.scheduling) scheduleAction.onNext(true)
     }
 
     override fun clearSelection() = messageAdapter.clearSelection()
@@ -570,46 +550,38 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     }
 
     override fun showDetails(details: String) {
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.compose_details_title)
-            .setMessage(details)
-            .setCancelable(true)
-            .create()
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.compose_details_title)
+                .setMessage(details)
+                .setCancelable(true)
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun showMessageLinkAskDialog(uri: Uri) {
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.messageLinkHandling_dialog_title)
-            .setMessage(getString(R.string.messageLinkHandling_dialog_body, uri.toString()))
-            .setPositiveButton(
-                R.string.messageLinkHandling_dialog_positive
-            ) { _, _ ->
-                ContextCompat.startActivity(
-                    this,
-                    Intent(Intent.ACTION_VIEW).setData(uri),
-                    null
-                )
-            }
-            .setNegativeButton(R.string.messageLinkHandling_dialog_negative) { _, _ -> { } }
-            .create()
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.messageLinkHandling_dialog_title)
+                .setMessage(getString(R.string.messageLinkHandling_dialog_body, uri.toString()))
+                .setPositiveButton(R.string.messageLinkHandling_dialog_positive) { _, _ ->
+                    ContextCompat.startActivity(this, Intent(Intent.ACTION_VIEW).setData(uri), null)
+                }
+                .setNegativeButton(R.string.messageLinkHandling_dialog_negative) { _, _ -> {} }
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun requestDefaultSms() {
@@ -620,7 +592,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            0
+            0,
         )
     }
 
@@ -630,27 +602,40 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     override fun requestSmsPermission() {
         ActivityCompat.requestPermissions(
-            this, arrayOf(
-                Manifest.permission.READ_SMS,
-                Manifest.permission.SEND_SMS
-            ), 0
+            this,
+            arrayOf(Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS),
+            0,
         )
     }
 
     override fun requestDatePicker() {
         val calendar = Calendar.getInstance()
-        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, day ->
-            val timePicker = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { _, hour, minute ->
-                calendar.set(Calendar.YEAR, year)
-                calendar.set(Calendar.MONTH, month)
-                calendar.set(Calendar.DAY_OF_MONTH, day)
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                scheduleSelectedIntent.onNext(calendar.timeInMillis)
-            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), DateFormat.is24HourFormat(this))
-            tintDialogButtons(timePicker)
-            timePicker.show()
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+        val datePicker =
+            DatePickerDialog(
+                this,
+                DatePickerDialog.OnDateSetListener { _, year, month, day ->
+                    val timePicker =
+                        TimePickerDialog(
+                            this,
+                            TimePickerDialog.OnTimeSetListener { _, hour, minute ->
+                                calendar.set(Calendar.YEAR, year)
+                                calendar.set(Calendar.MONTH, month)
+                                calendar.set(Calendar.DAY_OF_MONTH, day)
+                                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                                calendar.set(Calendar.MINUTE, minute)
+                                scheduleSelectedIntent.onNext(calendar.timeInMillis)
+                            },
+                            calendar.get(Calendar.HOUR_OF_DAY),
+                            calendar.get(Calendar.MINUTE),
+                            DateFormat.is24HourFormat(this),
+                        )
+                    tintDialogButtons(timePicker)
+                    timePicker.show()
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH),
+            )
         tintDialogButtons(datePicker)
         datePicker.show()
 
@@ -659,12 +644,11 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     }
 
     override fun requestContact() {
-        val intent = Intent(Intent.ACTION_PICK)
-            .setType(ContactsContract.Contacts.CONTENT_TYPE)
+        val intent = Intent(Intent.ACTION_PICK).setType(ContactsContract.Contacts.CONTENT_TYPE)
 
         startActivityForResult(
             Intent.createChooser(intent, null),
-            ComposeView.AttachContactRequestCode
+            ComposeView.AttachContactRequestCode,
         )
     }
 
@@ -674,9 +658,10 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         isSelection = chips.isEmpty()
         val serialized =
             HashMap(chips.associate { chip -> chip.address to chip.contact?.lookupKey })
-        val intent = Intent(this, ContactsActivity::class.java)
-            .putExtra(ContactsActivity.SharingKey, sharing)
-            .putExtra(ContactsActivity.ChipsKey, serialized)
+        val intent =
+            Intent(this, ContactsActivity::class.java)
+                .putExtra(ContactsActivity.SharingKey, sharing)
+                .putExtra(ContactsActivity.ChipsKey, serialized)
         startActivityForResult(intent, ComposeView.SelectContactRequestCode)
     }
 
@@ -685,35 +670,34 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     }
 
     override fun showKeyboard() {
-        binding.message.postDelayed({
-            binding.message.showKeyboard()
-        }, 200)
+        binding.message.postDelayed({ binding.message.showKeyboard() }, 200)
     }
 
     override fun requestCamera() {
-        cameraDestination = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            .let { timestamp ->
-                ContentValues().apply {
-                    put(
-                        MediaStore.Images.Media.TITLE,
-                        timestamp
-                    )
+        cameraDestination =
+            SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault())
+                .format(Date())
+                .let { timestamp ->
+                    ContentValues().apply { put(MediaStore.Images.Media.TITLE, timestamp) }
                 }
-            }
-            .let { cv -> contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv) }
+                .let { cv ->
+                    contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)
+                }
 
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            .putExtra(MediaStore.EXTRA_OUTPUT, cameraDestination)
+        val intent =
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                .putExtra(MediaStore.EXTRA_OUTPUT, cameraDestination)
         startActivityForResult(Intent.createChooser(intent, null), ComposeView.TakePhotoRequestCode)
     }
 
     override fun requestGallery(mimeType: String, requestCode: Int) {
-        val intent = Intent(Intent.ACTION_PICK)
-            .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
-            .putExtra(Intent.EXTRA_LOCAL_ONLY, false)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .setType(mimeType)
+        val intent =
+            Intent(Intent.ACTION_PICK)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                .addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION)
+                .putExtra(Intent.EXTRA_LOCAL_ONLY, false)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .setType(mimeType)
         startActivityForResult(Intent.createChooser(intent, null), requestCode)
     }
 
@@ -723,7 +707,8 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     }
 
     override fun scrollToMessage(id: Long) {
-        messageAdapter.data?.second
+        messageAdapter.data
+            ?.second
             ?.indexOfLast { message -> message.id == id }
             ?.takeIf { position -> position != -1 }
             ?.let(binding.messageList::scrollToPosition)
@@ -739,41 +724,41 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     override fun showDeleteDialog(messages: List<Long>) {
         val count = messages.size
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.dialog_delete_title)
-            .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
-            .setPositiveButton(R.string.button_delete) { _, _ -> confirmDeleteIntent.onNext(messages) }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.dialog_delete_title)
+                .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
+                .setPositiveButton(R.string.button_delete) { _, _ ->
+                    confirmDeleteIntent.onNext(messages)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun showClearCurrentMessageDialog() {
-        val dialog = AlertDialog.Builder(this, R.style.AppThemeDialog)
-            .setTitle(R.string.dialog_clear_compose_title)
-            .setMessage(R.string.dialog_clear_compose)
-            .setPositiveButton(R.string.button_clear) { _, _ ->
-                clearCurrentMessageIntent.onNext(false)
-            }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+        val dialog =
+            AlertDialog.Builder(this, R.style.AppThemeDialog)
+                .setTitle(R.string.dialog_clear_compose_title)
+                .setMessage(R.string.dialog_clear_compose)
+                .setPositiveButton(R.string.button_clear) { _, _ ->
+                    clearCurrentMessageIntent.onNext(false)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        theme.take(1)
-            .autoDispose(scope())
-            .subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        theme.take(1).autoDispose(scope()).subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -793,7 +778,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     override fun onCreateContextMenu(
         menu: ContextMenu?,
         v: View?,
-        menuInfo: ContextMenu.ContextMenuInfo?
+        menuInfo: ContextMenu.ContextMenuInfo?,
     ) {
         super.onCreateContextMenu(menu, v, menuInfo)
         menuInflater.inflate(R.menu.mms_part_menu, menu)
@@ -806,14 +791,14 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode != Activity.RESULT_OK)
-            return
+        if (resultCode != Activity.RESULT_OK) return
 
         when (requestCode) {
             ComposeView.SelectContactRequestCode -> {
-                val selectedContacts = data?.getSerializableExtra(ContactsActivity.ChipsKey)
-                    ?.let { serializable -> serializable as? HashMap<String, String?> }
-                    ?: hashMapOf()
+                val selectedContacts =
+                    data?.getSerializableExtra(ContactsActivity.ChipsKey)?.let { serializable ->
+                        serializable as? HashMap<String, String?>
+                    } ?: hashMapOf()
 
                 // finish immediately to avoid showing empty compose screen
                 if (isSelection && selectedContacts.isEmpty()) {
@@ -831,7 +816,9 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
             }
 
             ComposeView.AttachAFileRequestCode -> {
-                data?.clipData?.itemCount
+                data
+                    ?.clipData
+                    ?.itemCount
                     ?.let { count -> 0 until count }
                     ?.mapNotNull { i -> data.clipData?.getItemAt(i)?.uri }
                     ?.forEach(attachAnyFileSelectedIntent::onNext)
@@ -865,25 +852,28 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
     private fun showReactionSheet(payload: MessageLongPress) {
         val view = layoutInflater.inflate(R.layout.reaction_sheet, null)
 
-        val reactions = listOf(
-            view.findViewById<View>(R.id.reaction_love) to "❤️",
-            view.findViewById<View>(R.id.reaction_like) to "👍",
-            view.findViewById<View>(R.id.reaction_dislike) to "👎",
-            view.findViewById<View>(R.id.reaction_laugh) to "😂",
-            view.findViewById<View>(R.id.reaction_emphasize) to "‼️",
-            view.findViewById<View>(R.id.reaction_question) to "❓",
-        )
+        val reactions =
+            listOf(
+                view.findViewById<View>(R.id.reaction_love) to "❤️",
+                view.findViewById<View>(R.id.reaction_like) to "👍",
+                view.findViewById<View>(R.id.reaction_dislike) to "👎",
+                view.findViewById<View>(R.id.reaction_laugh) to "😂",
+                view.findViewById<View>(R.id.reaction_emphasize) to "‼️",
+                view.findViewById<View>(R.id.reaction_question) to "❓",
+            )
 
-        val popup = PopupWindow(
-            view,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true
-        ).apply {
-            elevation = 16f
-            isOutsideTouchable = true
-            setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
-        }
+        val popup =
+            PopupWindow(
+                    view,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    true,
+                )
+                .apply {
+                    elevation = 16f
+                    isOutsideTouchable = true
+                    setBackgroundDrawable(ColorDrawable(android.graphics.Color.TRANSPARENT))
+                }
 
         reactions.forEach { (button, emoji) ->
             button.setOnClickListener {
@@ -900,10 +890,11 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         }
 
         view.findViewById<View>(R.id.action_share).setOnClickListener {
-            val intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, payload.body)
-            }
+            val intent =
+                Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, payload.body)
+                }
             startActivity(Intent.createChooser(intent, getString(R.string.compose_menu_share)))
             popup.dismiss()
         }
@@ -931,7 +922,7 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         // Measure popup content to calculate proper positioning
         view.measure(
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
         )
         val popupWidth = view.measuredWidth
         val popupHeight = view.measuredHeight
@@ -953,24 +944,26 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
         xPos = xPos.coerceIn(16, screenWidth - popupWidth - 16)
 
         // Calculate Y position - prefer above the anchor, fall back to below if no space
-        val yPos = if (anchorY - popupHeight > 0) {
-            anchorY - popupHeight - 8
-        } else {
-            anchorY + anchorHeight + 8
-        }
+        val yPos =
+            if (anchorY - popupHeight > 0) {
+                anchorY - popupHeight - 8
+            } else {
+                anchorY + anchorHeight + 8
+            }
 
         popup.showAtLocation(payload.anchor, android.view.Gravity.NO_GRAVITY, xPos, yPos)
     }
 
     override fun showReactionPicker(messageId: Long) {
-        val options = listOf(
-            ReactionSelection(messageId, "❤️") to getString(R.string.reaction_picker_love),
-            ReactionSelection(messageId, "👍") to getString(R.string.reaction_picker_like),
-            ReactionSelection(messageId, "👎") to getString(R.string.reaction_picker_dislike),
-            ReactionSelection(messageId, "😂") to getString(R.string.reaction_picker_laugh),
-            ReactionSelection(messageId, "‼️") to getString(R.string.reaction_picker_emphasize),
-            ReactionSelection(messageId, "❓") to getString(R.string.reaction_picker_question),
-        )
+        val options =
+            listOf(
+                ReactionSelection(messageId, "❤️") to getString(R.string.reaction_picker_love),
+                ReactionSelection(messageId, "👍") to getString(R.string.reaction_picker_like),
+                ReactionSelection(messageId, "👎") to getString(R.string.reaction_picker_dislike),
+                ReactionSelection(messageId, "😂") to getString(R.string.reaction_picker_laugh),
+                ReactionSelection(messageId, "‼️") to getString(R.string.reaction_picker_emphasize),
+                ReactionSelection(messageId, "❓") to getString(R.string.reaction_picker_question),
+            )
 
         AlertDialog.Builder(this)
             .setTitle(R.string.compose_menu_react)
@@ -983,14 +976,14 @@ class ComposeActivity : QkThemedActivity<ComposeActivityBinding>(ComposeActivity
 
     private fun tintDialogButtons(dialog: android.app.AlertDialog) {
         dialog.setOnShowListener {
-            val color = resolveThemeColor(android.R.attr.textColorPrimary, colors.theme().textPrimary)
+            val color =
+                resolveThemeColor(android.R.attr.textColorPrimary, colors.theme().textPrimary)
             listOf(
-                DialogInterface.BUTTON_POSITIVE,
-                DialogInterface.BUTTON_NEGATIVE,
-                DialogInterface.BUTTON_NEUTRAL
-            ).forEach { type ->
-                dialog.getButton(type)?.setTextColor(color)
-            }
+                    DialogInterface.BUTTON_POSITIVE,
+                    DialogInterface.BUTTON_NEGATIVE,
+                    DialogInterface.BUTTON_NEUTRAL,
+                )
+                .forEach { type -> dialog.getButton(type)?.setTextColor(color) }
         }
     }
 }

@@ -20,30 +20,31 @@ package org.prauga.messages.common.util
 
 import android.content.Context
 import android.text.format.DateFormat
-import org.prauga.messages.common.util.extensions.isSameDay
-import org.prauga.messages.common.util.extensions.isSameWeek
-import org.prauga.messages.common.util.extensions.isSameYear
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import org.prauga.messages.common.util.extensions.isSameDay
+import org.prauga.messages.common.util.extensions.isSameWeek
+import org.prauga.messages.common.util.extensions.isSameYear
 
 @Singleton
 class DateFormatter @Inject constructor(val context: Context) {
 
     /**
-     * Formats the [pattern] correctly for the current locale, and replaces 12 hour format with
-     * 24 hour format if necessary
+     * Formats the [pattern] correctly for the current locale, and replaces 12 hour format with 24
+     * hour format if necessary
      */
     private fun getFormatter(pattern: String): SimpleDateFormat {
         var formattedPattern = DateFormat.getBestDateTimePattern(Locale.getDefault(), pattern)
 
         if (DateFormat.is24HourFormat(context)) {
-            formattedPattern = formattedPattern
-                .replace("h", "HH")
-                .replace("K", "HH")
-                .replace("\\s+a".toRegex(), "")
+            formattedPattern =
+                formattedPattern
+                    .replace("h", "HH")
+                    .replace("K", "HH")
+                    .replace("\\s+a".toRegex(), "")
         }
 
         return SimpleDateFormat(formattedPattern, Locale.getDefault())
@@ -94,5 +95,4 @@ class DateFormatter @Inject constructor(val context: Context) {
             else -> getFormatter("MMM d yyyy h:mm a")
         }.format(date)
     }
-
 }

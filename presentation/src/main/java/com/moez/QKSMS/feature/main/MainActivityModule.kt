@@ -37,5 +37,4 @@ class MainActivityModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     fun provideMainViewModel(viewModel: MainViewModel): ViewModel = viewModel
-
 }

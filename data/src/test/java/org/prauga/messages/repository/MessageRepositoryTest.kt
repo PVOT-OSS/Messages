@@ -5,21 +5,20 @@ package org.prauga.messages.repository
 
 import android.provider.Telephony.Mms
 import android.provider.Telephony.Sms
-import org.prauga.messages.model.Attachment
-import org.prauga.messages.model.Message
-import org.prauga.messages.model.MmsPart
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.assertFalse
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
 import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.model.Attachment
+import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
@@ -27,14 +26,11 @@ import org.robolectric.annotation.Config
 @Config(sdk = [28], manifest = Config.NONE)
 class MessageRepositoryTest {
 
-    @Mock
-    private lateinit var messageRepository: MessageRepository
+    @Mock private lateinit var messageRepository: MessageRepository
 
-    @Mock
-    private lateinit var smsMessage: Message
+    @Mock private lateinit var smsMessage: Message
 
-    @Mock
-    private lateinit var mmsMessage: Message
+    @Mock private lateinit var mmsMessage: Message
 
     @Before
     fun setUp() {
@@ -252,7 +248,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>()
         val delay = 0
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 
@@ -268,7 +266,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>()
         val delay = 5000 // 5 seconds delay
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 
@@ -284,7 +284,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>()
         val delay = 0
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 
@@ -399,8 +401,7 @@ class MessageRepositoryTest {
     }
 
     // getPart Tests
-    @Mock
-    private lateinit var mmsPart: MmsPart
+    @Mock private lateinit var mmsPart: MmsPart
 
     @Test
     fun givenPartId_whenGetPart_thenReturnsPartOrNull() {
@@ -464,7 +465,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>() // Would contain image attachment
         val delay = 0
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 
@@ -480,7 +483,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>() // Would contain video attachment
         val delay = 0
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 
@@ -496,7 +501,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>() // Would contain audio attachment
         val delay = 0
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 
@@ -512,7 +519,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>() // Would contain multiple attachments
         val delay = 0
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 
@@ -529,7 +538,9 @@ class MessageRepositoryTest {
         val attachments = emptyList<Attachment>()
         val delay = 0
 
-        doNothing().`when`(messageRepository).sendMessage(subId, threadId, addresses, body, attachments, delay)
+        doNothing()
+            .`when`(messageRepository)
+            .sendMessage(subId, threadId, addresses, body, attachments, delay)
 
         messageRepository.sendMessage(subId, threadId, addresses, body, attachments, delay)
 

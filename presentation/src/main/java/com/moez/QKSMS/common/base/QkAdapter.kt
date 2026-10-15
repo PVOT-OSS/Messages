@@ -97,8 +97,8 @@ abstract class QkAdapter<T, VHT : RecyclerView.ViewHolder> : RecyclerView.Adapte
     open fun onDatasetChanged() {}
 
     /**
-     * Allows the adapter implementation to provide a custom DiffUtil.Callback
-     * If not, then the abstract implementation will be used
+     * Allows the adapter implementation to provide a custom DiffUtil.Callback If not, then the
+     * abstract implementation will be used
      */
     private fun getDiffUtilCallback(oldData: List<T>, newData: List<T>): DiffUtil.Callback {
         return object : DiffUtil.Callback() {
@@ -121,5 +121,4 @@ abstract class QkAdapter<T, VHT : RecyclerView.ViewHolder> : RecyclerView.Adapte
     protected open fun areContentsTheSame(old: T, new: T): Boolean {
         return old == new
     }
-
 }

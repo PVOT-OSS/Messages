@@ -19,11 +19,11 @@
 package org.prauga.messages.repository
 
 import android.net.Uri
-import org.prauga.messages.model.Contact
-import org.prauga.messages.model.ContactGroup
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.realm.RealmResults
+import org.prauga.messages.model.Contact
+import org.prauga.messages.model.ContactGroup
 
 interface ContactRepository {
 
@@ -42,5 +42,4 @@ interface ContactRepository {
     fun setDefaultPhoneNumber(lookupKey: String, phoneNumberId: Long)
 
     fun isContact(address: String): Boolean
-
 }

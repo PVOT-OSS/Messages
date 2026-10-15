@@ -12,7 +12,7 @@ object QkMediaPlayer : MediaPlayer() {
         None,
         Stopped,
         Playing,
-        Paused
+        Paused,
     }
 
     private var playingState = PlayingState.Stopped
@@ -28,8 +28,7 @@ object QkMediaPlayer : MediaPlayer() {
     }
 
     override fun reset() {
-        if (playingState != PlayingState.Stopped)
-            stop()
+        if (playingState != PlayingState.Stopped) stop()
         onCompletionListener = null
         super.reset()
     }
@@ -37,7 +36,7 @@ object QkMediaPlayer : MediaPlayer() {
     override fun stop() {
         playingState = PlayingState.Stopped
         super.stop()
-        onCompletionListener?.onCompletion(this)    // and manually call on completion handler
+        onCompletionListener?.onCompletion(this) // and manually call on completion handler
     }
 
     override fun setOnCompletionListener(listener: OnCompletionListener?) {

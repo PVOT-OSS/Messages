@@ -31,5 +31,4 @@ class PlusActivityModule {
     @IntoMap
     @ViewModelKey(PlusViewModel::class)
     fun providePlusViewModel(viewModel: PlusViewModel): ViewModel = viewModel
-
 }

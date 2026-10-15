@@ -19,10 +19,10 @@
 package org.prauga.messages.feature.notificationprefs
 
 import android.net.Uri
-import org.prauga.messages.common.base.QkView
-import org.prauga.messages.common.widget.PreferenceView
 import io.reactivex.Observable
 import io.reactivex.subjects.Subject
+import org.prauga.messages.common.base.QkView
+import org.prauga.messages.common.widget.PreferenceView
 
 interface NotificationPrefsView : QkView<NotificationPrefsState> {
 
@@ -32,6 +32,8 @@ interface NotificationPrefsView : QkView<NotificationPrefsState> {
     val actionsSelectedIntent: Subject<Int>
 
     fun showPreviewModeDialog()
+
     fun showRingtonePicker(default: Uri?)
+
     fun showActionDialog(selected: Int)
 }

@@ -25,7 +25,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.widget.ImageView
 import org.prauga.messages.app.R
-import org.prauga.messages.common.util.extensions.dpToPx
 
 class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     ImageView(context, attrs) {
@@ -34,7 +33,7 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         val topLeft: Boolean,
         val topRight: Boolean,
         val bottomRight: Boolean,
-        val bottomLeft: Boolean
+        val bottomLeft: Boolean,
     ) {
 
         ONLY(true, true, true, true),
@@ -43,7 +42,7 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         IN_LAST(false, true, true, true),
         OUT_FIRST(true, true, false, true),
         OUT_MIDDLE(true, false, false, true),
-        OUT_LAST(true, false, true, true)
+        OUT_LAST(true, false, true, true),
     }
 
     var bubbleStyle = Style.ONLY
@@ -54,8 +53,10 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
     private val path = Path()
-    private val radiusSmall = context.resources.getDimensionPixelSize(R.dimen.bubble_radius_small).toFloat()
-    private val radiusLarge = context.resources.getDimensionPixelSize(R.dimen.bubble_radius_large).toFloat()
+    private val radiusSmall =
+        context.resources.getDimensionPixelSize(R.dimen.bubble_radius_small).toFloat()
+    private val radiusLarge =
+        context.resources.getDimensionPixelSize(R.dimen.bubble_radius_large).toFloat()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -115,5 +116,4 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         path.close()
     }
-
 }

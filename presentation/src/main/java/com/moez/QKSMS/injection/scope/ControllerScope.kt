@@ -20,5 +20,4 @@ package org.prauga.messages.injection.scope
 
 import javax.inject.Scope
 
-@Scope
-annotation class ControllerScope
+@Scope annotation class ControllerScope

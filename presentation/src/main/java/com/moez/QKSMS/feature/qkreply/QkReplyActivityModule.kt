@@ -22,8 +22,8 @@ import androidx.lifecycle.ViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import org.prauga.messages.injection.ViewModelKey
 import javax.inject.Named
+import org.prauga.messages.injection.ViewModelKey
 
 @Module
 class QkReplyActivityModule {
@@ -37,5 +37,4 @@ class QkReplyActivityModule {
     @IntoMap
     @ViewModelKey(QkReplyViewModel::class)
     fun provideQkReplyViewModel(viewModel: QkReplyViewModel): ViewModel = viewModel
-
 }

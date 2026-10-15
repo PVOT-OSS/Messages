@@ -29,11 +29,7 @@ interface BillingManager {
         const val SKU_PLUS_DONATE = "qksms_plus_donate"
     }
 
-    data class Product(
-        val sku: String,
-        val price: String,
-        val priceCurrencyCode: String
-    )
+    data class Product(val sku: String, val price: String, val priceCurrencyCode: String)
 
     val products: Observable<List<Product>>
     val upgradeStatus: Observable<Boolean>
@@ -43,5 +39,4 @@ interface BillingManager {
     suspend fun queryProducts()
 
     suspend fun initiatePurchaseFlow(activity: Activity, sku: String)
-
 }
