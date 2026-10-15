@@ -24,7 +24,6 @@ import android.net.Uri;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import com.android.mms.service_alt.DownloadRequest;
-import com.android.mms.service_alt.MmsConfig;
 import com.android.mms.transaction.DownloadManager;
 import com.google.android.mms.pdu_alt.PduHeaders;
 import com.google.android.mms.util_alt.SqliteWrapper;
@@ -41,6 +40,7 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
     public static final String EXTRA_LOCATION_URL = "location_url";
     public static final String EXTRA_TRIGGER_PUSH = "trigger_push";
     public static final String EXTRA_URI = "notification_ind_uri";
+    public static final String EXTRA_SUBSCRIPTION_ID = "subscription_id";
 
     public static final int STATUS_PERMANENT_FAILURE = 0x87;
 
@@ -65,10 +65,11 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
             final byte[] response = new byte[nBytes];
             reader.read(response, 0, nBytes);
 
+            final int subId = intent.getIntExtra(EXTRA_SUBSCRIPTION_ID, Utils.getDefaultSubscriptionId());
             messageUri = DownloadRequest.persist(context, response,
-                    new MmsConfig.Overridden(new MmsConfig(context), null),
+                    CarrierMmsConfig.get(context, subId).getSupportMmsContentDisposition(),
                     intent.getStringExtra(EXTRA_LOCATION_URL),
-                    Utils.getDefaultSubscriptionId(), null);
+                    subId, null);
 
             Timber.v("response saved successfully");
             Timber.v("response length: " + response.length);

@@ -46,7 +46,7 @@ public final class DownloadRequest {
     private DownloadRequest() {
     }
 
-    public static Uri persist(Context context, byte[] response, MmsConfig.Overridden mmsConfig,
+    public static Uri persist(Context context, byte[] response, boolean supportContentDisposition,
                               String locationUrl, int subId, String creator) {
         // Let any mms apps running as secondary user know that a new mms has been downloaded.
         notifyOfDownload(context);
@@ -72,7 +72,7 @@ public final class DownloadRequest {
         final long identity = Binder.clearCallingIdentity();
         try {
             final GenericPdu pdu =
-                    (new PduParser(response, mmsConfig.getSupportMmsContentDisposition())).parse();
+                    (new PduParser(response, supportContentDisposition)).parse();
             if (pdu == null || !(pdu instanceof RetrieveConf)) {
                 Timber.e("DownloadRequest.persistIfRequired: invalid parsed PDU");
 

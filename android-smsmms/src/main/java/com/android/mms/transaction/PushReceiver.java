@@ -26,12 +26,10 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
-import android.telephony.SmsManager;
 
-import com.android.mms.MmsConfig;
+import com.android.mms.service_alt.SubscriptionIdChecker;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
 import com.google.android.mms.pdu_alt.DeliveryInd;
@@ -41,7 +39,7 @@ import com.google.android.mms.pdu_alt.PduHeaders;
 import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.PduPersister;
 import com.google.android.mms.pdu_alt.ReadOrigInd;
-import com.klinker.android.send_message.SmsManagerFactory;
+import com.klinker.android.send_message.CarrierMmsConfig;
 import com.klinker.android.send_message.Utils;
 
 import java.util.HashSet;
@@ -84,9 +82,12 @@ public class PushReceiver extends BroadcastReceiver {
             Timber.v("receiving a new mms message");
             Intent intent = intents[0];
 
+            int subId = intent.getIntExtra("subscription", Utils.getDefaultSubscriptionId());
+            CarrierMmsConfig config = CarrierMmsConfig.get(mContext, subId);
+
             // Get raw PDU push-data from the message and parse it
             byte[] pushData = intent.getByteArrayExtra("data");
-            PduParser parser = new PduParser(pushData);
+            PduParser parser = new PduParser(pushData, config.getSupportMmsContentDisposition());
             GenericPdu pdu = parser.parse();
 
             if (pdu == null) {
@@ -121,7 +122,7 @@ public class PushReceiver extends BroadcastReceiver {
                     case MESSAGE_TYPE_NOTIFICATION_IND: {
                         NotificationInd nInd = (NotificationInd) pdu;
 
-                        if (MmsConfig.getTransIdEnabled() || carrierAppendsTransactionId(intent)) {
+                        if (config.getTransactionIdEnabled()) {
                             byte[] contentLocation = nInd.getContentLocation();
                             if (contentLocation != null && contentLocation.length > 0
                                     && '=' == contentLocation[contentLocation.length - 1]) {
@@ -142,6 +143,7 @@ public class PushReceiver extends BroadcastReceiver {
                             // because it causes UI jank.
                             Uri uri = p.persist(pdu, Inbox.CONTENT_URI,
                                     PduPersister.DUMMY_THREAD_ID, true, true, null);
+                            setSubscriptionId(mContext, uri, subId);
 
                             String location = getContentLocation(mContext, uri);
                             if (downloadedUrls.contains(location)) {
@@ -151,7 +153,6 @@ public class PushReceiver extends BroadcastReceiver {
                                 downloadedUrls.add(location);
                             }
 
-                            int subId = intent.getIntExtra("subscription", Utils.getDefaultSubscriptionId());
                             DownloadManager.getInstance().downloadMultimediaMessage(mContext, location, uri, true, subId);
                         } else {
                             Timber.v("Skip downloading duplicate message: " + new String(nInd.getContentLocation()));
@@ -185,21 +186,23 @@ public class PushReceiver extends BroadcastReceiver {
                 && ContentType.MMS_MESSAGE.equals(intent.getType())) {
             Timber.v("Received PUSH Intent: " + intent);
 
-            MmsConfig.init(context);
             new ReceivePushTask(context, goAsync()).executeOnExecutor(PUSH_RECEIVER_EXECUTOR, intent);
 
             Timber.v(context.getPackageName() + " received and aborted");
         }
     }
 
-    private static boolean carrierAppendsTransactionId(Intent intent) {
-        int subId = intent.getIntExtra("subscription", Utils.getDefaultSubscriptionId());
+    private static void setSubscriptionId(Context context, Uri uri, int subId) {
+        if (subId < 0 || !SubscriptionIdChecker.getInstance(context).canUseSubscriptionId()) {
+            return;
+        }
+
         try {
-            Bundle config = SmsManagerFactory.INSTANCE.createSmsManager(subId).getCarrierConfigValues();
-            return config != null && config.getBoolean(SmsManager.MMS_CONFIG_APPEND_TRANSACTION_ID);
+            ContentValues values = new ContentValues(1);
+            values.put(Mms.SUBSCRIPTION_ID, subId);
+            context.getContentResolver().update(uri, values, null, null);
         } catch (RuntimeException e) {
-            Timber.w(e, "Unable to read the carrier MMS config");
-            return false;
+            Timber.w(e, "Unable to store the subscription of the MMS notification");
         }
     }
 

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.telephony.SmsManager;
 import com.klinker.android.send_message.BroadcastUtils;
+import com.klinker.android.send_message.CarrierMmsConfig;
 import com.klinker.android.send_message.MmsConfigOverrides;
 import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.SmsManagerFactory;
@@ -61,12 +62,14 @@ public class DownloadManager {
         download.putExtra(MmsReceivedReceiver.EXTRA_LOCATION_URL, location);
         download.putExtra(MmsReceivedReceiver.EXTRA_TRIGGER_PUSH, byPush);
         download.putExtra(MmsReceivedReceiver.EXTRA_URI, uri);
+        download.putExtra(MmsReceivedReceiver.EXTRA_SUBSCRIPTION_ID, subscriptionId);
 
         final int mutable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0;
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 context, location.hashCode(), download, PendingIntent.FLAG_UPDATE_CURRENT | mutable);
 
-        final SmsManager smsManager = SmsManagerFactory.INSTANCE.createSmsManager(subscriptionId);
+        final SmsManager smsManager = SmsManagerFactory.INSTANCE.createSmsManager(
+                CarrierMmsConfig.resolveSubscriptionId(subscriptionId));
         Bundle configOverrides = MmsConfigOverrides.create(context, subscriptionId);
 
         try {
