@@ -100,6 +100,7 @@ constructor(
 ) : MessageRepository {
 
     companion object {
+        private const val MMS_HEADER_ALLOWANCE = 2048
         const val TELEPHONY_UPDATE_CHUNK_SIZE = 200
     }
 
@@ -448,25 +449,19 @@ constructor(
         } else { // MMS
             val parts = arrayListOf<MMSPart>()
 
-            val maxWidth =
-                smsManager.carrierConfigValues
-                    .getInt(SmsManager.MMS_CONFIG_MAX_IMAGE_WIDTH)
-                    .takeIf { prefs.mmsSize.get() == -1 } ?: Int.MAX_VALUE
+            val carrierConfig = CarrierMmsConfig.get(context, subId)
+            val automaticSize = prefs.mmsSize.get() == -1
 
-            val maxHeight =
-                smsManager.carrierConfigValues
-                    .getInt(SmsManager.MMS_CONFIG_MAX_IMAGE_HEIGHT)
-                    .takeIf { prefs.mmsSize.get() == -1 } ?: Int.MAX_VALUE
+            val maxWidth = carrierConfig.maxImageWidth.takeIf { automaticSize } ?: Int.MAX_VALUE
+
+            val maxHeight = carrierConfig.maxImageHeight.takeIf { automaticSize } ?: Int.MAX_VALUE
 
             var remainingBytes =
                 when (prefs.mmsSize.get()) {
-                    -1 ->
-                        smsManager.carrierConfigValues.getInt(
-                            SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE
-                        )
-                    0 -> Int.MAX_VALUE
-                    else -> prefs.mmsSize.get() * 1024
-                } * 0.9 // Ugly, but buys us a bit of wiggle room
+                    -1 -> (carrierConfig.maxMessageSize - MMS_HEADER_ALLOWANCE).toDouble()
+                    0 -> Int.MAX_VALUE.toDouble()
+                    else -> prefs.mmsSize.get() * 1024 * 0.9 // a bit of wiggle room
+                }
 
             signedBody
                 .takeIf { it.isNotEmpty() }
