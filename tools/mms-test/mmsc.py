@@ -193,6 +193,21 @@ def deliver_push(pdu: bytes, args):
     if result.returncode != 0 or "Broadcast completed" not in result.stdout:
         print(result.stdout, result.stderr, file=sys.stderr)
 
+def send(args):
+    command = [*adb(args), "shell", "am", "broadcast",
+               "-a", "org.prauga.messages.TEST_MMS_SEND",
+               "-n", f"{args.package}/org.prauga.messages.receiver.TestMmsPushReceiver",
+               "--es", "to", ",".join(args.to),
+               "--es", "text", f"'{args.text}'"]
+    if args.image:
+        command += ["--ez", "image", "true"]
+    if args.subscription is not None:
+        command += ["--ei", "subscription", str(args.subscription)]
+    result = subprocess.run(command, capture_output=True, text=True)
+    if result.returncode != 0 or "Broadcast completed" not in result.stdout:
+        print(result.stdout, result.stderr, file=sys.stderr)
+    print(f"asked the app to send to {', '.join(args.to)}")
+
 def adb(args):
     command = [args.adb]
     if args.serial:
@@ -241,6 +256,13 @@ def main():
     p.add_argument("--transaction")
     p.add_argument("--subscription", type=int)
     p.set_defaults(func=push)
+
+    p = sub.add_parser("send")
+    p.add_argument("to", nargs="+", help="recipients, several make it a group MMS")
+    p.add_argument("--text", default="Hello fake MMSC")
+    p.add_argument("--image", action="store_true")
+    p.add_argument("--subscription", type=int)
+    p.set_defaults(func=send)
 
     p = sub.add_parser("scenario")
     p.add_argument("name", help="download | send | delay | reset")
