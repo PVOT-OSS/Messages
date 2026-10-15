@@ -25,6 +25,9 @@
     <!-- Flag indicating whether MMS should be enabled -->
     <bool name="enabledMMS">true</bool>
 
+    <!-- Whether group conversations are sent as a group MMS by default -->
+    <bool name="groupChatDefaultsToMMS">false</bool>
+
     <!-- Maximum message size in bytes for a MMS message -->
     <int name="maxMessageSize">307200</int>
 
