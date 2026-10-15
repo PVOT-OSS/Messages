@@ -30,7 +30,7 @@ import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.net.toFile
 import androidx.media3.common.MimeTypes
-import com.klinker.android.send_message.CarrierMmsConfig
+import org.prauga.messages.carrier.CarrierMmsConfig
 import com.klinker.android.send_message.SimpleCharacters
 import com.moez.QKSMS.common.QkMediaPlayer
 import com.moez.QKSMS.contentproviders.MmsPartProvider

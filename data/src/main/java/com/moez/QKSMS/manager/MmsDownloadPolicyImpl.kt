@@ -5,7 +5,7 @@ package org.prauga.messages.manager
 
 import android.content.Context
 import com.android.mms.transaction.PushReceiver
-import com.klinker.android.send_message.CarrierMmsConfig
+import org.prauga.messages.carrier.CarrierMmsConfig
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import org.prauga.messages.blocking.BlockingClient

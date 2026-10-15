@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import org.prauga.messages.carrier.CarrierMmsConfig;
 
 /**
  * Common methods for sending and receiving messages

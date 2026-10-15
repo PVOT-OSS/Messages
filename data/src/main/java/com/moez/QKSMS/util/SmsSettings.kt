@@ -4,7 +4,7 @@
 package org.prauga.messages.util
 
 import android.content.Context
-import com.klinker.android.send_message.CarrierMmsConfig
+import org.prauga.messages.carrier.CarrierMmsConfig
 import javax.inject.Inject
 
 class SmsSettings @Inject constructor(private val context: Context, private val prefs: Preferences) {

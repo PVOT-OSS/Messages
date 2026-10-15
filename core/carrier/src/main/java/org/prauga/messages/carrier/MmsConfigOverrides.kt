@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
  */
-package com.klinker.android.send_message
+package org.prauga.messages.carrier
 
 import android.content.Context
 import android.os.Build

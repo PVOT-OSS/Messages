@@ -37,6 +37,8 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.kotlin.stdlib)
 
+    implementation(project(":core:carrier"))
+
     // testing
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)

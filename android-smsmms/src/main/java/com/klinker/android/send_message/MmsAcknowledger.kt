@@ -15,6 +15,8 @@ import com.google.android.mms.pdu_alt.PduHeaders
 import java.io.File
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import org.prauga.messages.carrier.CarrierMmsConfig
+import org.prauga.messages.carrier.MmsConfigOverrides
 import timber.log.Timber
 
 object MmsAcknowledger {

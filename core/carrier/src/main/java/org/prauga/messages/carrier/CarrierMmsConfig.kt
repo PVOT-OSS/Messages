@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
  */
-package com.klinker.android.send_message
+package org.prauga.messages.carrier
 
 import android.content.Context
 import android.content.res.Configuration
@@ -167,7 +167,7 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
 
         private fun platform(subId: Int): Bundle? =
             try {
-                SmsManagerFactory.createSmsManager(subId).carrierConfigValues
+                smsManager(subId).carrierConfigValues
             } catch (e: Exception) {
                 Timber.w(e, "Unable to read the carrier config for sub $subId")
                 null
@@ -272,5 +272,13 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
                 event = parser.next()
             }
         }
+
+        private fun smsManager(subId: Int): SmsManager =
+            try {
+                if (subId != -1) SmsManager.getSmsManagerForSubscriptionId(subId)
+                else SmsManager.getDefault()
+            } catch (e: Exception) {
+                SmsManager.getDefault()
+            }
     }
 }

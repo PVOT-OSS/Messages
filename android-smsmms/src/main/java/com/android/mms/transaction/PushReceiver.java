@@ -38,7 +38,7 @@ import com.google.android.mms.pdu_alt.NotificationInd;
 import com.google.android.mms.pdu_alt.PduHeaders;
 import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.PduPersister;
-import com.klinker.android.send_message.CarrierMmsConfig;
+import org.prauga.messages.carrier.CarrierMmsConfig;
 import com.klinker.android.send_message.MmsAcknowledger;
 import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.Utils;

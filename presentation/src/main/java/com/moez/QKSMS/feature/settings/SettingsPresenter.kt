@@ -19,7 +19,7 @@
 package org.prauga.messages.feature.settings
 
 import android.content.Context
-import com.klinker.android.send_message.CarrierMmsConfig
+import org.prauga.messages.carrier.CarrierMmsConfig
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
