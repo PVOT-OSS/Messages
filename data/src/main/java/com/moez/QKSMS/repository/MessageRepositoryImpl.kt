@@ -859,7 +859,17 @@ constructor(
                 .let(realm::copyFromRealm)
         }
 
+    private val delayedSms
+        get() = context.getSharedPreferences("delayed_sms", Context.MODE_PRIVATE)
+
+    override fun isDelayedSmsWaiting(id: Long): Boolean = delayedSms.contains(id.toString())
+
+    override fun delayedSmsFired(id: Long) {
+        delayedSms.edit().remove(id.toString()).apply()
+    }
+
     override fun scheduleDelayedSms(id: Long, sendTime: Long) {
+        delayedSms.edit().putBoolean(id.toString(), true).apply()
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val exact =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
@@ -896,7 +906,10 @@ constructor(
                         message.date > now()
                 } ?: false
             }
-        if (waiting) DelayedSmsWorker.cancel(context, id)
+        if (waiting) {
+            DelayedSmsWorker.cancel(context, id)
+            delayedSmsFired(id)
+        }
         return waiting
     }
 

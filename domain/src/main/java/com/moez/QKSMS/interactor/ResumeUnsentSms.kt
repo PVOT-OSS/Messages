@@ -26,6 +26,8 @@ constructor(
                         message.id in params.retrying -> Unit
                         message.date > params.now ->
                             messageRepo.scheduleDelayedSms(message.id, message.date)
+                        messageRepo.isDelayedSmsWaiting(message.id) ->
+                            messageRepo.scheduleDelayedSms(message.id, params.now)
                         else -> {
                             messageRepo.markFailed(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
                             notificationManager.notifyFailed(message.id)
