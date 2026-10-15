@@ -78,17 +78,21 @@ cause, a failed delivery report) are handed to the app's real receivers by the d
 `TEST_SMS_RESULT` action. Rows are read through `TEST_SMS_DUMP`, as the app sees them, since the
 provider hides outbox and failed SMS from the shell.
 
-- receiving: plain, long (multipart), non-Latin text, alphanumeric senders
+- receiving: plain, long (multipart), non-Latin text, alphanumeric senders, and through
+  `TEST_SMS_RECEIVE` with crafted PDUs: what the network sent is stored (protocol, reply path,
+  service center), a replace SMS takes the place of the last one, class 0 pops up to save or dismiss
 - sending: short and long SMS, delivery reports from the network
-- long SMS: a failed part fails the whole message whatever order the parts report in, it's only sent
-  after its last part, results from before the update still work
-- delivery reports: delivered, still trying (no change), and failed
+- long SMS: it's decided once every part reported, by the worst of them,
+  whatever order they come in; results from before the update still work
+- delivery reports: 0 delivered, 64 failed, anything else or no report at all changes nothing
 - automatic retries: no service and temporary network errors are sent again by themselves, other
-  errors fail and notify, airplane mode keeps it sending until the radio is back
+  errors fail and notify, airplane mode keeps it sending until the radio is back, and getting
+  service back sends it right away instead of after its delay
 - delayed sending: goes at its time, cancel, send now (same message, once), and neither does
   anything once it already went
 - retry from the notification: sends a failed message once, nothing for a sent one
-- reboot: a delayed SMS whose time passed while off fails, one still to come goes at its time
+- reboot: a delayed SMS whose time passed while off goes after the boot, one still to come goes at
+  its time
 
 Run it once with exact alarm access (`adb shell appops set org.prauga.messages.debug
 SCHEDULE_EXACT_ALARM allow`) and once without (`... deny`, the default for new installs since
