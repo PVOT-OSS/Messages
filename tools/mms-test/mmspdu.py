@@ -97,8 +97,14 @@ def part(content_type: str, name: str, data: bytes, charset_utf8: bool = False) 
     headers = ct + b"\x8e" + text_string(name)  # content-location
     return uintvar(len(headers)) + uintvar(len(data)) + headers + data
 
-def retrieve_conf(transaction_id: str | None, sender: str, recipient: str, text: str,
-                  image: bytes | None = None, status: int | None = None) -> bytes:
+def retrieve_conf(transaction_id: str | None, sender: str, recipient, text: str | None,
+                  image: bytes | None = None, status: int | None = None,
+                  parts: list | None = None, subject: str | None = None,
+                  cc: list | None = None) -> bytes:
+    """
+    An M-Retrieve.conf. [recipient] can be a list for a group message, and [parts] a list of
+    (content type, name, data) tuples, which replaces the text and image arguments
+    """
     sender_bytes = b"\x80" + encoded_address(sender)
     header = bytes([MESSAGE_TYPE, RETRIEVE_CONF])
     if transaction_id:
@@ -106,15 +112,47 @@ def retrieve_conf(transaction_id: str | None, sender: str, recipient: str, text:
     header += bytes([MMS_VERSION, MMS_VERSION_1_2])
     header += bytes([DATE]) + long_integer(int(time.time()))
     header += bytes([FROM]) + value_length(len(sender_bytes)) + sender_bytes
-    header += bytes([TO]) + encoded_address(recipient)
+    for address in (recipient if isinstance(recipient, list) else [recipient]):
+        header += bytes([TO]) + encoded_address(address)
+    for address in cc or []:
+        header += bytes([CC]) + encoded_address(address)
+    if subject:
+        header += bytes([SUBJECT]) + text_string(subject)
     if status is not None:
         header += bytes([RETRIEVE_STATUS, status])
     header += bytes([CONTENT_TYPE, CT_MULTIPART_MIXED])
 
-    parts = [part("text/plain", "text_0.txt", text.encode("utf-8"), charset_utf8=True)]
-    if image:
-        parts.append(part("image/png", "image_0.png", image))
-    return header + uintvar(len(parts)) + b"".join(parts)
+    if parts is None:
+        parts = []
+        if text is not None:
+            parts.append(("text/plain", "text_0.txt", text.encode("utf-8")))
+        if image:
+            parts.append(("image/png", "image_0.png", image))
+    encoded = [part(ct, name, data, charset_utf8=ct.startswith("text/")) for ct, name, data in parts]
+    return header + uintvar(len(encoded)) + b"".join(encoded)
+
+def delivery_ind(message_id: str, recipient: str, status: int = 0x81) -> bytes:
+    """M-Delivery.ind, the carrier telling us a sent message was delivered (0x81 retrieved)"""
+    return (
+        bytes([MESSAGE_TYPE, 0x86])
+        + bytes([MMS_VERSION, MMS_VERSION_1_2])
+        + bytes([MESSAGE_ID]) + text_string(message_id)
+        + bytes([TO]) + encoded_address(recipient)
+        + bytes([DATE]) + long_integer(int(time.time()))
+        + bytes([0x95, status])
+    )
+
+def read_orig_ind(message_id: str, sender: str, read: bool = True) -> bytes:
+    sender_bytes = b"\x80" + encoded_address(sender)
+    return (
+        bytes([MESSAGE_TYPE, 0x88])
+        + bytes([MMS_VERSION, MMS_VERSION_1_2])
+        + bytes([MESSAGE_ID]) + text_string(message_id)
+        + bytes([TO]) + encoded_address("+15555550100")
+        + bytes([FROM]) + value_length(len(sender_bytes)) + sender_bytes
+        + bytes([DATE]) + long_integer(int(time.time()))
+        + bytes([0x9B, 0x80 if read else 0x81])
+    )
 
 def send_conf(transaction_id: str, status: int, message_id: str | None) -> bytes:
     out = (
@@ -128,7 +166,6 @@ def send_conf(transaction_id: str, status: int, message_id: str | None) -> bytes
     return out
 
 def read_headers(pdu: bytes) -> dict:
-    """Reads the simple headers we log or answer to: message type, transaction id, recipients"""
     headers, i = {}, 0
     while i < len(pdu):
         field = pdu[i]
@@ -211,3 +248,46 @@ def png_1x1() -> bytes:
     raw = b"\x00\xff\x00\x00"
     return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", 1, 1, 8, 2, 0, 0, 0))
             + chunk(b"IDAT", zlib.compress(raw)) + chunk(b"IEND", b""))
+
+def jpeg_small() -> bytes:
+    return bytes.fromhex(
+        "ffd8ffe000104a46494600010100000100010000ffdb004300080606070605080707070909080a0c140d0c0b0b0c"
+        "1912130f141d1a1f1e1d1a1c1c20242e2720222c231c1c2837292c30313434341f27393d38323c2e333432ffc0"
+        "000b080002000201011100ffc4001f0000010501010101010100000000000000000102030405060708090a0bff"
+        "c400b5100002010303020403050504040000017d01020300041105122131410613516107227114328191a10823"
+        "42b1c11552d1f02433627282090a161718191a25262728292a3435363738393a434445464748494a5354555657"
+        "58595a636465666768696a737475767778797a838485868788898a92939495969798999aa2a3a4a5a6a7a8a9aa"
+        "b2b3b4b5b6b7b8b9bac2c3c4c5c6c7c8c9cad2d3d4d5d6d7d8d9dae1e2e3e4e5e6e7e8e9eaf1f2f3f4f5f6f7f8"
+        "f9faffda0008010100003f00fbd3ffd9")
+
+def gif_small() -> bytes:
+    return bytes.fromhex("47494638396101000100800000000000ffffff21f90401000000002c00000000010001000002024401003b")
+
+def mp4_minimal() -> bytes:
+    ftyp = b"\x00\x00\x00\x18ftypmp42\x00\x00\x00\x00mp42isom"
+    return ftyp + b"\x00\x00\x00\x08free"
+
+def amr_minimal() -> bytes:
+    return b"#!AMR\n" + bytes([0x3C] + [0] * 31) * 5
+
+def vcard(name: str = "Test Contact", number: str = "+15559876543") -> bytes:
+    return (f"BEGIN:VCARD\r\nVERSION:3.0\r\nFN:{name}\r\nTEL;TYPE=CELL:{number}\r\nEND:VCARD\r\n"
+            ).encode()
+
+def pdf_minimal() -> bytes:
+    return (b"%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Kids[]/Count 0"
+            b">>endobj\ntrailer<</Root 1 0 R>>\n%%EOF\n")
+
+PART_KINDS = {
+    "text": lambda: ("text/plain", "text_0.txt", "Part text".encode()),
+    "png": lambda: ("image/png", "image.png", png_1x1()),
+    "jpeg": lambda: ("image/jpeg", "photo.jpg", jpeg_small()),
+    "gif": lambda: ("image/gif", "anim.gif", gif_small()),
+    "video": lambda: ("video/mp4", "clip.mp4", mp4_minimal()),
+    "audio": lambda: ("audio/amr", "recording.amr", amr_minimal()),
+    "badaudio": lambda: ("audio/mpeg", "broken.mp3", b"not really audio"),
+    "vcard": lambda: ("text/x-vcard", "contact.vcf", vcard()),
+    "badvcard": lambda: ("text/x-vcard", "broken.vcf", b"BEGIN:VCARD\r\nnot a vcard"),
+    "pdf": lambda: ("application/pdf", "document.pdf", pdf_minimal()),
+    "big": lambda: ("image/png", "big.png", png_1x1() + bytes(600 * 1024)),
+}
