@@ -808,10 +808,18 @@ constructor(
         )
     }
 
-    override fun cancelDelayedSms(id: Long) =
+    override fun cancelDelayedSms(id: Long): Boolean {
         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(
             getIntentForDelayedSms(id)
         )
+
+        return Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            realm.where(Message::class.java).equalTo("id", id).findFirst()?.let { message ->
+                message.isSms() && message.boxId == Sms.MESSAGE_TYPE_OUTBOX && message.date > now()
+            } ?: false
+        }
+    }
 
     private fun getIntentForDelayedSms(id: Long) =
         PendingIntent.getBroadcast(

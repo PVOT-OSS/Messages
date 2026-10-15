@@ -92,8 +92,7 @@ interface MessageRepository {
 
     fun scheduleDelayedSms(id: Long, sendTime: Long)
 
-    /** Attempts to cancel sending the message with the given id */
-    fun cancelDelayedSms(id: Long)
+    fun cancelDelayedSms(id: Long): Boolean
 
     fun insertSentSms(
         subId: Int,

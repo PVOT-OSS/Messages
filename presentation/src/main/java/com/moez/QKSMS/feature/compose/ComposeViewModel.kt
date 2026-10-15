@@ -789,6 +789,7 @@ constructor(
         // Cancel sending a message
         view.cancelSendingIntent
             .mapNotNull(messageRepo::getMessage)
+            .filter { message -> message.date > System.currentTimeMillis() }
             .doOnNext { message -> view.setDraft(message.getText(false)) }
             .autoDispose(view.scope())
             .subscribe { message ->
