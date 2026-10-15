@@ -40,4 +40,4 @@ include(":common")
 
 include(":app")
 
-include(":core:carrier")
+include(":carrier-configs")

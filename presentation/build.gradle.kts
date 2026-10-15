@@ -179,7 +179,7 @@ dependencies {
     implementation(libs.shortcutbadger)
     implementation(libs.kotlin.stdlib.jdk7)
     implementation(project(":android-smsmms"))
-    implementation(project(":core:carrier"))
+    implementation(project(":carrier-configs"))
     implementation(project(":common"))
     implementation(project(":data"))
     implementation(project(":domain"))

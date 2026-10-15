@@ -94,7 +94,7 @@ dependencies {
     implementation(libs.androidx.work.rxjava2)
 
     implementation(project(":android-smsmms"))
-    implementation(project(":core:carrier"))
+    implementation(project(":carrier-configs"))
     implementation(project(":common"))
     implementation(project(":domain"))
 }
