@@ -39,3 +39,5 @@ include(":data")
 include(":common")
 
 include(":app")
+
+include(":core:carrier")
