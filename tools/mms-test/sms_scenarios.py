@@ -52,7 +52,8 @@ class Device:
         self.adb("shell", " ".join(shlex.quote(c) for c in command))
 
     def rows(self, limit=60):
-        columns = ["_id", "thread_id", "address", "type", "status", "error_code", "body"]
+        columns = ["_id", "thread_id", "address", "type", "status", "error_code", "read", "seen",
+                   "protocol", "reply_path_present", "service_center", "date", "date_sent", "body"]
         command = ["am", "broadcast", "-a", "org.prauga.messages.TEST_SMS_DUMP", "-n", RECEIVER,
                    "--ei", "limit", str(limit)]
         output = self.adb("shell", " ".join(shlex.quote(c) for c in command))
@@ -106,6 +107,15 @@ def semi_octets(digits):
     digits += "F" if len(digits) % 2 else ""
     return "".join(digits[i + 1] + digits[i] for i in range(0, len(digits), 2))
 
+def sms_deliver(text, sender="5551234", pid=0x00, dcs=0x08, reply_path=False,
+                service_center="15550009999"):
+    """A GSM SMS-DELIVER as hex, its text in UCS-2"""
+    sca = f"{len(semi_octets(service_center)) // 2 + 1:02X}91{semi_octets(service_center)}"
+    first = 0x04 | (0x80 if reply_path else 0)
+    body = text.encode("utf-16-be")
+    return (f"{sca}{first:02X}{len(sender):02X}81{semi_octets(sender)}{pid:02X}{dcs:02X}"
+            f"52011051000000{len(body):02X}{body.hex().upper()}")
+
 def status_report(status, recipient="15550001001"):
     timestamp = "52011051000000"
     return ("00"
@@ -129,6 +139,12 @@ class Context:
             (r for r in self.device.rows() if r["_id"] not in before and r["body"] == text), None),
                        timeout=20)
         return row["_id"]
+
+    def receive_pdu(self, text, **pdu):
+        self.device.broadcast("TEST_SMS_RECEIVE", "--allow-background-activity-starts",
+                              "--es", "pdus", sms_deliver(text, **pdu))
+        return wait_for("the SMS to be received", lambda: [
+            r for r in self.device.rows() if r["body"] == text and r["type"] == "1"], timeout=30)
 
     def receive(self, text, sender="5551234"):
         before = {r["_id"] for r in self.device.rows()}
@@ -188,6 +204,50 @@ def receive_alphanumeric_sender(ctx):
     rows = ctx.receive("Your code is 123456", sender="VM-PRAUGA")
     assert rows[0]["address"], rows[0]
 
+def receive_keeps_what_the_network_sent(ctx):
+    text = f"details {uuid.uuid4().hex[:6]}"
+    row = ctx.receive_pdu(text, pid=0x00, reply_path=True, service_center="15550009999")[0]
+    assert row["body"] == text, row
+    assert row["protocol"] == "0", row
+    assert row["reply_path_present"] == "1", row
+    assert row["service_center"].endswith("15550009999"), row
+    assert row["date_sent"] and row["date_sent"] != "0", row
+
+def receive_replace_takes_the_place_of_the_last(ctx):
+    sender = "5557001"
+    first = ctx.receive_pdu("balance 10", sender=sender, pid=0x41)[0]
+    second = ctx.receive_pdu("balance 20", sender=sender, pid=0x41)[0]
+    wait_for("the first one to be replaced",
+             lambda: not any(r["body"] == "balance 10" for r in ctx.device.rows()), 10)
+    assert ctx.device.row(second["_id"])["body"] == "balance 20"
+    third = ctx.receive_pdu("hello", sender=sender, pid=0x00)[0]
+    stays("a normal SMS replaces nothing", lambda: ctx.device.row(second["_id"]), 3)
+    assert ctx.device.row(third["_id"])
+
+def _class_zero(ctx, button):
+    text = f"flash {uuid.uuid4().hex[:6]}"
+    row = ctx.receive_pdu(text, sender="5557002", dcs=0x18)[0]
+    shown = wait_for("the flash SMS to pop up", lambda: "ClassZeroActivity" in ctx.device.shell(
+        "dumpsys activity activities | grep -E 'topResumedActivity|ResumedActivity'"), 15)
+    assert shown
+    assert not any(text in n for n in ctx.device.notifications()), "it shouldn't be notified"
+    dump = ctx.device.shell("uiautomator dump /sdcard/ui.xml >/dev/null; cat /sdcard/ui.xml")
+    match = re.search(rf'text="{button}"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', dump,
+                      re.I)
+    assert match, f"no {button} button"
+    x1, y1, x2, y2 = map(int, match.groups())
+    ctx.device.shell(f"input tap {(x1 + x2) // 2} {(y1 + y2) // 2}")
+    return row, text
+
+def receive_class_zero_saved(ctx):
+    row, text = _class_zero(ctx, "Save")
+    wait_for("it to be kept as read", lambda: (ctx.device.row(row["_id"]) or {}).get("read") == "1")
+    stays("and never notified", lambda: not any(text in n for n in ctx.device.notifications()), 3)
+
+def receive_class_zero_dismissed(ctx):
+    row, _ = _class_zero(ctx, "Cancel")
+    wait_for("it to be dropped", lambda: ctx.device.row(row["_id"]) is None, 15)
+
 def send_short(ctx):
     sends = ctx.device.sends()
     sms_id = ctx.send()
@@ -213,13 +273,28 @@ def part_failure_fails_the_whole_message(ctx):
     stays("a later part must not mark it sent", lambda: ctx.type_of(sms_id) == "5", 4)
     ctx.delete(sms_id)
 
-def last_part_reporting_first_still_fails(ctx):
+def last_part_reporting_first_waits_for_the_rest(ctx):
     sms_id = ctx.waiting()
     ctx.result(sms_id, RESULT_OK, part=1, parts=2)
-    wait_for("it to show sent", lambda: ctx.type_of(sms_id) == "2")
+    stays("it waits for the other part", lambda: ctx.type_of(sms_id) == "4", 3)
     ctx.result(sms_id, GENERIC_FAILURE, part=0, parts=2)
     wait_for("it to fail", lambda: ctx.type_of(sms_id) == "5")
     ctx.delete(sms_id)
+
+def worst_part_decides(ctx):
+    sms_id = ctx.waiting()
+    ctx.result(sms_id, NO_SERVICE, part=0, parts=3)
+    ctx.result(sms_id, GENERIC_FAILURE, part=1, parts=3)
+    ctx.result(sms_id, RESULT_OK, part=2, parts=3)
+    wait_for("it to fail", lambda: ctx.type_of(sms_id) == "5")
+    ctx.delete(sms_id)
+
+def only_a_temporary_part_failure_is_retried(ctx):
+    sms_id = ctx.waiting()
+    ctx.result(sms_id, RESULT_OK, part=0, parts=2)
+    ctx.result(sms_id, NO_SERVICE, part=1, parts=2)
+    stays("it keeps showing as sending", lambda: ctx.type_of(sms_id) == "4", 2)
+    wait_for("the retry to send it", lambda: ctx.type_of(sms_id) == "2", 60)
 
 def all_parts_sent_marks_sent_once(ctx):
     sms_id = ctx.waiting()
@@ -255,9 +330,15 @@ def delivery_report_statuses(ctx):
     wait_for("it to show as not delivered",
              lambda: ctx.device.row(sms_id)["status"] == str(STATUS_FAILED))
 
-    ctx.delivered(sms_id, 0x20)
-    stays("a pending report changes nothing",
+    for status in (0x20, 0x46, 0x02):
+        ctx.delivered(sms_id, status)
+    stays("other reports change nothing",
           lambda: ctx.device.row(sms_id)["status"] == str(STATUS_FAILED), 4)
+
+    ctx.device.broadcast("TEST_SMS_RESULT", "--es", "uri", f"content://sms/{sms_id}",
+                         "--es", "kind", "delivered")
+    stays("an empty report changes nothing",
+          lambda: ctx.device.row(sms_id)["status"] == str(STATUS_FAILED), 3)
 
     ctx.delivered(sms_id, 0x00)
     wait_for("it to show as delivered",
@@ -297,10 +378,24 @@ def airplane_mode_then_back(ctx):
         time.sleep(3)
         sms_id = ctx.send()
         stays("it keeps showing as sending", lambda: ctx.type_of(sms_id) == "4", 10)
-        assert "retrying later" in ctx.device.log(), "it wasn't scheduled for a retry"
+        assert re.search(r"SMS \d+ failed with .*retrying", ctx.device.log()), \
+            "it wasn't scheduled for a retry"
     finally:
         ctx.airplane(False)
     wait_for("it to go once the radio is back", lambda: ctx.type_of(sms_id) == "2", 180, 3)
+
+def service_back_sends_right_away(ctx):
+    ctx.airplane(True)
+    try:
+        time.sleep(3)
+        sms_id = ctx.send()
+        time.sleep(80)
+        assert ctx.type_of(sms_id) == "4", "it should still be waiting"
+    finally:
+        ctx.airplane(False)
+    start = time.time()
+    wait_for("it to go once the phone has service", lambda: ctx.type_of(sms_id) == "2", 60, 1)
+    assert time.time() - start < 40, f"took {time.time() - start:.0f}s, not right away"
 
 def delayed_send_goes_at_its_time(ctx):
     sms_id = ctx.send(delay=5000)
@@ -356,28 +451,30 @@ def notification_retry_on_a_sent_message_does_nothing(ctx):
     stays("nothing is sent", lambda: ctx.device.sends() == sends, 6)
 
 def reboot_resumes_unsent(ctx):
-    interrupted = ctx.send(delay=15_000)
+    passed = ctx.send(delay=15_000)
     later = ctx.send(delay=240_000)
     ctx.device.adb("reboot")
     time.sleep(10)
     ctx.device.adb("wait-for-device")
     wait_for("the emulator to boot",
              lambda: ctx.device.shell("getprop sys.boot_completed").strip() == "1", 300, 3)
-    wait_for("the interrupted one to fail", lambda: ctx.type_of(interrupted) == "5", 120, 3)
+    wait_for("the passed one to go after the boot", lambda: ctx.type_of(passed) == "2", 180, 3)
     assert ctx.type_of(later) == "4", "the later one should still wait"
     wait_for("the later one to go at its time", lambda: ctx.type_of(later) == "2", 300, 5)
-    ctx.delete(interrupted)
 
 SCENARIOS = [
     receive_plain, receive_long_multipart, receive_unicode, receive_alphanumeric_sender,
     send_short, send_long_multipart, send_delivery_report_from_the_network,
-    part_failure_fails_the_whole_message, last_part_reporting_first_still_fails,
+    receive_keeps_what_the_network_sent, receive_replace_takes_the_place_of_the_last,
+    receive_class_zero_saved, receive_class_zero_dismissed,
+    part_failure_fails_the_whole_message, last_part_reporting_first_waits_for_the_rest,
+    worst_part_decides, only_a_temporary_part_failure_is_retried,
     all_parts_sent_marks_sent_once, every_part_failing_notifies_once,
     result_from_before_the_update_still_works,
     delivery_report_statuses,
     no_service_is_retried_by_itself, network_error_with_temporary_cause_is_retried,
     network_error_with_other_cause_fails, generic_failure_fails_and_notifies,
-    airplane_mode_then_back,
+    airplane_mode_then_back, service_back_sends_right_away,
     delayed_send_goes_at_its_time, delayed_cancel, delayed_send_now_sends_the_same_message_once,
     cancel_after_it_went_keeps_it, send_now_after_it_went_sends_nothing,
     notification_retry_sends_a_failed_message_once,

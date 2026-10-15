@@ -18,6 +18,7 @@
                 <action android:name="org.prauga.messages.TEST_SMS_DELAYED" />
                 <action android:name="org.prauga.messages.TEST_SMS_NOTIFICATION_RETRY" />
                 <action android:name="org.prauga.messages.TEST_SMS_DUMP" />
+                <action android:name="org.prauga.messages.TEST_SMS_RECEIVE" />
             </intent-filter>
         </receiver>
     </application>

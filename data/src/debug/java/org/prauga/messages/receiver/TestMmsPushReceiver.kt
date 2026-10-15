@@ -38,6 +38,7 @@ class TestMmsPushReceiver : MmsReceiver() {
             ACTION_SMS_DELAYED -> return smsDelayed(context, intent)
             ACTION_SMS_NOTIFICATION_RETRY -> return smsNotificationRetry(context, intent)
             ACTION_SMS_DUMP -> return smsDump(context, intent)
+            ACTION_SMS_RECEIVE -> return smsReceive(context, intent)
         }
 
         val pdu = intent.getStringExtra(EXTRA_PDU)?.hexToBytes()
@@ -233,7 +234,23 @@ class TestMmsPushReceiver : MmsReceiver() {
     }
 
     private fun smsDump(context: Context, intent: Intent) {
-        val columns = arrayOf("_id", "thread_id", "address", "type", "status", "error_code", "body")
+        val columns =
+            arrayOf(
+                "_id",
+                "thread_id",
+                "address",
+                "type",
+                "status",
+                "error_code",
+                "read",
+                "seen",
+                "protocol",
+                "reply_path_present",
+                "service_center",
+                "date",
+                "date_sent",
+                "body",
+            )
         val rows =
             context.contentResolver
                 .query(Telephony.Sms.CONTENT_URI, columns, null, null, "_id DESC")
@@ -249,6 +266,22 @@ class TestMmsPushReceiver : MmsReceiver() {
                 }
                 .orEmpty()
         setResult(0, rows.joinToString("\n"), null)
+    }
+
+    private fun smsReceive(context: Context, intent: Intent) {
+        val format = intent.getStringExtra("format") ?: "3gpp"
+        val parts =
+            intent.getStringExtra("pdus")?.split(',')?.mapNotNull { hex ->
+                hex.hexToBytes()?.let { android.telephony.SmsMessage.createFromPdu(it, format) }
+            }
+        if (parts.isNullOrEmpty()) {
+            Timber.w("No PDUs to receive")
+            return
+        }
+        val receiver = SmsReceiver().also { AndroidInjection.inject(it, context) }
+        runInBackground {
+            receiver.receive(context, parts, intent.getIntExtra(EXTRA_SUBSCRIPTION, -1))
+        }
     }
 
     private fun retry(context: Context, intent: Intent) {
@@ -308,6 +341,7 @@ class TestMmsPushReceiver : MmsReceiver() {
         private const val ACTION_SMS_RESULT = "org.prauga.messages.TEST_SMS_RESULT"
         private const val ACTION_SMS_DELAYED = "org.prauga.messages.TEST_SMS_DELAYED"
         private const val ACTION_SMS_DUMP = "org.prauga.messages.TEST_SMS_DUMP"
+        private const val ACTION_SMS_RECEIVE = "org.prauga.messages.TEST_SMS_RECEIVE"
         private const val ACTION_SMS_NOTIFICATION_RETRY =
             "org.prauga.messages.TEST_SMS_NOTIFICATION_RETRY"
 
