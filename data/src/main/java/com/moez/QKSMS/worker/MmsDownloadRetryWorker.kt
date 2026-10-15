@@ -5,7 +5,6 @@ package org.prauga.messages.worker
 
 import android.content.Context
 import android.net.Uri
-import androidx.core.content.edit
 import androidx.work.Constraints
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
@@ -15,7 +14,6 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 import org.prauga.messages.repository.MessageRepository
 import timber.log.Timber
 
@@ -36,35 +34,20 @@ class MmsDownloadRetryWorker(appContext: Context, workerParams: WorkerParameters
     companion object {
         private const val KEY_URI = "uri"
         private const val KEY_SUB_ID = "subId"
-        private const val PREFS = "mms_download_retries"
 
-        private val MIN_DELAY = TimeUnit.SECONDS.toMillis(5)
-        private val MAX_DELAY = TimeUnit.MINUTES.toMillis(20)
-        private val RETRY_WINDOW = TimeUnit.HOURS.toMillis(12)
+        private fun backoff(context: Context) = MmsRetryBackoff(context, "mms_download_retries")
 
         fun schedule(context: Context, notificationUri: Uri, subId: Int) {
-            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             val key = notificationUri.toString()
-            val now = System.currentTimeMillis()
-            val (attempt, firstFailure) =
-                prefs.getString(key, null)
-                    ?.split(',')
-                    ?.mapNotNull(String::toLongOrNull)
-                    ?.takeIf { it.size == 2 }
-                    ?.let { (attempt, firstFailure) -> attempt.toInt() to firstFailure }
-                    ?: (0 to now)
-
-            if (now - firstFailure > RETRY_WINDOW) {
+            val delay = backoff(context).nextDelay(key)
+            if (delay == null) {
                 Timber.v("Giving up on retrying $notificationUri")
-                clear(context, notificationUri)
                 return
             }
 
-            prefs.edit { putString(key, "${attempt + 1},$firstFailure") }
-
             val request =
                 OneTimeWorkRequestBuilder<MmsDownloadRetryWorker>()
-                    .setInitialDelay(retryDelay(attempt), TimeUnit.MILLISECONDS)
+                    .setInitialDelay(delay, TimeUnit.MILLISECONDS)
                     .setConstraints(
                         Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
                     )
@@ -72,20 +55,11 @@ class MmsDownloadRetryWorker(appContext: Context, workerParams: WorkerParameters
                     .build()
 
             WorkManager.getInstance(context)
-                .enqueueUniqueWork(workName(notificationUri), ExistingWorkPolicy.REPLACE, request)
+                .enqueueUniqueWork("mms-download-retry:$key", ExistingWorkPolicy.REPLACE, request)
         }
 
         fun clear(context: Context, notificationUri: Uri) {
-            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit {
-                remove(notificationUri.toString())
-            }
+            backoff(context).clear(notificationUri.toString())
         }
-
-        fun retryDelay(attempt: Int, random: Random = Random.Default): Long {
-            val delay = (MIN_DELAY shl attempt.coerceIn(0, 20)).coerceAtMost(MAX_DELAY)
-            return (delay / 2 + random.nextLong(delay / 2 + 1)).coerceAtLeast(MIN_DELAY)
-        }
-
-        private fun workName(notificationUri: Uri) = "mms-download-retry:$notificationUri"
     }
 }
