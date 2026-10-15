@@ -116,7 +116,7 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
 
     static MmsRetry retryForResponse(byte[] response, boolean contentDisposition) {
         if (response == null || response.length == 0) {
-            return MmsRetry.AUTO;
+            return MmsRetry.MANUAL;
         }
 
         final GenericPdu pdu;
@@ -128,7 +128,7 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
         }
 
         if (!(pdu instanceof RetrieveConf)) {
-            return MmsRetry.NEVER;
+            return MmsRetry.MANUAL;
         }
 
         final int status = ((RetrieveConf) pdu).getRetrieveStatus();

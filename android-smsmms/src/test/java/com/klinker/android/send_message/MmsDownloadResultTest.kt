@@ -52,9 +52,9 @@ class MmsDownloadResultTest {
     }
 
     @Test
-    fun givenEmptyOrInvalidResponse_whenRetryForResponse_thenHandlesIt() {
-        assertEquals(MmsRetry.AUTO, retryFor(null))
-        assertEquals(MmsRetry.AUTO, retryFor(ByteArray(0)))
-        assertEquals(MmsRetry.NEVER, retryFor(MmsPduFactory.createSendConfBytes()))
+    fun givenEmptyOrInvalidResponse_whenRetryForResponse_thenLeftToTheUser() {
+        assertEquals(MmsRetry.MANUAL, retryFor(null))
+        assertEquals(MmsRetry.MANUAL, retryFor(ByteArray(0)))
+        assertEquals(MmsRetry.MANUAL, retryFor(MmsPduFactory.createSendConfBytes()))
     }
 }
