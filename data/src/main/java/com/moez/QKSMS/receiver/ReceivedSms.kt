@@ -3,9 +3,23 @@
  */
 package org.prauga.messages.receiver
 
-data class ReceivedSms(val address: String, val body: String, val sentTime: Long) {
+import org.prauga.messages.model.ReceivedSmsDetails
 
-    data class Part(val address: String?, val body: String?, val sentTime: Long)
+data class ReceivedSms(
+    val address: String,
+    val body: String,
+    val sentTime: Long,
+    val details: ReceivedSmsDetails = ReceivedSmsDetails(),
+    val classZero: Boolean = false,
+) {
+
+    data class Part(
+        val address: String?,
+        val body: String?,
+        val sentTime: Long,
+        val details: ReceivedSmsDetails = ReceivedSmsDetails(),
+        val classZero: Boolean = false,
+    )
 
     companion object {
         const val UNKNOWN_SENDER = "Unknown sender"
@@ -19,6 +33,8 @@ data class ReceivedSms(val address: String, val body: String, val sentTime: Long
                         ?: UNKNOWN_SENDER,
                 body = parts.joinToString("") { it.body.orEmpty() },
                 sentTime = parts.first().sentTime,
+                details = parts.first().details,
+                classZero = parts.first().classZero,
             )
         }
     }
