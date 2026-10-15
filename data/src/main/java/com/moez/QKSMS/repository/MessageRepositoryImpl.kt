@@ -1027,7 +1027,25 @@ constructor(
         sentTime: Long,
     ): Message {
         // Check if this is a reaction message before inserting
-        val parsedReaction = reactions.parseEmojiReaction(body)
+        val parsedReaction = tryOrNull { reactions.parseEmojiReaction(body) }
+
+        val values =
+            contentValuesOf(Sms.ADDRESS to address, Sms.BODY to body, Sms.DATE_SENT to sentTime)
+        if (prefs.canUseSubId.get()) values.put(Sms.SUBSCRIPTION_ID, subId)
+        val uri = context.contentResolver.insert(Sms.Inbox.CONTENT_URI, values)
+
+        val providerThreadId =
+            uri?.let {
+                tryOrNull {
+                    context.contentResolver.query(it, arrayOf(Sms.THREAD_ID), null, null, null)?.use { cursor ->
+                        if (cursor.moveToFirst()) cursor.getLong(0) else null
+                    }
+                }
+            }
+        val threadId =
+            providerThreadId
+                ?: tryOrNull { TelephonyCompat.getOrCreateThreadId(context, address) }
+                ?: 0L
 
         // Insert the message to Realm
         val message =
@@ -1039,7 +1057,8 @@ constructor(
                 this.subId = subId
 
                 id = messageIds.newId()
-                threadId = TelephonyCompat.getOrCreateThreadId(context, address)
+                contentId = uri?.lastPathSegment?.toLongOrNull() ?: 0L
+                this.threadId = threadId
                 boxId = Sms.MESSAGE_TYPE_INBOX
                 type = "sms"
                 read = activeConversationManager.getActiveConversation() == threadId
@@ -1047,24 +1066,9 @@ constructor(
                 isEmojiReaction = parsedReaction != null
             }
 
-        // Insert the message to the native content provider
-        val values =
-            contentValuesOf(Sms.ADDRESS to address, Sms.BODY to body, Sms.DATE_SENT to sentTime)
-
-        if (prefs.canUseSubId.get()) values.put(Sms.SUBSCRIPTION_ID, message.subId)
-
         Realm.getDefaultInstance().use { realm ->
             var managedMessage: Message? = null
             realm.executeTransaction { managedMessage = realm.copyToRealmOrUpdate(message) }
-
-            context.contentResolver
-                .insert(Sms.Inbox.CONTENT_URI, values)
-                ?.lastPathSegment
-                ?.toLong()
-                ?.let { id ->
-                    // Update contentId after the message has been inserted to the content provider
-                    realm.executeTransaction { managedMessage?.contentId = id }
-                }
 
             // If this is a reaction message, find the target and link them
             if (parsedReaction != null) {
