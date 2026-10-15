@@ -29,6 +29,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.android.AndroidInjection
 import javax.inject.Inject
+import org.prauga.messages.model.ReceivedSmsDetails
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.worker.ReceiveSmsWorker
 import org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
@@ -56,7 +57,9 @@ class SmsReceiver : BroadcastReceiver() {
                 try {
                     Timber.v("onReceive() new sms")
                     val messageId =
-                        messageRepo.insertReceivedSms(subId, sms.address, sms.body, sms.sentTime).id
+                        messageRepo
+                            .insertReceivedSms(subId, sms.address, sms.body, sms.sentTime, sms.details)
+                            .id
 
                     // start worker with message id as param
                     WorkManager.getInstance(context)
@@ -82,6 +85,15 @@ class SmsReceiver : BroadcastReceiver() {
             address = tryOrNull { message.displayOriginatingAddress },
             body = tryOrNull { message.displayMessageBody },
             sentTime = tryOrNull { message.timestampMillis } ?: 0L,
+            details =
+                ReceivedSmsDetails(
+                    protocol = tryOrNull { message.protocolIdentifier } ?: 0,
+                    replyPathPresent = tryOrNull { message.isReplyPathPresent } ?: false,
+                    serviceCenter = tryOrNull { message.serviceCenterAddress },
+                    subject = tryOrNull { message.pseudoSubject },
+                    replace = tryOrNull { message.isReplace } ?: false,
+                ),
+            classZero = tryOrNull { message.messageClass } == SmsMessage.MessageClass.CLASS_0,
         )
 
     private fun <T> tryOrNull(block: () -> T): T? =

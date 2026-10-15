@@ -6,6 +6,7 @@ package org.prauga.messages.receiver
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
+import org.prauga.messages.model.ReceivedSmsDetails
 
 class ReceivedSmsTest {
 
@@ -47,5 +48,20 @@ class ReceivedSmsTest {
     @Test
     fun givenNoParts_whenFrom_thenNothingToStore() {
         assertNull(ReceivedSms.from(emptyList()))
+    }
+
+    @Test
+    fun givenMultipartMessage_whenFrom_thenDetailsComeFromTheFirstPart() {
+        val first = ReceivedSmsDetails(protocol = 0x41, serviceCenter = "+1555000", replace = true)
+        val sms =
+            ReceivedSms.from(
+                listOf(
+                    ReceivedSms.Part("+1", "a", 1, first, classZero = true),
+                    ReceivedSms.Part("+1", "b", 2, ReceivedSmsDetails(), classZero = false),
+                )
+            )
+
+        assertEquals(first, sms?.details)
+        assertEquals(true, sms?.classZero)
     }
 }

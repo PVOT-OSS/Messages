@@ -76,6 +76,7 @@ import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
+import org.prauga.messages.model.ReceivedSmsDetails
 import org.prauga.messages.receiver.SendSmsReceiver
 import org.prauga.messages.receiver.SmsDeliveredReceiver
 import org.prauga.messages.receiver.SmsSentParts
@@ -1153,12 +1154,28 @@ constructor(
         address: String,
         body: String,
         sentTime: Long,
+        details: ReceivedSmsDetails,
     ): Message {
         // Check if this is a reaction message before inserting
         val parsedReaction = tryOrNull { reactions.parseEmojiReaction(body) }
 
+        val date = System.currentTimeMillis()
+
         val values =
-            contentValuesOf(Sms.ADDRESS to address, Sms.BODY to body, Sms.DATE_SENT to sentTime)
+            contentValuesOf(
+                Sms.ADDRESS to address,
+                Sms.BODY to body,
+                Sms.DATE to date,
+                Sms.DATE_SENT to sentTime,
+                Sms.READ to 0,
+                Sms.SEEN to 1,
+                Sms.PROTOCOL to details.protocol,
+                Sms.REPLY_PATH_PRESENT to if (details.replyPathPresent) 1 else 0,
+            )
+        details.serviceCenter
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { values.put(Sms.SERVICE_CENTER, it) }
+        details.subject?.takeIf { it.isNotEmpty() }?.let { values.put(Sms.SUBJECT, it) }
         if (prefs.canUseSubId.get()) values.put(Sms.SUBSCRIPTION_ID, subId)
         val uri = context.contentResolver.insert(Sms.Inbox.CONTENT_URI, values)
 
@@ -1181,7 +1198,7 @@ constructor(
                 this.address = address
                 this.body = body
                 this.dateSent = sentTime
-                this.date = System.currentTimeMillis()
+                this.date = date
                 this.subId = subId
 
                 id = messageIds.newId()
@@ -1193,6 +1210,14 @@ constructor(
                 // Mark as reaction upfront so it's hidden from the start
                 isEmojiReaction = parsedReaction != null
             }
+
+        if (message.read) {
+            uri?.let {
+                tryOrNull {
+                    context.contentResolver.update(it, contentValuesOf(Sms.READ to 1), null, null)
+                }
+            }
+        }
 
         Realm.getDefaultInstance().use { realm ->
             var managedMessage: Message? = null

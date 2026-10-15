@@ -23,6 +23,7 @@ import io.realm.RealmResults
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
+import org.prauga.messages.model.ReceivedSmsDetails
 
 interface MessageRepository {
 
@@ -104,7 +105,13 @@ interface MessageRepository {
         date: Long,
     ): Message
 
-    fun insertReceivedSms(subId: Int, address: String, body: String, sentTime: Long): Message
+    fun insertReceivedSms(
+        subId: Int,
+        address: String,
+        body: String,
+        sentTime: Long,
+        details: ReceivedSmsDetails = ReceivedSmsDetails(),
+    ): Message
 
     /** Marks the message as sending, in case we need to retry sending it */
     fun markSending(id: Long)
