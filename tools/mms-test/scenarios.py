@@ -287,8 +287,19 @@ def receive_bad_request_retries(ctx):
 def receive_transient_status_retries(ctx):
     _receive_retried(ctx, "transient")
 
-def receive_empty_response_retries(ctx):
-    _receive_retried(ctx, "empty")
+def _receive_left_to_user(ctx, mode):
+    set_scenario("download", mode)
+    message_id = ctx.push()
+    assert_not_retried(ctx, "download", r"MMS download result: MANUAL")
+    row = ctx.row_for(message_id)
+    assert row and row["m_type"] == str(M_TYPE_NOTIFICATION), f"notification should stay: {row}"
+    assert row["st"] != str(PERMANENT_FAILURE), "it can still be downloaded"
+    set_scenario("download", "ok")
+    ctx.download(row)
+    ctx.downloaded(message_id)
+
+def receive_empty_response_left_to_user(ctx):
+    _receive_left_to_user(ctx, "empty")
 
 def receive_expired_status_is_permanent(ctx):
     set_scenario("download", "expired")
@@ -297,12 +308,8 @@ def receive_expired_status_is_permanent(ctx):
              lambda: (r := ctx.row_for(message_id)) and r["st"] == str(PERMANENT_FAILURE))
     assert ctx.app_log(r"MMS download result: NEVER")
 
-def receive_garbage_is_permanent(ctx):
-    set_scenario("download", "garbage")
-    message_id = ctx.push()
-    wait_for("the failed notification",
-             lambda: (r := ctx.row_for(message_id)) and r["st"] == str(PERMANENT_FAILURE))
-    assert_not_retried(ctx, "download", r"MMS download result: NEVER")
+def receive_garbage_left_to_user(ctx):
+    _receive_left_to_user(ctx, "garbage")
 
 def receive_auto_download_off_then_manual(ctx):
     ctx.set_pref("mmsAutoDownload", False)
@@ -439,7 +446,8 @@ def receive_from_blocked_sender(ctx):
         message_id = ctx.push(sender=sender, text="from a blocked number")
         row = wait_for("the notification row", lambda: ctx.row_for(message_id))
         time.sleep(5)
-        assert not ctx.events("download"), "a blocked sender's MMS was downloaded automatically"
+        downloads = [e for e in ctx.events("download") if e.get("id") == message_id]
+        assert not downloads, "a blocked sender's MMS was downloaded automatically"
         assert row["m_type"] == str(M_TYPE_NOTIFICATION), row
         responses = ctx.events("notify-resp")
         assert responses and responses[-1]["status"] == hex(0x83), responses
@@ -662,6 +670,7 @@ def send_failed_then_retried_by_hand(ctx):
              lambda: (r := ctx.device.mms_rows(f"_id={row['_id']}")) and r[0]["msg_box"] == str(BOX_SENT))
 
 def delivery_report_for_sent_message(ctx):
+    stored = len(ctx.device.mms_rows("m_type=134"))
     ctx.send("+15550000026", "+15550000027")
     row = wait_for("the message to be sent",
                    lambda: (r := ctx.latest_outgoing()) and r["msg_box"] == str(BOX_SENT) and r)
@@ -671,8 +680,10 @@ def delivery_report_for_sent_message(ctx):
     tool.report(report_args)
     time.sleep(5)
     assert not app_crashed(ctx.device), "a delivery report crashed the app"
+    assert len(ctx.device.mms_rows("m_type=134")) == stored, "the delivery report was stored"
 
 def read_report_for_sent_message(ctx):
+    stored = len(ctx.device.mms_rows("m_type=136"))
     ctx.send("+15550000028", "+15550000029")
     row = wait_for("the message to be sent",
                    lambda: (r := ctx.latest_outgoing()) and r["msg_box"] == str(BOX_SENT) and r)
@@ -682,6 +693,7 @@ def read_report_for_sent_message(ctx):
     tool.report(report_args)
     time.sleep(5)
     assert not app_crashed(ctx.device), "a read report crashed the app"
+    assert len(ctx.device.mms_rows("m_type=136")) == stored, "the read report was stored"
 
 def _send_retried(ctx, mode):
     set_scenario("send", mode)
@@ -755,9 +767,9 @@ SCENARIOS = [
     receive_server_error_retries,
     receive_bad_request_retries,
     receive_transient_status_retries,
-    receive_empty_response_retries,
+    receive_empty_response_left_to_user,
     receive_expired_status_is_permanent,
-    receive_garbage_is_permanent,
+    receive_garbage_left_to_user,
     receive_auto_download_off_then_manual,
     receive_pending_downloaded_when_app_opens,
     send_ok,
