@@ -19,6 +19,7 @@
 package org.prauga.messages.compat
 
 import android.content.Context
+import android.os.Build
 import android.telephony.SubscriptionManager
 import javax.inject.Inject
 import org.prauga.messages.manager.PermissionManager
@@ -46,6 +47,11 @@ constructor(context: Context, private val permissions: PermissionManager) {
             }
         }
 
+    val defaultSmsSubscriptionId: Int
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            SubscriptionManager.getDefaultSmsSubscriptionId()
+        else SubscriptionManager.INVALID_SUBSCRIPTION_ID
+
     init {
         subscriptionManager = SubscriptionManager.from(context)
     }
@@ -68,5 +74,16 @@ constructor(context: Context, private val permissions: PermissionManager) {
             }
 
         abstract fun onSubscriptionsChanged()
+    }
+
+    companion object {
+        fun preferredSubscription(
+            subs: List<SubscriptionInfoCompat>,
+            lastUsedSubId: Int,
+            defaultSmsSubId: Int
+        ): SubscriptionInfoCompat? =
+            subs.firstOrNull { it.subscriptionId == lastUsedSubId }
+                ?: subs.firstOrNull { it.subscriptionId == defaultSmsSubId }
+                ?: subs.firstOrNull()
     }
 }
