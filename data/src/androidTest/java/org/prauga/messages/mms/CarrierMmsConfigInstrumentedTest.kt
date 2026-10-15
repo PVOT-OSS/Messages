@@ -8,14 +8,14 @@ import android.content.res.Configuration
 import android.telephony.SmsManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import org.prauga.messages.carrier.CarrierMmsConfig
-import org.prauga.messages.carrier.MmsConfigOverrides
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.prauga.messages.carrier.CarrierMmsConfig
+import org.prauga.messages.carrier.MmsConfigOverrides
 
 @RunWith(AndroidJUnit4::class)
 class CarrierMmsConfigInstrumentedTest {
@@ -54,7 +54,10 @@ class CarrierMmsConfigInstrumentedTest {
         val config = CarrierMmsConfig.get(context, -1)
 
         if (platform.containsKey(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE)) {
-            assertEquals(platform.getInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE), config.maxMessageSize)
+            assertEquals(
+                platform.getInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE),
+                config.maxMessageSize,
+            )
         }
         if (platform.containsKey(SmsManager.MMS_CONFIG_MMS_ENABLED)) {
             assertEquals(platform.getBoolean(SmsManager.MMS_CONFIG_MMS_ENABLED), config.mmsEnabled)
@@ -68,8 +71,13 @@ class CarrierMmsConfigInstrumentedTest {
 
         assertNotNull(overrides.getString(SmsManager.MMS_CONFIG_USER_AGENT))
         assertTrue(overrides.getString(SmsManager.MMS_CONFIG_UA_PROF_URL)!!.isNotBlank())
-        overrides.keySet()
-            .filter { it != SmsManager.MMS_CONFIG_USER_AGENT && it != SmsManager.MMS_CONFIG_UA_PROF_URL }
-            .forEach { key -> assertFalse("$key is already set by the system", platform.containsKey(key)) }
+        overrides
+            .keySet()
+            .filter {
+                it != SmsManager.MMS_CONFIG_USER_AGENT && it != SmsManager.MMS_CONFIG_UA_PROF_URL
+            }
+            .forEach { key ->
+                assertFalse("$key is already set by the system", platform.containsKey(key))
+            }
     }
 }

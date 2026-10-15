@@ -49,8 +49,7 @@ object SmilBuilder {
 
     private fun String.isText() = this == ContentType.TEXT_PLAIN || this == ContentType.TEXT_HTML
 
-    private fun String.isVisual() =
-        ContentType.isImageType(this) || ContentType.isVideoType(this)
+    private fun String.isVisual() = ContentType.isImageType(this) || ContentType.isVideoType(this)
 
     private fun String.escape() =
         replace("&", "&amp;").replace("\"", "&quot;").replace("<", "&lt;").replace(">", "&gt;")

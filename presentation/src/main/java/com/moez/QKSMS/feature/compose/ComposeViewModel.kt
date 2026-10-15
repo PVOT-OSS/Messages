@@ -30,7 +30,6 @@ import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.net.toFile
 import androidx.media3.common.MimeTypes
-import org.prauga.messages.carrier.CarrierMmsConfig
 import com.klinker.android.send_message.SimpleCharacters
 import com.moez.QKSMS.common.QkMediaPlayer
 import com.moez.QKSMS.contentproviders.MmsPartProvider
@@ -58,6 +57,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 import org.prauga.messages.R
+import org.prauga.messages.carrier.CarrierMmsConfig
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
 import org.prauga.messages.common.util.ClipboardUtils
@@ -388,8 +388,7 @@ constructor(
             }
             .withLatestFrom(selectedChips) { chips, selected ->
                 val limit =
-                    tryOrNull { CarrierMmsConfig.get(context, -1).recipientLimit }
-                        ?: Int.MAX_VALUE
+                    tryOrNull { CarrierMmsConfig.get(context, -1).recipientLimit } ?: Int.MAX_VALUE
                 val room = (limit - selected.size).coerceAtLeast(0)
                 if (chips.size > room) {
                     context.makeToast(context.getString(R.string.compose_recipient_limit, limit))
@@ -1279,8 +1278,7 @@ constructor(
                         (!state
                             .editingMode || // and is not a new convo (group msg or not is already
                             // set)
-                            state
-                                .sendAsGroup) && // or (is a new convo and) send as group is
+                            state.sendAsGroup) && // or (is a new convo and) send as group is
                         groupMmsAllowed(subId))
 
                 val attachments = state.attachments

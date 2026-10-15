@@ -29,13 +29,22 @@ class ReceivedSmsTest {
 
     @Test
     fun givenSomePartsWithoutText_whenFrom_thenSkipsOnlyThose() {
-        assertEquals("ab", ReceivedSms.from(listOf(part(body = "a"), part(body = null), part(body = "b")))?.body)
+        assertEquals(
+            "ab",
+            ReceivedSms.from(listOf(part(body = "a"), part(body = null), part(body = "b")))?.body,
+        )
     }
 
     @Test
     fun givenNoSender_whenFrom_thenUsesUnknownSender() {
-        assertEquals(ReceivedSms.UNKNOWN_SENDER, ReceivedSms.from(listOf(part(address = null)))?.address)
-        assertEquals(ReceivedSms.UNKNOWN_SENDER, ReceivedSms.from(listOf(part(address = " ")))?.address)
+        assertEquals(
+            ReceivedSms.UNKNOWN_SENDER,
+            ReceivedSms.from(listOf(part(address = null)))?.address,
+        )
+        assertEquals(
+            ReceivedSms.UNKNOWN_SENDER,
+            ReceivedSms.from(listOf(part(address = " ")))?.address,
+        )
     }
 
     @Test

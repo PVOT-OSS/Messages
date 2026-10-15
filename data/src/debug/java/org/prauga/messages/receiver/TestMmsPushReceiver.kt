@@ -101,7 +101,8 @@ class TestMmsPushReceiver : MmsReceiver() {
 
     private fun download(context: Context, intent: Intent) {
         val uri = intent.getStringExtra("uri")?.let(Uri::parse) ?: return
-        val repo = RemoteMessagingReceiver().also { AndroidInjection.inject(it, context) }.messageRepo
+        val repo =
+            RemoteMessagingReceiver().also { AndroidInjection.inject(it, context) }.messageRepo
         val pendingResult = goAsync()
         Thread {
                 try {
@@ -123,11 +124,13 @@ class TestMmsPushReceiver : MmsReceiver() {
 
     private fun testAttachment(context: Context, kind: String, index: Int): Attachment {
         fun bitmap(size: Int, format: Bitmap.CompressFormat, color: Int) =
-            ByteArrayOutputStream().also { out ->
-                Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-                    .apply { eraseColor(color) }
-                    .compress(format, 100, out)
-            }.toByteArray()
+            ByteArrayOutputStream()
+                .also { out ->
+                    Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+                        .apply { eraseColor(color) }
+                        .compress(format, 100, out)
+                }
+                .toByteArray()
 
         val (extension, bytes) =
             when (kind) {
@@ -136,7 +139,10 @@ class TestMmsPushReceiver : MmsReceiver() {
                 "gif" -> "gif" to GIF
                 "video" -> "mp4" to MP4
                 "audio" -> "amr" to AMR
-                "vcard" -> "vcf" to "BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Test\r\nTEL:+15559876543\r\nEND:VCARD\r\n".toByteArray()
+                "vcard" ->
+                    "vcf" to
+                        "BEGIN:VCARD\r\nVERSION:3.0\r\nFN:Test\r\nTEL:+15559876543\r\nEND:VCARD\r\n"
+                            .toByteArray()
                 "pdf" -> "pdf" to "%PDF-1.4\n%%EOF\n".toByteArray()
                 "bigfile" -> "bin" to ByteArray(2 * 1024 * 1024) { it.toByte() }
                 else -> "png" to bitmap(64, Bitmap.CompressFormat.PNG, Color.MAGENTA)
@@ -178,7 +184,9 @@ class TestMmsPushReceiver : MmsReceiver() {
                 thread != -1L -> remote.conversationRepo.deleteConversations(thread)
                 message != null ->
                     deleteMessages
-                        .buildObservable(DeleteMessages.Params(listOf(message.first), message.second))
+                        .buildObservable(
+                            DeleteMessages.Params(listOf(message.first), message.second)
+                        )
                         .blockingSubscribe({}, Timber::w)
             }
         }
@@ -218,7 +226,9 @@ class TestMmsPushReceiver : MmsReceiver() {
 
                 else ->
                     SendDelayedMessageNow(remote.conversationRepo, remote.messageRepo)
-                        .buildObservable(SendDelayedMessageNow.Params(message.first, message.second))
+                        .buildObservable(
+                            SendDelayedMessageNow.Params(message.first, message.second)
+                        )
                         .blockingSubscribe({}, Timber::w)
             }
         }
@@ -346,10 +356,53 @@ class TestMmsPushReceiver : MmsReceiver() {
             "org.prauga.messages.TEST_SMS_NOTIFICATION_RETRY"
 
         private val GIF =
-            byteArrayOf(0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 1, 0, 1, 0, 0x80.toByte(), 0, 0, 0, 0, 0,
-                0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0x21, 0xF9.toByte(), 4, 1, 0, 0, 0, 0,
-                0x2C, 0, 0, 0, 0, 1, 0, 1, 0, 0, 2, 2, 0x44, 1, 0, 0x3B)
-        private val MP4 = "\u0000\u0000\u0000\u0018ftypmp42\u0000\u0000\u0000\u0000mp42isom".toByteArray()
+            byteArrayOf(
+                0x47,
+                0x49,
+                0x46,
+                0x38,
+                0x39,
+                0x61,
+                1,
+                0,
+                1,
+                0,
+                0x80.toByte(),
+                0,
+                0,
+                0,
+                0,
+                0,
+                0xFF.toByte(),
+                0xFF.toByte(),
+                0xFF.toByte(),
+                0x21,
+                0xF9.toByte(),
+                4,
+                1,
+                0,
+                0,
+                0,
+                0,
+                0x2C,
+                0,
+                0,
+                0,
+                0,
+                1,
+                0,
+                1,
+                0,
+                0,
+                2,
+                2,
+                0x44,
+                1,
+                0,
+                0x3B,
+            )
+        private val MP4 =
+            "\u0000\u0000\u0000\u0018ftypmp42\u0000\u0000\u0000\u0000mp42isom".toByteArray()
         private val AMR = "#!AMR\n".toByteArray() + ByteArray(160) { if (it % 32 == 0) 0x3C else 0 }
         private const val EXTRA_PDU = "pdu"
         private const val EXTRA_SUBSCRIPTION = "subscription"

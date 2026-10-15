@@ -23,12 +23,13 @@ object SmsServiceWatcher {
             if (stop != null) return@post
             var hadService: Boolean? = null
             try {
-                stop = register(appContext) { inService ->
-                    val regained = hadService == false && inService
-                    hadService = inService
-                    if (!regained) return@register
-                    SmsSendRetryWorker.kick(appContext, resetDelays = false)
-                }
+                stop =
+                    register(appContext) { inService ->
+                        val regained = hadService == false && inService
+                        hadService = inService
+                        if (!regained) return@register
+                        SmsSendRetryWorker.kick(appContext, resetDelays = false)
+                    }
             } catch (e: Exception) {
                 Timber.w(e, "Can't watch the service state")
             }
@@ -64,9 +65,10 @@ object SmsServiceWatcher {
                     onChanged(serviceState.state == ServiceState.STATE_IN_SERVICE)
                 }
             }
+        @Suppress("DEPRECATION") telephony.listen(listener, PhoneStateListener.LISTEN_SERVICE_STATE)
         @Suppress("DEPRECATION")
-        telephony.listen(listener, PhoneStateListener.LISTEN_SERVICE_STATE)
-        @Suppress("DEPRECATION")
-        return { telephony.listen(listener, PhoneStateListener.LISTEN_NONE) }
+        return {
+            telephony.listen(listener, PhoneStateListener.LISTEN_NONE)
+        }
     }
 }

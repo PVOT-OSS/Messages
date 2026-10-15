@@ -197,10 +197,12 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
 
             return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val mcc = info.mccString?.toIntOrNull() ?: 0
-                val mnc = when (val mncString = info.mncString) {
-                    null -> 0
-                    else -> mncString.toIntOrNull()?.takeIf { it != 0 } ?: Configuration.MNC_ZERO
-                }
+                val mnc =
+                    when (val mncString = info.mncString) {
+                        null -> 0
+                        else ->
+                            mncString.toIntOrNull()?.takeIf { it != 0 } ?: Configuration.MNC_ZERO
+                    }
                 mcc to mnc
             } else {
                 @Suppress("DEPRECATION")
@@ -245,8 +247,7 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
         private fun readXml(resources: Resources, id: Int, into: Bundle) {
             try {
                 resources.getXml(id).use { parser -> parse(parser, into) }
-            } catch (e: Resources.NotFoundException) {
-            } catch (e: Exception) {
+            } catch (e: Resources.NotFoundException) {} catch (e: Exception) {
                 Timber.w(e, "Unable to read MMS config")
             }
         }

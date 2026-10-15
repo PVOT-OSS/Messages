@@ -6,9 +6,9 @@ package org.prauga.messages.interactor
 import android.provider.Telephony
 import io.reactivex.Flowable
 import javax.inject.Inject
-import timber.log.Timber
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.repository.MessageRepository
+import timber.log.Timber
 
 class ResumeUnsentSms
 @Inject

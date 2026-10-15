@@ -290,7 +290,6 @@ constructor(
             }
 
         return contentResolver.query(stableUri, null, null, null, null)?.use { cursor ->
-
             if (!cursor.moveToFirst()) {
                 existingId?.let(::removeMessage)
                 return null
