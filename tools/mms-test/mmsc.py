@@ -14,6 +14,7 @@ requests made by Android's MmsService come to this server over the emulator's mo
 """
 
 import argparse
+import fcntl
 import json
 import socket
 import subprocess
@@ -45,7 +46,22 @@ def load_state():
 def save_state(state):
     STATE.write_text(json.dumps(state, indent=2))
 
-lock = threading.Lock()
+class StateLock:
+
+    def __init__(self):
+        self.thread_lock = threading.Lock()
+
+    def __enter__(self):
+        self.thread_lock.acquire()
+        self.file = open(STATE.with_suffix(".lock"), "w")
+        fcntl.flock(self.file, fcntl.LOCK_EX)
+
+    def __exit__(self, *args):
+        fcntl.flock(self.file, fcntl.LOCK_UN)
+        self.file.close()
+        self.thread_lock.release()
+
+lock = StateLock()
 
 def record(state, entry):
     entry["time"] = time.strftime("%H:%M:%S")
@@ -180,7 +196,7 @@ def push(args):
             "transaction_id": transaction, "from": args.sender,
             "to": args.to if len(args.to) > 1 else args.to[0],
             "text": None if args.no_text else args.text, "image": args.image,
-            "parts": args.parts.split(",") if args.parts else None,
+            "parts": [p for p in args.parts.split(",") if p] if args.parts is not None else None,
             "subject": args.subject, "cc": args.cc,
         }
         record(state, {"event": "push", "id": message_id, "from": args.sender})
@@ -212,6 +228,8 @@ def send(args):
         command += ["--ez", "image", "true"]
     if getattr(args, "attach", None):
         command += ["--es", "attach", args.attach]
+    if getattr(args, "individually", False):
+        command += ["--ez", "individually", "true"]
     if args.subscription is not None:
         command += ["--ei", "subscription", str(args.subscription)]
     result = subprocess.run(command, capture_output=True, text=True)
@@ -287,6 +305,7 @@ def main():
     p.add_argument("--text", default="Hello fake MMSC")
     p.add_argument("--image", action="store_true")
     p.add_argument("--attach", help="comma separated: png jpeg bigimage gif video audio vcard pdf bigfile")
+    p.add_argument("--individually", action="store_true", help="one message per recipient")
     p.add_argument("--subscription", type=int)
     p.set_defaults(func=send)
 

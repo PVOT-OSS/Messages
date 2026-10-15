@@ -127,17 +127,19 @@ def mmsc_events(kind, since):
     return [entry for entry in mmsc_log()[since:] if entry["event"] == kind]
 
 def set_scenario(name, value):
-    state = tool.load_state()
-    if name == "delay":
-        state["scenario"]["delay"] = int(value)
-    else:
-        state["scenario"][name] = value
-    tool.save_state(state)
+    with tool.lock:
+        state = tool.load_state()
+        if name == "delay":
+            state["scenario"]["delay"] = int(value)
+        else:
+            state["scenario"][name] = value
+        tool.save_state(state)
 
 def reset_scenario():
-    state = tool.load_state()
-    state["scenario"] = dict(tool.DEFAULT_SCENARIO)
-    tool.save_state(state)
+    with tool.lock:
+        state = tool.load_state()
+        state["scenario"] = dict(tool.DEFAULT_SCENARIO)
+        tool.save_state(state)
 
 class Context:
     def __init__(self, device, args):
@@ -489,6 +491,91 @@ def open_conversation_with_every_kind(ctx):
     time.sleep(2)
     assert not app_crashed(ctx.device), "the conversation crashed"
 
+def receive_while_app_is_killed(ctx):
+    set_scenario("download", "slow")
+    set_scenario("delay", 12)
+    message_id = ctx.push()
+    wait_for("the download to start", lambda: ctx.events("download"))
+    pid = ctx.device.adb("shell", "pidof", PACKAGE, check=False).strip()
+    assert pid, "the app isn't running"
+    ctx.device.adb("shell", "kill", "-9", pid)
+    ctx.downloaded(message_id)
+
+def receive_many_at_once(ctx):
+    ids = [ctx.push(sender=f"+155500077{i:02d}") for i in range(5)]
+    for message_id in ids:
+        ctx.downloaded(message_id)
+    assert len(ctx.events("download")) == 5
+
+def receive_anonymous_sender(ctx):
+    message_id = ctx.push(sender="", text="who sent this")
+    row = ctx.downloaded(message_id)
+    ctx.open_thread(ctx.thread_of(row))
+    time.sleep(2)
+
+def receive_unknown_and_unnamed_parts(ctx):
+    row = _receive_parts(ctx, "octet,noname", ["application/octet-stream", "image/png"])
+    ctx.open_thread(ctx.thread_of(row))
+    time.sleep(2)
+
+def receive_subject_without_content(ctx):
+    message_id = ctx.push(no_text=True, subject="Only a subject", parts="")
+    row = ctx.downloaded(message_id)
+    ctx.open_thread(ctx.thread_of(row))
+    time.sleep(2)
+
+def receive_spam_dropped(ctx):
+    sender = "+15556660001"
+    ctx.block(sender)
+    ctx.set_pref("drop", True)
+    try:
+        message_id = ctx.push(sender=sender, text="spam spam spam")
+        wait_for("the notification to arrive", lambda: ctx.app_log(r"Not downloading MMS automatically"))
+        wait_for("the dropped message to be removed", lambda: not ctx.row_for(message_id), timeout=20)
+        assert not ctx.events("download"), "spam was downloaded"
+    finally:
+        ctx.set_pref("drop")
+        ctx.block(sender, unblock=True)
+
+def receive_emoji_reaction(ctx):
+    sender = f"+1555{uuid.uuid4().int % 10**7:07d}"
+    ctx.downloaded(ctx.push(sender=sender, text="Dinner at eight?"))
+    ctx.downloaded(ctx.push(sender=sender, text="Loved \u201cDinner at eight?\u201d"))
+    wait_for("the reaction to be recognised", lambda: ctx.app_log(r"Reaction found with"), timeout=15)
+
+def receive_with_mobile_data_off(ctx):
+    ctx.device.adb("shell", "svc", "data", "disable")
+    try:
+        time.sleep(3)
+        message_id = ctx.push()
+        row = wait_for("the notification", lambda: ctx.row_for(message_id))
+        wait_for("the failed download to be handled",
+                 lambda: ctx.app_log(r"MMS download result: (MANUAL|AUTO)"), timeout=120)
+        row = ctx.row_for(message_id)
+        assert row and row["m_type"] == str(M_TYPE_NOTIFICATION), f"should still be waiting: {row}"
+    finally:
+        ctx.device.adb("shell", "svc", "data", "enable")
+    time.sleep(8)
+    ctx.download(row)
+    ctx.downloaded(message_id)
+
+def send_many_at_once(ctx):
+    before = len(ctx.device.mms_rows("m_type=128 and msg_box=2"))
+    for i in range(3):
+        ctx.send_attachments(f"+1555000081{i}", attach="jpeg")
+    wait_for("all three to be sent",
+             lambda: len(ctx.device.mms_rows("m_type=128 and msg_box=2")) >= before + 3)
+    assert len(ctx.events("send")) == 3, ctx.events("send")
+
+def send_individually_with_attachment(ctx):
+    send_args = argparse.Namespace(
+        to=["+15550000901", "+15550000902"], text="each gets the photo", image=False,
+        attach="jpeg", individually=True, subscription=None, adb=ctx.args.adb,
+        serial=ctx.args.serial, package=PACKAGE)
+    tool.send(send_args)
+    sends = wait_for("both messages", lambda: len(ctx.events("send")) >= 2 and ctx.events("send"))
+    assert all(send["bytes"] > 500 for send in sends), f"an attachment went missing: {sends}"
+
 def send_ok(ctx):
     ctx.send("+15550000001", "+15550000002")
     row = wait_for("the message to be sent",
@@ -655,6 +742,14 @@ SCENARIOS = [
     delete_waiting_notification,
     open_image_in_gallery,
     open_conversation_with_every_kind,
+    receive_while_app_is_killed,
+    receive_many_at_once,
+    receive_anonymous_sender,
+    receive_unknown_and_unnamed_parts,
+    receive_subject_without_content,
+    receive_spam_dropped,
+    receive_emoji_reaction,
+    receive_with_mobile_data_off,
     receive_duplicate_push,
     receive_404_keeps_expired_message,
     receive_server_error_retries,
@@ -679,6 +774,8 @@ SCENARIOS = [
     send_too_large_file_fails,
     send_to_existing_conversation,
     send_failed_then_retried_by_hand,
+    send_many_at_once,
+    send_individually_with_attachment,
     delivery_report_for_sent_message,
     read_report_for_sent_message,
     send_transient_failure_retries,

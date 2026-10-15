@@ -1,3 +1,4 @@
 .mmsc-state.json
+.mmsc-state.lock
 .device-state/
 __pycache__/

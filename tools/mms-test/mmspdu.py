@@ -77,13 +77,16 @@ def encoded_address(address: str) -> bytes:
 
 def notification_ind(transaction_id: str, sender: str, content_location: str,
                      size: int = 1024, expiry_seconds: int = 7 * 24 * 3600) -> bytes:
-    sender_bytes = b"\x80" + encoded_address(sender)  # address-present-token
     expiry = b"\x81" + long_integer(expiry_seconds)  # relative-token
+    sender_field = b""
+    if sender:  # no sender at all for an anonymous message
+        sender_bytes = b"\x80" + encoded_address(sender)  # address-present-token
+        sender_field = bytes([FROM]) + value_length(len(sender_bytes)) + sender_bytes
     return (
         bytes([MESSAGE_TYPE, NOTIFICATION_IND])
         + bytes([TRANSACTION_ID]) + text_string(transaction_id)
         + bytes([MMS_VERSION, MMS_VERSION_1_2])
-        + bytes([FROM]) + value_length(len(sender_bytes)) + sender_bytes
+        + sender_field
         + bytes([MESSAGE_CLASS, 0x80])  # personal
         + bytes([MESSAGE_SIZE]) + long_integer(size)
         + bytes([EXPIRY]) + value_length(len(expiry)) + expiry
@@ -105,7 +108,8 @@ def retrieve_conf(transaction_id: str | None, sender: str, recipient, text: str 
     An M-Retrieve.conf. [recipient] can be a list for a group message, and [parts] a list of
     (content type, name, data) tuples, which replaces the text and image arguments
     """
-    sender_bytes = b"\x80" + encoded_address(sender)
+    # an anonymous sender is the insert-address-token, which the MMSC never filled in
+    sender_bytes = b"\x80" + encoded_address(sender) if sender else b"\x81"
     header = bytes([MESSAGE_TYPE, RETRIEVE_CONF])
     if transaction_id:
         header += bytes([TRANSACTION_ID]) + text_string(transaction_id)
@@ -290,4 +294,6 @@ PART_KINDS = {
     "badvcard": lambda: ("text/x-vcard", "broken.vcf", b"BEGIN:VCARD\r\nnot a vcard"),
     "pdf": lambda: ("application/pdf", "document.pdf", pdf_minimal()),
     "big": lambda: ("image/png", "big.png", png_1x1() + bytes(600 * 1024)),
+    "octet": lambda: ("application/octet-stream", "blob.bin", bytes(range(256))),
+    "noname": lambda: ("image/png", "", png_1x1()),
 }
