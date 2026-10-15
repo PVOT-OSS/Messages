@@ -39,4 +39,21 @@ public class Utils {
     public static int getDefaultSubscriptionId() {
         return SmsManager.getDefaultSmsSubscriptionId();
     }
+
+    public static boolean hasNoService(Context context, int subId) {
+        try {
+            TelephonyManager telephony = context.getSystemService(TelephonyManager.class);
+            int resolved = CarrierMmsConfig.resolveSubscriptionId(subId);
+            if (resolved >= 0) {
+                telephony = telephony.createForSubscriptionId(resolved);
+            }
+            android.telephony.ServiceState state = telephony.getServiceState();
+            if (state == null) return false;
+            int voice = state.getState();
+            return voice == android.telephony.ServiceState.STATE_OUT_OF_SERVICE
+                    || voice == android.telephony.ServiceState.STATE_EMERGENCY_ONLY;
+        } catch (RuntimeException e) {
+            return false;
+        }
+    }
 }
