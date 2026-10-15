@@ -7,6 +7,7 @@ import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.prauga.messages.manager.NotificationManager
@@ -123,5 +124,17 @@ class MarkFailedTest {
         val params2 = MarkFailed.Params(200L, 2)
 
         org.junit.Assert.assertNotEquals(params1, params2)
+    }
+
+    @Test
+    fun givenNotifyFalse_whenBuildObservable_thenMarksFailedWithoutNotifying() {
+        val params = MarkFailed.Params(321L, 1, notify = false)
+        val testSubscriber = TestSubscriber<Unit>()
+
+        markFailed.buildObservable(params).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(messageRepository).markFailed(321L, 1)
+        verify(notificationManager, never()).notifyFailed(321L)
     }
 }
