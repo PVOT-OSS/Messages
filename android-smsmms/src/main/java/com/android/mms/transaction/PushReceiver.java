@@ -26,8 +26,10 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
+import android.telephony.SmsManager;
 
 import com.android.mms.MmsConfig;
 import com.google.android.mms.ContentType;
@@ -39,6 +41,7 @@ import com.google.android.mms.pdu_alt.PduHeaders;
 import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.PduPersister;
 import com.google.android.mms.pdu_alt.ReadOrigInd;
+import com.klinker.android.send_message.SmsManagerFactory;
 import com.klinker.android.send_message.Utils;
 
 import java.util.HashSet;
@@ -118,9 +121,10 @@ public class PushReceiver extends BroadcastReceiver {
                     case MESSAGE_TYPE_NOTIFICATION_IND: {
                         NotificationInd nInd = (NotificationInd) pdu;
 
-                        if (MmsConfig.getTransIdEnabled()) {
+                        if (MmsConfig.getTransIdEnabled() || carrierAppendsTransactionId(intent)) {
                             byte[] contentLocation = nInd.getContentLocation();
-                            if ('=' == contentLocation[contentLocation.length - 1]) {
+                            if (contentLocation != null && contentLocation.length > 0
+                                    && '=' == contentLocation[contentLocation.length - 1]) {
                                 byte[] transactionId = nInd.getTransactionId();
                                 byte[] contentLocationWithId = new byte[contentLocation.length
                                         + transactionId.length];
@@ -185,6 +189,17 @@ public class PushReceiver extends BroadcastReceiver {
             new ReceivePushTask(context, goAsync()).executeOnExecutor(PUSH_RECEIVER_EXECUTOR, intent);
 
             Timber.v(context.getPackageName() + " received and aborted");
+        }
+    }
+
+    private static boolean carrierAppendsTransactionId(Intent intent) {
+        int subId = intent.getIntExtra("subscription", Utils.getDefaultSubscriptionId());
+        try {
+            Bundle config = SmsManagerFactory.INSTANCE.createSmsManager(subId).getCarrierConfigValues();
+            return config != null && config.getBoolean(SmsManager.MMS_CONFIG_APPEND_TRANSACTION_ID);
+        } catch (RuntimeException e) {
+            Timber.w(e, "Unable to read the carrier MMS config");
+            return false;
         }
     }
 
