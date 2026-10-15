@@ -20,6 +20,7 @@ package org.prauga.messages.injection.android
 
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
+import org.prauga.messages.feature.classzero.ClassZeroActivity
 import org.prauga.messages.feature.backup.BackupActivity
 import org.prauga.messages.feature.blocking.BlockingActivity
 import org.prauga.messages.feature.compose.ComposeActivity
@@ -60,6 +61,10 @@ abstract class ActivityBuilderModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = [ComposeActivityModule::class])
     abstract fun bindComposeActivity(): ComposeActivity
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [])
+    abstract fun bindClassZeroActivity(): ClassZeroActivity
 
     @ActivityScope
     @ContributesAndroidInjector(modules = [ContactsActivityModule::class])
