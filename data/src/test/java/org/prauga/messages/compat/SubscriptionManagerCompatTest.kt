@@ -36,9 +36,12 @@ class SubscriptionManagerCompatTest {
 
     @Test
     fun givenAskEveryTime_whenPreferredSubscription_thenFallsBackToFirstSim() {
-        val result = SubscriptionManagerCompat.preferredSubscription(
-            subs, -1, SubscriptionManager.INVALID_SUBSCRIPTION_ID
-        )
+        val result =
+            SubscriptionManagerCompat.preferredSubscription(
+                subs,
+                -1,
+                SubscriptionManager.INVALID_SUBSCRIPTION_ID,
+            )
 
         assertEquals(sim1, result)
     }

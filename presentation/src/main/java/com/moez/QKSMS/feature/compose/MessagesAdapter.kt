@@ -332,21 +332,22 @@ constructor(
         val displayText =
             if (message.isPendingMmsDownload())
                 context.getString(R.string.message_mms_not_downloaded)
-            else subject.joinTo(message.getText(false), "\n").let {
-                isMsgTextTruncated = (it.length > MAX_MESSAGE_DISPLAY_LENGTH)
+            else
+                subject.joinTo(message.getText(false), "\n").let {
+                    isMsgTextTruncated = (it.length > MAX_MESSAGE_DISPLAY_LENGTH)
 
-                // make subject sub-string bold, if subject is not blank
-                if (subject.isNotBlank())
-                    SpannableString(it.truncateWithEllipses(MAX_MESSAGE_DISPLAY_LENGTH)).apply {
-                        setSpan(
-                            StyleSpan(Typeface.BOLD),
-                            0,
-                            subject.length,
-                            Spannable.SPAN_INCLUSIVE_EXCLUSIVE,
-                        )
-                    }
-                else it.truncateWithEllipses(MAX_MESSAGE_DISPLAY_LENGTH)
-            }
+                    // make subject sub-string bold, if subject is not blank
+                    if (subject.isNotBlank())
+                        SpannableString(it.truncateWithEllipses(MAX_MESSAGE_DISPLAY_LENGTH)).apply {
+                            setSpan(
+                                StyleSpan(Typeface.BOLD),
+                                0,
+                                subject.length,
+                                Spannable.SPAN_INCLUSIVE_EXCLUSIVE,
+                            )
+                        }
+                    else it.truncateWithEllipses(MAX_MESSAGE_DISPLAY_LENGTH)
+                }
 
         // Bind the message status
         bindStatus(holder, binding, isMsgTextTruncated, message, next)

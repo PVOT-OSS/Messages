@@ -39,7 +39,8 @@ class DownloadPendingMmsTest {
     @Test
     fun givenPendingDownloads_whenBuildObservable_thenDownloadsEachOfThem() {
         `when`(permissionManager.isDefaultSms()).thenReturn(true)
-        `when`(messageRepository.getPendingMmsDownloads(anyLong())).thenReturn(listOf(first, second))
+        `when`(messageRepository.getPendingMmsDownloads(anyLong()))
+            .thenReturn(listOf(first, second))
 
         val testSubscriber = TestSubscriber<Any>()
         downloadPendingMms.buildObservable(Unit).subscribe(testSubscriber)

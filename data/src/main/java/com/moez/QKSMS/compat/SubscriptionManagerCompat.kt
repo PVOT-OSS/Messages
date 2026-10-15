@@ -48,9 +48,10 @@ constructor(context: Context, private val permissions: PermissionManager) {
         }
 
     val defaultSmsSubscriptionId: Int
-        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-            SubscriptionManager.getDefaultSmsSubscriptionId()
-        else SubscriptionManager.INVALID_SUBSCRIPTION_ID
+        get() =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                SubscriptionManager.getDefaultSmsSubscriptionId()
+            else SubscriptionManager.INVALID_SUBSCRIPTION_ID
 
     init {
         subscriptionManager = SubscriptionManager.from(context)
@@ -80,7 +81,7 @@ constructor(context: Context, private val permissions: PermissionManager) {
         fun preferredSubscription(
             subs: List<SubscriptionInfoCompat>,
             lastUsedSubId: Int,
-            defaultSmsSubId: Int
+            defaultSmsSubId: Int,
         ): SubscriptionInfoCompat? =
             subs.firstOrNull { it.subscriptionId == lastUsedSubId }
                 ?: subs.firstOrNull { it.subscriptionId == defaultSmsSubId }
