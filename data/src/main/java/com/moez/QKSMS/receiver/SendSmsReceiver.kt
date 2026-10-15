@@ -21,6 +21,7 @@ package org.prauga.messages.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.provider.Telephony.Sms
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 import org.prauga.messages.interactor.RetrySending
@@ -35,8 +36,19 @@ class SendSmsReceiver : BroadcastReceiver() {
         AndroidInjection.inject(this, context)
 
         val messageId = intent.getLongExtra("id", -1L).takeIf { it >= 0 } ?: return
+        val message = messageRepo.getMessage(messageId) ?: return
+
+        val waiting = message.isSms() && message.boxId == Sms.MESSAGE_TYPE_OUTBOX
+        if (!shouldSend(intent.action, message.isFailedMessage(), waiting)) return
 
         val result = goAsync()
         retrySending.execute(messageId) { result.finish() }
+    }
+
+    companion object {
+        const val ACTION_RETRY = "org.prauga.messages.action.RETRY_SENDING"
+
+        fun shouldSend(action: String?, failed: Boolean, waiting: Boolean): Boolean =
+            if (action == ACTION_RETRY) failed else failed || waiting
     }
 }
