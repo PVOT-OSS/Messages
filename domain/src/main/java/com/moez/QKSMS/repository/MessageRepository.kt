@@ -88,6 +88,8 @@ interface MessageRepository {
 
     fun getPendingMmsDownloads(since: Long): List<Message>
 
+    fun scheduleDelayedSms(id: Long, sendTime: Long)
+
     /** Attempts to cancel sending the message with the given id */
     fun cancelDelayedSms(id: Long)
 
