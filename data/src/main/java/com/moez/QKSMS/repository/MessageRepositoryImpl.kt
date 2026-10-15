@@ -78,6 +78,7 @@ import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.receiver.SendSmsReceiver
 import org.prauga.messages.receiver.SmsDeliveredReceiver
+import org.prauga.messages.receiver.SmsSentParts
 import org.prauga.messages.receiver.SmsSentReceiver
 import org.prauga.messages.util.ImageUtils
 import org.prauga.messages.util.PhoneNumberUtils
@@ -624,21 +625,30 @@ constructor(
                 if (prefs.unicode.get()) StripAccents.stripAccents(message.body) else message.body
             ) ?: arrayListOf()
 
+        val attempt = System.currentTimeMillis()
+        val sentIntents =
+            parts.indices.map { part ->
+                val intent =
+                    Intent(context, SmsSentReceiver::class.java)
+                        .setData(Uri.parse("smssent://${message.id}/$part"))
+                        .putExtra(SmsSentParts.EXTRA_ID, message.id)
+                        .putExtra(SmsSentParts.EXTRA_ATTEMPT, attempt)
+                        .putExtra(SmsSentParts.EXTRA_PART, part)
+                        .putExtra(SmsSentParts.EXTRA_PARTS, parts.size)
+                PendingIntent.getBroadcast(
+                    context,
+                    message.id.toInt(),
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                )
+            }
+
         try {
             smsManager.sendMultipartTextMessage(
                 message.address,
                 null,
                 parts,
-                ArrayList(
-                    parts.map {
-                        PendingIntent.getBroadcast(
-                            context,
-                            message.id.toInt(),
-                            Intent(context, SmsSentReceiver::class.java).putExtra("id", message.id),
-                            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-                        )
-                    }
-                ),
+                ArrayList(sentIntents),
                 ArrayList(
                     parts.map {
                         val pendingIntent =
