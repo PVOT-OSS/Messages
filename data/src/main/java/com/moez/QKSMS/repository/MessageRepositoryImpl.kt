@@ -24,7 +24,6 @@ import android.telephony.SmsMessage
 import android.webkit.MimeTypeMap
 import androidx.core.content.contentValuesOf
 import com.android.mms.MmsConfig
-import com.android.mms.dom.smil.parser.SmilXmlSerializer
 import com.android.mms.transaction.DownloadManager
 import com.google.android.mms.ContentType
 import com.google.android.mms.MMSPart
@@ -36,8 +35,8 @@ import com.google.android.mms.pdu_alt.PduHeaders
 import com.google.android.mms.pdu_alt.PduPart
 import com.google.android.mms.pdu_alt.PduPersister
 import com.google.android.mms.pdu_alt.SendReq
-import com.google.android.mms.smil.SmilHelper
 import com.klinker.android.send_message.SimpleCharacters
+import com.klinker.android.send_message.SmilBuilder
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.Transaction
 import com.klinker.android.send_message.Utils
@@ -45,7 +44,6 @@ import io.realm.Case
 import io.realm.Realm
 import io.realm.RealmResults
 import io.realm.Sort
-import java.io.ByteArrayOutputStream
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -1132,13 +1130,7 @@ constructor(
                 contentLocation = "smil.xml".toByteArray()
                 contentType = ContentType.APP_SMIL.toByteArray()
                 data =
-                    ByteArrayOutputStream()
-                        .apply {
-                            SmilXmlSerializer.serialize(
-                                SmilHelper.createSmilDocument(req.body),
-                                this,
-                            )
-                        }
+                    SmilBuilder.build(parts.map { SmilBuilder.Part(it.mimeType, it.name) })
                         .toByteArray()
             },
         )
