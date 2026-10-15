@@ -34,7 +34,9 @@ import android.provider.Telephony.Sms
 import android.telephony.SmsManager
 import android.webkit.MimeTypeMap
 import androidx.core.content.contentValuesOf
+import com.android.mms.MmsConfig
 import com.android.mms.dom.smil.parser.SmilXmlSerializer
+import com.android.mms.transaction.DownloadManager
 import com.google.android.mms.ContentType
 import com.google.android.mms.MMSPart
 import com.google.android.mms.pdu_alt.CharacterSets
@@ -671,6 +673,22 @@ constructor(
                         message.getUri(),
                     )
             } ?: Unit
+
+    override fun downloadMms(message: Message) {
+        val location =
+            context.contentResolver
+                .query(message.getUri(), arrayOf(Mms.CONTENT_LOCATION), null, null, null)
+                ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+
+        if (location.isNullOrEmpty()) {
+            Timber.w("No content location for MMS ${message.contentId}, can't download it")
+            return
+        }
+
+        MmsConfig.init(context)
+        DownloadManager.getInstance()
+            .downloadMultimediaMessage(context, location, message.getUri(), false, message.subId)
+    }
 
     override fun cancelDelayedSms(id: Long) =
         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(
