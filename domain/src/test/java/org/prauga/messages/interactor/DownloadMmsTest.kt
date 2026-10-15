@@ -54,6 +54,19 @@ class DownloadMmsTest {
     }
 
     @Test
+    fun givenExpiredMms_whenBuildObservable_thenDoesNotRetry() {
+        `when`(messageRepository.getMessage(1L)).thenReturn(message)
+        `when`(message.isPendingMmsDownload()).thenReturn(true)
+        `when`(message.isExpiredMmsDownload()).thenReturn(true)
+
+        val testSubscriber = TestSubscriber<Message>()
+        downloadMms.buildObservable(1L).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(messageRepository, never()).downloadMms(message)
+    }
+
+    @Test
     fun givenMissingMessage_whenBuildObservable_thenCompletesWithoutDownloading() {
         `when`(messageRepository.getMessage(1L)).thenReturn(null)
 

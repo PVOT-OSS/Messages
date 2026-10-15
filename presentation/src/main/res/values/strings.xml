@@ -207,6 +207,7 @@
     <string name="message_status_delivered">Delivered %s</string>
     <string name="message_status_failed">Failed to send. Tap to try again</string>
     <string name="message_mms_not_downloaded">Multimedia message not downloaded yet. Tap to download</string>
+    <string name="message_mms_expired">Multimedia message expired or not available</string>
     <string name="compose_mms_downloading">Downloading multimedia message…</string>
     <string name="message_body_too_long_to_display">⚠ Message is long. Copy or Save for the full text</string>
 

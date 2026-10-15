@@ -17,6 +17,7 @@
 package com.klinker.android.send_message;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -59,6 +60,8 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
     public static final String EXTRA_LOCATION_URL = "location_url";
     public static final String EXTRA_TRIGGER_PUSH = "trigger_push";
     public static final String EXTRA_URI = "notification_ind_uri";
+
+    public static final int STATUS_PERMANENT_FAILURE = 0x87;
 
     private static final String LOCATION_SELECTION =
             Telephony.Mms.MESSAGE_TYPE + "=? AND " + Telephony.Mms.CONTENT_LOCATION + " =?";
@@ -149,12 +152,13 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
 
     private void handleHttpError(Context context, Intent intent) {
         final int httpError = intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0);
-        if (httpError == 404 ||
-                httpError == 400) {
-            // Delete the corresponding NotificationInd
-            SqliteWrapper.delete(context,
+        if (httpError == 404) {
+            ContentValues values = new ContentValues(1);
+            values.put(Telephony.Mms.STATUS, STATUS_PERMANENT_FAILURE);
+            SqliteWrapper.update(context,
                     context.getContentResolver(),
                     Telephony.Mms.CONTENT_URI,
+                    values,
                     LOCATION_SELECTION,
                     new String[]{
                             Integer.toString(PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND),
