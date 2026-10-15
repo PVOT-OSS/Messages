@@ -643,25 +643,29 @@ constructor(
                 )
             }
 
+        val deliveryIntent =
+            PendingIntent.getBroadcast(
+                context,
+                message.id.toInt(),
+                Intent(context, SmsDeliveredReceiver::class.java)
+                    .setData(Uri.parse("smsdelivered://${message.id}"))
+                    .putExtra("id", message.id),
+                PendingIntent.FLAG_UPDATE_CURRENT or
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE
+                    else 0,
+            )
+        val deliveryIntents =
+            parts.indices.map { part ->
+                deliveryIntent.takeIf { prefs.delivery.get() && part == parts.lastIndex }
+            }
+
         try {
             smsManager.sendMultipartTextMessage(
                 message.address,
                 null,
                 parts,
                 ArrayList(sentIntents),
-                ArrayList(
-                    parts.map {
-                        val pendingIntent =
-                            PendingIntent.getBroadcast(
-                                context,
-                                message.id.toInt(),
-                                Intent(context, SmsDeliveredReceiver::class.java)
-                                    .putExtra("id", message.id),
-                                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-                            )
-                        if (prefs.delivery.get()) pendingIntent else null
-                    }
-                ),
+                ArrayList(deliveryIntents),
             )
         } catch (e: IllegalArgumentException) {
             Timber.w(e, "Message body lengths: ${parts.map { it?.length }}")
