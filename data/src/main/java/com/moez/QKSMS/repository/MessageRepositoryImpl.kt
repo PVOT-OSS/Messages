@@ -60,6 +60,7 @@ import io.realm.RealmResults
 import io.realm.Sort
 import java.io.ByteArrayOutputStream
 import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -465,13 +466,11 @@ constructor(
                     else -> prefs.mmsSize.get() * 1024 * 0.9 // a bit of wiggle room
                 }
 
-            signedBody
-                .takeIf { it.isNotEmpty() }
-                ?.toByteArray()
-                ?.let { bytes ->
-                    remainingBytes -= bytes.size
-                    parts += MMSPart("text", ContentType.TEXT_PLAIN, bytes)
-                }
+            val text =
+                signedBody
+                    .takeIf { it.isNotEmpty() }
+                    ?.toByteArray()
+                    ?.also { bytes -> remainingBytes -= bytes.size }
 
             // Attach those that can't be compressed (ie. everything but images)
             parts +=
@@ -597,6 +596,11 @@ constructor(
                         true -> MMSPart(attachment.getName(context), ContentType.IMAGE_GIF, bytes)
                         false -> MMSPart(attachment.getName(context), ContentType.IMAGE_JPEG, bytes)
                     }
+            }
+
+            text?.let { bytes ->
+                val name = String.format(Locale.US, "text%06d.txt", parts.size)
+                parts += MMSPart(name, ContentType.TEXT_PLAIN, bytes)
             }
 
             val recipients =
