@@ -132,7 +132,6 @@ class MmsSentReceiverTest {
     fun givenTransactionConstants_whenAccessed_thenHaveCorrectValues() {
         assertEquals("content_uri", Transaction.EXTRA_CONTENT_URI)
         assertEquals("file_path", Transaction.EXTRA_FILE_PATH)
-        assertEquals("org.prauga.messages.MMS_SENT", Transaction.MMS_SENT)
     }
 
     @Test

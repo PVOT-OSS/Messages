@@ -57,12 +57,9 @@ constructor(private val context: Context, settings: Settings = Settings()) {
     companion object {
         var settings: Settings = Settings()
 
-        const val MMS_SENT = "org.prauga.messages.MMS_SENT"
         const val EXTRA_CONTENT_URI = "content_uri"
         const val EXTRA_FILE_PATH = "file_path"
 
-        const val NOTIFY_SMS_FAILURE = "org.prauga.messages.NOTIFY_SMS_FAILURE"
-        const val MMS_UPDATED = "org.prauga.messages.MMS_UPDATED"
         const val MMS_ERROR = "com.klinker.android.send_message.MMS_ERROR"
         const val REFRESH = "com.klinker.android.send_message.REFRESH"
         const val MMS_PROGRESS = "com.klinker.android.send_message.MMS_PROGRESS"
@@ -110,8 +107,9 @@ constructor(private val context: Context, settings: Settings = Settings()) {
                         null,
                     )
 
-            val sentIntent = Intent(MMS_SENT)
-            BroadcastUtils.addClassName(context, sentIntent, MMS_SENT)
+            val sentAction = "${context.packageName}.MMS_SENT"
+            val sentIntent = Intent(sentAction)
+            BroadcastUtils.addClassName(context, sentIntent, sentAction)
 
             sentIntent.putExtra(EXTRA_CONTENT_URI, messageUri.toString())
             sentIntent.putExtra(EXTRA_FILE_PATH, sendFile.path)
@@ -126,8 +124,9 @@ constructor(private val context: Context, settings: Settings = Settings()) {
                     PendingIntent.FLAG_UPDATE_CURRENT or mutable,
                 )
 
-            val updatedIntent = Intent(MMS_UPDATED).putExtra("uri", messageUri.toString())
-            BroadcastUtils.addClassName(context, updatedIntent, MMS_UPDATED)
+            val updatedAction = "${context.packageName}.MMS_UPDATED"
+            val updatedIntent = Intent(updatedAction).putExtra("uri", messageUri.toString())
+            BroadcastUtils.addClassName(context, updatedIntent, updatedAction)
             context.sendBroadcast(updatedIntent)
 
             val contentUri: Uri? =
