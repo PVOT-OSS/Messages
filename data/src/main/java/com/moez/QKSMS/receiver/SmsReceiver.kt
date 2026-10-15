@@ -32,6 +32,7 @@ import javax.inject.Inject
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.worker.ReceiveSmsWorker
 import org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
+import org.prauga.messages.worker.SmsSendRetryWorker
 import timber.log.Timber
 
 class SmsReceiver : BroadcastReceiver() {
@@ -65,6 +66,8 @@ class SmsReceiver : BroadcastReceiver() {
                                 .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
                                 .build()
                         )
+
+                    SmsSendRetryWorker.kick(context, resetDelays = true)
                 } catch (e: Exception) {
                     Timber.e(e, "Unable to store the received SMS")
                 } finally {
