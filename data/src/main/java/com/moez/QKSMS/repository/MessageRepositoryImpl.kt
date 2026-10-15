@@ -48,6 +48,7 @@ import com.google.android.mms.pdu_alt.PduPart
 import com.google.android.mms.pdu_alt.PduPersister
 import com.google.android.mms.pdu_alt.SendReq
 import com.google.android.mms.smil.SmilHelper
+import com.klinker.android.send_message.CarrierMmsConfig
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.StripAccents
 import com.klinker.android.send_message.Transaction
@@ -599,7 +600,15 @@ constructor(
             // We need to strip the separators from outgoing MMS, or else they'll appear to have
             // sent and not go through
             val transaction = Transaction(context)
-            transaction.sendNewMessage(subId, threadId, recipients, parts, null, messageUri)
+            transaction.sendNewMessage(
+                subId,
+                threadId,
+                recipients,
+                parts,
+                null,
+                messageUri,
+                userMaxMessageSize(subId),
+            )
         }
     }
 
@@ -671,8 +680,20 @@ constructor(
                         },
                         message.subject,
                         message.getUri(),
+                        userMaxMessageSize(message.subId),
                     )
             } ?: Unit
+
+    private fun userMaxMessageSize(subId: Int): Int? {
+        val chosen = prefs.mmsSize.get()
+        if (chosen == -1) return null
+
+        val carrierLimit = CarrierMmsConfig.get(context, subId).maxMessageSize
+        if (chosen != 0 && chosen * 1024 <= carrierLimit) return null
+
+        MmsConfig.init(context)
+        return MmsConfig.getMaxMessageSize()
+    }
 
     override fun downloadMms(message: Message) {
         val location =
