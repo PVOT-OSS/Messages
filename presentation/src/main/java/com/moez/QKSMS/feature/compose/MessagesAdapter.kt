@@ -154,6 +154,7 @@ constructor(
     val cancelSendingClicks: Subject<Long> = PublishSubject.create()
     val sendNowClicks: Subject<Long> = PublishSubject.create()
     val resendClicks: Subject<Long> = PublishSubject.create()
+    val downloadClicks: Subject<Long> = PublishSubject.create()
     val partContextMenuRegistrar: Subject<View> = PublishSubject.create()
     val messageLongPresses: Subject<MessageLongPress> = PublishSubject.create()
 
@@ -231,10 +232,14 @@ constructor(
                         val statusBinding = MessageListItemInBinding.bind(containerView)
                         when (toggleSelection(it.id, false)) {
                             true -> containerView.isActivated = isSelected(it.id)
-                            false -> {
-                                expanded[it.id] = statusBinding.status.visibility != View.VISIBLE
-                                notifyItemChanged(adapterPosition)
-                            }
+                            false ->
+                                if (it.isPendingMmsDownload()) {
+                                    downloadClicks.onNext(it.id)
+                                } else {
+                                    expanded[it.id] =
+                                        statusBinding.status.visibility != View.VISIBLE
+                                    notifyItemChanged(adapterPosition)
+                                }
                         }
                     }
                 }
@@ -325,7 +330,9 @@ constructor(
 
         // get message text to display, which may need to be truncated
         val displayText =
-            subject.joinTo(message.getText(false), "\n").let {
+            if (message.isPendingMmsDownload())
+                context.getString(R.string.message_mms_not_downloaded)
+            else subject.joinTo(message.getText(false), "\n").let {
                 isMsgTextTruncated = (it.length > MAX_MESSAGE_DISPLAY_LENGTH)
 
                 // make subject sub-string bold, if subject is not blank

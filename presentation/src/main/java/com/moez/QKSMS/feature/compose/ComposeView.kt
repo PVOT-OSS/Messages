@@ -63,6 +63,7 @@ interface ComposeView : QkView<ComposeState> {
     val cancelSendingIntent: Subject<Long>
     val sendNowIntent: Subject<Long>
     val resendIntent: Subject<Long>
+    val downloadMmsIntent: Subject<Long>
     val attachmentDeletedIntent: Subject<Attachment>
     val textChangedIntent: Observable<CharSequence>
     val attachIntent: Observable<Unit>

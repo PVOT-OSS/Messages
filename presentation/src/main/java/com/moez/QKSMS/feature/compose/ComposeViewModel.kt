@@ -72,6 +72,7 @@ import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.interactor.AddScheduledMessage
 import org.prauga.messages.interactor.CancelDelayedMessage
 import org.prauga.messages.interactor.DeleteMessages
+import org.prauga.messages.interactor.DownloadMms
 import org.prauga.messages.interactor.MarkRead
 import org.prauga.messages.interactor.RetrySending
 import org.prauga.messages.interactor.SaveImage
@@ -119,6 +120,7 @@ constructor(
     private val cancelMessage: CancelDelayedMessage,
     private val conversationRepo: ConversationRepository,
     private val deleteMessages: DeleteMessages,
+    private val downloadMms: DownloadMms,
     private val markRead: MarkRead,
     private val messageDetailsFormatter: MessageDetailsFormatter,
     private val messageRepo: MessageRepository,
@@ -826,6 +828,11 @@ constructor(
             .doOnNext { message -> retrySending.execute(message.id) }
             .autoDispose(view.scope())
             .subscribe()
+
+        view.downloadMmsIntent
+            .doOnNext { context.makeToast(R.string.compose_mms_downloading) }
+            .autoDispose(view.scope())
+            .subscribe { messageId -> downloadMms.execute(messageId) }
 
         // Show the message details
         view.messageLinkAskIntent.autoDispose(view.scope()).subscribe {
