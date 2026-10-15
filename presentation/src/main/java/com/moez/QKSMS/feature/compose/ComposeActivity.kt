@@ -118,6 +118,7 @@ class ComposeActivity :
     override val cancelSendingIntent: Subject<Long> by lazy { messageAdapter.cancelSendingClicks }
     override val sendNowIntent: Subject<Long> by lazy { messageAdapter.sendNowClicks }
     override val resendIntent: Subject<Long> by lazy { messageAdapter.resendClicks }
+    override val downloadMmsIntent: Subject<Long> by lazy { messageAdapter.downloadClicks }
     override val attachmentDeletedIntent: Subject<Attachment> by lazy {
         composeAttachmentAdapter.attachmentDeleted
     }
