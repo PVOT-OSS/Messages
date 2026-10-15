@@ -18,7 +18,6 @@
  */
 package org.prauga.messages.receiver
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -38,38 +37,37 @@ class SmsSentReceiver : BroadcastReceiver() {
         AndroidInjection.inject(this, context)
 
         val id = intent.getLongExtra(SmsSentParts.EXTRA_ID, 0L)
-        val outcome =
-            parts.onResult(
+        val errorCode = intent.getIntExtra(EXTRA_ERROR_CODE, -1)
+        val part =
+            SmsSentParts.Result(SmsSendRetry.category(resultCode, errorCode), resultCode, errorCode)
+        val result =
+            parts(context).onResult(
                 id = id,
                 attempt = intent.getLongExtra(SmsSentParts.EXTRA_ATTEMPT, 0L),
-                part = intent.getIntExtra(SmsSentParts.EXTRA_PART, 0),
                 parts = intent.getIntExtra(SmsSentParts.EXTRA_PARTS, 1),
-                ok = resultCode == Activity.RESULT_OK,
-            )
+                result = part,
+            ) ?: return
 
-        when (outcome) {
-            SmsSentParts.Outcome.NONE,
-            SmsSentParts.Outcome.FAILED_SILENTLY -> Unit
+        val retrying =
+            result.category == SmsSentParts.Category.AUTO_RETRY &&
+                SmsSendRetryWorker.schedule(context, id)
 
-            SmsSentParts.Outcome.SENT -> {
+        when {
+            result.category == SmsSentParts.Category.SENT -> {
                 SmsSendRetryWorker.clear(context, id)
                 val pendingResult = goAsync()
                 markSent.execute(id) { pendingResult.finish() }
             }
 
-            SmsSentParts.Outcome.FAILED -> {
-                val errorCode = intent.getIntExtra(EXTRA_ERROR_CODE, -1)
-                if (
-                    SmsSendRetry.isTemporary(resultCode, errorCode) &&
-                        SmsSendRetryWorker.schedule(context, id)
-                ) {
-                    Timber.v("SMS $id failed with $resultCode ($errorCode), retrying later")
-                    return
-                }
+            retrying ->
+                Timber.v("SMS $id failed with ${result.resultCode} (${result.errorCode}), retrying")
 
+            else -> {
                 SmsSendRetryWorker.clear(context, id)
                 val pendingResult = goAsync()
-                markFailed.execute(MarkFailed.Params(id, resultCode)) { pendingResult.finish() }
+                markFailed.execute(MarkFailed.Params(id, result.resultCode)) {
+                    pendingResult.finish()
+                }
             }
         }
     }
@@ -77,6 +75,26 @@ class SmsSentReceiver : BroadcastReceiver() {
     companion object {
         private const val EXTRA_ERROR_CODE = "errorCode"
 
-        private val parts = SmsSentParts()
+        private var instance: SmsSentParts? = null
+
+        @Synchronized
+        private fun parts(context: Context): SmsSentParts =
+            instance
+                ?: SmsSentParts(PreferencesStore(context, "sms_send_parts")).also { instance = it }
+    }
+
+    private class PreferencesStore(context: Context, name: String) : SmsSentParts.Store {
+        private val prefs = context.getSharedPreferences(name, Context.MODE_PRIVATE)
+
+        override fun get(key: String) = prefs.getString(key, null)
+
+        // Committed right away: the next part may come in a process started from scratch
+        override fun put(key: String, value: String) {
+            prefs.edit().putString(key, value).commit()
+        }
+
+        override fun remove(key: String) {
+            prefs.edit().remove(key).commit()
+        }
     }
 }
