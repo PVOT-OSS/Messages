@@ -43,9 +43,7 @@ object MmsAcknowledger {
     ) {
         send(context, subId, contentLocation) {
             AcknowledgeInd(PduHeaders.CURRENT_MMS_VERSION, transactionId).apply {
-                Utils.getMyPhoneNumber(context)
-                    ?.takeIf { it.isNotEmpty() }
-                    ?.let { from = EncodedStringValue(it) }
+                from = EncodedStringValue(Utils.getMyPhoneNumber(context, subId).orEmpty())
             }
         }
     }
