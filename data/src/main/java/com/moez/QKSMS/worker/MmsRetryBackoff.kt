@@ -34,6 +34,8 @@ class MmsRetryBackoff(context: Context, name: String) {
         prefs.edit { remove(key) }
     }
 
+    fun keys(): Set<String> = prefs.all.keys
+
     companion object {
         private val MIN_DELAY = TimeUnit.SECONDS.toMillis(5)
         private val MAX_DELAY = TimeUnit.MINUTES.toMillis(20)
