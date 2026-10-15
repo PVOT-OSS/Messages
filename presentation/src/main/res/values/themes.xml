@@ -84,6 +84,13 @@
     <!-- Black mode. No changes needed when not in night theme -->
     <style name="AppTheme.Black" />
     <style name="AppThemeDialog.Black" />
+
+    <style name="AppThemeTransparent" parent="AppThemeDialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
     <style name="PopupTheme.Black" />
 
 </resources>
