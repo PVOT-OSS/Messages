@@ -12,21 +12,6 @@ class TransactionTest {
 
     // Broadcast Action Constants Tests
     @Test
-    fun givenMmsSentAction_thenHasCorrectValue() {
-        assertEquals("org.prauga.messages.MMS_SENT", Transaction.MMS_SENT)
-    }
-
-    @Test
-    fun givenNotifySmsFialureAction_thenHasCorrectValue() {
-        assertEquals("org.prauga.messages.NOTIFY_SMS_FAILURE", Transaction.NOTIFY_SMS_FAILURE)
-    }
-
-    @Test
-    fun givenMmsUpdatedAction_thenHasCorrectValue() {
-        assertEquals("org.prauga.messages.MMS_UPDATED", Transaction.MMS_UPDATED)
-    }
-
-    @Test
     fun givenMmsErrorAction_thenHasCorrectValue() {
         assertEquals("com.klinker.android.send_message.MMS_ERROR", Transaction.MMS_ERROR)
     }
@@ -94,9 +79,6 @@ class TransactionTest {
     fun givenAllActions_whenCompared_thenAllUnique() {
         val actions =
             listOf(
-                Transaction.MMS_SENT,
-                Transaction.NOTIFY_SMS_FAILURE,
-                Transaction.MMS_UPDATED,
                 Transaction.MMS_ERROR,
                 Transaction.REFRESH,
                 Transaction.MMS_PROGRESS,
