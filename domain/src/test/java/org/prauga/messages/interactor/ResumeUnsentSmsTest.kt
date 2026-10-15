@@ -111,4 +111,16 @@ class ResumeUnsentSmsTest {
         verify(messageRepo, never()).scheduleDelayedSms(anyLong(), anyLong())
         verify(messageRepo, never()).markFailed(anyLong(), anyInt())
     }
+
+    @Test
+    fun givenADelayedSmsWhoseTimePassedWhileOff_whenResumed_thenItGoesNow() {
+        val unsent = listOf(sms(5, now - 5_000))
+        `when`(messageRepo.getUnsentSms()).thenReturn(unsent)
+        `when`(messageRepo.isDelayedSmsWaiting(5)).thenReturn(true)
+
+        resume()
+
+        verify(messageRepo).scheduleDelayedSms(5, now)
+        verify(messageRepo, never()).markFailed(anyLong(), anyInt())
+    }
 }

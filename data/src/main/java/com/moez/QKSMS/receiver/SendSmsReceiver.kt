@@ -40,6 +40,7 @@ class SendSmsReceiver : BroadcastReceiver() {
 
         val waiting = message.isSms() && message.boxId == Sms.MESSAGE_TYPE_OUTBOX
         if (!shouldSend(intent.action, message.isFailedMessage(), waiting)) return
+        if (intent.action == null) messageRepo.delayedSmsFired(messageId)
 
         val result = goAsync()
         retrySending.execute(messageId) { result.finish() }

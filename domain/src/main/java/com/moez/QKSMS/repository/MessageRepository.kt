@@ -93,6 +93,10 @@ interface MessageRepository {
 
     fun scheduleDelayedSms(id: Long, sendTime: Long)
 
+    fun isDelayedSmsWaiting(id: Long): Boolean
+
+    fun delayedSmsFired(id: Long)
+
     fun sendDelayedSmsNow(id: Long)
 
     fun cancelDelayedSms(id: Long): Boolean
