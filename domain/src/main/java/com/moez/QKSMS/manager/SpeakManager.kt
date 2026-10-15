@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package com.moez.QKSMS.manager
 
 import android.content.Context

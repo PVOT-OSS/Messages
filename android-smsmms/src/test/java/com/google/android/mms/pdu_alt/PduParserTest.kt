@@ -1,9 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Unit tests for MMS PDU parsing functionality.
- * Tests focus on factory methods and round-trip verification.
+ * SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.google.android.mms.pdu_alt
 
 import com.google.android.mms.ContentType

@@ -1,3 +1,9 @@
+/*
+ * SPDX-FileCopyrightText: 2020 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.feature.conversationinfo
 
 import android.content.Context

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+     SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:height="56dp"
     android:width="56dp"

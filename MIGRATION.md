@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: Vishnu R <vishnurajesh45@gmail.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # Migration Guide: Modular String Externalization
 
 This guide documents the refactoring that moved hardcoded strings, constants, and configuration values into appropriate resource files and configuration objects.

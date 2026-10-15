@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 Vivien F <vivien@netc.fr>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.common.util.extensions
 
 import android.content.Context

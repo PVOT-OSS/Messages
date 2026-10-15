@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 """
 Runs SMS scenarios end to end on an EMULATOR, and checks what ended up in the telephony provider,
 what the system was asked to send, and what the app logged.

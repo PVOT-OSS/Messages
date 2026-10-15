@@ -1,3 +1,8 @@
+<!--
+     SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <paths>
     <cache-path name="messages_text" path="." />
 </paths>

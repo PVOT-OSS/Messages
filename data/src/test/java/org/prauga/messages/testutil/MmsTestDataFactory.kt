@@ -1,10 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Factory for creating test MMS data objects.
- * Note: For unit tests, we avoid RealmList operations.
- * Full Realm-based tests should use instrumented tests.
+ * SPDX-FileCopyrightText: 2026 Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.testutil
 
 import android.provider.Telephony.Mms

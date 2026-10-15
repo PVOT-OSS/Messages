@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 Vishnu R <vishnurajesh45@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <resources>
     <!-- Icon Sizes -->
     <dimen name="icon_size_small">24dp</dimen>

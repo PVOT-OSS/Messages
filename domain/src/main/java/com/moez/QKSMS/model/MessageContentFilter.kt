@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 peanut250 <209579534+peanut250@users.noreply.github.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.model
 
 import io.realm.RealmObject
