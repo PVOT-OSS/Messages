@@ -8,6 +8,9 @@
             android:permission="android.permission.DUMP">
             <intent-filter>
                 <action android:name="org.prauga.messages.TEST_MMS_PUSH" />
+                <action android:name="org.prauga.messages.TEST_MMS_SEND" />
+                <action android:name="org.prauga.messages.TEST_MMS_DOWNLOAD" />
+                <action android:name="org.prauga.messages.TEST_SET_PREF" />
             </intent-filter>
         </receiver>
     </application>
