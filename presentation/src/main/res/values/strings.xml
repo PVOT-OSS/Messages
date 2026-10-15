@@ -465,8 +465,8 @@
     <string name="about_source" translatable="false">https://github.com/PVOT-OSS/Messages</string>
     <string name="about_changelog" translatable="false">https://github.com/PVOT-OSS/Messages/releases</string>
     <string name="about_contact" translatable="false">saalim.priv@gmail.com</string>
-    <string name="about_license" translatable="false">GNU General Public License v3.0</string>
-    <string name="about_copyright" translatable="false">© 2014–2025</string>
+    <string name="about_license" translatable="false">GNU General Public License v3.0, except where otherwise noted</string>
+    <string name="about_copyright" translatable="false">© 2015–2023 Moez Bhatti (QKSMS)\n© 2023–2025 octoshrimpy (QUIK)\n© Saalim Quadri</string>
 
     <string name="changelog_title" translatable="false">New in Messages</string>
     <string name="changelog_version" translatable="false">Version %s</string>
