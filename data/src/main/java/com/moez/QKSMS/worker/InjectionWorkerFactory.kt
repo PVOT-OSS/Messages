@@ -25,6 +25,7 @@ import androidx.work.WorkerFactory
 import androidx.work.WorkerParameters
 import javax.inject.Inject
 import org.prauga.messages.interactor.ReceiveSms
+import org.prauga.messages.interactor.RetrySending
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.repository.ScheduledMessageRepository
 
@@ -33,6 +34,7 @@ class InjectionWorkerFactory
 constructor(
     private val messageRepository: MessageRepository,
     private val receiveSms: ReceiveSms,
+    private val retrySending: RetrySending,
     private val scheduledMessageRepository: ScheduledMessageRepository,
 ) : WorkerFactory() {
     override fun createWorker(
@@ -55,6 +57,9 @@ constructor(
             }
             is MmsDownloadRetryWorker -> {
                 instance.messageRepo = messageRepository
+            }
+            is MmsSendRetryWorker -> {
+                instance.retrySending = retrySending
             }
         }
 
