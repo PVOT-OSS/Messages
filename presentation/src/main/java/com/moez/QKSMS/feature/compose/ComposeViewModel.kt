@@ -77,6 +77,7 @@ import org.prauga.messages.interactor.DownloadMms
 import org.prauga.messages.interactor.MarkRead
 import org.prauga.messages.interactor.RetrySending
 import org.prauga.messages.interactor.SaveImage
+import org.prauga.messages.interactor.SendDelayedMessageNow
 import org.prauga.messages.interactor.SendMessage
 import org.prauga.messages.manager.ActiveConversationManager
 import org.prauga.messages.manager.BillingManager
@@ -119,6 +120,7 @@ constructor(
     private val addScheduledMessage: AddScheduledMessage,
     private val billingManager: BillingManager,
     private val cancelMessage: CancelDelayedMessage,
+    private val sendDelayedMessageNow: SendDelayedMessageNow,
     private val conversationRepo: ConversationRepository,
     private val deleteMessages: DeleteMessages,
     private val downloadMms: DownloadMms,
@@ -801,25 +803,8 @@ constructor(
             .mapNotNull(messageRepo::getMessage)
             .autoDispose(view.scope())
             .subscribe { message ->
-                cancelMessage.execute(CancelDelayedMessage.Params(message.id, message.threadId))
-                val address =
-                    listOf(
-                        conversationRepo
-                            .getConversation(threadId)
-                            ?.recipients
-                            ?.firstOrNull()
-                            ?.address ?: message.address
-                    )
-                sendMessage.execute(
-                    SendMessage.Params(
-                        message.subId,
-                        message.threadId,
-                        address,
-                        message.body,
-                        listOf(), // sms with attachments (mms) can't be delayed so we can know
-                        // attachments are empty for a 'send now' delayed sms
-                        0,
-                    )
+                sendDelayedMessageNow.execute(
+                    SendDelayedMessageNow.Params(message.id, message.threadId)
                 )
             }
 
