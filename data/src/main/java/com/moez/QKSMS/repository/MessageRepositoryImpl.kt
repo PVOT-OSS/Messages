@@ -439,10 +439,7 @@ constructor(
                 val message =
                     insertSentSms(subId, threadId, addresses.first(), strippedBody, sendTime)
 
-                val intent = getIntentForDelayedSms(message.id)
-
-                val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, sendTime, intent)
+                scheduleDelayedSms(message.id, sendTime)
             } else { // No delay
                 val message = insertSentSms(subId, threadId, addresses.first(), strippedBody, now())
                 sendSms(message)
@@ -790,6 +787,15 @@ constructor(
                 .findAll()
                 .let(realm::copyFromRealm)
         }
+
+    override fun scheduleDelayedSms(id: Long, sendTime: Long) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExactAndAllowWhileIdle(
+            AlarmManager.RTC_WAKEUP,
+            sendTime,
+            getIntentForDelayedSms(id),
+        )
+    }
 
     override fun cancelDelayedSms(id: Long) =
         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(
