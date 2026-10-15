@@ -218,13 +218,13 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
         }
 
         private fun oemOverride(resources: Resources): Int? {
-            val manufacturer = "${Build.MANUFACTURER} ${Build.BRAND}".lowercase()
+            fun isMadeBy(vararg names: String) =
+                names.any { Build.MANUFACTURER.equals(it, true) || Build.BRAND.equals(it, true) }
             val name =
                 when {
-                    "motorola" in manufacturer -> "motorola_config_override"
-                    "huawei" in manufacturer -> "huawei_config_override"
-                    "lge" in manufacturer || "lg electronics" in manufacturer ->
-                        "lge_config_override"
+                    isMadeBy("MOTOROLA") -> "motorola_config_override"
+                    isMadeBy("HUAWEI", "HONOR") -> "huawei_config_override"
+                    isMadeBy("LGE") -> "lge_config_override"
                     else -> return null
                 }
             return when (name) {
