@@ -294,7 +294,11 @@ constructor(
             Observables.combineLatest(latestSubId, subscriptions) { subId, subs ->
                     val sub =
                         if (subs.size > 1)
-                            subs.firstOrNull { it.subscriptionId == subId } ?: subs[0]
+                            SubscriptionManagerCompat.preferredSubscription(
+                                subs,
+                                subId,
+                                subscriptionManager.defaultSmsSubscriptionId
+                            )
                         else null
                     newState { copy(subscription = sub) }
                 }
