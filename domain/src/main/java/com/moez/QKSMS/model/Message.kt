@@ -31,6 +31,10 @@ import org.prauga.messages.extensions.joinTo
 
 open class Message : RealmObject() {
 
+    companion object {
+        const val MESSAGE_TYPE_NOTIFICATION_IND = 0x82
+    }
+
     enum class AttachmentType {
         TEXT,
         IMAGE,
@@ -92,6 +96,8 @@ open class Message : RealmObject() {
     fun isMms(): Boolean = type == "mms"
 
     fun isSms(): Boolean = type == "sms"
+
+    fun isPendingMmsDownload(): Boolean = isMms() && messageType == MESSAGE_TYPE_NOTIFICATION_IND
 
     fun isMe(): Boolean {
         val isIncomingMms =

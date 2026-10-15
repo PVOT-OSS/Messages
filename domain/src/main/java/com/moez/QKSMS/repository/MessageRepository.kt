@@ -82,6 +82,8 @@ interface MessageRepository {
 
     fun resendMms(message: Message)
 
+    fun downloadMms(message: Message)
+
     /** Attempts to cancel sending the message with the given id */
     fun cancelDelayedSms(id: Long)
 
