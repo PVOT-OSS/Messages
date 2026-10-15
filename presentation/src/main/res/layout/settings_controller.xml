@@ -190,6 +190,23 @@
             tools:summary="100KB" />
 
         <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/mmsAutoDownload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_file_download_black_24dp"
+            app:summary="@string/settings_mms_auto_download_summary"
+            app:title="@string/settings_mms_auto_download_title"
+            app:widget="@layout/settings_switch_widget" />
+
+        <org.prauga.messages.common.widget.PreferenceView
+            android:id="@+id/mmsRoamingAutoDownload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:summary="@string/settings_mms_roaming_auto_download_summary"
+            app:title="@string/settings_mms_roaming_auto_download_title"
+            app:widget="@layout/settings_switch_widget" />
+
+        <org.prauga.messages.common.widget.PreferenceView
             android:id="@+id/messsageLinkHandling"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

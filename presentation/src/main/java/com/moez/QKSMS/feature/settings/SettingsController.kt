@@ -96,6 +96,8 @@ class SettingsController :
     private lateinit var autoDelete: PreferenceView
     private lateinit var longAsMms: PreferenceView
     private lateinit var mmsSize: PreferenceView
+    private lateinit var mmsAutoDownload: PreferenceView
+    private lateinit var mmsRoamingAutoDownload: PreferenceView
     private lateinit var messsageLinkHandling: PreferenceView
     private lateinit var disableScreenshots: PreferenceView
     private lateinit var swipeActions: PreferenceView
@@ -156,6 +158,8 @@ class SettingsController :
         autoDelete = view.findViewById(R.id.autoDelete)
         longAsMms = view.findViewById(R.id.longAsMms)
         mmsSize = view.findViewById(R.id.mmsSize)
+        mmsAutoDownload = view.findViewById(R.id.mmsAutoDownload)
+        mmsRoamingAutoDownload = view.findViewById(R.id.mmsRoamingAutoDownload)
         messsageLinkHandling = view.findViewById(R.id.messsageLinkHandling)
         disableScreenshots = view.findViewById(R.id.disableScreenshots)
         swipeActions = view.findViewById(R.id.swipeActions)
@@ -259,6 +263,9 @@ class SettingsController :
             }
 
         longAsMms.checkbox()?.isChecked = state.longAsMms
+        mmsAutoDownload.checkbox()?.isChecked = state.mmsAutoDownload
+        mmsRoamingAutoDownload.checkbox()?.isChecked = state.mmsRoamingAutoDownload
+        mmsRoamingAutoDownload.isEnabled = state.mmsAutoDownload
 
         mmsSize.summary = state.maxMmsSizeSummary
         mmsSizeDialog.adapter.selectedItem = state.maxMmsSizeId
