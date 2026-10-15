@@ -16,7 +16,9 @@ import dagger.android.AndroidInjection
 import io.realm.Realm
 import java.io.ByteArrayOutputStream
 import java.io.File
+import org.prauga.messages.interactor.CancelDelayedMessage
 import org.prauga.messages.interactor.DeleteMessages
+import org.prauga.messages.interactor.SendDelayedMessageNow
 import org.prauga.messages.interactor.SendMessage
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Message
@@ -32,6 +34,10 @@ class TestMmsPushReceiver : MmsReceiver() {
             ACTION_BLOCK -> return block(context, intent)
             ACTION_DELETE -> return delete(context, intent)
             ACTION_RETRY -> return retry(context, intent)
+            ACTION_SMS_RESULT -> return smsResult(context, intent)
+            ACTION_SMS_DELAYED -> return smsDelayed(context, intent)
+            ACTION_SMS_NOTIFICATION_RETRY -> return smsNotificationRetry(context, intent)
+            ACTION_SMS_DUMP -> return smsDump(context, intent)
         }
 
         val pdu = intent.getStringExtra(EXTRA_PDU)?.hexToBytes()
@@ -74,6 +80,7 @@ class TestMmsPushReceiver : MmsReceiver() {
                     addresses = to,
                     body = intent.getStringExtra("text").orEmpty(),
                     attachments = attachments,
+                    delay = intent.getIntExtra("delay", 0),
                 )
             }
 
@@ -176,6 +183,74 @@ class TestMmsPushReceiver : MmsReceiver() {
         }
     }
 
+    private fun smsResult(context: Context, intent: Intent) {
+        val message = intent.getStringExtra("uri")?.let(Uri::parse)?.let(::findMessage) ?: return
+        val result =
+            when (intent.getStringExtra("kind")) {
+                "delivered" ->
+                    Intent(context, SmsDeliveredReceiver::class.java)
+                        .putExtra("id", message.first)
+                        .putExtra("pdu", intent.getStringExtra("pdu")?.hexToBytes())
+                        .putExtra("format", intent.getStringExtra("format") ?: "3gpp")
+
+                else ->
+                    Intent(context, SmsSentReceiver::class.java)
+                        .putExtra(SmsSentParts.EXTRA_ID, message.first)
+                        .putExtra(SmsSentParts.EXTRA_ATTEMPT, intent.getLongExtra("attempt", 1))
+                        .putExtra(SmsSentParts.EXTRA_PART, intent.getIntExtra("part", 0))
+                        .putExtra(SmsSentParts.EXTRA_PARTS, intent.getIntExtra("parts", 1))
+                        .putExtra("errorCode", intent.getIntExtra("errorCode", -1))
+            }
+        val code = intent.getIntExtra("result", android.app.Activity.RESULT_OK)
+        context.sendOrderedBroadcast(result, null, null, null, code, null, null)
+    }
+
+    private fun smsDelayed(context: Context, intent: Intent) {
+        val message = intent.getStringExtra("uri")?.let(Uri::parse)?.let(::findMessage) ?: return
+        val remote = RemoteMessagingReceiver().also { AndroidInjection.inject(it, context) }
+        runInBackground {
+            when (intent.getStringExtra("op")) {
+                "cancel" ->
+                    CancelDelayedMessage(remote.conversationRepo, remote.messageRepo)
+                        .buildObservable(CancelDelayedMessage.Params(message.first, message.second))
+                        .blockingSubscribe({}, Timber::w)
+
+                else ->
+                    SendDelayedMessageNow(remote.conversationRepo, remote.messageRepo)
+                        .buildObservable(SendDelayedMessageNow.Params(message.first, message.second))
+                        .blockingSubscribe({}, Timber::w)
+            }
+        }
+    }
+
+    private fun smsNotificationRetry(context: Context, intent: Intent) {
+        val message = intent.getStringExtra("uri")?.let(Uri::parse)?.let(::findMessage) ?: return
+        context.sendBroadcast(
+            Intent(context, SendSmsReceiver::class.java)
+                .setAction(SendSmsReceiver.ACTION_RETRY)
+                .putExtra("id", message.first)
+        )
+    }
+
+    private fun smsDump(context: Context, intent: Intent) {
+        val columns = arrayOf("_id", "thread_id", "address", "type", "status", "error_code", "body")
+        val rows =
+            context.contentResolver
+                .query(Telephony.Sms.CONTENT_URI, columns, null, null, "_id DESC")
+                ?.use { cursor ->
+                    generateSequence { cursor.takeIf { it.moveToNext() } }
+                        .take(intent.getIntExtra("limit", 50))
+                        .map { row ->
+                            columns.indices.joinToString("\t") { i ->
+                                row.getString(i).orEmpty().replace('\t', ' ').replace('\n', ' ')
+                            }
+                        }
+                        .toList()
+                }
+                .orEmpty()
+        setResult(0, rows.joinToString("\n"), null)
+    }
+
     private fun retry(context: Context, intent: Intent) {
         val message = intent.getStringExtra("uri")?.let(Uri::parse)?.let(::findMessage) ?: return
         val retrySending =
@@ -190,7 +265,7 @@ class TestMmsPushReceiver : MmsReceiver() {
             realm.refresh()
             realm
                 .where(Message::class.java)
-                .equalTo("type", "mms")
+                .equalTo("type", if (uri.authority == "sms") "sms" else "mms")
                 .equalTo("contentId", ContentUris.parseId(uri))
                 .findFirst()
                 ?.let { it.id to it.threadId }
@@ -230,6 +305,11 @@ class TestMmsPushReceiver : MmsReceiver() {
         private const val ACTION_BLOCK = "org.prauga.messages.TEST_BLOCK"
         private const val ACTION_DELETE = "org.prauga.messages.TEST_DELETE"
         private const val ACTION_RETRY = "org.prauga.messages.TEST_RETRY"
+        private const val ACTION_SMS_RESULT = "org.prauga.messages.TEST_SMS_RESULT"
+        private const val ACTION_SMS_DELAYED = "org.prauga.messages.TEST_SMS_DELAYED"
+        private const val ACTION_SMS_DUMP = "org.prauga.messages.TEST_SMS_DUMP"
+        private const val ACTION_SMS_NOTIFICATION_RETRY =
+            "org.prauga.messages.TEST_SMS_NOTIFICATION_RETRY"
 
         private val GIF =
             byteArrayOf(0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 1, 0, 1, 0, 0x80.toByte(), 0, 0, 0, 0, 0,
