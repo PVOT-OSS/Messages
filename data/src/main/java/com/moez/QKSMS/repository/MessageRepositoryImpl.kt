@@ -511,9 +511,16 @@ constructor(
 
             val imageByteCount = imageBytesByAttachment.values.sumOf { it.size }
             if (imageByteCount > remainingBytes) {
+                val budgets =
+                    imageBytesByAttachment.keys.zip(
+                        MmsImageBudget.budgets(
+                            imageBytesByAttachment.values.map { it.size },
+                            remainingBytes,
+                        )
+                    ).toMap()
                 imageBytesByAttachment.forEach { (attachment, originalBytes) ->
                     val uri = attachment.uri
-                    val maxBytes = originalBytes.size / imageByteCount.toFloat() * remainingBytes
+                    val maxBytes = budgets.getValue(attachment)
 
                     // Get the image dimensions
                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
