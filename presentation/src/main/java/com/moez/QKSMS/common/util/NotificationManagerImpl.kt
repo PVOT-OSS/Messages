@@ -475,7 +475,9 @@ constructor(
             if (otpResult.isOtp && otpResult.code != null) {
                 isOtpMessage = true
                 val copyOtpIntent =
-                    Intent(context, CopyOtpReceiver::class.java).putExtra("otpCode", otpResult.code)
+                    Intent(context, CopyOtpReceiver::class.java)
+                        .putExtra("otpCode", otpResult.code)
+                        .putExtra("threadId", threadId)
                 val copyOtpPI =
                     PendingIntent.getBroadcast(
                         context,
