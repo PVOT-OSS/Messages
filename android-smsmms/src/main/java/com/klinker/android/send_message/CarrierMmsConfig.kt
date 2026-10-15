@@ -15,29 +15,68 @@ import timber.log.Timber
 
 class CarrierMmsConfig internal constructor(private val values: Bundle) {
 
-    val mmsEnabled: Boolean get() = bool(KEY_MMS_ENABLED, true)
-    val groupMmsEnabled: Boolean get() = mmsEnabled && bool(KEY_GROUP_MMS_ENABLED, true)
-    val groupChatDefaultsToMms: Boolean get() = bool(KEY_GROUP_CHAT_DEFAULTS_TO_MMS, true)
-    val recipientLimit: Int get() = int(KEY_RECIPIENT_LIMIT, -1).takeIf { it >= 0 } ?: Int.MAX_VALUE
-    val maxMessageSize: Int get() = int(KEY_MAX_MESSAGE_SIZE, 300 * 1024)
-    val maxImageWidth: Int get() = int(KEY_MAX_IMAGE_WIDTH, 640)
-    val maxImageHeight: Int get() = int(KEY_MAX_IMAGE_HEIGHT, 480)
-    val multipartSmsEnabled: Boolean get() = bool(KEY_MULTIPART_SMS_ENABLED, true)
+    val mmsEnabled: Boolean
+        get() = bool(KEY_MMS_ENABLED, true)
+
+    val groupMmsEnabled: Boolean
+        get() = mmsEnabled && bool(KEY_GROUP_MMS_ENABLED, true)
+
+    val groupChatDefaultsToMms: Boolean
+        get() = bool(KEY_GROUP_CHAT_DEFAULTS_TO_MMS, true)
+
+    val recipientLimit: Int
+        get() = int(KEY_RECIPIENT_LIMIT, -1).takeIf { it >= 0 } ?: Int.MAX_VALUE
+
+    val maxMessageSize: Int
+        get() = int(KEY_MAX_MESSAGE_SIZE, 300 * 1024)
+
+    val maxImageWidth: Int
+        get() = int(KEY_MAX_IMAGE_WIDTH, 640)
+
+    val maxImageHeight: Int
+        get() = int(KEY_MAX_IMAGE_HEIGHT, 480)
+
+    val multipartSmsEnabled: Boolean
+        get() = bool(KEY_MULTIPART_SMS_ENABLED, true)
+
     val sendMultipartSmsAsSeparateMessages: Boolean
         get() = bool(KEY_SEND_MULTIPART_SMS_AS_SEPARATE_MESSAGES, false)
-    val smsToMmsTextLengthThreshold: Int get() = int(KEY_SMS_TO_MMS_TEXT_LENGTH_THRESHOLD, -1)
-    val autoRetrieveEnabled: Boolean get() = bool(KEY_AUTO_RETRIEVE_ENABLED, true)
-    val roamingAutoRetrieveEnabled: Boolean get() = bool(KEY_ROAMING_AUTO_RETRIEVE, false)
-    val notifyWapMmsc: Boolean get() = bool(KEY_NOTIFY_WAP_MMSC, false)
-    val transactionIdEnabled: Boolean get() = bool(KEY_TRANSACTION_ID_ENABLED, false)
-    val supportMmsContentDisposition: Boolean get() = bool(KEY_SUPPORT_CONTENT_DISPOSITION, true)
-    val emailGatewayNumber: String get() = string(KEY_EMAIL_GATEWAY_NUMBER, "")
+
+    val smsToMmsTextLengthThreshold: Int
+        get() = int(KEY_SMS_TO_MMS_TEXT_LENGTH_THRESHOLD, -1)
+
+    val autoRetrieveEnabled: Boolean
+        get() = bool(KEY_AUTO_RETRIEVE_ENABLED, true)
+
+    val roamingAutoRetrieveEnabled: Boolean
+        get() = bool(KEY_ROAMING_AUTO_RETRIEVE, false)
+
+    val notifyWapMmsc: Boolean
+        get() = bool(KEY_NOTIFY_WAP_MMSC, false)
+
+    val transactionIdEnabled: Boolean
+        get() = bool(KEY_TRANSACTION_ID_ENABLED, false)
+
+    val supportMmsContentDisposition: Boolean
+        get() = bool(KEY_SUPPORT_CONTENT_DISPOSITION, true)
+
+    val emailGatewayNumber: String
+        get() = string(KEY_EMAIL_GATEWAY_NUMBER, "")
+
     val emailGatewaySmsToMmsTextThreshold: Int
         get() = int(KEY_EMAIL_GATEWAY_SMS_TO_MMS_TEXT_THRESHOLD, -1)
-    val aliasEnabled: Boolean get() = bool(KEY_ALIAS_ENABLED, false)
-    val aliasMinChars: Int get() = int(KEY_ALIAS_MIN_CHARS, 2)
-    val aliasMaxChars: Int get() = int(KEY_ALIAS_MAX_CHARS, 48)
-    val useCustomUserAgent: Boolean get() = bool(KEY_USE_CUSTOM_USER_AGENT, false)
+
+    val aliasEnabled: Boolean
+        get() = bool(KEY_ALIAS_ENABLED, false)
+
+    val aliasMinChars: Int
+        get() = int(KEY_ALIAS_MIN_CHARS, 2)
+
+    val aliasMaxChars: Int
+        get() = int(KEY_ALIAS_MAX_CHARS, 48)
+
+    val useCustomUserAgent: Boolean
+        get() = bool(KEY_USE_CUSTOM_USER_AGENT, false)
 
     val smsToMmsTextThreshold: Int
         get() =
@@ -48,8 +87,7 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
                 else -> 1
             }
 
-    private fun bool(key: String, default: Boolean) =
-        (values.get(key) as? Boolean) ?: default
+    private fun bool(key: String, default: Boolean) = (values.get(key) as? Boolean) ?: default
 
     private fun int(key: String, default: Int) = (values.get(key) as? Int) ?: default
 
@@ -94,7 +132,8 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
             val platform = platform(subId)
             val bundled = bundled(context, subId)
             return Bundle().apply {
-                bundled.keySet()
+                bundled
+                    .keySet()
                     .filter { key -> platform?.containsKey(key) != true }
                     .forEach { key ->
                         when (val value = bundled.get(key)) {
@@ -142,10 +181,12 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
             val mnc: Int
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mcc = info.mccString?.toIntOrNull() ?: 0
-                mnc = when (val mncString = info.mncString) {
-                    null -> 0
-                    else -> mncString.toIntOrNull()?.takeIf { it != 0 } ?: Configuration.MNC_ZERO
-                }
+                mnc =
+                    when (val mncString = info.mncString) {
+                        null -> 0
+                        else ->
+                            mncString.toIntOrNull()?.takeIf { it != 0 } ?: Configuration.MNC_ZERO
+                    }
             } else {
                 @Suppress("DEPRECATION")
                 mcc = info.mcc
@@ -206,8 +247,9 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
                     if (key != null && text.isNotEmpty()) {
                         when (type) {
                             "bool" -> into.putBoolean(key, text.toBoolean())
-                            "int" -> text.toIntOrNull()?.let { into.putInt(key, it) }
-                                ?: Timber.w("Invalid int for $key: $text")
+                            "int" ->
+                                text.toIntOrNull()?.let { into.putInt(key, it) }
+                                    ?: Timber.w("Invalid int for $key: $text")
                             "string" -> into.putString(key, text)
                         }
                     }

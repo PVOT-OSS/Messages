@@ -22,8 +22,8 @@ class MmsSendRetryWorker(appContext: Context, workerParams: WorkerParameters) :
     lateinit var retrySending: RetrySending
 
     override fun doWork(): Result {
-        val messageId = inputData.getLong(KEY_MESSAGE_ID, -1).takeIf { it != -1L }
-            ?: return Result.failure()
+        val messageId =
+            inputData.getLong(KEY_MESSAGE_ID, -1).takeIf { it != -1L } ?: return Result.failure()
 
         Timber.v("Retrying to send MMS $messageId")
         retrySending.buildObservable(messageId).blockingSubscribe({}, Timber::w)

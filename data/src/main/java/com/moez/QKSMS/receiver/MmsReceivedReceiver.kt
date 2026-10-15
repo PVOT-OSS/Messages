@@ -56,7 +56,9 @@ class MmsReceivedReceiver : MmsReceivedReceiver() {
 
     override fun onMessageReceived(messageUri: Uri?) {
         this.messageUri = messageUri
-        notificationUri?.let { context?.let { context -> MmsDownloadRetryWorker.clear(context, it) } }
+        notificationUri?.let {
+            context?.let { context -> MmsDownloadRetryWorker.clear(context, it) }
+        }
     }
 
     override fun onDownloadFailed(notificationUri: Uri?, subId: Int, retry: MmsRetry) {

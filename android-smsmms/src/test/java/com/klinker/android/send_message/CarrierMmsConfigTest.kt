@@ -124,7 +124,10 @@ class CarrierMmsConfigTest {
 
     @Test
     fun givenNegativeRecipientLimit_whenRead_thenUnlimited() {
-        assertEquals(Int.MAX_VALUE, config(CarrierMmsConfig.KEY_RECIPIENT_LIMIT to -1).recipientLimit)
+        assertEquals(
+            Int.MAX_VALUE,
+            config(CarrierMmsConfig.KEY_RECIPIENT_LIMIT to -1).recipientLimit,
+        )
         assertEquals(10, config(CarrierMmsConfig.KEY_RECIPIENT_LIMIT to 10).recipientLimit)
     }
 

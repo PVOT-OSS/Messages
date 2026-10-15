@@ -63,48 +63,52 @@ class MmsSentReceiver : BroadcastReceiver() {
         val contentId = tryOrNull(false) { ContentUris.parseId(uri) }
         val messageId = contentId?.let(::findMessageId)
 
-        if (result.retry == MmsRetry.AUTO && messageId != null &&
-            MmsSendRetryWorker.schedule(context, messageId)) {
+        if (
+            result.retry == MmsRetry.AUTO &&
+                messageId != null &&
+                MmsSendRetryWorker.schedule(context, messageId)
+        ) {
             Timber.v("MMS send failed, retrying later")
-        } else when (result.retry) {
-            MmsRetry.NONE -> {
-                messageId?.let { MmsSendRetryWorker.clear(context, it) }
-                Timber.v("MMS has finished sending, marking it as so in the database")
-                val values = ContentValues(3)
-                values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_SENT)
-                result.messageId?.let { values.put(Telephony.Mms.MESSAGE_ID, it) }
-                result.responseStatus
-                    .takeIf { it != 0 }
-                    ?.let { values.put(Telephony.Mms.RESPONSE_STATUS, it) }
-                SqliteWrapper.update(context, context.contentResolver, uri, values, null, null)
-            }
+        } else
+            when (result.retry) {
+                MmsRetry.NONE -> {
+                    messageId?.let { MmsSendRetryWorker.clear(context, it) }
+                    Timber.v("MMS has finished sending, marking it as so in the database")
+                    val values = ContentValues(3)
+                    values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_SENT)
+                    result.messageId?.let { values.put(Telephony.Mms.MESSAGE_ID, it) }
+                    result.responseStatus
+                        .takeIf { it != 0 }
+                        ?.let { values.put(Telephony.Mms.RESPONSE_STATUS, it) }
+                    SqliteWrapper.update(context, context.contentResolver, uri, values, null, null)
+                }
 
-            else -> {
-                Timber.v("MMS has failed to send, marking it as so in the database")
-                messageId?.let { MmsSendRetryWorker.clear(context, it) }
-                try {
-                    val mmsId = ContentUris.parseId(uri)
+                else -> {
+                    Timber.v("MMS has failed to send, marking it as so in the database")
+                    messageId?.let { MmsSendRetryWorker.clear(context, it) }
+                    try {
+                        val mmsId = ContentUris.parseId(uri)
 
-                    val values = ContentValues(1)
-                    values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_FAILED)
-                    SqliteWrapper.update(
-                        context,
-                        context.contentResolver,
-                        Telephony.Mms.CONTENT_URI,
-                        values,
-                        "${Telephony.Mms._ID} = ?",
-                        arrayOf(mmsId.toString()),
-                    )
+                        val values = ContentValues(1)
+                        values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_FAILED)
+                        SqliteWrapper.update(
+                            context,
+                            context.contentResolver,
+                            Telephony.Mms.CONTENT_URI,
+                            values,
+                            "${Telephony.Mms._ID} = ?",
+                            arrayOf(mmsId.toString()),
+                        )
 
-                    // Update the error type directly in Realm since the PendingMessages table
-                    // query doesn't work reliably (the message may not be in PendingMessages
-                    // by the time this receiver runs)
-                    updateErrorTypeInRealm(mmsId, Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT)
-                } catch (e: MmsException) {
-                    Timber.e(e, "Failed to mark MMS as failed")
+                        // Update the error type directly in Realm since the PendingMessages table
+                        // query doesn't work reliably (the message may not be in PendingMessages
+                        // by the time this receiver runs)
+                        updateErrorTypeInRealm(mmsId, Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT)
+                    } catch (e: MmsException) {
+                        Timber.e(e, "Failed to mark MMS as failed")
+                    }
                 }
             }
-        }
 
         val filePath = intent.getStringExtra(Transaction.EXTRA_FILE_PATH)
         Timber.v(filePath)
@@ -121,18 +125,17 @@ class MmsSentReceiver : BroadcastReceiver() {
      * trying to update the PendingMessages table, which may not contain the message by the time
      * this receiver runs.
      */
-    private fun findMessageId(contentId: Long): Long? =
-        tryOrNull {
-            Realm.getDefaultInstance().use { realm ->
-                realm.refresh()
-                realm
-                    .where(Message::class.java)
-                    .equalTo("type", "mms")
-                    .equalTo("contentId", contentId)
-                    .findFirst()
-                    ?.id
-            }
+    private fun findMessageId(contentId: Long): Long? = tryOrNull {
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            realm
+                .where(Message::class.java)
+                .equalTo("type", "mms")
+                .equalTo("contentId", contentId)
+                .findFirst()
+                ?.id
         }
+    }
 
     private fun updateErrorTypeInRealm(contentId: Long, errorType: Int) {
         try {

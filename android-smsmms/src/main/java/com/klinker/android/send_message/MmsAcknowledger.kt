@@ -70,8 +70,7 @@ object MmsAcknowledger {
                     .path(fileName)
                     .build()
 
-            val url =
-                contentLocation.takeIf { CarrierMmsConfig.get(context, subId).notifyWapMmsc }
+            val url = contentLocation.takeIf { CarrierMmsConfig.get(context, subId).notifyWapMmsc }
 
             SmsManagerFactory.createSmsManager(subId)
                 .sendMultimediaMessage(

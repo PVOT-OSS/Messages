@@ -55,16 +55,31 @@ class MmsSendResultTest {
     @Test
     fun givenNoCarrierResponse_whenFrom_thenTrustsTheResultCodeLikeBefore() {
         assertEquals(MmsRetry.NONE, MmsSendResult.from(Activity.RESULT_OK, 0, null).retry)
-        assertEquals(MmsRetry.NONE, MmsSendResult.from(Activity.RESULT_OK, 0, byteArrayOf(1, 2)).retry)
+        assertEquals(
+            MmsRetry.NONE,
+            MmsSendResult.from(Activity.RESULT_OK, 0, byteArrayOf(1, 2)).retry,
+        )
     }
 
     @Test
     fun givenErrorCodes_whenRetryForError_thenMatchesGoogleMessages() {
-        assertEquals(MmsRetry.NEVER, MmsSendResult.retryForError(SmsManager.MMS_ERROR_HTTP_FAILURE, 404))
-        assertEquals(MmsRetry.AUTO, MmsSendResult.retryForError(SmsManager.MMS_ERROR_HTTP_FAILURE, 400))
+        assertEquals(
+            MmsRetry.NEVER,
+            MmsSendResult.retryForError(SmsManager.MMS_ERROR_HTTP_FAILURE, 404),
+        )
+        assertEquals(
+            MmsRetry.AUTO,
+            MmsSendResult.retryForError(SmsManager.MMS_ERROR_HTTP_FAILURE, 400),
+        )
         assertEquals(MmsRetry.AUTO, MmsSendResult.retryForError(SmsManager.MMS_ERROR_IO_ERROR, 0))
-        assertEquals(MmsRetry.MANUAL, MmsSendResult.retryForError(SmsManager.MMS_ERROR_NO_DATA_NETWORK, 0))
-        assertEquals(MmsRetry.MANUAL, MmsSendResult.retryForError(SmsManager.MMS_ERROR_UNSPECIFIED, 0))
+        assertEquals(
+            MmsRetry.MANUAL,
+            MmsSendResult.retryForError(SmsManager.MMS_ERROR_NO_DATA_NETWORK, 0),
+        )
+        assertEquals(
+            MmsRetry.MANUAL,
+            MmsSendResult.retryForError(SmsManager.MMS_ERROR_UNSPECIFIED, 0),
+        )
         assertEquals(MmsRetry.NEVER, MmsSendResult.retryForError(MmsSendResult.RESULT_TOO_LARGE, 0))
     }
 }
