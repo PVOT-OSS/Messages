@@ -23,7 +23,11 @@ class MmsDownloadResultTest {
         assertEquals(MmsRetry.NONE, retryFor(MmsPduFactory.createRetrieveConfBytes()))
         assertEquals(
             MmsRetry.NONE,
-            retryFor(MmsPduFactory.createRetrieveConfBytes(retrieveStatus = PduHeaders.RETRIEVE_STATUS_OK)),
+            retryFor(
+                MmsPduFactory.createRetrieveConfBytes(
+                    retrieveStatus = PduHeaders.RETRIEVE_STATUS_OK
+                )
+            ),
         )
     }
 

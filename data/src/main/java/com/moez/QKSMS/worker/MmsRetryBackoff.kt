@@ -14,12 +14,12 @@ class MmsRetryBackoff(context: Context, name: String) {
 
     fun nextDelay(key: String, now: Long = System.currentTimeMillis()): Long? {
         val (attempt, firstFailure) =
-            prefs.getString(key, null)
+            prefs
+                .getString(key, null)
                 ?.split(',')
                 ?.mapNotNull(String::toLongOrNull)
                 ?.takeIf { it.size == 2 }
-                ?.let { (attempt, firstFailure) -> attempt.toInt() to firstFailure }
-                ?: (0 to now)
+                ?.let { (attempt, firstFailure) -> attempt.toInt() to firstFailure } ?: (0 to now)
 
         if (now - firstFailure > RETRY_WINDOW) {
             clear(key)

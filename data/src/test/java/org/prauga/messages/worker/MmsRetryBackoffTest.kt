@@ -14,9 +14,7 @@ class MmsRetryBackoffTest {
 
     @Test
     fun givenFirstAttempt_whenRetryDelay_thenWaitsFiveSeconds() {
-        repeat(20) {
-            assertEquals(5 * seconds, MmsRetryBackoff.retryDelay(0, Random(it)))
-        }
+        repeat(20) { assertEquals(5 * seconds, MmsRetryBackoff.retryDelay(0, Random(it))) }
     }
 
     @Test

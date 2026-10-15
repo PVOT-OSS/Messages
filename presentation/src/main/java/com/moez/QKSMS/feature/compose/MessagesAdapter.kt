@@ -330,8 +330,7 @@ constructor(
 
         // get message text to display, which may need to be truncated
         val displayText =
-            if (message.isExpiredMmsDownload())
-                context.getString(R.string.message_mms_expired)
+            if (message.isExpiredMmsDownload()) context.getString(R.string.message_mms_expired)
             else if (message.isPendingMmsDownload())
                 context.getString(R.string.message_mms_not_downloaded)
             else

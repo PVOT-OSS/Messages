@@ -30,6 +30,7 @@ import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.net.toFile
 import androidx.media3.common.MimeTypes
+import com.klinker.android.send_message.CarrierMmsConfig
 import com.moez.QKSMS.common.QkMediaPlayer
 import com.moez.QKSMS.contentproviders.MmsPartProvider
 import com.moez.QKSMS.manager.BluetoothMicManager
@@ -63,7 +64,6 @@ import org.prauga.messages.common.util.MessageDetailsFormatter
 import org.prauga.messages.common.util.extensions.makeToast
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.common.widget.QkContextMenuRecyclerView
-import com.klinker.android.send_message.CarrierMmsConfig
 import org.prauga.messages.compat.SubscriptionManagerCompat
 import org.prauga.messages.extensions.asObservable
 import org.prauga.messages.extensions.isImage
@@ -1273,7 +1273,8 @@ constructor(
                         (!state
                             .editingMode || // and is not a new convo (group msg or not is already
                             // set)
-                            state.sendAsGroup) && // or (is a new convo and) send as group is selected
+                            state
+                                .sendAsGroup) && // or (is a new convo and) send as group is
                         groupMmsAllowed(subId))
 
                 val attachments = state.attachments

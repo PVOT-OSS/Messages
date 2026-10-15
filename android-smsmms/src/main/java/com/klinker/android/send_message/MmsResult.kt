@@ -37,14 +37,16 @@ data class MmsSendResult(
 
         private fun fromResponse(response: ByteArray?): MmsSendResult {
             val sendConf =
-                response?.takeIf { it.isNotEmpty() }?.let {
-                    try {
-                        PduParser(it).parse() as? SendConf
-                    } catch (e: Exception) {
-                        Timber.w(e, "Unable to parse the M-Send.conf")
-                        null
-                    }
-                } ?: return MmsSendResult(MmsRetry.NONE)
+                response
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.let {
+                        try {
+                            PduParser(it).parse() as? SendConf
+                        } catch (e: Exception) {
+                            Timber.w(e, "Unable to parse the M-Send.conf")
+                            null
+                        }
+                    } ?: return MmsSendResult(MmsRetry.NONE)
 
             val status = sendConf.responseStatus
             val messageId = sendConf.messageId?.let { String(it) }?.takeIf { it.isNotBlank() }

@@ -702,8 +702,7 @@ constructor(
             config.smsToMmsTextLengthThreshold.let { threshold ->
                 val is16Bit =
                     tryOrNull(false) {
-                        SmsMessage.calculateLength(body, false)[3] ==
-                            SmsMessage.ENCODING_16BIT
+                        SmsMessage.calculateLength(body, false)[3] == SmsMessage.ENCODING_16BIT
                     } == true
                 if (threshold > 0 && is16Bit) threshold / 2 else threshold
             }
