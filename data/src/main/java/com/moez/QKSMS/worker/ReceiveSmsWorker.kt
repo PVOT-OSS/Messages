@@ -42,8 +42,7 @@ class ReceiveSmsWorker(appContext: Context, workerParams: WorkerParameters) :
             return Result.failure(inputData)
         }
 
-        // process the new message
-        receiveSms.execute(messageId)
+        receiveSms.buildObservable(messageId).blockingSubscribe({}, Timber::w)
 
         Timber.v("finished")
 
