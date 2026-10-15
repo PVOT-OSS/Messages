@@ -618,8 +618,24 @@ constructor(
             sendSmsParts(message)
         } catch (e: Exception) {
             Timber.w(e, "Couldn't send SMS ${message.id}")
-            markFailed(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
+            reportSmsFailure(message.id)
         }
+    }
+
+    private fun reportSmsFailure(id: Long) {
+        val intent =
+            Intent(context, SmsSentReceiver::class.java)
+                .putExtra(SmsSentParts.EXTRA_ID, id)
+                .putExtra(SmsSentParts.EXTRA_ATTEMPT, System.currentTimeMillis())
+        context.sendOrderedBroadcast(
+            intent,
+            null,
+            null,
+            null,
+            SmsManager.RESULT_ERROR_GENERIC_FAILURE,
+            null,
+            null,
+        )
     }
 
     private fun sendSmsParts(message: Message) {
@@ -676,7 +692,7 @@ constructor(
             )
         } catch (e: IllegalArgumentException) {
             Timber.w(e, "Message body lengths: ${parts.map { it?.length }}")
-            markFailed(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
+            reportSmsFailure(message.id)
         }
     }
 
