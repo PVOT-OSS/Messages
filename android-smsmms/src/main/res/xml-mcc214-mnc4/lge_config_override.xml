@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lge_config_override>
+    <bool name="enabledMMS">false</bool>
+    <bool name="groupChatDefaultsToMMS">false</bool>
+</lge_config_override>
