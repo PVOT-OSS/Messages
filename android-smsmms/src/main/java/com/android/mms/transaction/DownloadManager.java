@@ -77,6 +77,11 @@ public class DownloadManager {
         } catch (RuntimeException e) {
             Timber.e(e, "Unable to start MMS download");
             finishDownload(location);
+            try {
+                pendingIntent.send(SmsManager.MMS_ERROR_UNSPECIFIED);
+            } catch (PendingIntent.CanceledException canceled) {
+                Timber.e(canceled, "Unable to report the failed download");
+            }
         }
     }
 
