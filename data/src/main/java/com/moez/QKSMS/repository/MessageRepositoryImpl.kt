@@ -616,6 +616,15 @@ constructor(
     }
 
     override fun sendSms(message: Message) {
+        try {
+            sendSmsParts(message)
+        } catch (e: Exception) {
+            Timber.w(e, "Couldn't send SMS ${message.id}")
+            markFailed(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
+        }
+    }
+
+    private fun sendSmsParts(message: Message) {
         val smsManager =
             message.subId.takeIf { it != -1 }?.let(SmsManagerFactory::createSmsManager)
                 ?: SmsManager.getDefault()
