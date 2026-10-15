@@ -40,14 +40,15 @@ class SimpleCharacters(private val table: Map<Char, Char>) {
     }
 
     companion object {
-        private const val GSM_ALPHABET =
-            "£¥èéùìòÇØøÅåΔΦΓΛΩΠΨΣΘΞÆæßÉ¤¡ÄÖÑÜ§¿äöñüà€"
+        private const val GSM_ALPHABET = "£¥èéùìòÇØøÅåΔΦΓΛΩΠΨΣΘΞÆæßÉ¤¡ÄÖÑÜ§¿äöñüà€"
 
         @Volatile private var instance: SimpleCharacters? = null
 
         fun get(context: Context): SimpleCharacters =
             instance
-                ?: SimpleCharacters(load(context.resources.getXml(R.xml.sms_7bit_translation_table)))
+                ?: SimpleCharacters(
+                        load(context.resources.getXml(R.xml.sms_7bit_translation_table))
+                    )
                     .also { instance = it }
 
         private fun load(parser: XmlResourceParser): Map<Char, Char> {

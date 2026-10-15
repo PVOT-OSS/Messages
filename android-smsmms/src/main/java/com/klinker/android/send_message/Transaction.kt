@@ -164,8 +164,9 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         } catch (e: Throwable) {
             Timber.e(e, "Error using system sending method")
             try {
-                (sentPI ?: messageUri?.let { sentIntent(it, null) })
-                    ?.send(SmsManager.MMS_ERROR_UNSPECIFIED)
+                (sentPI ?: messageUri?.let { sentIntent(it, null) })?.send(
+                    SmsManager.MMS_ERROR_UNSPECIFIED
+                )
             } catch (e: Exception) {
                 Timber.e(e, "Unable to report the failed MMS")
             }

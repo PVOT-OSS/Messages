@@ -41,12 +41,13 @@ class SmsSentReceiver : BroadcastReceiver() {
         val part =
             SmsSentParts.Result(SmsSendRetry.category(resultCode, errorCode), resultCode, errorCode)
         val result =
-            parts(context).onResult(
-                id = id,
-                attempt = intent.getLongExtra(SmsSentParts.EXTRA_ATTEMPT, 0L),
-                parts = intent.getIntExtra(SmsSentParts.EXTRA_PARTS, 1),
-                result = part,
-            ) ?: return
+            parts(context)
+                .onResult(
+                    id = id,
+                    attempt = intent.getLongExtra(SmsSentParts.EXTRA_ATTEMPT, 0L),
+                    parts = intent.getIntExtra(SmsSentParts.EXTRA_PARTS, 1),
+                    result = part,
+                ) ?: return
 
         val retrying =
             result.category == SmsSentParts.Category.AUTO_RETRY &&

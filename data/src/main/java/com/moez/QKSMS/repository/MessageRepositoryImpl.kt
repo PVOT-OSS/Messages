@@ -49,7 +49,6 @@ import com.google.android.mms.pdu_alt.PduPart
 import com.google.android.mms.pdu_alt.PduPersister
 import com.google.android.mms.pdu_alt.SendReq
 import com.google.android.mms.smil.SmilHelper
-import org.prauga.messages.carrier.CarrierMmsConfig
 import com.klinker.android.send_message.SimpleCharacters
 import com.klinker.android.send_message.SmsManagerFactory
 import com.klinker.android.send_message.Transaction
@@ -65,6 +64,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.sqrt
+import org.prauga.messages.carrier.CarrierMmsConfig
 import org.prauga.messages.common.util.extensions.now
 import org.prauga.messages.compat.TelephonyCompat
 import org.prauga.messages.extensions.anyOf
@@ -511,12 +511,14 @@ constructor(
             val imageByteCount = imageBytesByAttachment.values.sumOf { it.size }
             if (imageByteCount > remainingBytes) {
                 val budgets =
-                    imageBytesByAttachment.keys.zip(
-                        MmsImageBudget.budgets(
-                            imageBytesByAttachment.values.map { it.size },
-                            remainingBytes,
+                    imageBytesByAttachment.keys
+                        .zip(
+                            MmsImageBudget.budgets(
+                                imageBytesByAttachment.values.map { it.size },
+                                remainingBytes,
+                            )
                         )
-                    ).toMap()
+                        .toMap()
                 imageBytesByAttachment.forEach { (attachment, originalBytes) ->
                     val uri = attachment.uri
                     val maxBytes = budgets.getValue(attachment)
@@ -659,13 +661,12 @@ constructor(
 
         val config = CarrierMmsConfig.get(context, message.subId)
         val gateway =
-            config.emailGatewayNumber.takeIf {
-                it.isNotEmpty() && isEmailAddress(message.address)
-            }
+            config.emailGatewayNumber.takeIf { it.isNotEmpty() && isEmailAddress(message.address) }
         val destination =
             gateway
-                ?: android.telephony.PhoneNumberUtils.stripSeparators(message.address)
-                    ?.takeIf { it.isNotEmpty() }
+                ?: android.telephony.PhoneNumberUtils.stripSeparators(message.address)?.takeIf {
+                    it.isNotEmpty()
+                }
                 ?: message.address
         val body = if (gateway != null) "${message.address} ${message.body}" else message.body
 
@@ -1260,9 +1261,9 @@ constructor(
         val providerThreadId =
             uri?.let {
                 tryOrNull {
-                    context.contentResolver.query(it, arrayOf(Sms.THREAD_ID), null, null, null)?.use { cursor ->
-                        if (cursor.moveToFirst()) cursor.getLong(0) else null
-                    }
+                    context.contentResolver
+                        .query(it, arrayOf(Sms.THREAD_ID), null, null, null)
+                        ?.use { cursor -> if (cursor.moveToFirst()) cursor.getLong(0) else null }
                 }
             }
         val threadId =

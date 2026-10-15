@@ -22,9 +22,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.android.mms.transaction.PushReceiver
-import org.prauga.messages.carrier.CarrierMmsConfig
 import dagger.android.AndroidInjection
 import javax.inject.Inject
+import org.prauga.messages.carrier.CarrierMmsConfig
 import org.prauga.messages.interactor.ReceiveMms
 import org.prauga.messages.manager.MmsDownloadPolicy
 import timber.log.Timber

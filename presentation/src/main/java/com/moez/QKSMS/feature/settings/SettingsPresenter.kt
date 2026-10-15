@@ -19,7 +19,6 @@
 package org.prauga.messages.feature.settings
 
 import android.content.Context
-import org.prauga.messages.carrier.CarrierMmsConfig
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
@@ -30,6 +29,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlinx.coroutines.runBlocking
 import org.prauga.messages.R
+import org.prauga.messages.carrier.CarrierMmsConfig
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkPresenter
 import org.prauga.messages.common.util.Colors

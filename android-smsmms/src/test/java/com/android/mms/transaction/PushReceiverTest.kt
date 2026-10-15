@@ -21,7 +21,10 @@ class PushReceiverTest {
 
     @Test
     fun givenTypedAddress_whenSenderAddress_thenDropsTheTypeSuffix() {
-        assertEquals("+15551234567", PushReceiver.senderAddress(notificationFrom("+15551234567/TYPE=PLMN")))
+        assertEquals(
+            "+15551234567",
+            PushReceiver.senderAddress(notificationFrom("+15551234567/TYPE=PLMN")),
+        )
     }
 
     @Test
