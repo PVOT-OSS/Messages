@@ -299,7 +299,7 @@ constructor(
                             SubscriptionManagerCompat.preferredSubscription(
                                 subs,
                                 subId,
-                                subscriptionManager.defaultSmsSubscriptionId
+                                subscriptionManager.defaultSmsSubscriptionId,
                             )
                         else null
                     newState { copy(subscription = sub) }

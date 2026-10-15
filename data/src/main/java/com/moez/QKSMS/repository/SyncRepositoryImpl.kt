@@ -338,8 +338,7 @@ constructor(
         val threadId =
             Realm.getDefaultInstance().use { realm ->
                 val message =
-                    realm.where(Message::class.java).equalTo("id", id).findFirst()
-                        ?: return
+                    realm.where(Message::class.java).equalTo("id", id).findFirst() ?: return
                 val threadId = message.threadId
 
                 realm.executeTransaction {
