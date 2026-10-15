@@ -89,4 +89,11 @@ class ResumeUnsentSmsTest {
         verify(messageRepo, never()).scheduleDelayedSms(anyLong(), anyLong())
         verify(messageRepo, never()).markFailed(anyLong(), anyInt())
     }
+
+    @Test
+    fun givenTheLookupFails_whenResumed_thenItStillCompletes() {
+        `when`(messageRepo.getUnsentSms()).thenThrow(IllegalStateException("Realm"))
+
+        resume()
+    }
 }
