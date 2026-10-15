@@ -30,11 +30,11 @@ constructor(
     private val notificationManager: NotificationManager,
 ) : Interactor<MarkFailed.Params>() {
 
-    data class Params(val id: Long, val resultCode: Int, val notify: Boolean = true)
+    data class Params(val id: Long, val resultCode: Int)
 
     override fun buildObservable(params: Params): Flowable<Unit> {
         return Flowable.just(Unit)
             .doOnNext { messageRepo.markFailed(params.id, params.resultCode) }
-            .doOnNext { if (params.notify) notificationManager.notifyFailed(params.id) }
+            .doOnNext { notificationManager.notifyFailed(params.id) }
     }
 }
