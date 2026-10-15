@@ -34,7 +34,7 @@ constructor(
 
     override fun buildObservable(params: Params): Flowable<*> {
         return Flowable.just(Unit)
-            .doOnNext { messageRepo.cancelDelayedSms(params.messageId) }
+            .filter { messageRepo.cancelDelayedSms(params.messageId) }
             .doOnNext { messageRepo.deleteMessages(listOf(params.messageId)) }
             .doOnNext {
                 conversationRepo.updateConversations(params.threadId)

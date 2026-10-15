@@ -298,7 +298,7 @@ class MessageRepositoryTest {
     @Test
     fun givenMessageId_whenCancelDelayedSms_thenRepositoryIsCalled() {
         val messageId = 123L
-        doNothing().`when`(messageRepository).cancelDelayedSms(messageId)
+        `when`(messageRepository.cancelDelayedSms(messageId)).thenReturn(true)
 
         messageRepository.cancelDelayedSms(messageId)
 
