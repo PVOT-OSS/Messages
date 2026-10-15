@@ -22,10 +22,13 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.provider.Telephony.Sms
+import android.telephony.SmsMessage
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 import org.prauga.messages.interactor.MarkDelivered
 import org.prauga.messages.interactor.MarkDeliveryFailed
+import org.prauga.messages.util.tryOrNull
 
 class SmsDeliveredReceiver : BroadcastReceiver() {
 
@@ -37,17 +40,27 @@ class SmsDeliveredReceiver : BroadcastReceiver() {
 
         val id = intent.getLongExtra("id", 0L)
 
-        when (resultCode) {
+        val status =
+            intent.getByteArrayExtra("pdu")?.let { pdu ->
+                val format = intent.getStringExtra("format")
+                tryOrNull { SmsMessage.createFromPdu(pdu, format)?.status }
+                    ?.let { SmsDeliveryStatus.from(it, format) }
+            }
+
+        when {
             // TODO notify about delivery
-            Activity.RESULT_OK -> {
+            status == Sms.STATUS_COMPLETE || (status == null && resultCode == Activity.RESULT_OK) -> {
                 val pendingResult = goAsync()
                 markDelivered.execute(id) { pendingResult.finish() }
             }
 
             // TODO notify about delivery failure
-            Activity.RESULT_CANCELED -> {
+            status == Sms.STATUS_FAILED ||
+                (status == null && resultCode == Activity.RESULT_CANCELED) -> {
                 val pendingResult = goAsync()
-                markDeliveryFailed.execute(MarkDeliveryFailed.Params(id, resultCode)) {
+                markDeliveryFailed.execute(
+                    MarkDeliveryFailed.Params(id, status ?: resultCode)
+                ) {
                     pendingResult.finish()
                 }
             }
