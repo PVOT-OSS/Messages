@@ -23,7 +23,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.telephony.SmsManager
-import com.android.mms.MmsConfig
 import com.android.mms.dom.smil.parser.SmilXmlSerializer
 import com.google.android.mms.ContentType
 import com.google.android.mms.InvalidHeaderValueException
@@ -87,6 +86,7 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         parts: List<MMSPart>,
         subject: String?,
         existingUri: Uri?,
+        maxMessageSize: Int? = null,
     ) {
         Timber.v("sending mms")
         try {
@@ -148,12 +148,11 @@ constructor(private val context: Context, settings: Settings = Settings()) {
 
             val configOverrides =
                 MmsConfigOverrides.create(context, subId).apply {
-                    putBoolean(SmsManager.MMS_CONFIG_GROUP_MMS_ENABLED, true)
-                    putInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE, MmsConfig.getMaxMessageSize())
+                    maxMessageSize?.let { putInt(SmsManager.MMS_CONFIG_MAX_MESSAGE_SIZE, it) }
                 }
 
             if (contentUri != null) {
-                SmsManagerFactory.createSmsManager(subId)
+                SmsManagerFactory.createSmsManager(CarrierMmsConfig.resolveSubscriptionId(subId))
                     .sendMultimediaMessage(context, contentUri, null, configOverrides, sentPI)
             } else {
                 Timber.e("Error writing sending Mms")

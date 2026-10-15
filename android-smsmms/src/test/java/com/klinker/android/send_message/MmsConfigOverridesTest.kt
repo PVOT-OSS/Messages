@@ -23,4 +23,12 @@ class MmsConfigOverridesTest {
     fun givenNoVersion_whenUserAgent_thenUsesAppNameOnly() {
         assertEquals("Messages", MmsConfigOverrides.userAgent(null, null))
     }
+
+    @Test
+    fun givenDeviceDetails_whenCustomUserAgent_thenJoinsThemWithoutSpaces() {
+        assertEquals(
+            "Google/Pixel_9/Android-17/Messages_1.0.8",
+            MmsConfigOverrides.customUserAgent("Google", "Pixel 9", "17", "1.0.8"),
+        )
+    }
 }
