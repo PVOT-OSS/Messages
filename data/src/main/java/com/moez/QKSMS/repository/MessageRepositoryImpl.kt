@@ -821,6 +821,30 @@ constructor(
         }
     }
 
+    override fun sendDelayedSmsNow(id: Long) {
+        if (!cancelDelayedSms(id)) return
+
+        val date = now()
+        val message =
+            Realm.getDefaultInstance().use { realm ->
+                realm.refresh()
+                val message =
+                    realm.where(Message::class.java).equalTo("id", id).findFirst() ?: return
+                realm.executeTransaction { message.date = date }
+                realm.copyFromRealm(message)
+            }
+        tryOrNull {
+            context.contentResolver.update(
+                message.getUri(),
+                contentValuesOf(Sms.DATE to date),
+                null,
+                null,
+            )
+        }
+
+        sendSms(message)
+    }
+
     private fun getIntentForDelayedSms(id: Long) =
         PendingIntent.getBroadcast(
             context,
