@@ -23,7 +23,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.telephony.SmsManager
-import com.android.mms.dom.smil.parser.SmilXmlSerializer
 import com.google.android.mms.ContentType
 import com.google.android.mms.InvalidHeaderValueException
 import com.google.android.mms.MMSPart
@@ -35,8 +34,6 @@ import com.google.android.mms.pdu_alt.PduHeaders
 import com.google.android.mms.pdu_alt.PduPart
 import com.google.android.mms.pdu_alt.PduPersister
 import com.google.android.mms.pdu_alt.SendReq
-import com.google.android.mms.smil.SmilHelper
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -215,22 +212,14 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         // Parts
         parts.map(this::partToPduPart).forEach { req.body.addPart(it) }
 
-        // SMIL document for compatibility
+        val smil = SmilBuilder.build(parts.map { SmilBuilder.Part(it.mimeType, it.name) })
         req.body.addPart(
             0,
             PduPart().apply {
                 contentId = "smil".toByteArray()
                 contentLocation = "smil.xml".toByteArray()
                 contentType = ContentType.APP_SMIL.toByteArray()
-                data =
-                    ByteArrayOutputStream()
-                        .apply {
-                            SmilXmlSerializer.serialize(
-                                SmilHelper.createSmilDocument(req.body),
-                                this,
-                            )
-                        }
-                        .toByteArray()
+                data = smil.toByteArray()
             },
         )
 
