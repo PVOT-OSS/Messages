@@ -37,6 +37,8 @@ import java.io.File
 import javax.inject.Inject
 import org.prauga.messages.interactor.SyncMessage
 import org.prauga.messages.model.Message
+import org.prauga.messages.util.tryOrNull
+import org.prauga.messages.worker.MmsSendRetryWorker
 import timber.log.Timber
 
 class MmsSentReceiver : BroadcastReceiver() {
@@ -58,8 +60,15 @@ class MmsSentReceiver : BroadcastReceiver() {
             )
         Timber.v("MMS send result: $result")
 
-        when (result.retry) {
+        val contentId = tryOrNull(false) { ContentUris.parseId(uri) }
+        val messageId = contentId?.let(::findMessageId)
+
+        if (result.retry == MmsRetry.AUTO && messageId != null &&
+            MmsSendRetryWorker.schedule(context, messageId)) {
+            Timber.v("MMS send failed, retrying later")
+        } else when (result.retry) {
             MmsRetry.NONE -> {
+                messageId?.let { MmsSendRetryWorker.clear(context, it) }
                 Timber.v("MMS has finished sending, marking it as so in the database")
                 val values = ContentValues(3)
                 values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_SENT)
@@ -72,8 +81,9 @@ class MmsSentReceiver : BroadcastReceiver() {
 
             else -> {
                 Timber.v("MMS has failed to send, marking it as so in the database")
+                messageId?.let { MmsSendRetryWorker.clear(context, it) }
                 try {
-                    val messageId = ContentUris.parseId(uri)
+                    val mmsId = ContentUris.parseId(uri)
 
                     val values = ContentValues(1)
                     values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_FAILED)
@@ -83,13 +93,13 @@ class MmsSentReceiver : BroadcastReceiver() {
                         Telephony.Mms.CONTENT_URI,
                         values,
                         "${Telephony.Mms._ID} = ?",
-                        arrayOf(messageId.toString()),
+                        arrayOf(mmsId.toString()),
                     )
 
                     // Update the error type directly in Realm since the PendingMessages table
                     // query doesn't work reliably (the message may not be in PendingMessages
                     // by the time this receiver runs)
-                    updateErrorTypeInRealm(messageId, Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT)
+                    updateErrorTypeInRealm(mmsId, Telephony.MmsSms.ERR_TYPE_GENERIC_PERMANENT)
                 } catch (e: MmsException) {
                     Timber.e(e, "Failed to mark MMS as failed")
                 }
@@ -111,6 +121,19 @@ class MmsSentReceiver : BroadcastReceiver() {
      * trying to update the PendingMessages table, which may not contain the message by the time
      * this receiver runs.
      */
+    private fun findMessageId(contentId: Long): Long? =
+        tryOrNull {
+            Realm.getDefaultInstance().use { realm ->
+                realm.refresh()
+                realm
+                    .where(Message::class.java)
+                    .equalTo("type", "mms")
+                    .equalTo("contentId", contentId)
+                    .findFirst()
+                    ?.id
+            }
+        }
+
     private fun updateErrorTypeInRealm(contentId: Long, errorType: Int) {
         try {
             Realm.getDefaultInstance().use { realm ->
