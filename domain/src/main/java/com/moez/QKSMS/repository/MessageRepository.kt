@@ -82,7 +82,9 @@ interface MessageRepository {
 
     fun resendMms(message: Message)
 
-    fun downloadMms(message: Message)
+    fun downloadMms(message: Message, automatic: Boolean = false)
+
+    fun downloadMms(notificationUri: Uri, subId: Int, automatic: Boolean)
 
     fun getPendingMmsDownloads(since: Long): List<Message>
 

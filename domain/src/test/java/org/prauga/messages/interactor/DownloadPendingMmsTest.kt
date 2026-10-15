@@ -47,8 +47,8 @@ class DownloadPendingMmsTest {
 
         testSubscriber.assertComplete()
         testSubscriber.assertNoErrors()
-        verify(messageRepository).downloadMms(first)
-        verify(messageRepository).downloadMms(second)
+        verify(messageRepository).downloadMms(first, true)
+        verify(messageRepository).downloadMms(second, true)
     }
 
     @Test

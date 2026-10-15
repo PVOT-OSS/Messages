@@ -24,6 +24,8 @@ constructor(
         return Flowable.just(params)
             .filter { permissionManager.isDefaultSms() }
             .map { messageRepo.getPendingMmsDownloads(System.currentTimeMillis() - MAX_AGE) }
-            .doOnNext { messages -> messages.forEach(messageRepo::downloadMms) }
+            .doOnNext { messages ->
+                messages.forEach { message -> messageRepo.downloadMms(message, automatic = true) }
+            }
     }
 }

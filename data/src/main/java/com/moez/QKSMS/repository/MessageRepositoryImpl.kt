@@ -695,20 +695,35 @@ constructor(
         return MmsConfig.getMaxMessageSize()
     }
 
-    override fun downloadMms(message: Message) {
+    override fun downloadMms(message: Message, automatic: Boolean) =
+        downloadMms(message.getUri(), message.subId, automatic)
+
+    override fun downloadMms(notificationUri: Uri, subId: Int, automatic: Boolean) {
         val location =
             context.contentResolver
-                .query(message.getUri(), arrayOf(Mms.CONTENT_LOCATION), null, null, null)
-                ?.use { cursor -> if (cursor.moveToFirst()) cursor.getString(0) else null }
+                .query(
+                    notificationUri,
+                    arrayOf(Mms.CONTENT_LOCATION, Mms.MESSAGE_TYPE, Mms.STATUS),
+                    null,
+                    null,
+                    null,
+                )
+                ?.use { cursor ->
+                    when {
+                        !cursor.moveToFirst() -> null
+                        cursor.getInt(1) != Message.MESSAGE_TYPE_NOTIFICATION_IND -> null
+                        cursor.getInt(2) == Message.MMS_STATUS_PERMANENT_FAILURE -> null
+                        else -> cursor.getString(0)
+                    }
+                }
 
         if (location.isNullOrEmpty()) {
-            Timber.w("No content location for MMS ${message.contentId}, can't download it")
+            Timber.w("$notificationUri isn't an MMS waiting to be downloaded")
             return
         }
 
-        MmsConfig.init(context)
         DownloadManager.getInstance()
-            .downloadMultimediaMessage(context, location, message.getUri(), false, message.subId)
+            .downloadMultimediaMessage(context, location, notificationUri, automatic, subId)
     }
 
     override fun getPendingMmsDownloads(since: Long): List<Message> =

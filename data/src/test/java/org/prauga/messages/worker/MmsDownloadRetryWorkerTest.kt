@@ -1,0 +1,37 @@
+/*
+ * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ */
+package org.prauga.messages.worker
+
+import kotlin.random.Random
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
+import org.junit.Test
+
+class MmsDownloadRetryWorkerTest {
+
+    private val seconds = 1000L
+
+    @Test
+    fun givenFirstAttempt_whenRetryDelay_thenWaitsFiveSeconds() {
+        repeat(20) {
+            assertEquals(5 * seconds, MmsDownloadRetryWorker.retryDelay(0, Random(it)))
+        }
+    }
+
+    @Test
+    fun givenLaterAttempts_whenRetryDelay_thenDoublesWithinTheUpperHalf() {
+        repeat(20) {
+            val delay = MmsDownloadRetryWorker.retryDelay(3, Random(it))
+            assertTrue(delay in 20 * seconds..40 * seconds)
+        }
+    }
+
+    @Test
+    fun givenManyAttempts_whenRetryDelay_thenCapsAtTwentyMinutes() {
+        repeat(20) {
+            val delay = MmsDownloadRetryWorker.retryDelay(50, Random(it))
+            assertTrue(delay in 10 * 60 * seconds..20 * 60 * seconds)
+        }
+    }
+}
