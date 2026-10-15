@@ -691,13 +691,25 @@ constructor(
             }
 
         try {
-            smsManager.sendMultipartTextMessage(
-                destination,
-                null,
-                parts,
-                ArrayList(sentIntents),
-                ArrayList(deliveryIntents),
-            )
+            if (config.sendMultipartSmsAsSeparateMessages && parts.size > 1) {
+                parts.forEachIndexed { part, text ->
+                    smsManager.sendTextMessage(
+                        destination,
+                        null,
+                        text,
+                        sentIntents[part],
+                        deliveryIntents[part],
+                    )
+                }
+            } else {
+                smsManager.sendMultipartTextMessage(
+                    destination,
+                    null,
+                    parts,
+                    ArrayList(sentIntents),
+                    ArrayList(deliveryIntents),
+                )
+            }
         } catch (e: IllegalArgumentException) {
             Timber.w(e, "Message body lengths: ${parts.map { it?.length }}")
             reportSmsFailure(message.id)
