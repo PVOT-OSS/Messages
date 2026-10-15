@@ -115,6 +115,7 @@ public final class DownloadRequest {
                 values.put(Telephony.Mms.DATE_SENT, retrieveConf.getDate());
             } catch (Exception ignored) {
             }
+            values.put(Telephony.Mms.CONTENT_LOCATION, locationUrl);
             values.put(Telephony.Mms.READ, 0);
             values.put(Telephony.Mms.SEEN, 0);
             if (!TextUtils.isEmpty(creator)) {

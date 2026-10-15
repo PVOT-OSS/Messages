@@ -40,6 +40,7 @@ import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.PduPersister;
 import com.google.android.mms.pdu_alt.ReadOrigInd;
 import com.klinker.android.send_message.CarrierMmsConfig;
+import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.Utils;
 
 import java.util.HashSet;
@@ -64,6 +65,8 @@ public class PushReceiver extends BroadcastReceiver {
     static final String[] PROJECTION = new String[]{Mms.CONTENT_LOCATION, Mms.LOCKED};
 
     static final int COLUMN_CONTENT_LOCATION = 0;
+
+    private static final long DUPLICATE_WINDOW_SECONDS = 7 * 24 * 60 * 60;
 
     private static Set<String> downloadedUrls = new HashSet<String>();
     private static final ExecutorService PUSH_RECEIVER_EXECUTOR = Executors.newSingleThreadExecutor();
@@ -265,26 +268,35 @@ public class PushReceiver extends BroadcastReceiver {
 
     private static boolean isDuplicateNotification(Context context, NotificationInd nInd) {
         byte[] rawLocation = nInd.getContentLocation();
-        if (rawLocation != null) {
-            String location = new String(rawLocation);
-            String selection = Mms.CONTENT_LOCATION + " = ?";
-            String[] selectionArgs = new String[]{location};
-            Cursor cursor = SqliteWrapper.query(
-                    context, context.getContentResolver(),
-                    Mms.CONTENT_URI, new String[]{Mms._ID},
-                    selection, selectionArgs, null);
-            if (cursor != null) {
-                try {
-                    if (cursor.getCount() > 0) {
-                        // We already received the same notification before.
-                        cursor.close();
-                        //return true;
-                    }
-                } finally {
-                    cursor.close();
-                }
-            }
+        if (rawLocation == null) {
+            return false;
         }
-        return false;
+
+        long nowSeconds = System.currentTimeMillis() / 1000;
+        String selection = Mms.CONTENT_LOCATION + " = ?"
+                + " AND " + Mms.DATE + " BETWEEN ? AND ?"
+                + " AND (" + Mms.MESSAGE_TYPE + " != ?"
+                + " OR " + Mms.STATUS + " IS NULL"
+                + " OR " + Mms.STATUS + " != ?)";
+        String[] selectionArgs = new String[]{
+                new String(rawLocation),
+                String.valueOf(nowSeconds - DUPLICATE_WINDOW_SECONDS),
+                String.valueOf(nowSeconds + DUPLICATE_WINDOW_SECONDS),
+                String.valueOf(MESSAGE_TYPE_NOTIFICATION_IND),
+                String.valueOf(MmsReceivedReceiver.STATUS_PERMANENT_FAILURE)
+        };
+
+        Cursor cursor = SqliteWrapper.query(
+                context, context.getContentResolver(),
+                Mms.CONTENT_URI, new String[]{Mms._ID},
+                selection, selectionArgs, null);
+        if (cursor == null) {
+            return false;
+        }
+        try {
+            return cursor.getCount() > 0;
+        } finally {
+            cursor.close();
+        }
     }
 }
