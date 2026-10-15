@@ -22,13 +22,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.provider.Telephony.Sms
+import android.telephony.SmsMessage
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.android.AndroidInjection
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.worker.ReceiveSmsWorker
@@ -41,35 +40,51 @@ class SmsReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
 
-        Sms.Intents.getMessagesFromIntent(intent)?.let { messages ->
-            // reduce list of messages to single message and save in db
-            val messageId =
-                Single.just(messages)
-                    .observeOn(Schedulers.io())
-                    .map {
-                        Timber.v("onReceive() new sms") // here so runs on io thread
+        val parts =
+            try {
+                Sms.Intents.getMessagesFromIntent(intent)?.filterNotNull().orEmpty()
+            } catch (e: Exception) {
+                Timber.e(e, "Unable to read the SMS")
+                emptyList()
+            }
+        val sms = ReceivedSms.from(parts.map(::part)) ?: return
+        val subId = intent.extras?.getInt("subscription", -1) ?: -1
 
-                        messageRepo
-                            .insertReceivedSms(
-                                intent.extras?.getInt("subscription", -1) ?: -1,
-                                messages[0].displayOriginatingAddress,
-                                messages
-                                    .mapNotNull { it.displayMessageBody }
-                                    .reduce { body, new -> body + new },
-                                messages[0].timestampMillis,
-                            )
-                            .id
-                    }
-                    .blockingGet()
+        val pendingResult = goAsync()
+        Thread {
+                try {
+                    Timber.v("onReceive() new sms")
+                    val messageId =
+                        messageRepo.insertReceivedSms(subId, sms.address, sms.body, sms.sentTime).id
 
-            // start worker with message id as param
-            WorkManager.getInstance(context)
-                .enqueue(
-                    OneTimeWorkRequestBuilder<ReceiveSmsWorker>()
-                        .setInputData(workDataOf(INPUT_DATA_KEY_MESSAGE_ID to messageId))
-                        .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-                        .build()
-                )
-        }
+                    // start worker with message id as param
+                    WorkManager.getInstance(context)
+                        .enqueue(
+                            OneTimeWorkRequestBuilder<ReceiveSmsWorker>()
+                                .setInputData(workDataOf(INPUT_DATA_KEY_MESSAGE_ID to messageId))
+                                .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                                .build()
+                        )
+                } catch (e: Exception) {
+                    Timber.e(e, "Unable to store the received SMS")
+                } finally {
+                    pendingResult.finish()
+                }
+            }
+            .start()
     }
+
+    private fun part(message: SmsMessage) =
+        ReceivedSms.Part(
+            address = tryOrNull { message.displayOriginatingAddress },
+            body = tryOrNull { message.displayMessageBody },
+            sentTime = tryOrNull { message.timestampMillis } ?: 0L,
+        )
+
+    private fun <T> tryOrNull(block: () -> T): T? =
+        try {
+            block()
+        } catch (e: Exception) {
+            null
+        }
 }
