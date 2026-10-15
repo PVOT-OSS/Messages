@@ -93,7 +93,7 @@ constructor(private val context: Context, settings: Settings = Settings()) {
             val fileName = "send." + Math.abs(Random().nextLong()).toString() + ".dat"
             val sendFile = File(context.cacheDir, fileName)
 
-            val sendReq = buildPdu(context, addresses, subject, parts)
+            val sendReq = buildPdu(context, subId, addresses, subject, parts)
             val persister = PduPersister.getPduPersister(context)
             val messageUri =
                 existingUri
@@ -169,16 +169,17 @@ constructor(private val context: Context, settings: Settings = Settings()) {
 
     private fun buildPdu(
         context: Context,
+        subId: Int,
         recipients: List<String>,
         subject: String?,
         parts: List<MMSPart>,
     ): SendReq {
         val req = SendReq()
 
-        Utils.getMyPhoneNumber(context)
+        Utils.getMyPhoneNumber(context, subId)
             ?.takeIf(String::isNotEmpty)
             ?.let(::EncodedStringValue)
-            ?.let(req::setFrom) // From
+            ?.let(req::setFrom)
         recipients.map(::EncodedStringValue).forEach(req::addTo) // To
         subject
             ?.takeIf(String::isNotEmpty)

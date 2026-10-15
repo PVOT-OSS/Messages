@@ -857,7 +857,7 @@ constructor(
         parts: List<MMSPart>,
         subject: String?,
     ): Pair<Message, Uri> {
-        val sendReq = buildSendReq(addresses, subject, parts)
+        val sendReq = buildSendReq(subId, addresses, subject, parts)
         val persister = PduPersister.getPduPersister(context)
         val messageUri =
             persister.persist(
@@ -923,13 +923,14 @@ constructor(
     }
 
     private fun buildSendReq(
+        subId: Int,
         recipients: List<String>,
         subject: String?,
         parts: List<MMSPart>,
     ): SendReq {
         val req = SendReq()
 
-        Utils.getMyPhoneNumber(context)
+        Utils.getMyPhoneNumber(context, subId)
             ?.takeIf(String::isNotEmpty)
             ?.let(::EncodedStringValue)
             ?.let(req::setFrom)
