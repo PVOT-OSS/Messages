@@ -159,7 +159,7 @@ public class PushReceiver extends BroadcastReceiver {
                                 downloadedUrls.add(location);
                             }
 
-                            String from = nInd.getFrom() != null ? nInd.getFrom().getString() : null;
+                            String from = senderAddress(nInd);
                             if (shouldAutoDownload(mContext, subId, config, from)) {
                                 DownloadManager.getInstance().downloadMultimediaMessage(mContext, location, uri, true, subId);
                             } else {
@@ -213,6 +213,13 @@ public class PushReceiver extends BroadcastReceiver {
                                          String from) {
         return config.getAutoRetrieveEnabled()
                 && (!isRoaming(context, subId) || config.getRoamingAutoRetrieveEnabled());
+    }
+
+    static String senderAddress(NotificationInd notification) {
+        if (notification.getFrom() == null) return null;
+        String from = notification.getFrom().getString();
+        int type = from.indexOf("/TYPE=");
+        return type >= 0 ? from.substring(0, type) : from;
     }
 
     protected void onNotificationReceived(Context context, Uri notificationUri, int subId) {
