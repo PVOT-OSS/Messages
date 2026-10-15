@@ -15,12 +15,15 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.model.Message
 import org.prauga.messages.repository.MessageRepository
 
 class ResumeUnsentSmsTest {
 
     @Mock private lateinit var messageRepo: MessageRepository
+
+    @Mock private lateinit var notificationManager: NotificationManager
 
     private lateinit var resumeUnsentSms: ResumeUnsentSms
 
@@ -29,7 +32,7 @@ class ResumeUnsentSmsTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        resumeUnsentSms = ResumeUnsentSms(messageRepo)
+        resumeUnsentSms = ResumeUnsentSms(messageRepo, notificationManager)
     }
 
     private fun sms(id: Long, date: Long): Message =
@@ -64,6 +67,7 @@ class ResumeUnsentSmsTest {
         resume()
 
         verify(messageRepo).markFailed(2, Telephony.MmsSms.ERR_TYPE_GENERIC)
+        verify(notificationManager).notifyFailed(2)
         verify(messageRepo, never()).scheduleDelayedSms(anyLong(), anyLong())
         verify(messageRepo, never()).markSending(anyLong())
     }

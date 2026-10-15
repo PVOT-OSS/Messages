@@ -7,10 +7,15 @@ import android.provider.Telephony
 import io.reactivex.Flowable
 import javax.inject.Inject
 import timber.log.Timber
+import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.repository.MessageRepository
 
-class ResumeUnsentSms @Inject constructor(private val messageRepo: MessageRepository) :
-    Interactor<ResumeUnsentSms.Params>() {
+class ResumeUnsentSms
+@Inject
+constructor(
+    private val messageRepo: MessageRepository,
+    private val notificationManager: NotificationManager,
+) : Interactor<ResumeUnsentSms.Params>() {
 
     data class Params(val now: Long, val retrying: Set<Long> = emptySet())
 
@@ -21,8 +26,10 @@ class ResumeUnsentSms @Inject constructor(private val messageRepo: MessageReposi
                         message.id in params.retrying -> Unit
                         message.date > params.now ->
                             messageRepo.scheduleDelayedSms(message.id, message.date)
-                        else ->
+                        else -> {
                             messageRepo.markFailed(message.id, Telephony.MmsSms.ERR_TYPE_GENERIC)
+                            notificationManager.notifyFailed(message.id)
+                        }
                     }
                 }
             }
