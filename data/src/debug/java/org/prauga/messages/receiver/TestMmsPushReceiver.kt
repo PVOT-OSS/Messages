@@ -63,20 +63,27 @@ class TestMmsPushReceiver : MmsReceiver() {
             intent.getStringExtra("attach")?.split(',')?.filter { it.isNotBlank() }.orEmpty() +
                 listOfNotNull("png".takeIf { intent.getBooleanExtra("image", false) })
         val attachments = kinds.mapIndexed { index, kind -> testAttachment(context, kind, index) }
+        val recipients =
+            if (intent.getBooleanExtra("individually", false)) addresses.map(::listOf)
+            else listOf(addresses)
         val params =
-            SendMessage.Params(
-                subId = intent.getIntExtra(EXTRA_SUBSCRIPTION, -1),
-                threadId = 0,
-                addresses = addresses,
-                body = intent.getStringExtra("text").orEmpty(),
-                attachments = attachments,
-            )
+            recipients.map { to ->
+                SendMessage.Params(
+                    subId = intent.getIntExtra(EXTRA_SUBSCRIPTION, -1),
+                    threadId = 0,
+                    addresses = to,
+                    body = intent.getStringExtra("text").orEmpty(),
+                    attachments = attachments,
+                )
+            }
 
         Timber.v("Sending a test message to $addresses")
         val pendingResult = goAsync()
         Thread {
                 try {
-                    sender.sendMessage.buildObservable(params).blockingSubscribe({}, Timber::w)
+                    params.forEach {
+                        sender.sendMessage.buildObservable(it).blockingSubscribe({}, Timber::w)
+                    }
                 } finally {
                     pendingResult.finish()
                 }
