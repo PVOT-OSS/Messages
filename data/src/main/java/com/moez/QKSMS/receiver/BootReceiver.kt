@@ -23,16 +23,20 @@ import android.content.Context
 import android.content.Intent
 import dagger.android.AndroidInjection
 import javax.inject.Inject
+import org.prauga.messages.interactor.ResumeUnsentSms
 import org.prauga.messages.interactor.UpdateScheduledMessageAlarms
 
 class BootReceiver : BroadcastReceiver() {
 
+    @Inject lateinit var resumeUnsentSms: ResumeUnsentSms
     @Inject lateinit var updateScheduledMessageAlarms: UpdateScheduledMessageAlarms
 
     override fun onReceive(context: Context, intent: Intent?) {
         AndroidInjection.inject(this, context)
 
         val result = goAsync()
-        updateScheduledMessageAlarms.execute(Unit) { result.finish() }
+        resumeUnsentSms.execute(System.currentTimeMillis()) {
+            updateScheduledMessageAlarms.execute(Unit) { result.finish() }
+        }
     }
 }
