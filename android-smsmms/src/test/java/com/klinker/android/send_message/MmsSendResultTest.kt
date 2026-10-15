@@ -82,4 +82,16 @@ class MmsSendResultTest {
         )
         assertEquals(MmsRetry.NEVER, MmsSendResult.retryForError(MmsSendResult.RESULT_TOO_LARGE, 0))
     }
+
+    @Test
+    fun givenUnableToConnect_whenRetryForError_thenAutomaticOnlyWithoutService() {
+        assertEquals(
+            MmsRetry.AUTO,
+            MmsSendResult.retryForError(SmsManager.MMS_ERROR_UNABLE_CONNECT_MMS, 0, true),
+        )
+        assertEquals(
+            MmsRetry.MANUAL,
+            MmsSendResult.retryForError(SmsManager.MMS_ERROR_UNABLE_CONNECT_MMS, 0, false),
+        )
+    }
 }

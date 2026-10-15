@@ -29,10 +29,15 @@ data class MmsSendResult(
         const val RESULT_TOO_LARGE = 10_000
 
         @JvmStatic
-        fun from(resultCode: Int, httpStatus: Int, response: ByteArray?): MmsSendResult =
+        fun from(
+            resultCode: Int,
+            httpStatus: Int,
+            response: ByteArray?,
+            noService: Boolean = false,
+        ): MmsSendResult =
             when (resultCode) {
                 Activity.RESULT_OK -> fromResponse(response)
-                else -> MmsSendResult(retryForError(resultCode, httpStatus))
+                else -> MmsSendResult(retryForError(resultCode, httpStatus, noService))
             }
 
         private fun fromResponse(response: ByteArray?): MmsSendResult {
@@ -62,9 +67,12 @@ data class MmsSendResult(
         }
 
         @JvmStatic
-        fun retryForError(resultCode: Int, httpStatus: Int): MmsRetry =
+        @JvmOverloads
+        fun retryForError(resultCode: Int, httpStatus: Int, noService: Boolean = false): MmsRetry =
             when (resultCode) {
                 Activity.RESULT_OK -> MmsRetry.NONE
+                SmsManager.MMS_ERROR_UNABLE_CONNECT_MMS ->
+                    if (noService) MmsRetry.AUTO else MmsRetry.MANUAL
                 RESULT_TOO_LARGE -> MmsRetry.NEVER
                 SmsManager.MMS_ERROR_HTTP_FAILURE ->
                     if (httpStatus == 404) MmsRetry.NEVER else MmsRetry.AUTO

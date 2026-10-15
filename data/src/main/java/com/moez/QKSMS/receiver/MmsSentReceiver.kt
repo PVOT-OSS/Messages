@@ -31,6 +31,7 @@ import com.google.android.mms.util_alt.SqliteWrapper
 import com.klinker.android.send_message.MmsRetry
 import com.klinker.android.send_message.MmsSendResult
 import com.klinker.android.send_message.Transaction
+import com.klinker.android.send_message.Utils
 import dagger.android.AndroidInjection
 import io.realm.Realm
 import java.io.File
@@ -59,6 +60,7 @@ class MmsSentReceiver : BroadcastReceiver() {
                 resultCode,
                 intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0),
                 intent.getByteArrayExtra(SmsManager.EXTRA_MMS_DATA),
+                Utils.hasNoService(context, subscriptionOf(context, uri)),
             )
         Timber.v("MMS send result: $result")
 
@@ -136,6 +138,13 @@ class MmsSentReceiver : BroadcastReceiver() {
             }
         }
     }
+
+    private fun subscriptionOf(context: Context, uri: Uri): Int =
+        tryOrNull(false) {
+            context.contentResolver
+                .query(uri, arrayOf(Telephony.Mms.SUBSCRIPTION_ID), null, null, null)
+                ?.use { if (it.moveToFirst()) it.getInt(0) else null }
+        } ?: -1
 
     /**
      * Updates the error type for a failed MMS message directly in Realm. This is more reliable than

@@ -62,7 +62,8 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
         final String path = intent.getStringExtra(EXTRA_FILE_PATH);
 
         MmsRetry retry = MmsSendResult.retryForError(getResultCode(),
-                intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0));
+                intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0),
+                Utils.hasNoService(context, subId));
         Uri messageUri = null;
 
         if (retry == MmsRetry.NONE) {
