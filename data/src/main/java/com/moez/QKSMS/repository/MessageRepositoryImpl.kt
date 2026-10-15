@@ -631,6 +631,8 @@ constructor(
                 if (prefs.unicode.get()) StripAccents.stripAccents(message.body) else message.body
             ) ?: arrayListOf()
 
+        val mutable =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
         val attempt = System.currentTimeMillis()
         val sentIntents =
             parts.indices.map { part ->
@@ -645,7 +647,7 @@ constructor(
                     context,
                     message.id.toInt(),
                     intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    PendingIntent.FLAG_UPDATE_CURRENT or mutable,
                 )
             }
 
@@ -656,9 +658,7 @@ constructor(
                 Intent(context, SmsDeliveredReceiver::class.java)
                     .setData(Uri.parse("smsdelivered://${message.id}"))
                     .putExtra("id", message.id),
-                PendingIntent.FLAG_UPDATE_CURRENT or
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE
-                    else 0,
+                PendingIntent.FLAG_UPDATE_CURRENT or mutable,
             )
         val deliveryIntents =
             parts.indices.map { part ->
