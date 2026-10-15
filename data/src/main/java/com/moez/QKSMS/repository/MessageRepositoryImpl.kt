@@ -84,6 +84,7 @@ import org.prauga.messages.util.ImageUtils
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
 import org.prauga.messages.util.tryOrNull
+import org.prauga.messages.worker.DelayedSmsWorker
 import timber.log.Timber
 
 @Singleton
@@ -801,11 +802,22 @@ constructor(
 
     override fun scheduleDelayedSms(id: Long, sendTime: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExactAndAllowWhileIdle(
-            AlarmManager.RTC_WAKEUP,
-            sendTime,
-            getIntentForDelayedSms(id),
-        )
+        val exact =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
+        try {
+            if (exact) {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    sendTime,
+                    getIntentForDelayedSms(id),
+                )
+                return
+            }
+        } catch (e: SecurityException) {
+            Timber.w(e, "Exact alarm access was taken away")
+        }
+
+        DelayedSmsWorker.schedule(context, id, sendTime - now())
     }
 
     override fun cancelDelayedSms(id: Long): Boolean {
@@ -813,12 +825,17 @@ constructor(
             getIntentForDelayedSms(id)
         )
 
-        return Realm.getDefaultInstance().use { realm ->
-            realm.refresh()
-            realm.where(Message::class.java).equalTo("id", id).findFirst()?.let { message ->
-                message.isSms() && message.boxId == Sms.MESSAGE_TYPE_OUTBOX && message.date > now()
-            } ?: false
-        }
+        val waiting =
+            Realm.getDefaultInstance().use { realm ->
+                realm.refresh()
+                realm.where(Message::class.java).equalTo("id", id).findFirst()?.let { message ->
+                    message.isSms() &&
+                        message.boxId == Sms.MESSAGE_TYPE_OUTBOX &&
+                        message.date > now()
+                } ?: false
+            }
+        if (waiting) DelayedSmsWorker.cancel(context, id)
+        return waiting
     }
 
     override fun sendDelayedSmsNow(id: Long) {
