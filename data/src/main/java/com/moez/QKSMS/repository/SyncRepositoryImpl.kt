@@ -291,8 +291,10 @@ constructor(
 
         return contentResolver.query(stableUri, null, null, null, null)?.use { cursor ->
 
-            // If there are no rows, return null. Otherwise, we've moved to the first row
-            if (!cursor.moveToFirst()) return null
+            if (!cursor.moveToFirst()) {
+                existingId?.let(::removeMessage)
+                return null
+            }
 
             val columnsMap = CursorToMessage.MessageColumns(cursor)
             cursorToMessage.map(Pair(cursor, columnsMap)).apply {
@@ -330,6 +332,25 @@ constructor(
                 }
             }
         }
+    }
+
+    private fun removeMessage(id: Long) {
+        val threadId =
+            Realm.getDefaultInstance().use { realm ->
+                val message =
+                    realm.where(Message::class.java).equalTo("id", id).findFirst()
+                        ?: return
+                val threadId = message.threadId
+
+                realm.executeTransaction {
+                    message.parts.deleteAllFromRealm()
+                    message.deleteFromRealm()
+                }
+
+                threadId
+            }
+
+        conversationRepo.updateConversations(threadId)
     }
 
     override fun syncContacts() {
