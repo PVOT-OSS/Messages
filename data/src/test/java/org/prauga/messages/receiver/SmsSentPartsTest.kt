@@ -36,10 +36,18 @@ class SmsSentPartsTest {
     }
 
     @Test
-    fun givenMultipart_whenAMiddlePartFails_thenTheLastPartStillReportsSent() {
+    fun givenMultipart_whenAMiddlePartFails_thenTheLastPartDoesNotSendTheMessage() {
         assertEquals(Outcome.NONE, parts.onResult(1, 7, part = 0, parts = 3, ok = true))
         assertEquals(Outcome.FAILED, parts.onResult(1, 7, part = 1, parts = 3, ok = false))
-        assertEquals(Outcome.SENT, parts.onResult(1, 7, part = 2, parts = 3, ok = true))
+        assertEquals(Outcome.NONE, parts.onResult(1, 7, part = 2, parts = 3, ok = true))
+    }
+
+    @Test
+    fun givenAFailedAttempt_whenTheRetrySucceeds_thenItIsSent() {
+        assertEquals(Outcome.FAILED, parts.onResult(1, 7, part = 0, parts = 2, ok = false))
+        assertEquals(Outcome.NONE, parts.onResult(1, 7, part = 1, parts = 2, ok = true))
+        assertEquals(Outcome.NONE, parts.onResult(1, 8, part = 0, parts = 2, ok = true))
+        assertEquals(Outcome.SENT, parts.onResult(1, 8, part = 1, parts = 2, ok = true))
     }
 
     @Test
