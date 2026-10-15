@@ -840,6 +840,7 @@ constructor(
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val exact =
             Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()
+        // Only ever one of the two, or the message would go twice
         try {
             if (exact) {
                 alarmManager.setExactAndAllowWhileIdle(
@@ -847,12 +848,14 @@ constructor(
                     sendTime,
                     getIntentForDelayedSms(id),
                 )
+                DelayedSmsWorker.cancel(context, id)
                 return
             }
         } catch (e: SecurityException) {
             Timber.w(e, "Exact alarm access was taken away")
         }
 
+        alarmManager.cancel(getIntentForDelayedSms(id))
         DelayedSmsWorker.schedule(context, id, sendTime - now())
     }
 
