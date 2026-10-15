@@ -15,7 +15,7 @@ class DownloadMms @Inject constructor(private val messageRepo: MessageRepository
     override fun buildObservable(params: Long): Flowable<Message> {
         return Flowable.just(params)
             .mapNotNull(messageRepo::getMessage)
-            .filter { message -> message.isPendingMmsDownload() }
+            .filter { message -> message.isPendingMmsDownload() && !message.isExpiredMmsDownload() }
             .doOnNext(messageRepo::downloadMms)
     }
 }

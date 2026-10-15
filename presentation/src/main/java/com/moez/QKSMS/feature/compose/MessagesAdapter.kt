@@ -233,7 +233,7 @@ constructor(
                         when (toggleSelection(it.id, false)) {
                             true -> containerView.isActivated = isSelected(it.id)
                             false ->
-                                if (it.isPendingMmsDownload()) {
+                                if (it.isPendingMmsDownload() && !it.isExpiredMmsDownload()) {
                                     downloadClicks.onNext(it.id)
                                 } else {
                                     expanded[it.id] =
@@ -330,7 +330,9 @@ constructor(
 
         // get message text to display, which may need to be truncated
         val displayText =
-            if (message.isPendingMmsDownload())
+            if (message.isExpiredMmsDownload())
+                context.getString(R.string.message_mms_expired)
+            else if (message.isPendingMmsDownload())
                 context.getString(R.string.message_mms_not_downloaded)
             else
                 subject.joinTo(message.getText(false), "\n").let {

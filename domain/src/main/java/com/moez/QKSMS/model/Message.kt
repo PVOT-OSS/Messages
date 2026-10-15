@@ -33,6 +33,8 @@ open class Message : RealmObject() {
 
     companion object {
         const val MESSAGE_TYPE_NOTIFICATION_IND = 0x82
+
+        const val MMS_STATUS_PERMANENT_FAILURE = 0x87
     }
 
     enum class AttachmentType {
@@ -98,6 +100,9 @@ open class Message : RealmObject() {
     fun isSms(): Boolean = type == "sms"
 
     fun isPendingMmsDownload(): Boolean = isMms() && messageType == MESSAGE_TYPE_NOTIFICATION_IND
+
+    fun isExpiredMmsDownload(): Boolean =
+        isPendingMmsDownload() && mmsStatus == MMS_STATUS_PERMANENT_FAILURE
 
     fun isMe(): Boolean {
         val isIncomingMms =

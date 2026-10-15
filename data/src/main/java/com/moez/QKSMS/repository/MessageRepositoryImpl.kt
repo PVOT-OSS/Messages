@@ -697,6 +697,7 @@ constructor(
                 .where(Message::class.java)
                 .equalTo("type", "mms")
                 .equalTo("messageType", Message.MESSAGE_TYPE_NOTIFICATION_IND)
+                .notEqualTo("mmsStatus", Message.MMS_STATUS_PERMANENT_FAILURE)
                 .greaterThan("date", since)
                 .findAll()
                 .let(realm::copyFromRealm)
