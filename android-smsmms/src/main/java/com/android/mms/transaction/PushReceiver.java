@@ -22,7 +22,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -34,20 +33,16 @@ import android.telephony.TelephonyManager;
 import com.android.mms.service_alt.SubscriptionIdChecker;
 import com.google.android.mms.ContentType;
 import com.google.android.mms.MmsException;
-import com.google.android.mms.pdu_alt.DeliveryInd;
 import com.google.android.mms.pdu_alt.GenericPdu;
 import com.google.android.mms.pdu_alt.NotificationInd;
 import com.google.android.mms.pdu_alt.PduHeaders;
 import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.PduPersister;
-import com.google.android.mms.pdu_alt.ReadOrigInd;
 import com.klinker.android.send_message.CarrierMmsConfig;
 import com.klinker.android.send_message.MmsAcknowledger;
 import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.Utils;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -55,9 +50,7 @@ import timber.log.Timber;
 
 import static android.provider.Telephony.Sms.Intents.WAP_PUSH_DELIVER_ACTION;
 import static android.provider.Telephony.Sms.Intents.WAP_PUSH_RECEIVED_ACTION;
-import static com.google.android.mms.pdu_alt.PduHeaders.MESSAGE_TYPE_DELIVERY_IND;
 import static com.google.android.mms.pdu_alt.PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND;
-import static com.google.android.mms.pdu_alt.PduHeaders.MESSAGE_TYPE_READ_ORIG_IND;
 
 /**
  * Receives Intent.WAP_PUSH_RECEIVED_ACTION intents and starts the
@@ -71,7 +64,6 @@ public class PushReceiver extends BroadcastReceiver {
 
     private static final long DUPLICATE_WINDOW_SECONDS = 7 * 24 * 60 * 60;
 
-    private static Set<String> downloadedUrls = new HashSet<String>();
     private static final ExecutorService PUSH_RECEIVER_EXECUTOR = Executors.newSingleThreadExecutor();
 
     private class ReceivePushTask extends AsyncTask<Intent, Void, Void> {
@@ -102,29 +94,10 @@ public class PushReceiver extends BroadcastReceiver {
             }
 
             PduPersister p = PduPersister.getPduPersister(mContext);
-            ContentResolver cr = mContext.getContentResolver();
             int type = pdu.getMessageType();
-            long threadId;
 
             try {
                 switch (type) {
-                    case MESSAGE_TYPE_DELIVERY_IND:
-                    case MESSAGE_TYPE_READ_ORIG_IND: {
-                        threadId = findThreadId(mContext, pdu, type);
-                        if (threadId == -1) {
-                            // The associated SendReq isn't found, therefore skip
-                            // processing this PDU.
-                            break;
-                        }
-
-                        Uri uri = p.persist(pdu, Uri.parse("content://mms/inbox"),
-                                PduPersister.DUMMY_THREAD_ID, true, true, null);
-                        // Update thread ID for ReadOrigInd & DeliveryInd.
-                        ContentValues values = new ContentValues(1);
-                        values.put(Mms.THREAD_ID, threadId);
-                        SqliteWrapper.update(mContext, cr, uri, values, null, null);
-                        break;
-                    }
                     case MESSAGE_TYPE_NOTIFICATION_IND: {
                         NotificationInd nInd = (NotificationInd) pdu;
 
@@ -152,12 +125,6 @@ public class PushReceiver extends BroadcastReceiver {
                             setSubscriptionId(mContext, uri, subId);
 
                             String location = getContentLocation(mContext, uri);
-                            if (downloadedUrls.contains(location)) {
-                                Timber.v("already added this download, don't download again");
-                                return null;
-                            } else {
-                                downloadedUrls.add(location);
-                            }
 
                             String from = senderAddress(nInd);
                             if (shouldAutoDownload(mContext, subId, config, from)) {
@@ -177,7 +144,7 @@ public class PushReceiver extends BroadcastReceiver {
                         break;
                     }
                     default:
-                        Timber.e("Received unrecognized PDU.");
+                        Timber.v("Received unsupported WAP Push of type " + type);
                 }
             } catch (MmsException e) {
                 Timber.e(e, "Failed to save the data from PUSH: type=" + type);
@@ -273,44 +240,6 @@ public class PushReceiver extends BroadcastReceiver {
         throw new MmsException("Cannot get X-Mms-Content-Location from: " + uri);
     }
 
-    private static long findThreadId(Context context, GenericPdu pdu, int type) {
-        String messageId;
-
-        if (type == MESSAGE_TYPE_DELIVERY_IND) {
-            messageId = new String(((DeliveryInd) pdu).getMessageId());
-        } else {
-            messageId = new String(((ReadOrigInd) pdu).getMessageId());
-        }
-
-        StringBuilder sb = new StringBuilder('(');
-        sb.append(Mms.MESSAGE_ID);
-        sb.append('=');
-        sb.append(DatabaseUtils.sqlEscapeString(messageId));
-        sb.append(" AND ");
-        sb.append(Mms.MESSAGE_TYPE);
-        sb.append('=');
-        sb.append(PduHeaders.MESSAGE_TYPE_SEND_REQ);
-        // TODO ContentResolver.query() appends closing ')' to the selection argument
-        // sb.append(')');
-
-        Cursor cursor = SqliteWrapper.query(context, context.getContentResolver(),
-                Mms.CONTENT_URI, new String[]{Mms.THREAD_ID},
-                sb.toString(), null, null);
-        if (cursor != null) {
-            try {
-                if ((cursor.getCount() == 1) && cursor.moveToFirst()) {
-                    long id = cursor.getLong(0);
-                    cursor.close();
-                    return id;
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-
-        return -1;
-    }
-
     private static boolean isDuplicateNotification(Context context, NotificationInd nInd) {
         byte[] rawLocation = nInd.getContentLocation();
         if (rawLocation == null) {
@@ -318,17 +247,15 @@ public class PushReceiver extends BroadcastReceiver {
         }
 
         long nowSeconds = System.currentTimeMillis() / 1000;
-        String selection = Mms.CONTENT_LOCATION + " = ?"
-                + " AND " + Mms.DATE + " BETWEEN ? AND ?"
-                + " AND (" + Mms.MESSAGE_TYPE + " != ?"
-                + " OR " + Mms.STATUS + " IS NULL"
-                + " OR " + Mms.STATUS + " != ?)";
+        String selection = "(" + Mms.MESSAGE_TYPE + " != ? OR " + Mms.EXPIRY + " > ?)"
+                + " AND " + Mms.DATE + " > ? AND " + Mms.DATE + " < ?"
+                + " AND " + Mms.CONTENT_LOCATION + " = ?";
         String[] selectionArgs = new String[]{
-                new String(rawLocation),
+                String.valueOf(MESSAGE_TYPE_NOTIFICATION_IND),
+                String.valueOf(nowSeconds),
                 String.valueOf(nowSeconds - DUPLICATE_WINDOW_SECONDS),
                 String.valueOf(nowSeconds + DUPLICATE_WINDOW_SECONDS),
-                String.valueOf(MESSAGE_TYPE_NOTIFICATION_IND),
-                String.valueOf(MmsReceivedReceiver.STATUS_PERMANENT_FAILURE)
+                new String(rawLocation)
         };
 
         Cursor cursor = SqliteWrapper.query(
