@@ -6,6 +6,7 @@ package org.prauga.messages.interactor
 import io.reactivex.Flowable
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import org.prauga.messages.manager.MmsDownloadPolicy
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.repository.MessageRepository
 
@@ -13,6 +14,7 @@ class DownloadPendingMms
 @Inject
 constructor(
     private val messageRepo: MessageRepository,
+    private val mmsDownloadPolicy: MmsDownloadPolicy,
     private val permissionManager: PermissionManager,
 ) : Interactor<Unit>() {
 
@@ -25,7 +27,11 @@ constructor(
             .filter { permissionManager.isDefaultSms() }
             .map { messageRepo.getPendingMmsDownloads(System.currentTimeMillis() - MAX_AGE) }
             .doOnNext { messages ->
-                messages.forEach { message -> messageRepo.downloadMms(message, automatic = true) }
+                messages
+                    .filter { message ->
+                        mmsDownloadPolicy.shouldAutoDownload(message.subId, message.address)
+                    }
+                    .forEach { message -> messageRepo.downloadMms(message, automatic = true) }
             }
     }
 }

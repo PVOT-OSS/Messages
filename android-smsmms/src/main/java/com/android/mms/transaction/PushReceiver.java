@@ -26,8 +26,10 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SqliteWrapper;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.provider.Telephony.Mms;
 import android.provider.Telephony.Mms.Inbox;
+import android.telephony.TelephonyManager;
 
 import com.android.mms.service_alt.SubscriptionIdChecker;
 import com.google.android.mms.ContentType;
@@ -40,6 +42,7 @@ import com.google.android.mms.pdu_alt.PduParser;
 import com.google.android.mms.pdu_alt.PduPersister;
 import com.google.android.mms.pdu_alt.ReadOrigInd;
 import com.klinker.android.send_message.CarrierMmsConfig;
+import com.klinker.android.send_message.MmsAcknowledger;
 import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.Utils;
 
@@ -156,7 +159,18 @@ public class PushReceiver extends BroadcastReceiver {
                                 downloadedUrls.add(location);
                             }
 
-                            DownloadManager.getInstance().downloadMultimediaMessage(mContext, location, uri, true, subId);
+                            String from = nInd.getFrom() != null ? nInd.getFrom().getString() : null;
+                            if (shouldAutoDownload(mContext, subId, config, from)) {
+                                DownloadManager.getInstance().downloadMultimediaMessage(mContext, location, uri, true, subId);
+                            } else {
+                                Timber.v("Not downloading MMS automatically");
+                                if (nInd.getTransactionId() != null) {
+                                    MmsAcknowledger.sendNotifyResp(mContext, subId,
+                                            nInd.getTransactionId(), PduHeaders.STATUS_DEFERRED,
+                                            location);
+                                }
+                                onNotificationReceived(mContext, uri, subId);
+                            }
                         } else {
                             Timber.v("Skip downloading duplicate message: " + new String(nInd.getContentLocation()));
                         }
@@ -192,6 +206,30 @@ public class PushReceiver extends BroadcastReceiver {
             new ReceivePushTask(context, goAsync()).executeOnExecutor(PUSH_RECEIVER_EXECUTOR, intent);
 
             Timber.v(context.getPackageName() + " received and aborted");
+        }
+    }
+
+    protected boolean shouldAutoDownload(Context context, int subId, CarrierMmsConfig config,
+                                         String from) {
+        return config.getAutoRetrieveEnabled()
+                && (!isRoaming(context, subId) || config.getRoamingAutoRetrieveEnabled());
+    }
+
+    protected void onNotificationReceived(Context context, Uri notificationUri, int subId) {
+    }
+
+    public static boolean isRoaming(Context context, int subId) {
+        try {
+            TelephonyManager telephony = context.getSystemService(TelephonyManager.class);
+            if (telephony == null) return false;
+            int resolved = CarrierMmsConfig.resolveSubscriptionId(subId);
+            if (resolved >= 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                telephony = telephony.createForSubscriptionId(resolved);
+            }
+            return telephony.isNetworkRoaming();
+        } catch (RuntimeException e) {
+            Timber.w(e, "Unable to tell if we're roaming");
+            return false;
         }
     }
 

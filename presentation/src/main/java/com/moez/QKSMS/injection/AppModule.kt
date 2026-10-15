@@ -50,6 +50,8 @@ import org.prauga.messages.manager.ChangelogManager
 import org.prauga.messages.manager.ChangelogManagerImpl
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.manager.KeyManagerImpl
+import org.prauga.messages.manager.MmsDownloadPolicy
+import org.prauga.messages.manager.MmsDownloadPolicyImpl
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.manager.PermissionManagerImpl
@@ -157,6 +159,9 @@ class AppModule(private var application: Application) {
     @Provides fun provideShortcutManager(manager: ShortcutManagerImpl): ShortcutManager = manager
 
     @Provides fun provideReferralManager(manager: ReferralManagerImpl): ReferralManager = manager
+
+    @Provides
+    fun provideMmsDownloadPolicy(policy: MmsDownloadPolicyImpl): MmsDownloadPolicy = policy
 
     @Provides fun provideWidgetManager(manager: WidgetManagerImpl): WidgetManager = manager
 
