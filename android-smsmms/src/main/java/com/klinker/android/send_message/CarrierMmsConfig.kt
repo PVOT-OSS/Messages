@@ -75,6 +75,15 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
     val aliasMaxChars: Int
         get() = int(KEY_ALIAS_MAX_CHARS, 48)
 
+    val smsDeliveryReportsEnabled: Boolean
+        get() = bool(KEY_SMS_DELIVERY_REPORTS_ENABLED, true)
+
+    val smsDeliveryReportsByDefault: Boolean
+        get() = bool(KEY_SMS_DELIVERY_REPORTS_BY_DEFAULT, false)
+
+    val smsSimpleCharactersOnly: Boolean
+        get() = bool(KEY_SMS_SIMPLE_CHARACTERS_ONLY, false)
+
     val useCustomUserAgent: Boolean
         get() = bool(KEY_USE_CUSTOM_USER_AGENT, false)
 
@@ -117,6 +126,9 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
         const val KEY_ALIAS_MIN_CHARS = "aliasMinChars"
         const val KEY_ALIAS_MAX_CHARS = "aliasMaxChars"
         const val KEY_USE_CUSTOM_USER_AGENT = "useCustomUserAgent"
+        const val KEY_SMS_DELIVERY_REPORTS_ENABLED = "enableSMSDeliveryReports"
+        const val KEY_SMS_DELIVERY_REPORTS_BY_DEFAULT = "smsDeliveryReportSettingOnByDefault"
+        const val KEY_SMS_SIMPLE_CHARACTERS_ONLY = "smsUsesSimpleCharactersOnly"
 
         @JvmStatic
         fun get(context: Context, subscriptionId: Int): CarrierMmsConfig {

@@ -85,6 +85,7 @@ import org.prauga.messages.receiver.SmsSentReceiver
 import org.prauga.messages.util.ImageUtils
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.SmsSettings
 import org.prauga.messages.util.tryOrNull
 import org.prauga.messages.worker.DelayedSmsWorker
 import timber.log.Timber
@@ -101,6 +102,7 @@ constructor(
     private val prefs: Preferences,
     private val syncRepository: SyncRepository,
     private val reactions: EmojiReactionRepository,
+    private val smsSettings: SmsSettings,
 ) : MessageRepository {
 
     companion object {
@@ -682,6 +684,7 @@ constructor(
                 )
             }
 
+        val deliveryReports = smsSettings.deliveryReports(message.subId)
         val deliveryIntent =
             PendingIntent.getBroadcast(
                 context,
@@ -693,7 +696,7 @@ constructor(
             )
         val deliveryIntents =
             parts.indices.map { part ->
-                deliveryIntent.takeIf { prefs.delivery.get() && part == parts.lastIndex }
+                deliveryIntent.takeIf { deliveryReports && part == parts.lastIndex }
             }
 
         try {
