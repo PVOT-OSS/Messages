@@ -63,6 +63,7 @@ import org.prauga.messages.common.util.MessageDetailsFormatter
 import org.prauga.messages.common.util.extensions.makeToast
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.common.widget.QkContextMenuRecyclerView
+import com.klinker.android.send_message.CarrierMmsConfig
 import org.prauga.messages.compat.SubscriptionManagerCompat
 import org.prauga.messages.extensions.asObservable
 import org.prauga.messages.extensions.isImage
@@ -1272,7 +1273,8 @@ constructor(
                         (!state
                             .editingMode || // and is not a new convo (group msg or not is already
                             // set)
-                            state.sendAsGroup)) // or (is a new convo and) send as group is selected
+                            state.sendAsGroup) && // or (is a new convo and) send as group is selected
+                        groupMmsAllowed(subId))
 
                 val attachments = state.attachments
                 val sendCount = if (state.scheduled == 0L && !sendAsGroup) addresses.size else 1
@@ -1411,4 +1413,7 @@ constructor(
                 }
             }
     }
+
+    private fun groupMmsAllowed(subId: Int): Boolean =
+        tryOrNull { CarrierMmsConfig.get(context, subId).groupMmsEnabled } ?: true
 }
