@@ -26,6 +26,8 @@ data class MmsSendResult(
         private const val ERROR_SATELLITE_OVERSIZE = 13
         private const val ERROR_DATA_STALL = 112
 
+        const val RESULT_TOO_LARGE = 10_000
+
         @JvmStatic
         fun from(resultCode: Int, httpStatus: Int, response: ByteArray?): MmsSendResult =
             when (resultCode) {
@@ -61,6 +63,7 @@ data class MmsSendResult(
         fun retryForError(resultCode: Int, httpStatus: Int): MmsRetry =
             when (resultCode) {
                 Activity.RESULT_OK -> MmsRetry.NONE
+                RESULT_TOO_LARGE -> MmsRetry.NEVER
                 SmsManager.MMS_ERROR_HTTP_FAILURE ->
                     if (httpStatus == 404) MmsRetry.NEVER else MmsRetry.AUTO
                 SmsManager.MMS_ERROR_IO_ERROR,

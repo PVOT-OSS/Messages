@@ -128,10 +128,23 @@ constructor(private val context: Context, settings: Settings = Settings()) {
             BroadcastUtils.addClassName(context, updatedIntent, updatedAction)
             context.sendBroadcast(updatedIntent)
 
+            val sizeLimit = maxMessageSize ?: CarrierMmsConfig.get(context, subId).maxMessageSize
+            val pdu = PduComposer(context, sendReq).make()
+            if (pdu == null) {
+                Timber.e("Unable to compose MMS")
+                sentPI.send(SmsManager.MMS_ERROR_UNSPECIFIED)
+                return
+            }
+            if (pdu.size > sizeLimit) {
+                Timber.w("MMS is ${pdu.size} bytes, more than the $sizeLimit the carrier accepts")
+                sentPI.send(MmsSendResult.RESULT_TOO_LARGE)
+                return
+            }
+
             val contentUri: Uri? =
                 try {
                     FileOutputStream(sendFile).use { writer ->
-                        writer.write(PduComposer(context, sendReq).make())
+                        writer.write(pdu)
                         Uri.Builder()
                             .authority(context.packageName + ".MmsFileProvider")
                             .path(fileName)

@@ -65,5 +65,6 @@ class MmsSendResultTest {
         assertEquals(MmsRetry.AUTO, MmsSendResult.retryForError(SmsManager.MMS_ERROR_IO_ERROR, 0))
         assertEquals(MmsRetry.MANUAL, MmsSendResult.retryForError(SmsManager.MMS_ERROR_NO_DATA_NETWORK, 0))
         assertEquals(MmsRetry.MANUAL, MmsSendResult.retryForError(SmsManager.MMS_ERROR_UNSPECIFIED, 0))
+        assertEquals(MmsRetry.NEVER, MmsSendResult.retryForError(MmsSendResult.RESULT_TOO_LARGE, 0))
     }
 }
