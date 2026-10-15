@@ -51,6 +51,7 @@ import org.prauga.messages.migration.QkMigration
 import org.prauga.messages.migration.QkRealmMigration
 import org.prauga.messages.util.NightModeManager
 import org.prauga.messages.worker.HousekeepingWorker
+import org.prauga.messages.worker.SmsSendRetryWorker
 import timber.log.Timber
 
 class QKApplication : Application(), HasAndroidInjector {
@@ -95,6 +96,8 @@ class QKApplication : Application(), HasAndroidInjector {
         )
 
         qkMigration.performMigration()
+
+        SmsSendRetryWorker.kick(this, resetDelays = false)
 
         GlobalScope.launch(Dispatchers.IO) {
             referralManager.trackReferrer()
