@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-FileCopyrightText: 2026 Vishnu R <vishnurajesh45@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
