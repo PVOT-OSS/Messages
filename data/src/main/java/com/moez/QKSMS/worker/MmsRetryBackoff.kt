@@ -8,7 +8,7 @@ import androidx.core.content.edit
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
-class MmsRetryBackoff(context: Context, name: String) {
+class MmsRetryBackoff(context: Context, name: String, private val window: Long = RETRY_WINDOW) {
 
     private val prefs = context.getSharedPreferences(name, Context.MODE_PRIVATE)
 
@@ -21,7 +21,7 @@ class MmsRetryBackoff(context: Context, name: String) {
                 ?.takeIf { it.size == 2 }
                 ?.let { (attempt, firstFailure) -> attempt.toInt() to firstFailure } ?: (0 to now)
 
-        if (now - firstFailure > RETRY_WINDOW) {
+        if (now - firstFailure > window) {
             clear(key)
             return null
         }
@@ -46,6 +46,8 @@ class MmsRetryBackoff(context: Context, name: String) {
         private val MIN_DELAY = TimeUnit.SECONDS.toMillis(5)
         private val MAX_DELAY = TimeUnit.MINUTES.toMillis(20)
         private val RETRY_WINDOW = TimeUnit.HOURS.toMillis(12)
+
+        val DOWNLOAD_WINDOW = TimeUnit.MINUTES.toMillis(20)
 
         fun retryDelay(attempt: Int, random: Random = Random.Default): Long {
             val delay = (MIN_DELAY shl attempt.coerceIn(0, 20)).coerceAtMost(MAX_DELAY)
