@@ -11,6 +11,9 @@
                 <action android:name="org.prauga.messages.TEST_MMS_SEND" />
                 <action android:name="org.prauga.messages.TEST_MMS_DOWNLOAD" />
                 <action android:name="org.prauga.messages.TEST_SET_PREF" />
+                <action android:name="org.prauga.messages.TEST_BLOCK" />
+                <action android:name="org.prauga.messages.TEST_DELETE" />
+                <action android:name="org.prauga.messages.TEST_RETRY" />
             </intent-filter>
         </receiver>
     </application>
