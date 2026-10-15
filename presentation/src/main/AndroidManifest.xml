@@ -223,9 +223,6 @@
         <receiver android:name=".receiver.StartActivityFromWidgetReceiver" />
 
         <service
-            android:name="com.android.mms.transaction.TransactionService"
-            android:foregroundServiceType="dataSync" />
-        <service
             android:name=".feature.backup.RestoreBackupService"
             android:foregroundServiceType="dataSync" />
         <service
