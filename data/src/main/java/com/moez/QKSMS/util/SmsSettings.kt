@@ -15,6 +15,12 @@ class SmsSettings @Inject constructor(private val context: Context, private val 
         return if (prefs.delivery.isSet) prefs.delivery.get() else config.smsDeliveryReportsByDefault
     }
 
+    fun groupMessaging(subId: Int): Boolean {
+        val config = CarrierMmsConfig.get(context, subId)
+        if (!config.groupMmsEnabled) return false
+        return if (prefs.sendAsGroup.isSet) prefs.sendAsGroup.get() else config.groupChatDefaultsToMms
+    }
+
     fun simpleCharacters(subId: Int): Boolean =
         if (prefs.unicode.isSet) prefs.unicode.get()
         else CarrierMmsConfig.get(context, subId).smsSimpleCharactersOnly
