@@ -46,3 +46,5 @@ include(":common")
 include(":app")
 
 include(":carrier-configs")
+
+include(":gif-encoder")
