@@ -75,6 +75,7 @@ public class DownloadManager {
                 .scheme(ContentResolver.SCHEME_CONTENT)
                 .build();
         Intent download = new Intent(receiver.mAction);
+        download.setPackage(context.getPackageName());
         download.putExtra(MmsReceivedReceiver.EXTRA_FILE_PATH, mDownloadFile.getPath());
         download.putExtra(MmsReceivedReceiver.EXTRA_LOCATION_URL, location);
         download.putExtra(MmsReceivedReceiver.EXTRA_TRIGGER_PUSH, byPush);
@@ -90,7 +91,13 @@ public class DownloadManager {
         }
 
         grantUriPermission(context, contentUri);
-        smsManager.downloadMultimediaMessage(context, location, contentUri, configOverrides, pendingIntent);
+        try {
+            smsManager.downloadMultimediaMessage(context, location, contentUri, configOverrides, pendingIntent);
+        } catch (RuntimeException e) {
+            Timber.e(e, "Unable to start MMS download");
+            context.getApplicationContext().unregisterReceiver(receiver);
+            finishDownload(location);
+        }
     }
 
     private void grantUriPermission(Context context, Uri contentUri) {
