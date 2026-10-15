@@ -30,6 +30,12 @@ class MmsRetryBackoff(context: Context, name: String) {
         return retryDelay(attempt)
     }
 
+    fun reset(key: String) {
+        val firstFailure =
+            prefs.getString(key, null)?.substringAfter(',', "")?.toLongOrNull() ?: return
+        prefs.edit { putString(key, "0,$firstFailure") }
+    }
+
     fun clear(key: String) {
         prefs.edit { remove(key) }
     }

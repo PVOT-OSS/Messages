@@ -33,6 +33,7 @@ class SmsSendRetryWorker(appContext: Context, workerParams: WorkerParameters) :
         }
 
         Timber.v("Retrying to send SMS $messageId")
+        inFlightPrefs(applicationContext).edit().putBoolean(messageId.toString(), true).commit()
         retrySending.buildObservable(messageId).blockingSubscribe({}, Timber::w)
         return Result.success()
     }
@@ -42,9 +43,29 @@ class SmsSendRetryWorker(appContext: Context, workerParams: WorkerParameters) :
 
         private fun backoff(context: Context) = MmsRetryBackoff(context, "sms_send_retries")
 
-        fun schedule(context: Context, messageId: Long): Boolean {
-            val delay = backoff(context).nextDelay(messageId.toString()) ?: return false
+        private fun inFlightPrefs(context: Context) =
+            context.getSharedPreferences("sms_send_retries_in_flight", Context.MODE_PRIVATE)
 
+        fun schedule(context: Context, messageId: Long): Boolean {
+            inFlightPrefs(context).edit().remove(messageId.toString()).apply()
+            val delay = backoff(context).nextDelay(messageId.toString()) ?: return false
+            enqueue(context, messageId, delay)
+            SmsServiceWatcher.watch(context)
+            return true
+        }
+
+        fun kick(context: Context, resetDelays: Boolean) {
+            val backoff = backoff(context)
+            val sending = inFlightPrefs(context).all.keys
+            pending(context)
+                .filter { it.toString() !in sending }
+                .forEach { messageId ->
+                    if (resetDelays) backoff.reset(messageId.toString())
+                    enqueue(context, messageId, 0)
+                }
+        }
+
+        private fun enqueue(context: Context, messageId: Long, delay: Long) {
             val request =
                 OneTimeWorkRequestBuilder<SmsSendRetryWorker>()
                     .setInitialDelay(delay, TimeUnit.MILLISECONDS)
@@ -53,14 +74,18 @@ class SmsSendRetryWorker(appContext: Context, workerParams: WorkerParameters) :
 
             WorkManager.getInstance(context)
                 .enqueueUniqueWork("sms-send-retry:$messageId", ExistingWorkPolicy.REPLACE, request)
-            return true
         }
 
         fun clear(context: Context, messageId: Long) {
+            inFlightPrefs(context).edit().remove(messageId.toString()).apply()
             backoff(context).clear(messageId.toString())
+            if (pending(context).isEmpty()) SmsServiceWatcher.unwatch()
         }
 
         fun pending(context: Context): Set<Long> =
             backoff(context).keys().mapNotNull(String::toLongOrNull).toSet()
+
+        fun inFlight(context: Context): Set<Long> =
+            inFlightPrefs(context).all.keys.mapNotNull(String::toLongOrNull).toSet()
     }
 }
