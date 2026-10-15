@@ -35,7 +35,8 @@ class MmsDownloadRetryWorker(appContext: Context, workerParams: WorkerParameters
         private const val KEY_URI = "uri"
         private const val KEY_SUB_ID = "subId"
 
-        private fun backoff(context: Context) = MmsRetryBackoff(context, "mms_download_retries")
+        private fun backoff(context: Context) =
+            MmsRetryBackoff(context, "mms_download_retries", MmsRetryBackoff.DOWNLOAD_WINDOW)
 
         fun schedule(context: Context, notificationUri: Uri, subId: Int) {
             val key = notificationUri.toString()
