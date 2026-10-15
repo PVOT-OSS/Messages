@@ -162,38 +162,41 @@ class CarrierMmsConfig internal constructor(private val values: Bundle) {
             }
 
         private fun bundled(context: Context, subId: Int): Bundle {
+            val (mcc, mnc) = carrierCode(context, subId) ?: (0 to 0)
+            return bundled(context, mcc, mnc)
+        }
+
+        @JvmStatic
+        fun bundled(context: Context, mcc: Int, mnc: Int): Bundle {
             val values = Bundle()
-            val resources = carrierResources(context, subId)
+            val resources = carrierResources(context, mcc, mnc)
             readXml(resources, R.xml.mms_config, values)
             oemOverride(resources)?.let { id -> readXml(resources, id, values) }
             return values
         }
 
-        private fun carrierResources(context: Context, subId: Int): Resources {
+        private fun carrierCode(context: Context, subId: Int): Pair<Int, Int>? {
             val info =
                 try {
                     SubscriptionManager.from(context).getActiveSubscriptionInfo(subId)
                 } catch (e: Exception) {
                     null
-                } ?: return context.resources
+                } ?: return null
 
-            val mcc: Int
-            val mnc: Int
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                mcc = info.mccString?.toIntOrNull() ?: 0
-                mnc =
-                    when (val mncString = info.mncString) {
-                        null -> 0
-                        else ->
-                            mncString.toIntOrNull()?.takeIf { it != 0 } ?: Configuration.MNC_ZERO
-                    }
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val mcc = info.mccString?.toIntOrNull() ?: 0
+                val mnc = when (val mncString = info.mncString) {
+                    null -> 0
+                    else -> mncString.toIntOrNull()?.takeIf { it != 0 } ?: Configuration.MNC_ZERO
+                }
+                mcc to mnc
             } else {
                 @Suppress("DEPRECATION")
-                mcc = info.mcc
-                @Suppress("DEPRECATION")
-                mnc = info.mnc.takeIf { it != 0 } ?: Configuration.MNC_ZERO
+                info.mcc to (info.mnc.takeIf { it != 0 } ?: Configuration.MNC_ZERO)
             }
+        }
 
+        private fun carrierResources(context: Context, mcc: Int, mnc: Int): Resources {
             if (mcc == 0) return context.resources
 
             val configuration = Configuration(context.resources.configuration)
