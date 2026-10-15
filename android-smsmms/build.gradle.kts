@@ -37,7 +37,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.kotlin.stdlib)
 
-    implementation(project(":core:carrier"))
+    implementation(project(":carrier-configs"))
 
     // testing
     testImplementation(libs.junit)
