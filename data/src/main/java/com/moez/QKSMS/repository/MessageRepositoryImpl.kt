@@ -788,6 +788,17 @@ constructor(
                 .let(realm::copyFromRealm)
         }
 
+    override fun getUnsentSms(): List<Message> =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            realm
+                .where(Message::class.java)
+                .equalTo("type", "sms")
+                .equalTo("boxId", Sms.MESSAGE_TYPE_OUTBOX)
+                .findAll()
+                .let(realm::copyFromRealm)
+        }
+
     override fun scheduleDelayedSms(id: Long, sendTime: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.setExactAndAllowWhileIdle(
