@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <receiver
+            android:name="org.prauga.messages.receiver.TestMmsPushReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP">
+            <intent-filter>
+                <action android:name="org.prauga.messages.TEST_MMS_PUSH" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

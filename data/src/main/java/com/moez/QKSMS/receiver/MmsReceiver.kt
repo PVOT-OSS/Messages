@@ -29,14 +29,18 @@ import org.prauga.messages.interactor.ReceiveMms
 import org.prauga.messages.manager.MmsDownloadPolicy
 import timber.log.Timber
 
-class MmsReceiver : PushReceiver() {
+open class MmsReceiver : PushReceiver() {
 
     @Inject lateinit var mmsDownloadPolicy: MmsDownloadPolicy
     @Inject lateinit var receiveMms: ReceiveMms
 
     override fun onReceive(context: Context, intent: Intent) {
-        AndroidInjection.inject(this, context)
+        inject(context)
         super.onReceive(context, intent)
+    }
+
+    protected open fun inject(context: Context) {
+        AndroidInjection.inject(this, context)
     }
 
     override fun shouldAutoDownload(
