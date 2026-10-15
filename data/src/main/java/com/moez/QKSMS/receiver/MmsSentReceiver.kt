@@ -18,7 +18,6 @@
  */
 package org.prauga.messages.receiver
 
-import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.ContentUris
 import android.content.ContentValues
@@ -26,8 +25,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Telephony
+import android.telephony.SmsManager
 import com.google.android.mms.MmsException
 import com.google.android.mms.util_alt.SqliteWrapper
+import com.klinker.android.send_message.MmsRetry
+import com.klinker.android.send_message.MmsSendResult
 import com.klinker.android.send_message.Transaction
 import dagger.android.AndroidInjection
 import io.realm.Realm
@@ -48,11 +50,23 @@ class MmsSentReceiver : BroadcastReceiver() {
         val uri = Uri.parse(intent.getStringExtra(Transaction.EXTRA_CONTENT_URI))
         Timber.v(uri.toString())
 
-        when (resultCode) {
-            Activity.RESULT_OK -> {
+        val result =
+            MmsSendResult.from(
+                resultCode,
+                intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0),
+                intent.getByteArrayExtra(SmsManager.EXTRA_MMS_DATA),
+            )
+        Timber.v("MMS send result: $result")
+
+        when (result.retry) {
+            MmsRetry.NONE -> {
                 Timber.v("MMS has finished sending, marking it as so in the database")
-                val values = ContentValues(1)
+                val values = ContentValues(3)
                 values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_SENT)
+                result.messageId?.let { values.put(Telephony.Mms.MESSAGE_ID, it) }
+                result.responseStatus
+                    .takeIf { it != 0 }
+                    ?.let { values.put(Telephony.Mms.RESPONSE_STATUS, it) }
                 SqliteWrapper.update(context, context.contentResolver, uri, values, null, null)
             }
 
