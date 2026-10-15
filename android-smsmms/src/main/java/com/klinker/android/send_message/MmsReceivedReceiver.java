@@ -70,6 +70,7 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
             final boolean contentDisposition =
                     CarrierMmsConfig.get(context, subId).getSupportMmsContentDisposition();
             retry = retryForResponse(response, contentDisposition);
+            storeRetrieveStatus(context, notificationUri, response, contentDisposition);
 
             if (retry == MmsRetry.NONE) {
                 final NotificationInd notification = loadNotification(context, notificationUri);
@@ -140,6 +141,26 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
             return MmsRetry.AUTO;
         }
         return MmsRetry.NEVER;
+    }
+
+    private static void storeRetrieveStatus(Context context, Uri notificationUri, byte[] response,
+                                            boolean contentDisposition) {
+        if (notificationUri == null || response == null || response.length == 0) return;
+        try {
+            GenericPdu pdu = new PduParser(response, contentDisposition).parse();
+            if (!(pdu instanceof RetrieveConf)) return;
+
+            RetrieveConf conf = (RetrieveConf) pdu;
+            ContentValues values = new ContentValues(2);
+            values.put(Telephony.Mms.RETRIEVE_STATUS, conf.getRetrieveStatus());
+            if (conf.getRetrieveText() != null) {
+                values.put(Telephony.Mms.RETRIEVE_TEXT, conf.getRetrieveText().getString());
+            }
+            SqliteWrapper.update(context, context.getContentResolver(), notificationUri, values,
+                    null, null);
+        } catch (RuntimeException e) {
+            Timber.w(e, "Unable to keep the retrieve status");
+        }
     }
 
     private static void acknowledge(Context context, int subId, boolean byPush,
