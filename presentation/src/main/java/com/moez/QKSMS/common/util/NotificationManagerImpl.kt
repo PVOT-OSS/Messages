@@ -581,7 +581,9 @@ constructor(
 
         // Action for resending a failed message
         val resendIntent =
-            Intent(context, SendSmsReceiver::class.java).apply { putExtra("id", message.id) }
+            Intent(context, SendSmsReceiver::class.java)
+                .setAction(SendSmsReceiver.ACTION_RETRY)
+                .putExtra("id", message.id)
         val resendPendingIntent =
             PendingIntent.getBroadcast(
                 context,
