@@ -246,9 +246,11 @@ constructor(
                 .subscribe { title -> newState { copy(conversationtitle = title) } }
 
         disposables +=
-            prefs.sendAsGroup.asObservable().distinctUntilChanged().subscribe { enabled ->
-                newState { copy(sendAsGroup = enabled) }
-            }
+            Observables.combineLatest(prefs.sendAsGroup.asObservable(), state) { _, state ->
+                    smsSettings.groupMessaging(state.subscription?.subscriptionId ?: -1)
+                }
+                .distinctUntilChanged()
+                .subscribe { enabled -> newState { copy(sendAsGroup = enabled) } }
 
         disposables +=
             conversation
@@ -730,9 +732,10 @@ constructor(
             }
 
         // Toggle the group sending mode
-        view.sendAsGroupIntent.autoDispose(view.scope()).subscribe {
-            prefs.sendAsGroup.set(!prefs.sendAsGroup.get())
-        }
+        view.sendAsGroupIntent
+            .withLatestFrom(state) { _, state -> state.sendAsGroup }
+            .autoDispose(view.scope())
+            .subscribe { sendAsGroup -> prefs.sendAsGroup.set(!sendAsGroup) }
 
         // Scroll to search position
         searchSelection
