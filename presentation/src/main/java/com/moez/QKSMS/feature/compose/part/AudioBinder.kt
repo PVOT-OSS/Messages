@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.media.AudioAttributes
 import android.media.MediaMetadataRetriever
+import android.media.MediaMetadataRetriever.METADATA_KEY_TITLE
 import android.view.View
 import android.widget.SeekBar
 import com.moez.QKSMS.common.QkMediaPlayer
@@ -47,6 +48,7 @@ import org.prauga.messages.feature.compose.MessagesAdapter
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.util.GlideApp
+import org.prauga.messages.util.tryOrNull
 
 class AudioBinder @Inject constructor(colors: Colors, private val context: Context) : PartBinder() {
 
@@ -254,11 +256,15 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
         }
 
         MediaMetadataRetriever().apply {
-            if (part.getUri().resourceExists(context)) setDataSource(context, part.getUri())
+            val readable =
+                part.getUri().resourceExists(context) &&
+                    tryOrNull(false) { setDataSource(context, part.getUri()) } != null
 
             // metadata title
             binding.metadataTitle.apply {
-                text = extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
+                text =
+                    if (!readable) null
+                    else tryOrNull(false) { extractMetadata(METADATA_KEY_TITLE) }
 
                 if (text.isEmpty()) visibility = View.GONE
                 else {
@@ -287,7 +293,7 @@ class AudioBinder @Inject constructor(colors: Colors, private val context: Conte
                         else -> BubbleImageView.Style.ONLY
                     }
 
-                val embeddedPicture = embeddedPicture
+                val embeddedPicture = if (readable) tryOrNull(false) { embeddedPicture } else null
                 if (embeddedPicture == null) {
                     binding.frame.layoutParams.height = (binding.frame.layoutParams.width / 2)
                     setTint(secondaryColor)
