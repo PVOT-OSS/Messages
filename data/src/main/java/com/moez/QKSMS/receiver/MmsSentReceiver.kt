@@ -65,6 +65,20 @@ class MmsSentReceiver : BroadcastReceiver() {
         val contentId = tryOrNull(false) { ContentUris.parseId(uri) }
         val messageId = contentId?.let(::findMessageId)
 
+        ContentValues(2)
+            .apply {
+                result.messageId?.let { put(Telephony.Mms.MESSAGE_ID, it) }
+                result.responseStatus
+                    .takeIf { it != 0 }
+                    ?.let { put(Telephony.Mms.RESPONSE_STATUS, it) }
+            }
+            .takeIf { it.size() > 0 }
+            ?.let { values ->
+                tryOrNull {
+                    SqliteWrapper.update(context, context.contentResolver, uri, values, null, null)
+                }
+            }
+
         var failed = false
         if (
             result.retry == MmsRetry.AUTO &&
@@ -77,12 +91,8 @@ class MmsSentReceiver : BroadcastReceiver() {
                 MmsRetry.NONE -> {
                     messageId?.let { MmsSendRetryWorker.clear(context, it) }
                     Timber.v("MMS has finished sending, marking it as so in the database")
-                    val values = ContentValues(3)
+                    val values = ContentValues(1)
                     values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_SENT)
-                    result.messageId?.let { values.put(Telephony.Mms.MESSAGE_ID, it) }
-                    result.responseStatus
-                        .takeIf { it != 0 }
-                        ?.let { values.put(Telephony.Mms.RESPONSE_STATUS, it) }
                     SqliteWrapper.update(context, context.contentResolver, uri, values, null, null)
                 }
 
