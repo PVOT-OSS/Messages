@@ -690,6 +690,18 @@ constructor(
             .downloadMultimediaMessage(context, location, message.getUri(), false, message.subId)
     }
 
+    override fun getPendingMmsDownloads(since: Long): List<Message> =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            realm
+                .where(Message::class.java)
+                .equalTo("type", "mms")
+                .equalTo("messageType", Message.MESSAGE_TYPE_NOTIFICATION_IND)
+                .greaterThan("date", since)
+                .findAll()
+                .let(realm::copyFromRealm)
+        }
+
     override fun cancelDelayedSms(id: Long) =
         (context.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(
             getIntentForDelayedSms(id)

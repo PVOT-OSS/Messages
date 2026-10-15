@@ -38,6 +38,7 @@ import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.feature.main.ConversationFilterType.ALL
 import org.prauga.messages.feature.main.ConversationFilterType.UNREAD
 import org.prauga.messages.interactor.DeleteConversations
+import org.prauga.messages.interactor.DownloadPendingMms
 import org.prauga.messages.interactor.MarkAllSeen
 import org.prauga.messages.interactor.MarkArchived
 import org.prauga.messages.interactor.MarkPinned
@@ -68,6 +69,7 @@ class MainViewModel
 constructor(
     billingManager: BillingManager,
     contactAddedListener: ContactAddedListener,
+    downloadPendingMms: DownloadPendingMms,
     markAllSeen: MarkAllSeen,
     migratePreferences: MigratePreferences,
     syncRepository: SyncRepository,
@@ -118,6 +120,7 @@ constructor(
 
     init {
         disposables += deleteConversations
+        disposables += downloadPendingMms
         disposables += markAllSeen
         disposables += markArchived
         disposables += markUnarchived
@@ -183,6 +186,8 @@ constructor(
 
         ratingManager.addSession()
         markAllSeen.execute(Unit)
+
+        downloadPendingMms.execute(Unit)
     }
 
     override fun bindView(view: MainView) {
