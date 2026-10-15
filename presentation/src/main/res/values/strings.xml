@@ -506,6 +506,7 @@
     <string name="button_cancel">Cancel</string>
     <string name="button_delete">Delete</string>
     <string name="button_save">Save</string>
+    <string name="compose_recipient_limit">Your carrier allows up to %d people in a conversation</string>
     <string name="button_stop">Stop</string>
     <string name="button_more">More</string>
     <string name="button_set">Set</string>

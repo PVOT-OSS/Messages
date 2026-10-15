@@ -386,6 +386,16 @@ constructor(
                         )
                 }
             }
+            .withLatestFrom(selectedChips) { chips, selected ->
+                val limit =
+                    tryOrNull { CarrierMmsConfig.get(context, -1).recipientLimit }
+                        ?: Int.MAX_VALUE
+                val room = (limit - selected.size).coerceAtLeast(0)
+                if (chips.size > room) {
+                    context.makeToast(context.getString(R.string.compose_recipient_limit, limit))
+                }
+                chips.take(room)
+            }
             .autoDispose(view.scope())
             .subscribe { chips ->
                 chipsReducer.onNext { list -> list + chips }
