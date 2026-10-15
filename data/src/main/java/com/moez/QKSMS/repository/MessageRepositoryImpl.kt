@@ -1128,14 +1128,17 @@ constructor(
             realm.refresh()
 
             realm.where(Message::class.java).equalTo("id", id).findFirst()?.let { message ->
-                // Update the message in realm
+                var failed = false
                 realm.executeTransaction {
+                    failed = message.isSms() && message.boxId == Sms.MESSAGE_TYPE_FAILED
+                    if (failed) return@executeTransaction
                     message.boxId =
                         when (message.isSms()) {
                             true -> Sms.MESSAGE_TYPE_SENT
                             false -> Mms.MESSAGE_BOX_SENT
                         }
                 }
+                if (failed) return@let
 
                 // Update the message in the native ContentProvider
                 context.contentResolver.update(
