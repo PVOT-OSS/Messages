@@ -43,6 +43,7 @@ import org.prauga.messages.repository.SyncRepository
 import org.prauga.messages.service.AutoDeleteService
 import org.prauga.messages.util.NightModeManager
 import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.SmsSettings
 import timber.log.Timber
 
 class SettingsPresenter
@@ -58,6 +59,7 @@ constructor(
     private val navigator: Navigator,
     private val nightModeManager: NightModeManager,
     private val prefs: Preferences,
+    private val smsSettings: SmsSettings,
     private val syncMessages: SyncMessages,
 ) : QkPresenter<SettingsView, SettingsState>(SettingsState(nightModeId = prefs.nightMode.get())) {
 
@@ -106,8 +108,8 @@ constructor(
             }
 
         disposables +=
-            prefs.delivery.asObservable().subscribe { enabled ->
-                newState { copy(deliveryEnabled = enabled) }
+            prefs.delivery.asObservable().subscribe {
+                newState { copy(deliveryEnabled = smsSettings.deliveryReports(-1)) }
             }
 
         disposables +=
@@ -126,8 +128,8 @@ constructor(
             }
 
         disposables +=
-            prefs.unicode.asObservable().subscribe { enabled ->
-                newState { copy(stripUnicodeEnabled = enabled) }
+            prefs.unicode.asObservable().subscribe {
+                newState { copy(stripUnicodeEnabled = smsSettings.simpleCharacters(-1)) }
             }
 
         disposables +=
@@ -231,7 +233,7 @@ constructor(
 
                 R.id.delayed -> view.showDelayDurationDialog()
 
-                R.id.delivery -> prefs.delivery.set(!prefs.delivery.get())
+                R.id.delivery -> prefs.delivery.set(!smsSettings.deliveryReports(-1))
 
                 R.id.unreadAtTop -> prefs.unreadAtTop.set(!prefs.unreadAtTop.get())
 
@@ -239,7 +241,7 @@ constructor(
 
                 R.id.systemFont -> prefs.systemFont.set(!prefs.systemFont.get())
 
-                R.id.unicode -> prefs.unicode.set(!prefs.unicode.get())
+                R.id.unicode -> prefs.unicode.set(!smsSettings.simpleCharacters(-1))
 
                 R.id.mobileOnly -> prefs.mobileOnly.set(!prefs.mobileOnly.get())
 
