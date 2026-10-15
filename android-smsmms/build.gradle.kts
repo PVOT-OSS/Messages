@@ -29,16 +29,12 @@ android {
 
     defaultConfig { minSdk = 23 }
 
-    useLibrary("org.apache.http.legacy")
-
     lint { abortOnError = false }
 }
 
 dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.timber)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp.urlconnection)
     implementation(libs.kotlin.stdlib)
 
     // testing
