@@ -19,8 +19,10 @@
 package org.prauga.messages.feature.settings
 
 import android.content.Context
+import com.klinker.android.send_message.CarrierMmsConfig
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
+import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.schedulers.Schedulers
 import java.util.Calendar
@@ -143,6 +145,20 @@ constructor(
                 newState { copy(longAsMms = enabled) }
             }
 
+        disposables +=
+            Observable.merge(
+                    prefs.mmsAutoDownload.asObservable(),
+                    prefs.mmsRoamingAutoDownload.asObservable(),
+                )
+                .subscribe {
+                    newState {
+                        copy(
+                            mmsAutoDownload = mmsAutoDownloadEnabled(),
+                            mmsRoamingAutoDownload = mmsRoamingAutoDownloadEnabled(),
+                        )
+                    }
+                }
+
         val mmsSizeLabels = context.resources.getStringArray(R.array.mms_sizes)
         val mmsSizeIds = context.resources.getIntArray(R.array.mms_sizes_ids)
         disposables +=
@@ -230,6 +246,9 @@ constructor(
                 R.id.autoDelete -> view.showAutoDeleteDialog(prefs.autoDelete.get())
 
                 R.id.longAsMms -> prefs.longAsMms.set(!prefs.longAsMms.get())
+                R.id.mmsAutoDownload -> prefs.mmsAutoDownload.set(!mmsAutoDownloadEnabled())
+                R.id.mmsRoamingAutoDownload ->
+                    prefs.mmsRoamingAutoDownload.set(!mmsRoamingAutoDownloadEnabled())
 
                 R.id.mmsSize -> view.showMmsSizePicker()
 
@@ -331,4 +350,14 @@ constructor(
             .autoDispose(view.scope())
             .subscribe(prefs.messageLinkHandling::set)
     }
+
+    private fun carrierMmsConfig() = CarrierMmsConfig.get(context, -1)
+
+    private fun mmsAutoDownloadEnabled(): Boolean =
+        if (prefs.mmsAutoDownload.isSet) prefs.mmsAutoDownload.get()
+        else carrierMmsConfig().autoRetrieveEnabled
+
+    private fun mmsRoamingAutoDownloadEnabled(): Boolean =
+        if (prefs.mmsRoamingAutoDownload.isSet) prefs.mmsRoamingAutoDownload.get()
+        else carrierMmsConfig().roamingAutoRetrieveEnabled
 }

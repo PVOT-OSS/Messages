@@ -350,6 +350,10 @@
     <string name="settings_long_as_mms_title">Send long messages as MMS</string>
     <string name="settings_long_as_mms_summary">If your longer text messages are failing to send, or sending in the wrong order, you can send them as MMS messages instead. Additional charges may apply</string>
     <string name="settings_mms_size_title">Auto-compress MMS image attachments</string>
+    <string name="settings_mms_auto_download_title">Auto-download MMS</string>
+    <string name="settings_mms_auto_download_summary">Download multimedia messages as soon as they arrive</string>
+    <string name="settings_mms_roaming_auto_download_title">Auto-download MMS when roaming</string>
+    <string name="settings_mms_roaming_auto_download_summary">Downloading while roaming can be expensive</string>
     <string name="settings_mms_weblink_title">Link handling in messages</string>
     <string name="settings_disable_screenshots_title">Disable Screenshots</string>
     <string name="settings_diable_screenshots_summary">Prevent your OS and other apps from taking screenshots of the app.</string>
