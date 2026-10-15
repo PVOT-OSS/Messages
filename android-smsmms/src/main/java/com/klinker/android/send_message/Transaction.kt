@@ -89,13 +89,15 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         maxMessageSize: Int? = null,
     ) {
         Timber.v("sending mms")
+        var messageUri: Uri? = existingUri
+        var sentPI: PendingIntent? = null
         try {
             val fileName = "send." + Math.abs(Random().nextLong()).toString() + ".dat"
             val sendFile = File(context.cacheDir, fileName)
 
             val sendReq = buildPdu(context, subId, addresses, subject, parts)
             val persister = PduPersister.getPduPersister(context)
-            val messageUri =
+            val uri =
                 existingUri
                     ?: persister.persist(
                         sendReq,
@@ -105,26 +107,11 @@ constructor(private val context: Context, settings: Settings = Settings()) {
                         true,
                         null,
                     )
-
-            val sentAction = "${context.packageName}.MMS_SENT"
-            val sentIntent = Intent(sentAction)
-            BroadcastUtils.addClassName(context, sentIntent, sentAction)
-
-            sentIntent.putExtra(EXTRA_CONTENT_URI, messageUri.toString())
-            sentIntent.putExtra(EXTRA_FILE_PATH, sendFile.path)
-            val mutable =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE
-                else 0
-            val sentPI =
-                PendingIntent.getBroadcast(
-                    context,
-                    messageUri.hashCode(),
-                    sentIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or mutable,
-                )
+            messageUri = uri
+            sentPI = sentIntent(uri, sendFile)
 
             val updatedAction = "${context.packageName}.MMS_UPDATED"
-            val updatedIntent = Intent(updatedAction).putExtra("uri", messageUri.toString())
+            val updatedIntent = Intent(updatedAction).putExtra("uri", uri.toString())
             BroadcastUtils.addClassName(context, updatedIntent, updatedAction)
             context.sendBroadcast(updatedIntent)
 
@@ -177,7 +164,30 @@ constructor(private val context: Context, settings: Settings = Settings()) {
             }
         } catch (e: Throwable) {
             Timber.e(e, "Error using system sending method")
+            try {
+                (sentPI ?: messageUri?.let { sentIntent(it, null) })
+                    ?.send(SmsManager.MMS_ERROR_UNSPECIFIED)
+            } catch (e: Exception) {
+                Timber.e(e, "Unable to report the failed MMS")
+            }
         }
+    }
+
+    private fun sentIntent(messageUri: Uri, sendFile: File?): PendingIntent {
+        val sentAction = "${context.packageName}.MMS_SENT"
+        val sentIntent = Intent(sentAction)
+        BroadcastUtils.addClassName(context, sentIntent, sentAction)
+
+        sentIntent.putExtra(EXTRA_CONTENT_URI, messageUri.toString())
+        sendFile?.let { sentIntent.putExtra(EXTRA_FILE_PATH, it.path) }
+        val mutable =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
+        return PendingIntent.getBroadcast(
+            context,
+            messageUri.hashCode(),
+            sentIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or mutable,
+        )
     }
 
     private fun buildPdu(
