@@ -35,18 +35,36 @@ class SmsSentReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
 
-        val id = intent.getLongExtra("id", 0L)
+        val id = intent.getLongExtra(SmsSentParts.EXTRA_ID, 0L)
+        val outcome =
+            parts.onResult(
+                id = id,
+                attempt = intent.getLongExtra(SmsSentParts.EXTRA_ATTEMPT, 0L),
+                part = intent.getIntExtra(SmsSentParts.EXTRA_PART, 0),
+                parts = intent.getIntExtra(SmsSentParts.EXTRA_PARTS, 1),
+                ok = resultCode == Activity.RESULT_OK,
+            )
 
-        when (resultCode) {
-            Activity.RESULT_OK -> {
+        when (outcome) {
+            SmsSentParts.Outcome.NONE -> Unit
+
+            SmsSentParts.Outcome.SENT -> {
                 val pendingResult = goAsync()
                 markSent.execute(id) { pendingResult.finish() }
             }
 
-            else -> {
+            SmsSentParts.Outcome.FAILED,
+            SmsSentParts.Outcome.FAILED_SILENTLY -> {
                 val pendingResult = goAsync()
-                markFailed.execute(MarkFailed.Params(id, resultCode)) { pendingResult.finish() }
+                val notify = outcome == SmsSentParts.Outcome.FAILED
+                markFailed.execute(MarkFailed.Params(id, resultCode, notify)) {
+                    pendingResult.finish()
+                }
             }
         }
+    }
+
+    companion object {
+        private val parts = SmsSentParts()
     }
 }
