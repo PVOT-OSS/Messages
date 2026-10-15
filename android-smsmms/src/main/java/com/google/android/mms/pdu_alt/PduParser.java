@@ -117,6 +117,17 @@ public class PduParser {
             return null;
         }
 
+        try {
+            return parsePdu();
+        } catch (AssertionError | OutOfMemoryError | StackOverflowError
+                 | RuntimeException e) {
+            Timber.w(e, "Unable to parse PDU");
+            return null;
+        }
+    }
+
+    private GenericPdu parsePdu() {
+
         /* parse headers */
         mHeaders = parseHeaders(mPduDataStream);
         if (null == mHeaders) {
