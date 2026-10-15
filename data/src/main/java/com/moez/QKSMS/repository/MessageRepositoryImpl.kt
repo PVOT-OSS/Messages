@@ -643,9 +643,17 @@ constructor(
             message.subId.takeIf { it != -1 }?.let(SmsManagerFactory::createSmsManager)
                 ?: SmsManager.getDefault()
 
+        val config = CarrierMmsConfig.get(context, message.subId)
+        val gateway =
+            config.emailGatewayNumber.takeIf {
+                it.isNotEmpty() && isEmailAddress(message.address)
+            }
+        val destination = gateway ?: message.address
+        val body = if (gateway != null) "${message.address} ${message.body}" else message.body
+
         val parts =
             smsManager.divideMessage(
-                if (prefs.unicode.get()) StripAccents.stripAccents(message.body) else message.body
+                if (prefs.unicode.get()) StripAccents.stripAccents(body) else body
             ) ?: arrayListOf()
 
         val mutable =
@@ -684,7 +692,7 @@ constructor(
 
         try {
             smsManager.sendMultipartTextMessage(
-                message.address,
+                destination,
                 null,
                 parts,
                 ArrayList(sentIntents),
