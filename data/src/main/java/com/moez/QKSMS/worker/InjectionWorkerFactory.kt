@@ -61,6 +61,10 @@ constructor(
             is MmsSendRetryWorker -> {
                 instance.retrySending = retrySending
             }
+            is SmsSendRetryWorker -> {
+                instance.messageRepo = messageRepository
+                instance.retrySending = retrySending
+            }
         }
 
         return instance
