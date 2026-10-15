@@ -25,20 +25,30 @@ import com.klinker.android.send_message.MmsReceivedReceiver
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 import org.prauga.messages.interactor.ReceiveMms
+import org.prauga.messages.interactor.SyncMessage
+import org.prauga.messages.util.runAfter
 
 class MmsReceivedReceiver : MmsReceivedReceiver() {
 
     @Inject lateinit var receiveMms: ReceiveMms
+    @Inject lateinit var syncMessage: SyncMessage
+
+    private var messageUri: Uri? = null
 
     override fun onReceive(context: Context?, intent: Intent?) {
         AndroidInjection.inject(this, context)
+        val notificationUri = intent?.getParcelableExtra<Uri>(EXTRA_URI)
+
         super.onReceive(context, intent)
+
+        val pendingResult = goAsync()
+        val finish = runAfter(2) { pendingResult.finish() }
+
+        notificationUri?.let { syncMessage.execute(it, finish) } ?: finish()
+        messageUri?.let { receiveMms.execute(it, finish) } ?: finish()
     }
 
     override fun onMessageReceived(messageUri: Uri?) {
-        messageUri?.let { uri ->
-            val pendingResult = goAsync()
-            receiveMms.execute(uri) { pendingResult.finish() }
-        }
+        this.messageUri = messageUri
     }
 }
