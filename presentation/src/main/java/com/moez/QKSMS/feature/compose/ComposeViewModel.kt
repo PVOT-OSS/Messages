@@ -31,6 +31,7 @@ import androidx.core.content.getSystemService
 import androidx.core.net.toFile
 import androidx.media3.common.MimeTypes
 import com.klinker.android.send_message.CarrierMmsConfig
+import com.klinker.android.send_message.SimpleCharacters
 import com.moez.QKSMS.common.QkMediaPlayer
 import com.moez.QKSMS.contentproviders.MmsPartProvider
 import com.moez.QKSMS.manager.BluetoothMicManager
@@ -97,6 +98,7 @@ import org.prauga.messages.util.ActiveSubscriptionObservable
 import org.prauga.messages.util.FileUtils
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
+import org.prauga.messages.util.SmsSettings
 import org.prauga.messages.util.runAfter
 import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
@@ -133,6 +135,7 @@ constructor(
     private val permissionManager: PermissionManager,
     private val phoneNumberUtils: PhoneNumberUtils,
     private val prefs: Preferences,
+    private val smsSettings: SmsSettings,
     private val retrySending: RetrySending,
     private val sendMessage: SendMessage,
     private val subscriptionManager: SubscriptionManagerCompat,
@@ -986,8 +989,12 @@ constructor(
         // Show the remaining character counter when necessary
         view.textChangedIntent
             .observeOn(Schedulers.computation())
-            .mapNotNull { draft ->
-                tryOrNull { SmsMessage.calculateLength(draft, prefs.unicode.get()) }
+            .withLatestFrom(state) { draft, state -> draft to state.subscription?.subscriptionId }
+            .mapNotNull { (draft, subId) ->
+                val sevenBit =
+                    smsSettings.simpleCharacters(subId ?: -1) &&
+                        SimpleCharacters.get(context).canConvertAll(draft.toString())
+                tryOrNull { SmsMessage.calculateLength(draft, sevenBit) }
             }
             .map { array ->
                 val messages = array[0]

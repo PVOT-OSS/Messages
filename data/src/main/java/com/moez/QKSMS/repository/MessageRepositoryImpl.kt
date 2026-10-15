@@ -50,8 +50,8 @@ import com.google.android.mms.pdu_alt.PduPersister
 import com.google.android.mms.pdu_alt.SendReq
 import com.google.android.mms.smil.SmilHelper
 import com.klinker.android.send_message.CarrierMmsConfig
+import com.klinker.android.send_message.SimpleCharacters
 import com.klinker.android.send_message.SmsManagerFactory
-import com.klinker.android.send_message.StripAccents
 import com.klinker.android.send_message.Transaction
 import com.klinker.android.send_message.Utils
 import io.realm.Case
@@ -426,10 +426,9 @@ constructor(
             subId.takeIf { it != -1 }?.let(SmsManagerFactory::createSmsManager)
                 ?: SmsManager.getDefault()
 
-        // We only care about stripping SMS
         val strippedBody =
-            when (prefs.unicode.get()) {
-                true -> StripAccents.stripAccents(signedBody)
+            when (smsSettings.simpleCharacters(subId)) {
+                true -> SimpleCharacters.get(context).convert(signedBody)
                 false -> signedBody
             }
 
@@ -661,7 +660,11 @@ constructor(
 
         val parts =
             smsManager.divideMessage(
-                if (prefs.unicode.get()) StripAccents.stripAccents(body) else body
+                if (smsSettings.simpleCharacters(message.subId)) {
+                    SimpleCharacters.get(context).convert(body)
+                } else {
+                    body
+                }
             ) ?: arrayListOf()
 
         val mutable =
