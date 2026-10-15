@@ -81,6 +81,7 @@ dependencies {
 
     implementation(project(":android-smsmms"))
     implementation(project(":carrier-configs"))
+    implementation(project(":gif-encoder"))
     implementation(project(":common"))
     implementation(project(":domain"))
 }
