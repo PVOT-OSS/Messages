@@ -26,6 +26,8 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 import org.prauga.messages.interactor.MarkFailed
 import org.prauga.messages.interactor.MarkSent
+import org.prauga.messages.worker.SmsSendRetryWorker
+import timber.log.Timber
 
 class SmsSentReceiver : BroadcastReceiver() {
 
@@ -46,25 +48,35 @@ class SmsSentReceiver : BroadcastReceiver() {
             )
 
         when (outcome) {
-            SmsSentParts.Outcome.NONE -> Unit
+            SmsSentParts.Outcome.NONE,
+            SmsSentParts.Outcome.FAILED_SILENTLY -> Unit
 
             SmsSentParts.Outcome.SENT -> {
+                SmsSendRetryWorker.clear(context, id)
                 val pendingResult = goAsync()
                 markSent.execute(id) { pendingResult.finish() }
             }
 
-            SmsSentParts.Outcome.FAILED,
-            SmsSentParts.Outcome.FAILED_SILENTLY -> {
-                val pendingResult = goAsync()
-                val notify = outcome == SmsSentParts.Outcome.FAILED
-                markFailed.execute(MarkFailed.Params(id, resultCode, notify)) {
-                    pendingResult.finish()
+            SmsSentParts.Outcome.FAILED -> {
+                val errorCode = intent.getIntExtra(EXTRA_ERROR_CODE, -1)
+                if (
+                    SmsSendRetry.isTemporary(resultCode, errorCode) &&
+                        SmsSendRetryWorker.schedule(context, id)
+                ) {
+                    Timber.v("SMS $id failed with $resultCode ($errorCode), retrying later")
+                    return
                 }
+
+                SmsSendRetryWorker.clear(context, id)
+                val pendingResult = goAsync()
+                markFailed.execute(MarkFailed.Params(id, resultCode)) { pendingResult.finish() }
             }
         }
     }
 
     companion object {
+        private const val EXTRA_ERROR_CODE = "errorCode"
+
         private val parts = SmsSentParts()
     }
 }
