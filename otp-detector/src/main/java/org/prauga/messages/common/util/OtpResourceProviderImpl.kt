@@ -7,7 +7,7 @@ package org.prauga.messages.common.util
 
 import android.content.Context
 import android.content.res.Resources
-import org.prauga.messages.app.R
+import org.prauga.messages.otp.R
 import timber.log.Timber
 
 /**

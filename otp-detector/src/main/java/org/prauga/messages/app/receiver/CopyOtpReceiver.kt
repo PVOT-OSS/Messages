@@ -13,7 +13,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.widget.Toast
-import org.prauga.messages.app.R
+import org.prauga.messages.otp.R
 
 class CopyOtpReceiver : BroadcastReceiver() {
 

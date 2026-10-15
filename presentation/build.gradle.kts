@@ -170,4 +170,5 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(project(":app"))
+    implementation(project(":otp-detector"))
 }
