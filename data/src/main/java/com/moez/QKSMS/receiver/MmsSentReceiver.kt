@@ -36,6 +36,7 @@ import io.realm.Realm
 import java.io.File
 import javax.inject.Inject
 import org.prauga.messages.interactor.SyncMessage
+import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.model.Message
 import org.prauga.messages.util.tryOrNull
 import org.prauga.messages.worker.MmsSendRetryWorker
@@ -43,6 +44,7 @@ import timber.log.Timber
 
 class MmsSentReceiver : BroadcastReceiver() {
 
+    @Inject lateinit var notificationManager: NotificationManager
     @Inject lateinit var syncMessage: SyncMessage
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -63,6 +65,7 @@ class MmsSentReceiver : BroadcastReceiver() {
         val contentId = tryOrNull(false) { ContentUris.parseId(uri) }
         val messageId = contentId?.let(::findMessageId)
 
+        var failed = false
         if (
             result.retry == MmsRetry.AUTO &&
                 messageId != null &&
@@ -84,6 +87,7 @@ class MmsSentReceiver : BroadcastReceiver() {
                 }
 
                 else -> {
+                    failed = true
                     Timber.v("MMS has failed to send, marking it as so in the database")
                     messageId?.let { MmsSendRetryWorker.clear(context, it) }
                     try {
@@ -116,7 +120,10 @@ class MmsSentReceiver : BroadcastReceiver() {
 
         Uri.parse(intent.getStringExtra("content_uri"))?.let { contentUri ->
             val pendingResult = goAsync()
-            syncMessage.execute(contentUri) { pendingResult.finish() }
+            syncMessage.execute(contentUri) {
+                if (failed) messageId?.let(notificationManager::notifyFailed)
+                pendingResult.finish()
+            }
         }
     }
 
