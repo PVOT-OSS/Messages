@@ -60,3 +60,37 @@ in the telephony provider:
   the app opens
 - sending: group and image messages, transient and server errors (retried automatically), and
   rejections, denials and 404s (failed without retrying)
+
+## SMS scenarios (emulator only)
+
+`sms_scenarios.py` runs SMS end to end on an **emulator**, whose modem really sends, receives and
+reports delivery of SMS for free. It refuses any other device: on a phone every scenario would send
+real SMS. Install the debug build and make it the default SMS app (no fake MMSC or setup.sh needed):
+
+```sh
+adb -s emulator-5554 install -r -g presentation/build/outputs/apk/debug/*-debug.apk
+adb -s emulator-5554 shell cmd role add-role-holder android.app.role.SMS org.prauga.messages.debug
+./sms_scenarios.py --adb ~/platform-tools/adb --serial emulator-5554 [NAME ...]
+```
+
+Results the modem can't produce (one part of a long SMS failing, a network error with a given
+cause, a failed delivery report) are handed to the app's real receivers by the debug-only
+`TEST_SMS_RESULT` action. Rows are read through `TEST_SMS_DUMP`, as the app sees them, since the
+provider hides outbox and failed SMS from the shell.
+
+- receiving: plain, long (multipart), non-Latin text, alphanumeric senders
+- sending: short and long SMS, delivery reports from the network
+- long SMS: a failed part fails the whole message whatever order the parts report in, it's only sent
+  after its last part, results from before the update still work
+- delivery reports: delivered, still trying (no change), and failed
+- automatic retries: no service and temporary network errors are sent again by themselves, other
+  errors fail and notify, airplane mode keeps it sending until the radio is back
+- delayed sending: goes at its time, cancel, send now (same message, once), and neither does
+  anything once it already went
+- retry from the notification: sends a failed message once, nothing for a sent one
+- reboot: a delayed SMS whose time passed while off fails, one still to come goes at its time
+
+Run it once with exact alarm access (`adb shell appops set org.prauga.messages.debug
+SCHEDULE_EXACT_ALARM allow`) and once without (`... deny`, the default for new installs since
+Android 14), since delayed sending takes a different path for each. The emulator console can't send
+characters beyond the BMP, like emoji.

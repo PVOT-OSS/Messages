@@ -14,6 +14,10 @@
                 <action android:name="org.prauga.messages.TEST_BLOCK" />
                 <action android:name="org.prauga.messages.TEST_DELETE" />
                 <action android:name="org.prauga.messages.TEST_RETRY" />
+                <action android:name="org.prauga.messages.TEST_SMS_RESULT" />
+                <action android:name="org.prauga.messages.TEST_SMS_DELAYED" />
+                <action android:name="org.prauga.messages.TEST_SMS_NOTIFICATION_RETRY" />
+                <action android:name="org.prauga.messages.TEST_SMS_DUMP" />
             </intent-filter>
         </receiver>
     </application>
