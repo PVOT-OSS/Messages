@@ -25,13 +25,17 @@ import android.provider.Telephony;
 import android.telephony.SmsManager;
 import com.android.mms.service_alt.DownloadRequest;
 import com.android.mms.transaction.DownloadManager;
+import com.google.android.mms.pdu_alt.GenericPdu;
+import com.google.android.mms.pdu_alt.NotificationInd;
 import com.google.android.mms.pdu_alt.PduHeaders;
+import com.google.android.mms.pdu_alt.PduParser;
+import com.google.android.mms.pdu_alt.PduPersister;
+import com.google.android.mms.pdu_alt.RetrieveConf;
 import com.google.android.mms.util_alt.SqliteWrapper;
 import timber.log.Timber;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class MmsReceivedReceiver extends BroadcastReceiver {
@@ -51,55 +55,151 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Timber.v("MMS has finished downloading, persisting it to the database");
 
-        String path = intent.getStringExtra(EXTRA_FILE_PATH);
-        Timber.v(path);
+        final String location = intent.getStringExtra(EXTRA_LOCATION_URL);
+        final Uri notificationUri = intent.getParcelableExtra(EXTRA_URI);
+        final boolean byPush = intent.getBooleanExtra(EXTRA_TRIGGER_PUSH, false);
+        final int subId = intent.getIntExtra(EXTRA_SUBSCRIPTION_ID, Utils.getDefaultSubscriptionId());
+        final String path = intent.getStringExtra(EXTRA_FILE_PATH);
 
-        FileInputStream reader = null;
+        MmsRetry retry = MmsSendResult.retryForError(getResultCode(),
+                intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0));
         Uri messageUri = null;
-        String errorMessage = null;
 
-        try {
-            File mDownloadFile = new File(path);
-            final int nBytes = (int) mDownloadFile.length();
-            reader = new FileInputStream(mDownloadFile);
-            final byte[] response = new byte[nBytes];
-            reader.read(response, 0, nBytes);
+        if (retry == MmsRetry.NONE) {
+            final byte[] response = readResponse(path);
+            final boolean contentDisposition =
+                    CarrierMmsConfig.get(context, subId).getSupportMmsContentDisposition();
+            retry = retryForResponse(response, contentDisposition);
 
-            final int subId = intent.getIntExtra(EXTRA_SUBSCRIPTION_ID, Utils.getDefaultSubscriptionId());
-            messageUri = DownloadRequest.persist(context, response,
-                    CarrierMmsConfig.get(context, subId).getSupportMmsContentDisposition(),
-                    intent.getStringExtra(EXTRA_LOCATION_URL),
-                    subId, null);
+            if (retry == MmsRetry.NONE) {
+                final NotificationInd notification = loadNotification(context, notificationUri);
+                messageUri = DownloadRequest.persist(context, response, contentDisposition,
+                        location, subId, null);
 
-            Timber.v("response saved successfully");
-            Timber.v("response length: " + response.length);
-            mDownloadFile.delete();
-        } catch (FileNotFoundException e) {
-            errorMessage = "MMS received, file not found exception";
-            Timber.e(e, errorMessage);
-        } catch (IOException e) {
-            errorMessage = "MMS received, io exception";
-            Timber.e(e, errorMessage);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    errorMessage = "MMS received, io exception";
-                    Timber.e(e, "MMS received, io exception");
+                if (messageUri == null) {
+                    retry = MmsRetry.MANUAL;
+                } else {
+                    acknowledge(context, subId, byPush, notification, response,
+                            contentDisposition, location);
                 }
             }
         }
+        deleteFile(path);
 
-        handleHttpError(context, intent);
-        DownloadManager.finishDownload(intent.getStringExtra(EXTRA_LOCATION_URL));
+        Timber.v("MMS download result: " + retry);
+        switch (retry) {
+            case NEVER:
+                markPermanentlyFailed(context, location);
+                break;
+            case MANUAL:
+                if (byPush) {
+                    NotificationInd notification = loadNotification(context, notificationUri);
+                    if (notification != null && notification.getTransactionId() != null) {
+                        MmsAcknowledger.sendNotifyResp(context, subId,
+                                notification.getTransactionId(), PduHeaders.STATUS_DEFERRED,
+                                location);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+
+        DownloadManager.finishDownload(location);
 
         if (messageUri != null) {
             onMessageReceived(messageUri);
+        } else if (retry != MmsRetry.NONE) {
+            onDownloadFailed(notificationUri, subId, retry);
+        }
+    }
+
+    static MmsRetry retryForResponse(byte[] response, boolean contentDisposition) {
+        if (response == null || response.length == 0) {
+            return MmsRetry.AUTO;
         }
 
-        if (errorMessage != null) {
-            onError(errorMessage);
+        final GenericPdu pdu;
+        try {
+            pdu = new PduParser(response, contentDisposition).parse();
+        } catch (RuntimeException e) {
+            Timber.w(e, "Unable to parse the downloaded MMS");
+            return MmsRetry.NEVER;
+        }
+
+        if (!(pdu instanceof RetrieveConf)) {
+            return MmsRetry.NEVER;
+        }
+
+        final int status = ((RetrieveConf) pdu).getRetrieveStatus();
+        if (status == 0 || status == PduHeaders.RETRIEVE_STATUS_OK) {
+            return MmsRetry.NONE;
+        }
+        if (status >= PduHeaders.RETRIEVE_STATUS_ERROR_TRANSIENT_FAILURE
+                && status < PduHeaders.RETRIEVE_STATUS_ERROR_PERMANENT_FAILURE) {
+            return MmsRetry.AUTO;
+        }
+        return MmsRetry.NEVER;
+    }
+
+    private static void acknowledge(Context context, int subId, boolean byPush,
+                                    NotificationInd notification, byte[] response,
+                                    boolean contentDisposition, String location) {
+        if (byPush) {
+            if (notification != null && notification.getTransactionId() != null) {
+                MmsAcknowledger.sendNotifyResp(context, subId, notification.getTransactionId(),
+                        PduHeaders.STATUS_RETRIEVED, location);
+            }
+            return;
+        }
+
+        try {
+            GenericPdu pdu = new PduParser(response, contentDisposition).parse();
+            byte[] transactionId = pdu instanceof RetrieveConf
+                    ? ((RetrieveConf) pdu).getTransactionId() : null;
+            if (transactionId != null) {
+                MmsAcknowledger.sendAcknowledge(context, subId, transactionId, location);
+            }
+        } catch (RuntimeException e) {
+            Timber.w(e, "Unable to acknowledge MMS");
+        }
+    }
+
+    private static NotificationInd loadNotification(Context context, Uri uri) {
+        if (uri == null) return null;
+        try {
+            GenericPdu pdu = PduPersister.getPduPersister(context).load(uri);
+            return pdu instanceof NotificationInd ? (NotificationInd) pdu : null;
+        } catch (Exception e) {
+            Timber.w(e, "Unable to load the MMS notification");
+            return null;
+        }
+    }
+
+    private static byte[] readResponse(String path) {
+        if (path == null) return null;
+        File file = new File(path);
+        try (FileInputStream reader = new FileInputStream(file)) {
+            final int length = (int) file.length();
+            final byte[] response = new byte[length];
+            int read = 0;
+            while (read < length) {
+                int count = reader.read(response, read, length - read);
+                if (count < 0) break;
+                read += count;
+            }
+            Timber.v("response length: " + read);
+            return read == length ? response : null;
+        } catch (IOException e) {
+            Timber.e(e, "Unable to read the downloaded MMS");
+            return null;
+        }
+    }
+
+    private static void deleteFile(String path) {
+        if (path != null) {
+            //noinspection ResultOfMethodCallIgnored
+            new File(path).delete();
         }
     }
 
@@ -108,24 +208,21 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
         // internal SMS/MMS database
     }
 
-    protected void onError(String error) {
+    protected void onDownloadFailed(Uri notificationUri, int subId, MmsRetry retry) {
 
     }
 
-    private void handleHttpError(Context context, Intent intent) {
-        final int httpError = intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0);
-        if (httpError == 404) {
-            ContentValues values = new ContentValues(1);
-            values.put(Telephony.Mms.STATUS, STATUS_PERMANENT_FAILURE);
-            SqliteWrapper.update(context,
-                    context.getContentResolver(),
-                    Telephony.Mms.CONTENT_URI,
-                    values,
-                    LOCATION_SELECTION,
-                    new String[]{
-                            Integer.toString(PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND),
-                            intent.getStringExtra(EXTRA_LOCATION_URL)
-                    });
-        }
+    private static void markPermanentlyFailed(Context context, String location) {
+        ContentValues values = new ContentValues(1);
+        values.put(Telephony.Mms.STATUS, STATUS_PERMANENT_FAILURE);
+        SqliteWrapper.update(context,
+                context.getContentResolver(),
+                Telephony.Mms.CONTENT_URI,
+                values,
+                LOCATION_SELECTION,
+                new String[]{
+                        Integer.toString(PduHeaders.MESSAGE_TYPE_NOTIFICATION_IND),
+                        location
+                });
     }
 }

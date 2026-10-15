@@ -118,6 +118,7 @@ object MmsPduFactory {
     fun createRetrieveConfBytes(
         from: String = DEFAULT_PHONE,
         transactionId: String = DEFAULT_TRANSACTION_ID,
+        retrieveStatus: Int? = null,
     ): ByteArray {
         val out = ByteArrayOutputStream()
 
@@ -151,9 +152,16 @@ object MmsPduFactory {
         out.write(fromBytes)
         out.write(0x00) // Null terminator
 
+        retrieveStatus?.let {
+            out.write(0x99)
+            out.write(it)
+        }
+
         // Content-Type: multipart/related
         out.write(0x84) // Content-type field
-        out.write(0x9F) // multipart/related
+        out.write(0xB3)
+
+        out.write(0x00)
 
         return out.toByteArray()
     }
