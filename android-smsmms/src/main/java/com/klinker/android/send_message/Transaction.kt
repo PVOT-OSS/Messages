@@ -21,6 +21,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.telephony.SmsManager
 import androidx.core.os.bundleOf
 import com.android.mms.MmsConfig
@@ -114,12 +115,15 @@ constructor(private val context: Context, settings: Settings = Settings()) {
 
             sentIntent.putExtra(EXTRA_CONTENT_URI, messageUri.toString())
             sentIntent.putExtra(EXTRA_FILE_PATH, sendFile.path)
+            val mutable =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE
+                else 0
             val sentPI =
                 PendingIntent.getBroadcast(
                     context,
-                    0,
+                    messageUri.hashCode(),
                     sentIntent,
-                    PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                    PendingIntent.FLAG_UPDATE_CURRENT or mutable,
                 )
 
             val updatedIntent = Intent(MMS_UPDATED).putExtra("uri", messageUri.toString())
