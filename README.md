@@ -95,4 +95,20 @@ Messages is developed and maintained by [Saalim Quadri](https://github.com/danas
 
 ## License
 
-Messages is released under the **The GNU General Public License v3.0 (GPLv3)**, which can be found in the [LICENSE](LICENSE) file in the root of this project.
+Copyright (c) 2015-2023, Moez Bhatti (QKSMS)
+
+Copyright (c) 2023-2025, octoshrimpy (QUIK)
+
+Copyright (c) Saalim Quadri
+
+Licensed under the GPLv3: https://www.gnu.org/licenses/gpl-3.0.html
+Except where otherwise noted, in particular:
+
+- The MMS library (`android-smsmms`) includes code Copyright (c) The Android Open Source Project,
+  Esmertec AG, The Linux Foundation and Jacob Klinker, licensed under the Apache License 2.0.
+- The carrier configurations (`carrier-configs`) are Copyright (c) The Android Open Source Project,
+  licensed under the Apache License 2.0.
+- The GIF encoder (`gif-encoder`) is by Kevin Weiner, FM Software and Anthony Dekker, under the terms
+  in [LICENSES/LicenseRef-Glide-gif-encoder.txt](LICENSES/LicenseRef-Glide-gif-encoder.txt).
+
+Google Play and the Google Play logo are trademarks of Google Inc.
