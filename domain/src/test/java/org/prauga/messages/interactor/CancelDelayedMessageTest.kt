@@ -32,7 +32,9 @@ class CancelDelayedMessageTest {
 
     private fun cancel() {
         val subscriber = TestSubscriber<Any>()
-        cancelDelayedMessage.buildObservable(CancelDelayedMessage.Params(1, 9)).subscribe(subscriber)
+        cancelDelayedMessage
+            .buildObservable(CancelDelayedMessage.Params(1, 9))
+            .subscribe(subscriber)
         subscriber.assertComplete()
         subscriber.assertNoErrors()
     }
