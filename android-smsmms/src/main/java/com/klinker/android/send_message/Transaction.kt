@@ -25,8 +25,6 @@ import android.telephony.SmsManager
 import androidx.core.os.bundleOf
 import com.android.mms.MmsConfig
 import com.android.mms.dom.smil.parser.SmilXmlSerializer
-import com.android.mms.util.DownloadManager
-import com.android.mms.util.RateController
 import com.google.android.mms.ContentType
 import com.google.android.mms.InvalidHeaderValueException
 import com.google.android.mms.MMSPart
@@ -93,9 +91,6 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         subject: String?,
         existingUri: Uri?,
     ) {
-        RateController.init(context)
-        DownloadManager.init(context)
-
         Timber.v("sending mms")
         try {
             val fileName = "send." + Math.abs(Random().nextLong()).toString() + ".dat"
