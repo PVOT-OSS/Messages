@@ -50,3 +50,5 @@ include(":carrier-configs")
 include(":gif-encoder")
 
 include(":otp-detector")
+
+include(":mms-pdu")
