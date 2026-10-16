@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.kotlin.stdlib)
 
     implementation(project(":common"))
+    implementation(project(":telephony"))
 
     // testing
     testImplementation(libs.junit)

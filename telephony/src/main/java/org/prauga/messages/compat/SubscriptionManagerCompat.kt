@@ -6,22 +6,24 @@
 
 package org.prauga.messages.compat
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.telephony.SubscriptionManager
+import androidx.core.content.ContextCompat
 import javax.inject.Inject
-import org.prauga.messages.manager.PermissionManager
 
 class SubscriptionManagerCompat
 @Inject
-constructor(context: Context, private val permissions: PermissionManager) {
+constructor(private val context: Context) {
 
     private val subscriptionManager: SubscriptionManager?
-        get() = field?.takeIf { permissions.hasPhone() }
+        get() = field?.takeIf { hasPhone() }
 
     val activeSubscriptionInfoList: List<SubscriptionInfoCompat>
         get() {
-            return if (permissions.hasPhone()) {
+            return if (hasPhone()) {
                 try {
                     subscriptionManager?.activeSubscriptionInfoList?.map {
                         SubscriptionInfoCompat(it)
@@ -44,6 +46,10 @@ constructor(context: Context, private val permissions: PermissionManager) {
     init {
         subscriptionManager = SubscriptionManager.from(context)
     }
+
+    private fun hasPhone(): Boolean =
+        ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) ==
+            PackageManager.PERMISSION_GRANTED
 
     fun addOnSubscriptionsChangedListener(listener: OnSubscriptionsChangedListener) {
         subscriptionManager?.addOnSubscriptionsChangedListener(listener.listener)

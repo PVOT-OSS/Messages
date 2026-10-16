@@ -104,8 +104,9 @@ Copyright (c) Saalim Quadri
 Licensed under the GPLv3: https://www.gnu.org/licenses/gpl-3.0.html
 Except where otherwise noted, in particular:
 
-- The MMS libraries (`android-smsmms`, `mms-pdu`) include code Copyright (c) The Android Open Source
-  Project, Esmertec AG, The Linux Foundation and Jacob Klinker, licensed under the Apache License 2.0.
+- The MMS libraries (`android-smsmms`, `mms-pdu`, parts of `telephony`) include code Copyright (c)
+  The Android Open Source Project, Esmertec AG, The Linux Foundation and Jacob Klinker, licensed
+  under the Apache License 2.0.
 - The carrier configurations (`carrier-configs`) are Copyright (c) The Android Open Source Project,
   licensed under the Apache License 2.0.
 - The GIF encoder (`gif-encoder`) is by Kevin Weiner, FM Software and Anthony Dekker, under the terms

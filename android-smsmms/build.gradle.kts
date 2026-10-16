@@ -25,6 +25,7 @@ dependencies {
 
     implementation(project(":carrier-configs"))
     implementation(project(":mms-pdu"))
+    implementation(project(":telephony"))
 
     // testing
     testImplementation(libs.junit)

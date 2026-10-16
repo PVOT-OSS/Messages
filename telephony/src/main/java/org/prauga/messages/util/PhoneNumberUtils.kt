@@ -60,6 +60,10 @@ class PhoneNumberUtils @Inject constructor(context: Context) {
     }
 
     private fun parse(number: CharSequence): Phonenumber.PhoneNumber? {
-        return tryOrNull(false) { phoneNumberUtil.parse(number, countryCode) }
+        return try {
+            phoneNumberUtil.parse(number, countryCode)
+        } catch (e: Exception) {
+            null
+        }
     }
 }

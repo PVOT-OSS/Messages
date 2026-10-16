@@ -167,6 +167,7 @@ dependencies {
     implementation(project(":android-smsmms"))
     implementation(project(":carrier-configs"))
     implementation(project(":mms-pdu"))
+    implementation(project(":telephony"))
     implementation(project(":common"))
     implementation(project(":data"))
     implementation(project(":domain"))
