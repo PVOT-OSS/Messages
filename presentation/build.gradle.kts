@@ -166,6 +166,7 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk7)
     implementation(project(":android-smsmms"))
     implementation(project(":carrier-configs"))
+    implementation(project(":mms-pdu"))
     implementation(project(":common"))
     implementation(project(":data"))
     implementation(project(":domain"))

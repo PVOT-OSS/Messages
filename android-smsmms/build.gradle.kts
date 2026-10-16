@@ -24,9 +24,11 @@ dependencies {
     implementation(libs.kotlin.stdlib)
 
     implementation(project(":carrier-configs"))
+    implementation(project(":mms-pdu"))
 
     // testing
     testImplementation(libs.junit)
+    testImplementation(testFixtures(project(":mms-pdu")))
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.robolectric)
