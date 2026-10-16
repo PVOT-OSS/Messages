@@ -23,6 +23,4 @@ dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.timber)
     implementation(libs.kotlin.stdlib)
-
-    implementation(project(":android-smsmms"))
 }
