@@ -52,3 +52,5 @@ include(":gif-encoder")
 include(":otp-detector")
 
 include(":mms-pdu")
+
+include(":telephony")
