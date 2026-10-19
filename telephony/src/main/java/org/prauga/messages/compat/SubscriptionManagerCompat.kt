@@ -14,9 +14,7 @@ import android.telephony.SubscriptionManager
 import androidx.core.content.ContextCompat
 import javax.inject.Inject
 
-class SubscriptionManagerCompat
-@Inject
-constructor(private val context: Context) {
+class SubscriptionManagerCompat @Inject constructor(private val context: Context) {
 
     private val subscriptionManager: SubscriptionManager?
         get() = field?.takeIf { hasPhone() }

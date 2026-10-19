@@ -185,10 +185,7 @@ constructor(
 
     fun showLicense() {
         val intent =
-            Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse("https://github.com/PVOT-OSS/Messages#license"),
-            )
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages#license"))
         startActivityExternal(intent)
     }
 
