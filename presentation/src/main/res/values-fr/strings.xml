@@ -1,22 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
-  ~
-  ~ This file is part of QKSMS.
-  ~
-  ~ QKSMS is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ QKSMS is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
-  --><resources>
+     SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+<resources>
     <string name="shortcut_compose_long_label">Nouvelle conversation</string>
     <string name="shortcut_compose_short_label">Rédiger</string>
     <string name="shortcut_compose_disabled_message">Raccourci désactivé</string>
@@ -399,8 +387,6 @@
     <string name="about_source" translatable="false">https://github.com/danascape/quik</string>
     <string name="about_changelog" translatable="false">https://github.com/danascape/quik/releases</string>
     <string name="about_contact" translatable="false">saalim.priv@gmail.com</string>
-    <string name="about_license" translatable="false">GNU General Public License v3.0</string>
-    <string name="about_copyright" translatable="false">© 2014–2025</string>
     <string name="changelog_title" translatable="false">New in Messages</string>
     <string name="changelog_version" translatable="false">Version %s</string>
     <string name="changelog_added" translatable="false">Added</string>

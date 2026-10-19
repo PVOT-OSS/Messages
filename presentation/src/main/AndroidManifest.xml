@@ -1,21 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
-  ~
-  ~ This file is part of QKSMS.
-  ~
-  ~ QKSMS is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ (at your option) any later version.
-  ~
-  ~ QKSMS is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
-  -->
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+     SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -123,6 +112,12 @@
             android:theme="@style/AppThemeDialog"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".feature.scheduled.ScheduledActivity" />
+        <activity
+            android:name=".feature.classzero.ClassZeroActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
+            android:taskAffinity=""
+            android:theme="@style/AppThemeTransparent" />
         <activity android:name=".feature.backup.BackupActivity" />
         <activity android:name=".feature.contacts.ContactsActivity" />
 
@@ -141,6 +136,7 @@
             </intent-filter>
         </receiver>
         <receiver android:name=".receiver.DeleteMessagesReceiver" />
+        <receiver android:name=".receiver.DeleteConfirmationReceiver" />
         <receiver
             android:name=".receiver.SmsReceiver"
             android:exported="true"
@@ -221,9 +217,6 @@
         <receiver android:name=".receiver.SendSmsReceiver" />
         <receiver android:name=".receiver.StartActivityFromWidgetReceiver" />
 
-        <service
-            android:name="com.android.mms.transaction.TransactionService"
-            android:foregroundServiceType="dataSync" />
         <service
             android:name=".feature.backup.RestoreBackupService"
             android:foregroundServiceType="dataSync" />

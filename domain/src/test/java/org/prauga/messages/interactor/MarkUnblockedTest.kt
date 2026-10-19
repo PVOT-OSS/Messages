@@ -1,20 +1,21 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.interactor
 
-import org.prauga.messages.repository.ConversationRepository
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import org.prauga.messages.repository.ConversationRepository
 
 class MarkUnblockedTest {
 
-    @Mock
-    private lateinit var conversationRepo: ConversationRepository
+    @Mock private lateinit var conversationRepo: ConversationRepository
 
     private lateinit var markUnblocked: MarkUnblocked
 

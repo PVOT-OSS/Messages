@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Instrumented tests for MMS send flow.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.mms
 
 import android.content.Context
@@ -16,13 +16,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.prauga.messages.model.Message
-import org.prauga.messages.model.MmsPart
 import org.prauga.messages.testutil.InstrumentedMmsTestDataFactory
 import org.prauga.messages.testutil.RealmTestHelper
 
 /**
- * Instrumented tests for MMS send flow.
- * Tests message creation, persistence, and retrieval using Realm.
+ * Instrumented tests for MMS send flow. Tests message creation, persistence, and retrieval using
+ * Realm.
  */
 @RunWith(AndroidJUnit4::class)
 class MmsSendFlowInstrumentedTest {
@@ -71,9 +70,7 @@ class MmsSendFlowInstrumentedTest {
         val originalMessage = InstrumentedMmsTestDataFactory.createTextMms(realm, "Retrieve test")
         val messageId = originalMessage.id
 
-        val retrievedMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val retrievedMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(retrievedMessage).isNotNull()
         assertThat(retrievedMessage!!.body).isEqualTo("Retrieve test")
@@ -103,10 +100,8 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenImageMmsWithCaption_whenCreate_thenHasBothParts() {
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            text = "Check out this photo!"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createImageMms(realm, text = "Check out this photo!")
 
         assertThat(message.parts.size).isEqualTo(2)
 
@@ -119,10 +114,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenJpegImage_whenCreate_thenTypeIsCorrect() {
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            imageType = "image/jpeg"
-        )
+        val message = InstrumentedMmsTestDataFactory.createImageMms(realm, imageType = "image/jpeg")
 
         val imagePart = message.parts.first { it.type?.startsWith("image/") == true }
         assertThat(imagePart.type).isEqualTo("image/jpeg")
@@ -130,10 +122,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenPngImage_whenCreate_thenTypeIsCorrect() {
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            imageType = "image/png"
-        )
+        val message = InstrumentedMmsTestDataFactory.createImageMms(realm, imageType = "image/png")
 
         val imagePart = message.parts.first { it.type?.startsWith("image/") == true }
         assertThat(imagePart.type).isEqualTo("image/png")
@@ -141,10 +130,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenGifImage_whenCreate_thenTypeIsCorrect() {
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            imageType = "image/gif"
-        )
+        val message = InstrumentedMmsTestDataFactory.createImageMms(realm, imageType = "image/gif")
 
         val imagePart = message.parts.first { it.type?.startsWith("image/") == true }
         assertThat(imagePart.type).isEqualTo("image/gif")
@@ -164,10 +150,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenMp4Video_whenCreate_thenTypeIsCorrect() {
-        val message = InstrumentedMmsTestDataFactory.createVideoMms(
-            realm,
-            videoType = "video/mp4"
-        )
+        val message = InstrumentedMmsTestDataFactory.createVideoMms(realm, videoType = "video/mp4")
 
         val videoPart = message.parts.first { it.type?.startsWith("video/") == true }
         assertThat(videoPart.type).isEqualTo("video/mp4")
@@ -175,10 +158,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun given3gppVideo_whenCreate_thenTypeIsCorrect() {
-        val message = InstrumentedMmsTestDataFactory.createVideoMms(
-            realm,
-            videoType = "video/3gpp"
-        )
+        val message = InstrumentedMmsTestDataFactory.createVideoMms(realm, videoType = "video/3gpp")
 
         val videoPart = message.parts.first { it.type?.startsWith("video/") == true }
         assertThat(videoPart.type).isEqualTo("video/3gpp")
@@ -198,10 +178,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenMp3Audio_whenCreate_thenTypeIsCorrect() {
-        val message = InstrumentedMmsTestDataFactory.createAudioMms(
-            realm,
-            audioType = "audio/mp3"
-        )
+        val message = InstrumentedMmsTestDataFactory.createAudioMms(realm, audioType = "audio/mp3")
 
         val audioPart = message.parts.first { it.type?.startsWith("audio/") == true }
         assertThat(audioPart.type).isEqualTo("audio/mp3")
@@ -209,10 +186,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenAacAudio_whenCreate_thenTypeIsCorrect() {
-        val message = InstrumentedMmsTestDataFactory.createAudioMms(
-            realm,
-            audioType = "audio/aac"
-        )
+        val message = InstrumentedMmsTestDataFactory.createAudioMms(realm, audioType = "audio/aac")
 
         val audioPart = message.parts.first { it.type?.startsWith("audio/") == true }
         assertThat(audioPart.type).isEqualTo("audio/aac")
@@ -237,10 +211,8 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenOutgoingMmsInOutbox_whenCreate_thenBoxIdIsOutbox() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_OUTBOX
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_OUTBOX)
 
         assertThat(message.boxId).isEqualTo(Mms.MESSAGE_BOX_OUTBOX)
     }
@@ -249,21 +221,23 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenMmsWithSubject_whenCreate_thenSubjectSet() {
-        val message = InstrumentedMmsTestDataFactory.createMmsWithSubject(
-            realm,
-            subject = "Important Message"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createMmsWithSubject(
+                realm,
+                subject = "Important Message",
+            )
 
         assertThat(message.subject).isEqualTo("Important Message")
     }
 
     @Test
     fun givenMmsWithSubject_whenCreate_thenBodyAlsoSet() {
-        val message = InstrumentedMmsTestDataFactory.createMmsWithSubject(
-            realm,
-            subject = "Subject",
-            text = "Message body"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createMmsWithSubject(
+                realm,
+                subject = "Subject",
+                text = "Message body",
+            )
 
         assertThat(message.subject).isEqualTo("Subject")
         assertThat(message.body).isEqualTo("Message body")
@@ -273,10 +247,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenMms_whenCreateWithThreadId_thenThreadIdSet() {
-        val message = InstrumentedMmsTestDataFactory.createTextMms(
-            realm,
-            threadId = 999L
-        )
+        val message = InstrumentedMmsTestDataFactory.createTextMms(realm, threadId = 999L)
 
         assertThat(message.threadId).isEqualTo(999L)
     }
@@ -284,7 +255,8 @@ class MmsSendFlowInstrumentedTest {
     @Test
     fun givenMultipleMms_whenCreateInSameThread_thenSameThreadId() {
         val message1 = InstrumentedMmsTestDataFactory.createTextMms(realm, "First", threadId = 100L)
-        val message2 = InstrumentedMmsTestDataFactory.createTextMms(realm, "Second", threadId = 100L)
+        val message2 =
+            InstrumentedMmsTestDataFactory.createTextMms(realm, "Second", threadId = 100L)
 
         assertThat(message1.threadId).isEqualTo(message2.threadId)
     }
@@ -297,9 +269,7 @@ class MmsSendFlowInstrumentedTest {
         InstrumentedMmsTestDataFactory.createTextMms(realm, "Message 2")
         InstrumentedMmsTestDataFactory.createTextMms(realm, "Message 3")
 
-        val mmsMessages = realm.where(Message::class.java)
-            .equalTo("type", "mms")
-            .findAll()
+        val mmsMessages = realm.where(Message::class.java).equalTo("type", "mms").findAll()
 
         assertThat(mmsMessages.size).isEqualTo(3)
     }
@@ -309,9 +279,7 @@ class MmsSendFlowInstrumentedTest {
         InstrumentedMmsTestDataFactory.createTextMms(realm, "In thread", threadId = 500L)
         InstrumentedMmsTestDataFactory.createTextMms(realm, "Different", threadId = 501L)
 
-        val messagesInThread = realm.where(Message::class.java)
-            .equalTo("threadId", 500L)
-            .findAll()
+        val messagesInThread = realm.where(Message::class.java).equalTo("threadId", 500L).findAll()
 
         assertThat(messagesInThread.size).isEqualTo(1)
         assertThat(messagesInThread[0]!!.body).isEqualTo("In thread")
@@ -322,9 +290,8 @@ class MmsSendFlowInstrumentedTest {
         InstrumentedMmsTestDataFactory.createTextMms(realm) // Inbox
         InstrumentedMmsTestDataFactory.createOutgoingMms(realm) // Sent
 
-        val inboxMessages = realm.where(Message::class.java)
-            .equalTo("boxId", Mms.MESSAGE_BOX_INBOX)
-            .findAll()
+        val inboxMessages =
+            realm.where(Message::class.java).equalTo("boxId", Mms.MESSAGE_BOX_INBOX).findAll()
 
         assertThat(inboxMessages.size).isEqualTo(1)
     }
@@ -333,10 +300,7 @@ class MmsSendFlowInstrumentedTest {
 
     @Test
     fun givenMms_whenCreateWithAddress_thenAddressSet() {
-        val message = InstrumentedMmsTestDataFactory.createTextMms(
-            realm,
-            address = "+15559876543"
-        )
+        val message = InstrumentedMmsTestDataFactory.createTextMms(realm, address = "+15559876543")
 
         assertThat(message.address).isEqualTo("+15559876543")
     }
@@ -346,9 +310,7 @@ class MmsSendFlowInstrumentedTest {
         InstrumentedMmsTestDataFactory.createTextMms(realm, address = "+15551111111")
         InstrumentedMmsTestDataFactory.createTextMms(realm, address = "+15552222222")
 
-        val messages = realm.where(Message::class.java)
-            .equalTo("address", "+15551111111")
-            .findAll()
+        val messages = realm.where(Message::class.java).equalTo("address", "+15551111111").findAll()
 
         assertThat(messages.size).isEqualTo(1)
     }
@@ -395,15 +357,11 @@ class MmsSendFlowInstrumentedTest {
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val toDelete = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val toDelete = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             toDelete?.deleteFromRealm()
         }
 
-        val found = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val found = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(found).isNull()
     }
@@ -416,16 +374,12 @@ class MmsSendFlowInstrumentedTest {
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val toUpdate = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val toUpdate = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             toUpdate?.read = true
             toUpdate?.seen = true
         }
 
-        val updated = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updated = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(updated!!.read).isTrue()
         assertThat(updated.seen).isTrue()

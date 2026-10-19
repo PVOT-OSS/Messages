@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.backup
 
 import android.annotation.SuppressLint
@@ -29,13 +16,12 @@ import androidx.core.content.ContextCompat
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import org.prauga.messages.common.util.extensions.getLabel
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.repository.BackupRepository
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-
 
 class RestoreBackupService : Service() {
 
@@ -47,18 +33,17 @@ class RestoreBackupService : Service() {
         private const val EXTRA_FILE_URI = "org.prauga.messages.EXTRA_FILE_URI"
 
         fun start(context: Context, backupFile: Uri) {
-            val intent = Intent(context, RestoreBackupService::class.java)
-                .setAction(ACTION_START)
-                .putExtra(EXTRA_FILE_URI, backupFile.toString())
+            val intent =
+                Intent(context, RestoreBackupService::class.java)
+                    .setAction(ACTION_START)
+                    .putExtra(EXTRA_FILE_URI, backupFile.toString())
 
             ContextCompat.startForegroundService(context, intent)
         }
     }
 
-    @Inject
-    lateinit var backupRepo: BackupRepository
-    @Inject
-    lateinit var notificationManager: NotificationManager
+    @Inject lateinit var backupRepo: BackupRepository
+    @Inject lateinit var notificationManager: NotificationManager
 
     private val notification by lazy { notificationManager.getNotificationForBackup() }
 
@@ -82,22 +67,25 @@ class RestoreBackupService : Service() {
 
         startForeground(NOTIFICATION_ID, notification.build())
 
-        backupRepo.getRestoreProgress()
+        backupRepo
+            .getRestoreProgress()
             .sample(200, TimeUnit.MILLISECONDS, true)
             .subscribeOn(Schedulers.io())
             .subscribe { progress ->
                 when (progress) {
                     is BackupRepository.Progress.Idle -> stop()
 
-                    is BackupRepository.Progress.Running -> notification
-                        .setProgress(progress.max, progress.count, progress.indeterminate)
-                        .setContentText(progress.getLabel(this))
-                        .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
+                    is BackupRepository.Progress.Running ->
+                        notification
+                            .setProgress(progress.max, progress.count, progress.indeterminate)
+                            .setContentText(progress.getLabel(this))
+                            .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
 
-                    else -> notification
-                        .setProgress(0, 0, progress.indeterminate)
-                        .setContentText(progress.getLabel(this))
-                        .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
+                    else ->
+                        notification
+                            .setProgress(0, 0, progress.indeterminate)
+                            .setContentText(progress.getLabel(this))
+                            .let { notificationManager.notify(NOTIFICATION_ID, it.build()) }
                 }
             }
 
@@ -113,5 +101,4 @@ class RestoreBackupService : Service() {
         stopForeground(true)
         stopSelf()
     }
-
 }

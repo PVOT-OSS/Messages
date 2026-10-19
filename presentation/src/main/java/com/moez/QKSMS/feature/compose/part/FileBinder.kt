@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.compose.part
 
 import android.annotation.SuppressLint
@@ -23,6 +11,7 @@ import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewHolder
@@ -34,12 +23,10 @@ import org.prauga.messages.databinding.MmsFileListItemBinding
 import org.prauga.messages.feature.compose.BubbleUtils
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import javax.inject.Inject
 
 class FileBinder @Inject constructor(colors: Colors, private val context: Context) : PartBinder() {
 
-    @Inject
-    lateinit var navigator: Navigator
+    @Inject lateinit var navigator: Navigator
 
     override val partLayout = R.layout.mms_file_list_item
     override var theme = colors.theme()
@@ -53,7 +40,7 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
         part: MmsPart,
         message: Message,
         canGroupWithPrevious: Boolean,
-        canGroupWithNext: Boolean
+        canGroupWithNext: Boolean,
     ) {
         val binding = MmsFileListItemBinding.bind(holder.containerView)
 
@@ -85,14 +72,17 @@ class FileBinder @Inject constructor(colors: Colors, private val context: Contex
             binding.size.setTextColor(theme.textTertiary)
         } else {
             binding.fileBackground.setBackgroundTint(
-                holder.containerView.context.resolveThemeColor(
-                    R.attr.bubbleColor
-                )
+                holder.containerView.context.resolveThemeColor(R.attr.bubbleColor)
             )
-            binding.icon.setTint(holder.containerView.context.resolveThemeColor(android.R.attr.textColorSecondary))
-            binding.filename.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary))
-            binding.size.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorTertiary))
+            binding.icon.setTint(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorSecondary)
+            )
+            binding.filename.setTextColor(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary)
+            )
+            binding.size.setTextColor(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorTertiary)
+            )
         }
     }
-
 }

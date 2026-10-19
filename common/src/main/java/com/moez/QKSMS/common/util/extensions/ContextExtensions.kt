@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.util.extensions
 
 import android.app.job.JobScheduler
@@ -32,19 +19,17 @@ import androidx.core.content.getSystemService
 import org.prauga.messages.util.tryOrNull
 
 fun Context.getColorCompat(colorRes: Int): Int {
-    //return black as a default color, in case an invalid color ID was passed in
+    // return black as a default color, in case an invalid color ID was passed in
     return tryOrNull { ContextCompat.getColor(this, colorRes) } ?: Color.BLACK
 }
 
 fun Context.getColorStateListCompat(colorStateListRes: Int): ColorStateList {
-    //return black as a default color, in case an invalid color ID was passed in
+    // return black as a default color, in case an invalid color ID was passed in
     return tryOrNull { ContextCompat.getColorStateList(this, colorStateListRes) }
-            ?: ColorStateList.valueOf(Color.BLACK)
+        ?: ColorStateList.valueOf(Color.BLACK)
 }
 
-/**
- * Tries to resolve a resource id from the current theme, based on the [attributeId]
- */
+/** Tries to resolve a resource id from the current theme, based on the [attributeId] */
 fun Context.resolveThemeAttribute(attributeId: Int, default: Int = 0): Int {
     val outValue = TypedValue()
     val wasResolved = theme.resolveAttribute(attributeId, outValue, true)
@@ -70,7 +55,6 @@ fun Context.resolveThemeColorStateList(attributeId: Int, default: Int = 0): Colo
     val outValue = TypedValue()
     val wasResolved = theme.resolveAttribute(attributeId, outValue, true)
 
-
     return getColorStateListCompat(if (wasResolved) outValue.resourceId else default)
 }
 
@@ -89,7 +73,10 @@ fun Context.isInstalled(packageName: String): Boolean {
 val Context.versionCode: Int
     get() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0)).longVersionCode.toInt()
+            packageManager
+                .getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+                .longVersionCode
+                .toInt()
         } else {
             packageManager.getPackageInfo(packageName, 0).versionCode
         }

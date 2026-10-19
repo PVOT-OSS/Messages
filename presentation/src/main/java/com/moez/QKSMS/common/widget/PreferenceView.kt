@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.widget
 
 import android.content.Context
@@ -32,13 +19,13 @@ import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.PreferenceViewBinding
 import org.prauga.messages.injection.appComponent
 
-class PreferenceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : LinearLayoutCompat(context, attrs) {
+class PreferenceView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    LinearLayoutCompat(context, attrs) {
 
     private var layout: PreferenceViewBinding
 
-    val titleTextView: TextView get() = layout.titleView
+    val titleTextView: TextView
+        get() = layout.titleView
 
     var title: String? = null
         set(value) {
@@ -54,7 +41,6 @@ class PreferenceView @JvmOverloads constructor(
     var summary: String? = null
         set(value) {
             field = value
-
 
             if (isInEditMode) {
                 findViewById<TextView>(R.id.summaryView).run {
@@ -85,18 +71,19 @@ class PreferenceView @JvmOverloads constructor(
             summary = getString(R.styleable.PreferenceView_summary)
 
             // If there's a custom view used for the preference's widget, inflate it
-            getResourceId(R.styleable.PreferenceView_widget, -1).takeIf { it != -1 }?.let { id ->
-                View.inflate(context, id, layout.widgetFrame)
-            }
+            getResourceId(R.styleable.PreferenceView_widget, -1)
+                .takeIf { it != -1 }
+                ?.let { id -> View.inflate(context, id, layout.widgetFrame) }
 
             // If an icon is being used, set up the icon view
-            getResourceId(R.styleable.PreferenceView_icon, -1).takeIf { it != -1 }?.let { id ->
-                layout.icon.setVisible(true)
-                layout.icon.setImageResource(id)
-            }
+            getResourceId(R.styleable.PreferenceView_icon, -1)
+                .takeIf { it != -1 }
+                ?.let { id ->
+                    layout.icon.setVisible(true)
+                    layout.icon.setImageResource(id)
+                }
 
             recycle()
         }
     }
-
 }

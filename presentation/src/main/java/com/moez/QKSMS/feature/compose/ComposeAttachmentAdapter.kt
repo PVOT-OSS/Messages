@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.compose
 
 import android.content.Context
@@ -26,6 +14,7 @@ import androidx.core.view.isVisible
 import ezvcard.Ezvcard
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkAdapter
 import org.prauga.messages.common.base.QkViewHolder
@@ -36,12 +25,9 @@ import org.prauga.messages.extensions.getName
 import org.prauga.messages.feature.extensions.LoadBestIconIntoImageView
 import org.prauga.messages.feature.extensions.loadBestIconIntoImageView
 import org.prauga.messages.model.Attachment
-import javax.inject.Inject
 
-
-class ComposeAttachmentAdapter @Inject constructor(
-    private val context: Context
-) : QkAdapter<Attachment, QkViewHolder>() {
+class ComposeAttachmentAdapter @Inject constructor(private val context: Context) :
+    QkAdapter<Attachment, QkViewHolder>() {
 
     companion object {
         private const val VIEW_TYPE_FILE = 0
@@ -53,12 +39,13 @@ class ComposeAttachmentAdapter @Inject constructor(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QkViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        val view = inflater.inflate(
-            if (viewType == VIEW_TYPE_CONTACT) R.layout.attachment_contact_list_item
-            else R.layout.attachment_file_list_item,
-            parent,
-            false
-        )
+        val view =
+            inflater.inflate(
+                if (viewType == VIEW_TYPE_CONTACT) R.layout.attachment_contact_list_item
+                else R.layout.attachment_file_list_item,
+                parent,
+                false,
+            )
 
         return QkViewHolder(view).apply {
             view.setOnClickListener {
@@ -74,14 +61,17 @@ class ComposeAttachmentAdapter @Inject constructor(
         if (attachment.isVCard(context)) {
             val binding = AttachmentContactListItemBinding.bind(holder.containerView)
             try {
-                val displayName = Ezvcard.parse(
-                    String(attachment.getResourceBytes(context))
-                ).first().getDisplayName() ?: ""
+                val displayName =
+                    Ezvcard.parse(String(attachment.getResourceBytes(context)))
+                        .first()
+                        .getDisplayName() ?: ""
                 binding.name.text = displayName
                 binding.name.isVisible = displayName.isNotEmpty()
-            } catch (e: Exception) {
-                // npe from Ezvcard first() call above can be thrown if resource bytes cannot
-                // be retrieved from contact resource provider
+            } catch (e: Throwable) {
+                // ExceptionInInitializerError (an Error, not Exception) can be thrown if
+                // Ezvcard fails to load its properties file. NullPointerException from
+                // Ezvcard first() call can also be thrown if resource bytes cannot be
+                // retrieved from contact resource provider.
                 binding.vCardAvatar.setImageResource(android.R.drawable.ic_delete)
                 binding.name.text = context.getString(R.string.attachment_missing)
                 binding.name.isVisible = true
@@ -109,9 +99,9 @@ class ComposeAttachmentAdapter @Inject constructor(
         }
     }
 
-    override fun getItemViewType(position: Int) = when (getItem(position).isVCard(context)) {
-        true -> VIEW_TYPE_CONTACT
-        else -> VIEW_TYPE_FILE
-    }
-
+    override fun getItemViewType(position: Int) =
+        when (getItem(position).isVCard(context)) {
+            true -> VIEW_TYPE_CONTACT
+            else -> VIEW_TYPE_FILE
+        }
 }

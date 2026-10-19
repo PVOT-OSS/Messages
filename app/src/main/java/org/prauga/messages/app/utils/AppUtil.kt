@@ -1,4 +1,10 @@
-// From https://medium.com/@KaushalVasava/android-15-edge-to-edge-support-how-to-implement-in-xml-views-59a65d73f1c9
+/*
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+// From
+// https://medium.com/@KaushalVasava/android-15-edge-to-edge-support-how-to-implement-in-xml-views-59a65d73f1c9
 
 package org.prauga.messages.app.utils
 
@@ -18,10 +24,15 @@ object AppUtil {
             val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
             ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
-                val bars = windowInsets.getInsets(
-                    WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout() or WindowInsetsCompat.Type.ime()
-                )
-                val isNightMode = (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+                val bars =
+                    windowInsets.getInsets(
+                        WindowInsetsCompat.Type.systemBars() or
+                            WindowInsetsCompat.Type.displayCutout() or
+                            WindowInsetsCompat.Type.ime()
+                    )
+                val isNightMode =
+                    (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                        Configuration.UI_MODE_NIGHT_YES
 
                 insetsController?.isAppearanceLightStatusBars = !isNightMode
                 insetsController?.isAppearanceLightNavigationBars = !isNightMode

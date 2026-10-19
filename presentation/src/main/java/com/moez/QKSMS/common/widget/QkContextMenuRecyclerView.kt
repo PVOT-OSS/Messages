@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.common.widget
 
 import android.content.Context
@@ -18,25 +23,22 @@ open class QkContextMenuRecyclerView<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE>
         var contextMenuValue: VIEW_HOLDER_VALUE_TYPE? = null
     }
 
-    abstract class Adapter<
-            ADAPTER_VALUE_TYPE,
-            T,
-            VHT : RecyclerView.ViewHolder
-            > : QkAdapter<T, VHT>() {
+    abstract class Adapter<ADAPTER_VALUE_TYPE, T, VHT : RecyclerView.ViewHolder> :
+        QkAdapter<T, VHT>() {
         var contextMenuValue: ADAPTER_VALUE_TYPE? = null
     }
 
-    private var contextMenuInfo: ContextMenuInfo<
-            ADAPTER_VALUE_TYPE,
-            VIEW_HOLDER_VALUE_TYPE
-            >? = null
+    private var contextMenuInfo: ContextMenuInfo<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE>? = null
 
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
-            : super(context, attrs, defStyleAttr)
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+    ) : super(context, attrs, defStyleAttr)
 
     override fun getContextMenuInfo() = contextMenuInfo
 
@@ -55,14 +57,15 @@ open class QkContextMenuRecyclerView<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE>
     }
 
     private fun saveContextMenuInfo(originalView: View) {
-        contextMenuInfo = ContextMenuInfo(
-            (adapter as Adapter<ADAPTER_VALUE_TYPE, *, *>)?.contextMenuValue,
-            getChildViewHolder(originalView)?.contextMenuValue,
-            this,
-            originalView,
-            getChildAdapterPosition(originalView),
-            getChildItemId(originalView)
-        )
+        contextMenuInfo =
+            ContextMenuInfo(
+                (adapter as Adapter<ADAPTER_VALUE_TYPE, *, *>)?.contextMenuValue,
+                getChildViewHolder(originalView)?.contextMenuValue,
+                this,
+                originalView,
+                getChildAdapterPosition(originalView),
+                getChildItemId(originalView),
+            )
     }
 
     class ContextMenuInfo<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE>(
@@ -71,7 +74,7 @@ open class QkContextMenuRecyclerView<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE>
         val recyclerView: QkContextMenuRecyclerView<ADAPTER_VALUE_TYPE, VIEW_HOLDER_VALUE_TYPE>,
         val itemView: View,
         val adapterPosition: Int,
-        val childItemStableId: Long
+        val childItemStableId: Long,
     ) : ContextMenu.ContextMenuInfo
 }
 
@@ -80,6 +83,9 @@ class QkContextMenuRecyclerViewLongMmsPart : QkContextMenuRecyclerView<Long, Mms
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
-            : super(context, attrs, defStyleAttr)
+    constructor(
+        context: Context,
+        attrs: AttributeSet?,
+        defStyleAttr: Int,
+    ) : super(context, attrs, defStyleAttr)
 }

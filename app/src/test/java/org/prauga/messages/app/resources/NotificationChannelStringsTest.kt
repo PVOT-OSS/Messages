@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.app.resources
@@ -17,9 +18,9 @@ import org.robolectric.annotation.Config
 
 /**
  * Unit tests for notification channel string resources.
- * 
- * These tests verify that all notification channel strings are properly
- * defined in string resources and are non-empty.
+ *
+ * These tests verify that all notification channel strings are properly defined in string resources
+ * and are non-empty.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.P])
@@ -36,7 +37,7 @@ class NotificationChannelStringsTest {
     @Test
     fun defaultChannelName_shouldBeNonEmpty() {
         val name = context.getString(R.string.notification_channel_default_name)
-        
+
         assertNotNull("Default channel name should not be null", name)
         assertFalse("Default channel name should not be empty", name.isEmpty())
     }
@@ -44,7 +45,7 @@ class NotificationChannelStringsTest {
     @Test
     fun defaultChannelDescription_shouldBeNonEmpty() {
         val description = context.getString(R.string.notification_channel_default_description)
-        
+
         assertNotNull("Default channel description should not be null", description)
         assertFalse("Default channel description should not be empty", description.isEmpty())
     }
@@ -53,15 +54,16 @@ class NotificationChannelStringsTest {
     @Test
     fun backupRestoreChannelName_shouldBeNonEmpty() {
         val name = context.getString(R.string.notification_channel_backup_restore_name)
-        
+
         assertNotNull("Backup restore channel name should not be null", name)
         assertFalse("Backup restore channel name should not be empty", name.isEmpty())
     }
 
     @Test
     fun backupRestoreChannelDescription_shouldBeNonEmpty() {
-        val description = context.getString(R.string.notification_channel_backup_restore_description)
-        
+        val description =
+            context.getString(R.string.notification_channel_backup_restore_description)
+
         assertNotNull("Backup restore channel description should not be null", description)
         assertFalse("Backup restore channel description should not be empty", description.isEmpty())
     }
@@ -69,17 +71,18 @@ class NotificationChannelStringsTest {
     // Resource Existence Tests
     @Test
     fun allNotificationChannelStrings_shouldExist() {
-        val stringIds = listOf(
-            R.string.notification_channel_default_name,
-            R.string.notification_channel_default_description,
-            R.string.notification_channel_backup_restore_name,
-            R.string.notification_channel_backup_restore_description
-        )
+        val stringIds =
+            listOf(
+                R.string.notification_channel_default_name,
+                R.string.notification_channel_default_description,
+                R.string.notification_channel_backup_restore_name,
+                R.string.notification_channel_backup_restore_description,
+            )
 
         stringIds.forEach { stringId ->
             val resourceName = context.resources.getResourceEntryName(stringId)
             val value = context.getString(stringId)
-            
+
             assertNotNull("String resource $resourceName should not be null", value)
             assertFalse("String resource $resourceName should not be empty", value.isEmpty())
         }
@@ -88,16 +91,19 @@ class NotificationChannelStringsTest {
     // Localization Tests
     @Test
     fun notificationChannelStrings_shouldNotContainPlaceholders() {
-        val strings = listOf(
-            context.getString(R.string.notification_channel_default_name),
-            context.getString(R.string.notification_channel_default_description),
-            context.getString(R.string.notification_channel_backup_restore_name),
-            context.getString(R.string.notification_channel_backup_restore_description)
-        )
+        val strings =
+            listOf(
+                context.getString(R.string.notification_channel_default_name),
+                context.getString(R.string.notification_channel_default_description),
+                context.getString(R.string.notification_channel_backup_restore_name),
+                context.getString(R.string.notification_channel_backup_restore_description),
+            )
 
         strings.forEach { string ->
-            assertFalse("String should not contain untranslated placeholder markers",
-                string.contains("TODO") || string.contains("FIXME"))
+            assertFalse(
+                "String should not contain untranslated placeholder markers",
+                string.contains("TODO") || string.contains("FIXME"),
+            )
         }
     }
 
@@ -136,14 +142,14 @@ class NotificationChannelStringsTest {
         // Default channel
         val defaultName = context.getString(R.string.notification_channel_default_name)
         val defaultDesc = context.getString(R.string.notification_channel_default_description)
-        
+
         assertFalse("Default channel should have name", defaultName.isEmpty())
         assertFalse("Default channel should have description", defaultDesc.isEmpty())
 
         // Backup/Restore channel
         val backupName = context.getString(R.string.notification_channel_backup_restore_name)
         val backupDesc = context.getString(R.string.notification_channel_backup_restore_description)
-        
+
         assertFalse("Backup channel should have name", backupName.isEmpty())
         assertFalse("Backup channel should have description", backupDesc.isEmpty())
     }
@@ -151,12 +157,13 @@ class NotificationChannelStringsTest {
     // Format Tests
     @Test
     fun channelStrings_shouldNotHaveLeadingOrTrailingWhitespace() {
-        val strings = listOf(
-            context.getString(R.string.notification_channel_default_name),
-            context.getString(R.string.notification_channel_default_description),
-            context.getString(R.string.notification_channel_backup_restore_name),
-            context.getString(R.string.notification_channel_backup_restore_description)
-        )
+        val strings =
+            listOf(
+                context.getString(R.string.notification_channel_default_name),
+                context.getString(R.string.notification_channel_default_description),
+                context.getString(R.string.notification_channel_backup_restore_name),
+                context.getString(R.string.notification_channel_backup_restore_description),
+            )
 
         strings.forEach { string ->
             assert(string == string.trim()) {
@@ -167,16 +174,19 @@ class NotificationChannelStringsTest {
 
     @Test
     fun channelStrings_shouldNotBeAllUppercase() {
-        val names = listOf(
-            context.getString(R.string.notification_channel_default_name),
-            context.getString(R.string.notification_channel_backup_restore_name)
-        )
+        val names =
+            listOf(
+                context.getString(R.string.notification_channel_default_name),
+                context.getString(R.string.notification_channel_backup_restore_name),
+            )
 
         names.forEach { name ->
             // Allow all uppercase only if it's an acronym (very short)
             if (name.length > 5) {
-                assertFalse("Channel name should not be all uppercase: '$name'",
-                    name == name.uppercase() && name.any { it.isLetter() })
+                assertFalse(
+                    "Channel name should not be all uppercase: '$name'",
+                    name == name.uppercase() && name.any { it.isLetter() },
+                )
             }
         }
     }

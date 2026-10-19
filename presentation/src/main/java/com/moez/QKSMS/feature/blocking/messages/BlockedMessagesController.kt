@@ -1,20 +1,7 @@
 /*
- * Copyright (C) 2019 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.feature.blocking.messages
@@ -32,12 +19,12 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkController
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.feature.blocking.BlockingDialog
 import org.prauga.messages.injection.appComponent
-import javax.inject.Inject
 
 class BlockedMessagesController :
     QkController<BlockedMessagesView, BlockedMessagesState, BlockedMessagesPresenter>(),
@@ -50,16 +37,11 @@ class BlockedMessagesController :
     override val confirmDeleteIntent: Subject<List<Long>> = PublishSubject.create()
     override val backClicked: Subject<Unit> = PublishSubject.create()
 
-    @Inject
-    lateinit var blockedMessagesAdapter: BlockedMessagesAdapter
-    @Inject
-    lateinit var blockingDialog: BlockingDialog
-    @Inject
-    lateinit var colors: Colors
-    @Inject
-    lateinit var context: Context
-    @Inject
-    override lateinit var presenter: BlockedMessagesPresenter
+    @Inject lateinit var blockedMessagesAdapter: BlockedMessagesAdapter
+    @Inject lateinit var blockingDialog: BlockingDialog
+    @Inject lateinit var colors: Colors
+    @Inject lateinit var context: Context
+    @Inject override lateinit var presenter: BlockedMessagesPresenter
 
     private lateinit var conversations: RecyclerView
     private lateinit var empty: TextView
@@ -128,29 +110,27 @@ class BlockedMessagesController :
 
     override fun showDeleteDialog(conversations: List<Long>) {
         val count = conversations.size
-        val dialog = AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
-            .setTitle(R.string.dialog_delete_title)
-            .setMessage(resources?.getQuantityString(R.plurals.dialog_delete_message, count, count))
-            .setPositiveButton(R.string.button_delete) { _, _ ->
-                confirmDeleteIntent.onNext(
-                    conversations
+        val dialog =
+            AlertDialog.Builder(activity!!, R.style.AppThemeDialog)
+                .setTitle(R.string.dialog_delete_title)
+                .setMessage(
+                    resources?.getQuantityString(R.plurals.dialog_delete_message, count, count)
                 )
-            }
-            .setNegativeButton(R.string.button_cancel, null)
-            .create()
+                .setPositiveButton(R.string.button_delete) { _, _ ->
+                    confirmDeleteIntent.onNext(conversations)
+                }
+                .setNegativeButton(R.string.button_cancel, null)
+                .create()
 
         dialog.show()
 
-        themedActivity?.theme?.take(1)
-            ?.autoDispose(scope())
-            ?.subscribe { theme ->
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-            }
+        themedActivity?.theme?.take(1)?.autoDispose(scope())?.subscribe { theme ->
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
+        }
     }
 
     override fun goBack() {
         router.popCurrentController()
     }
-
 }

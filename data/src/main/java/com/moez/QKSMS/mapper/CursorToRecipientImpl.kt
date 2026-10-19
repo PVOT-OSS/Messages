@@ -1,34 +1,21 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.mapper
 
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import javax.inject.Inject
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.model.Recipient
-import javax.inject.Inject
 
-class CursorToRecipientImpl @Inject constructor(
-    private val context: Context,
-    private val permissionManager: PermissionManager
-) : CursorToRecipient {
+class CursorToRecipientImpl
+@Inject
+constructor(private val context: Context, private val permissionManager: PermissionManager) :
+    CursorToRecipient {
 
     companion object {
         val URI = Uri.parse("content://mms-sms/canonical-addresses")
@@ -37,10 +24,12 @@ class CursorToRecipientImpl @Inject constructor(
         const val COLUMN_ADDRESS = 1
     }
 
-    override fun map(from: Cursor) = Recipient(
+    override fun map(from: Cursor) =
+        Recipient(
             id = from.getLong(COLUMN_ID),
             address = from.getString(COLUMN_ADDRESS),
-            lastUpdate = System.currentTimeMillis())
+            lastUpdate = System.currentTimeMillis(),
+        )
 
     override fun getRecipientCursor(): Cursor? {
         return when (permissionManager.hasReadSms()) {
@@ -52,5 +41,4 @@ class CursorToRecipientImpl @Inject constructor(
     override fun getRecipientCursor(id: Long): Cursor? {
         return context.contentResolver.query(URI, null, "_id = ?", arrayOf(id.toString()), null)
     }
-
 }

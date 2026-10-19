@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.widget
 
 import android.content.Context
@@ -30,9 +17,8 @@ import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.databinding.GroupAvatarViewBinding
 import org.prauga.messages.model.Recipient
 
-class GroupAvatarView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : ConstraintLayout(context, attrs) {
+class GroupAvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    ConstraintLayout(context, attrs) {
 
     private var layout: GroupAvatarViewBinding =
         GroupAvatarViewBinding.inflate(LayoutInflater.from(context), this)
@@ -63,9 +49,7 @@ class GroupAvatarView @JvmOverloads constructor(
         }
         layout.avatar2.isVisible = recipients.size > 1
 
-
         recipients.getOrNull(0).run(layout.avatar1::setRecipient)
         recipients.getOrNull(1).run(layout.avatar2::setRecipient)
     }
-
 }

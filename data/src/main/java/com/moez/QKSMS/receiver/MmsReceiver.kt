@@ -1,23 +1,44 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.receiver
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import com.android.mms.transaction.PushReceiver
+import dagger.android.AndroidInjection
+import javax.inject.Inject
+import org.prauga.messages.carrier.CarrierMmsConfig
+import org.prauga.messages.interactor.ReceiveMms
+import org.prauga.messages.manager.MmsDownloadPolicy
+import timber.log.Timber
 
-class MmsReceiver : PushReceiver()
+open class MmsReceiver : PushReceiver() {
+
+    @Inject lateinit var mmsDownloadPolicy: MmsDownloadPolicy
+    @Inject lateinit var receiveMms: ReceiveMms
+
+    override fun onReceive(context: Context, intent: Intent) {
+        inject(context)
+        super.onReceive(context, intent)
+    }
+
+    protected open fun inject(context: Context) {
+        AndroidInjection.inject(this, context)
+    }
+
+    override fun shouldAutoDownload(
+        context: Context,
+        subId: Int,
+        config: CarrierMmsConfig,
+        from: String?,
+    ): Boolean = mmsDownloadPolicy.shouldAutoDownload(subId, from)
+
+    override fun onNotificationReceived(context: Context, notificationUri: Uri, subId: Int) {
+        receiveMms.buildObservable(notificationUri).blockingSubscribe({}, Timber::w)
+    }
+}

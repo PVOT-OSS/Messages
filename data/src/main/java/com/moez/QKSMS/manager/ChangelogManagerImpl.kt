@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.manager
 
 import android.content.Context
@@ -24,16 +11,18 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
-import org.prauga.messages.common.util.extensions.versionCode
-import org.prauga.messages.util.Preferences
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
+import org.prauga.messages.common.util.extensions.versionCode
+import org.prauga.messages.util.Preferences
 
-class ChangelogManagerImpl @Inject constructor(
+class ChangelogManagerImpl
+@Inject
+constructor(
     private val context: Context,
     private val moshi: Moshi,
-    private val prefs: Preferences
+    private val prefs: Preferences,
 ) : ChangelogManager {
 
     override fun didUpdate(): Boolean = (prefs.changelogVersion.get() ?: 0) != context.versionCode
@@ -44,24 +33,45 @@ class ChangelogManagerImpl @Inject constructor(
 
         return withContext(Dispatchers.IO) {
             try {
-                val changelogs = context.assets.open("changelog.json").bufferedReader().use { it.readText() }
+                val changelogs =
+                    context.assets
+                        .open("changelog.json")
+                        .bufferedReader()
+                        .use { it.readText() }
                         .let(adapter::fromJson)
                         .orEmpty()
                         .sortedBy { changelog -> changelog.versionCode }
                         .filter { changelog ->
-                            changelog.versionCode in (prefs.changelogVersion.get() ?: 0).inc()..context.versionCode
+                            changelog.versionCode in
+                                (prefs.changelogVersion.get() ?: 0).inc()..context.versionCode
                         }
 
                 ChangelogManager.CumulativeChangelog(
-                        added = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.added.orEmpty()},
-                        improved = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.improved.orEmpty()},
-                        removed = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.removed.orEmpty()},
-                        fixed = changelogs.fold(listOf()) { acc, changelog -> acc + changelog.fixed.orEmpty()}
+                    added =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.added.orEmpty()
+                        },
+                    improved =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.improved.orEmpty()
+                        },
+                    removed =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.removed.orEmpty()
+                        },
+                    fixed =
+                        changelogs.fold(listOf()) { acc, changelog ->
+                            acc + changelog.fixed.orEmpty()
+                        },
                 )
-
             } catch (e: Exception) {
                 Log.e("ChangelogManager", "Error parsing changelog JSON", e)
-                ChangelogManager.CumulativeChangelog(emptyList(), emptyList(), emptyList(), emptyList())
+                ChangelogManager.CumulativeChangelog(
+                    emptyList(),
+                    emptyList(),
+                    emptyList(),
+                    emptyList(),
+                )
             }
         }
     }
@@ -77,7 +87,6 @@ class ChangelogManagerImpl @Inject constructor(
         @Json(name = "removed") val removed: List<String>?,
         @Json(name = "fixed") val fixed: List<String>?,
         @Json(name = "versionName") val versionName: String,
-        @Json(name = "versionCode") val versionCode: Int
+        @Json(name = "versionCode") val versionCode: Int,
     )
-
 }

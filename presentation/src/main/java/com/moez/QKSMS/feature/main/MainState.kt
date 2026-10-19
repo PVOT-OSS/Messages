@@ -1,27 +1,14 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.feature.main
 
 import io.realm.RealmResults
 import org.prauga.messages.model.Conversation
-import org.prauga.messages.model.SearchResult
+import org.prauga.messages.model.SearchItem
 import org.prauga.messages.repository.SyncRepository
 
 data class MainState(
@@ -36,7 +23,7 @@ data class MainState(
     val contactPermission: Boolean = true,
     val notificationPermission: Boolean = true,
     val currentFilter: ConversationFilterType = ConversationFilterType.ALL,
-    val activeChip: MessageCategory = MessageCategory.ALL
+    val activeChip: MessageCategory = MessageCategory.ALL,
 )
 
 sealed class MainPage
@@ -46,21 +33,26 @@ data class Inbox(
     val markPinned: Boolean = true,
     val markRead: Boolean = false,
     val data: RealmResults<Conversation>? = null,
-    val selected: Int = 0
+    val selected: Int = 0,
 ) : MainPage()
 
-data class Searching(
-    val loading: Boolean = false,
-    val data: List<SearchResult>? = null
-) : MainPage()
+data class Searching(val loading: Boolean = false, val data: List<SearchItem>? = null) : MainPage()
 
 data class Archived(
     val addContact: Boolean = false,
     val markPinned: Boolean = true,
     val markRead: Boolean = false,
     val data: RealmResults<Conversation>? = null,
-    val selected: Int = 0
+    val selected: Int = 0,
 ) : MainPage()
 
-enum class ConversationFilterType { ALL, UNREAD }
-enum class MessageCategory { ALL, UNREAD, ARCHIVED }
+enum class ConversationFilterType {
+    ALL,
+    UNREAD,
+}
+
+enum class MessageCategory {
+    ALL,
+    UNREAD,
+    ARCHIVED,
+}

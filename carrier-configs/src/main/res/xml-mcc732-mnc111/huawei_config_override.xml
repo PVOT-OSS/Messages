@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<huawei_config_override>
+    <bool name="enabledMMS">false</bool>
+    <bool name="groupChatDefaultsToMMS">false</bool>
+    <bool name="enableGroupMms">false</bool>
+    <bool name="smsUsesSimpleCharactersOnly">true</bool>
+</huawei_config_override>

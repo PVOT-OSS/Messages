@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: Jacob Klinker
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 package com.android.mms.service_alt;
 
@@ -9,7 +14,7 @@ import android.provider.Telephony;
 import com.google.android.mms.util_alt.SqliteWrapper;
 import timber.log.Timber;
 
-class SubscriptionIdChecker {
+public class SubscriptionIdChecker {
 
     private static SubscriptionIdChecker sInstance;
     private boolean mCanUseSubscriptionId = false;
@@ -33,7 +38,7 @@ class SubscriptionIdChecker {
         }
     }
 
-    static synchronized SubscriptionIdChecker getInstance(Context context) {
+    public static synchronized SubscriptionIdChecker getInstance(Context context) {
         if (sInstance == null) {
             sInstance = new SubscriptionIdChecker();
             sInstance.check(context);
@@ -41,7 +46,7 @@ class SubscriptionIdChecker {
         return sInstance;
     }
 
-    boolean canUseSubscriptionId() {
+    public boolean canUseSubscriptionId() {
         return mCanUseSubscriptionId;
     }
 }

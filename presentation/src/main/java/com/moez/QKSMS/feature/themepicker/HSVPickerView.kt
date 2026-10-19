@@ -1,20 +1,7 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.feature.themepicker
@@ -27,24 +14,26 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.constraintlayout.widget.ConstraintLayout
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.Subject
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
 import org.prauga.messages.common.util.extensions.within
 import org.prauga.messages.databinding.HsvPickerViewBinding
-import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.Subject
 
 @SuppressLint("ClickableViewAccessibility")
-class HSVPickerView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
-) : ConstraintLayout(context, attrs) {
+class HSVPickerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    ConstraintLayout(context, attrs) {
 
-    private val binding: HsvPickerViewBinding = HsvPickerViewBinding.inflate(LayoutInflater.from(context), this)
+    private val binding: HsvPickerViewBinding =
+        HsvPickerViewBinding.inflate(LayoutInflater.from(context), this)
 
     val selectedColor: Subject<Int> = BehaviorSubject.create()
 
-    private val hues = arrayOf(0xFFFF0000, 0xFFFFFF00, 0xFF00FF00, 0xFF00FFFF, 0xFF0000FF, 0xFFFF00FF, 0xFFFF0000)
-            .map { it.toInt() }.toIntArray()
+    private val hues =
+        arrayOf(0xFFFF0000, 0xFFFFFF00, 0xFF00FF00, 0xFF00FFFF, 0xFF0000FF, 0xFFFF00FF, 0xFFFF0000)
+            .map { it.toInt() }
+            .toIntArray()
 
     private var min: Float = 0f
     private var max = 0f
@@ -114,7 +103,9 @@ class HSVPickerView @JvmOverloads constructor(
         }
 
         binding.hueTrack.clipToOutline = true
-        binding.hueTrack.setImageDrawable(GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, hues))
+        binding.hueTrack.setImageDrawable(
+            GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, hues)
+        )
     }
 
     private fun setupBounds() {
@@ -128,7 +119,12 @@ class HSVPickerView @JvmOverloads constructor(
         setupBounds()
 
         val range = max - min
-        val hsv = floatArrayOf(hue, (binding.swatch.x - min) / range, 1 - (binding.swatch.y - min) / range)
+        val hsv =
+            floatArrayOf(
+                hue,
+                (binding.swatch.x - min) / range,
+                1 - (binding.swatch.y - min) / range,
+            )
         val color = Color.HSVToColor(hsv)
 
         binding.swatch.setTint(color)
@@ -137,10 +133,11 @@ class HSVPickerView @JvmOverloads constructor(
 
     fun setColor(color: Int) {
         // Convert the rgb color to HSV
-        val hsv = FloatArray(3).apply {
-            Color.colorToHSV(color, this)
-            hue = this[0]
-        }
+        val hsv =
+            FloatArray(3).apply {
+                Color.colorToHSV(color, this)
+                hue = this[0]
+            }
 
         // Set the position of the swatch
         post {
@@ -160,5 +157,4 @@ class HSVPickerView @JvmOverloads constructor(
         val tint = Color.HSVToColor(hsv)
         binding.saturation.setBackgroundTint(tint)
     }
-
 }

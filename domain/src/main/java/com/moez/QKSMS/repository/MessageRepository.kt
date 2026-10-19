@@ -1,28 +1,17 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.repository
 
 import android.net.Uri
+import io.realm.RealmResults
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import io.realm.RealmResults
+import org.prauga.messages.model.ReceivedSmsDetails
 
 interface MessageRepository {
 
@@ -45,14 +34,14 @@ interface MessageRepository {
     fun savePart(id: Long): Uri?
 
     /**
-     * Retrieves the list of messages which should be shown in the notification
-     * for a given conversation
+     * Retrieves the list of messages which should be shown in the notification for a given
+     * conversation
      */
     fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message>
 
     /**
-     * Retrieves the list of messages which should be shown in the quickreply popup
-     * for a given conversation
+     * Retrieves the list of messages which should be shown in the quickreply popup for a given
+     * conversation
      */
     fun getUnreadMessages(threadId: Long): RealmResults<Message>
 
@@ -70,28 +59,53 @@ interface MessageRepository {
         addresses: Collection<String>,
         body: String,
         attachments: Collection<Attachment>,
-        delay: Int = 0
+        delay: Int = 0,
+        applySignature: Boolean = true,
     )
 
     /**
-     * Attempts to send the SMS message. This can be called if the message has already been persisted
+     * Attempts to send the SMS message. This can be called if the message has already been
+     * persisted
      */
     fun sendSms(message: Message)
 
     fun resendMms(message: Message)
 
-    /**
-     * Attempts to cancel sending the message with the given id
-     */
-    fun cancelDelayedSms(id: Long)
+    fun downloadMms(message: Message, automatic: Boolean = false)
 
-    fun insertSentSms(subId: Int, threadId: Long, address: String, body: String, date: Long): Message
+    fun downloadMms(notificationUri: Uri, subId: Int, automatic: Boolean)
 
-    fun insertReceivedSms(subId: Int, address: String, body: String, sentTime: Long): Message
+    fun getPendingMmsDownloads(since: Long): List<Message>
 
-    /**
-     * Marks the message as sending, in case we need to retry sending it
-     */
+    fun getUnsentSms(): List<Message>
+
+    fun scheduleDelayedSms(id: Long, sendTime: Long)
+
+    fun isDelayedSmsWaiting(id: Long): Boolean
+
+    fun delayedSmsFired(id: Long)
+
+    fun sendDelayedSmsNow(id: Long)
+
+    fun cancelDelayedSms(id: Long): Boolean
+
+    fun insertSentSms(
+        subId: Int,
+        threadId: Long,
+        address: String,
+        body: String,
+        date: Long,
+    ): Message
+
+    fun insertReceivedSms(
+        subId: Int,
+        address: String,
+        body: String,
+        sentTime: Long,
+        details: ReceivedSmsDetails = ReceivedSmsDetails(),
+    ): Message
+
+    /** Marks the message as sending, in case we need to retry sending it */
     fun markSending(id: Long)
 
     fun markSent(id: Long)
@@ -104,14 +118,9 @@ interface MessageRepository {
 
     fun deleteMessages(messageIds: Collection<Long>)
 
-    /**
-     * Returns the number of messages older than [maxAgeDays] per conversation
-     */
+    /** Returns the number of messages older than [maxAgeDays] per conversation */
     fun getOldMessageCounts(maxAgeDays: Int): Map<Long, Int>
 
-    /**
-     * Deletes all messages older than [maxAgeDays]
-     */
+    /** Deletes all messages older than [maxAgeDays] */
     fun deleteOldMessages(maxAgeDays: Int)
-
 }

@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <resources>
     <color name="md_theme_primary">#0A84FF</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>

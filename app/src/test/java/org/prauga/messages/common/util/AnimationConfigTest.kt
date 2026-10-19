@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-FileCopyrightText: 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.common.util
@@ -10,9 +11,9 @@ import org.junit.Test
 
 /**
  * Unit tests for AnimationConfig.
- * 
- * These tests verify that all animation duration constants are defined
- * with positive values and maintain expected relationships.
+ *
+ * These tests verify that all animation duration constants are defined with positive values and
+ * maintain expected relationships.
  */
 class AnimationConfigTest {
 
@@ -59,8 +60,11 @@ class AnimationConfigTest {
         val chipDuration = AnimationConfig.CHIP_ANIMATION_DURATION_MS
 
         // Then
-        assertEquals("Fade and chip durations should match for consistency", 
-            fadeDuration, chipDuration)
+        assertEquals(
+            "Fade and chip durations should match for consistency",
+            fadeDuration,
+            chipDuration,
+        )
     }
 
     @Test
@@ -70,8 +74,10 @@ class AnimationConfigTest {
         val ovalTwoDuration = AnimationConfig.OVAL_TWO_ANIMATION_LENGTH_MS
 
         // Then
-        assertTrue("Oval one should be slower (longer duration) than oval two",
-            ovalOneDuration > ovalTwoDuration)
+        assertTrue(
+            "Oval one should be slower (longer duration) than oval two",
+            ovalOneDuration > ovalTwoDuration,
+        )
     }
 
     @Test
@@ -83,14 +89,16 @@ class AnimationConfigTest {
         val ovalTwoDuration = AnimationConfig.OVAL_TWO_ANIMATION_LENGTH_MS
 
         // Then - animations should be between 50ms and 5000ms for good UX
-        assertTrue("Fade duration should be reasonable (50-5000ms)", 
-            fadeDuration in 50..5000)
-        assertTrue("Chip duration should be reasonable (50-5000ms)",
-            chipDuration in 50..5000)
-        assertTrue("Oval one duration should be reasonable (50-5000ms)",
-            ovalOneDuration in 50..5000)
-        assertTrue("Oval two duration should be reasonable (50-5000ms)",
-            ovalTwoDuration in 50..5000)
+        assertTrue("Fade duration should be reasonable (50-5000ms)", fadeDuration in 50..5000)
+        assertTrue("Chip duration should be reasonable (50-5000ms)", chipDuration in 50..5000)
+        assertTrue(
+            "Oval one duration should be reasonable (50-5000ms)",
+            ovalOneDuration in 50..5000,
+        )
+        assertTrue(
+            "Oval two duration should be reasonable (50-5000ms)",
+            ovalTwoDuration in 50..5000,
+        )
     }
 
     @Test

@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.main
 
 import android.content.Context
@@ -24,86 +12,129 @@ import android.text.Spanned
 import android.text.style.BackgroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import org.prauga.messages.R
-import org.prauga.messages.common.Navigator
-import org.prauga.messages.common.base.QkAdapter
-import org.prauga.messages.common.base.QkBindingViewHolder
-import org.prauga.messages.common.util.Colors
-import org.prauga.messages.common.util.DateFormatter
-import org.prauga.messages.common.util.extensions.setVisible
-import org.prauga.messages.databinding.SearchListItemBinding
-import org.prauga.messages.extensions.removeAccents
-import org.prauga.messages.model.SearchResult
+import androidx.recyclerview.widget.RecyclerView
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.min
+import org.prauga.messages.common.base.QkAdapter
+import org.prauga.messages.common.util.Colors
+import org.prauga.messages.common.util.DateFormatter
+import org.prauga.messages.databinding.SearchItemHeaderBinding
+import org.prauga.messages.databinding.SearchItemMessageBinding
+import org.prauga.messages.extensions.removeAccents
+import org.prauga.messages.model.SearchItem
+import org.prauga.messages.repository.ConversationRepository
 
-class SearchAdapter @Inject constructor(
+class SearchAdapter
+@Inject
+constructor(
     colors: Colors,
     private val context: Context,
     private val dateFormatter: DateFormatter,
-    private val navigator: Navigator
-) : QkAdapter<SearchResult, QkBindingViewHolder<SearchListItemBinding>>() {
+    private val conversationRepo: ConversationRepository,
+) : QkAdapter<SearchItem, RecyclerView.ViewHolder>() {
+
+    companion object {
+        private const val VIEW_TYPE_HEADER = 0
+        private const val VIEW_TYPE_MESSAGE = 1
+    }
 
     private val highlightColor: Int by lazy { colors.theme().highlight }
+    private var query: String = ""
+    var onMessageClickListener: ((conversationId: Long, messageId: Long) -> Unit)? = null
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): QkBindingViewHolder<SearchListItemBinding> {
-        val binding =
-            SearchListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return QkBindingViewHolder(binding).apply {
-            itemView.setOnClickListener {
-                val result = getItem(adapterPosition)
-                navigator.showConversation(
-                    result.conversation.id,
-                    result.query.takeIf { result.messages > 0 })
+    fun setQuery(query: String) {
+        this.query = query
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when (getItem(position)) {
+            is SearchItem.Header -> VIEW_TYPE_HEADER
+            is SearchItem.Message -> VIEW_TYPE_MESSAGE
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+        return when (viewType) {
+            VIEW_TYPE_HEADER -> {
+                val binding = SearchItemHeaderBinding.inflate(inflater, parent, false)
+                HeaderViewHolder(binding)
+            }
+            VIEW_TYPE_MESSAGE -> {
+                val binding = SearchItemMessageBinding.inflate(inflater, parent, false)
+                MessageViewHolder(binding)
+            }
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
+        }
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (val item = getItem(position)) {
+            is SearchItem.Header -> (holder as HeaderViewHolder).bind(item)
+            is SearchItem.Message -> (holder as MessageViewHolder).bind(item)
+        }
+    }
+
+    override fun areItemsTheSame(old: SearchItem, new: SearchItem): Boolean {
+        return when {
+            old is SearchItem.Header && new is SearchItem.Header ->
+                old.conversationId == new.conversationId
+            old is SearchItem.Message && new is SearchItem.Message -> old.messageId == new.messageId
+            else -> false
+        }
+    }
+
+    override fun areContentsTheSame(old: SearchItem, new: SearchItem): Boolean {
+        return when {
+            old is SearchItem.Header && new is SearchItem.Header -> old.title == new.title
+            old is SearchItem.Message && new is SearchItem.Message ->
+                old.body == new.body && old.timestamp == new.timestamp
+            else -> false
+        }
+    }
+
+    inner class HeaderViewHolder(private val binding: SearchItemHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(header: SearchItem.Header) {
+            binding.headerTitle.text = highlightText(header.title, query)
+
+            // Get conversation to access recipients for avatar and phone number
+            val conversation = conversationRepo.getConversation(header.conversationId)
+            conversation?.let {
+                binding.headerAvatar.recipients = it.recipients
+
+                // Show phone number(s) as subtitle
+                val phoneNumbers =
+                    it.recipients.joinToString(", ") { recipient -> recipient.address }
+                binding.headerSubtitle.text = phoneNumbers
             }
         }
     }
 
-    override fun onBindViewHolder(
-        holder: QkBindingViewHolder<SearchListItemBinding>,
-        position: Int
-    ) {
-        val previous = data.getOrNull(position - 1)
-        val result = getItem(position)
+    inner class MessageViewHolder(private val binding: SearchItemMessageBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        holder.binding.resultsHeader.setVisible(result.messages > 0 && previous?.messages == 0)
-
-        val query = result.query
-        holder.binding.title.text = highlightText(result.conversation.getTitle(), query)
-
-        holder.binding.avatars.recipients = result.conversation.recipients
-
-        when (result.messages == 0) {
-            true -> {
-                holder.binding.date.setVisible(true)
-                holder.binding.date.text = dateFormatter.getConversationTimestamp(result.conversation.date)
-                val snippetText = when (result.conversation.me) {
-                    true -> context.getString(R.string.main_sender_you, result.conversation.snippet)
-                    false -> result.conversation.snippet
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    if (item is SearchItem.Message) {
+                        onMessageClickListener?.invoke(item.conversationId, item.messageId)
+                    }
                 }
-                holder.binding.snippet.text = highlightText(snippetText ?: "", query)
-            }
-
-            false -> {
-                holder.binding.date.setVisible(false)
-                holder.binding.snippet.text =
-                    context.getString(R.string.main_message_results, result.messages)
             }
         }
-    }
 
-    override fun areItemsTheSame(old: SearchResult, new: SearchResult): Boolean {
-        return old.conversation.id == new.conversation.id && old.messages > 0 == new.messages > 0
-    }
-
-    override fun areContentsTheSame(old: SearchResult, new: SearchResult): Boolean {
-        return old.query == new.query && // Queries are the same
-                old.conversation.id == new.conversation.id // Conversation id is the same
-                && old.messages == new.messages // Result count is the same
+        fun bind(message: SearchItem.Message) {
+            binding.messageBody.text = highlightText(message.body, query)
+            // Use getConversationTimestamp for date (no time included)
+            binding.messageDate.text = dateFormatter.getConversationTimestamp(message.timestamp)
+            // Use getTimestamp for time only
+            binding.messageTime.text = dateFormatter.getTimestamp(message.timestamp)
+        }
     }
 
     private fun highlightText(text: CharSequence, query: CharSequence): SpannableString {
@@ -122,7 +153,7 @@ class SearchAdapter @Inject constructor(
                 BackgroundColorSpan(highlightColor),
                 start,
                 end,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
             )
         }
 
@@ -169,13 +200,14 @@ class SearchAdapter @Inject constructor(
             var bestInRow = curr[0]
             rhs.forEachIndexed { j, rChar ->
                 val cost = if (lChar == rChar) 0 else 1
-                curr[j + 1] = min(
-                    prev[j + 1] + 1, // deletion
+                curr[j + 1] =
                     min(
-                        curr[j] + 1, // insertion
-                        prev[j] + cost // substitution
+                        prev[j + 1] + 1, // deletion
+                        min(
+                            curr[j] + 1, // insertion
+                            prev[j] + cost, // substitution
+                        ),
                     )
-                )
                 bestInRow = min(bestInRow, curr[j + 1])
             }
             if (bestInRow > maxDistance) return maxDistance + 1

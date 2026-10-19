@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Instrumented tests for MMS retry and recovery functionality.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.mms
 
 import android.content.Context
@@ -21,8 +21,8 @@ import org.prauga.messages.testutil.InstrumentedMmsTestDataFactory
 import org.prauga.messages.testutil.RealmTestHelper
 
 /**
- * Instrumented tests for MMS retry and recovery scenarios.
- * Tests message state management during send failures and retries.
+ * Instrumented tests for MMS retry and recovery scenarios. Tests message state management during
+ * send failures and retries.
  */
 @RunWith(AndroidJUnit4::class)
 class MmsRetryRecoveryInstrumentedTest {
@@ -49,14 +49,11 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenFailedMms_whenQueryByBoxId_thenFound() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
 
-        val failedMessages = realm.where(Message::class.java)
-            .equalTo("boxId", Mms.MESSAGE_BOX_FAILED)
-            .findAll()
+        val failedMessages =
+            realm.where(Message::class.java).equalTo("boxId", Mms.MESSAGE_BOX_FAILED).findAll()
 
         assertThat(failedMessages.size).isEqualTo(1)
         assertThat(failedMessages[0]!!.id).isEqualTo(message.id)
@@ -64,32 +61,24 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenFailedMms_whenHasErrorType_thenIsFailedMessage() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
-        val updatedMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updatedMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(updatedMessage!!.isFailedMessage()).isTrue()
     }
 
     @Test
     fun givenMmsInOutbox_whenNotFailed_thenIsSending() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_OUTBOX
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_OUTBOX)
 
         assertThat(message.isSending()).isTrue()
         assertThat(message.isFailedMessage()).isFalse()
@@ -100,16 +89,12 @@ class MmsRetryRecoveryInstrumentedTest {
     @Test
     fun givenFailedMms_whenMarkForRetry_thenMovesToOutbox() {
         // Create a failed message
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
@@ -117,16 +102,12 @@ class MmsRetryRecoveryInstrumentedTest {
 
         // Mark for retry (move to OUTBOX)
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_OUTBOX
             msg?.errorType = 0 // Clear error type
         }
 
-        val retryingMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val retryingMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(retryingMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_OUTBOX)
         assertThat(retryingMessage.errorType).isEqualTo(0)
@@ -136,23 +117,17 @@ class MmsRetryRecoveryInstrumentedTest {
     @Test
     fun givenRetryingMms_whenSucceeds_thenMovesToSent() {
         // Create message in OUTBOX (retrying state)
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_OUTBOX
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_OUTBOX)
         val messageId = message.id
 
         // Simulate successful retry
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_SENT
         }
 
-        val sentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val sentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(sentMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_SENT)
         assertThat(sentMessage.isSending()).isFalse()
@@ -162,24 +137,18 @@ class MmsRetryRecoveryInstrumentedTest {
     @Test
     fun givenRetryingMms_whenFailsAgain_thenMovesToFailed() {
         // Create message in OUTBOX (retrying state)
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_OUTBOX
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_OUTBOX)
         val messageId = message.id
 
         // Simulate failed retry
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_FAILED
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
-        val failedMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val failedMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(failedMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_FAILED)
         assertThat(failedMessage.isFailedMessage()).isTrue()
@@ -189,65 +158,47 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenFailedMms_whenRetryMultipleTimes_thenStateTracked() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         // First retry attempt - move to OUTBOX
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_OUTBOX
             msg?.errorType = 0
         }
 
-        var currentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        var currentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
         assertThat(currentMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_OUTBOX)
 
         // First retry fails - move to FAILED
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_FAILED
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC
         }
 
-        currentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        currentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
         assertThat(currentMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_FAILED)
 
         // Second retry attempt - move to OUTBOX
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_OUTBOX
             msg?.errorType = 0
         }
 
-        currentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        currentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
         assertThat(currentMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_OUTBOX)
 
         // Second retry succeeds - move to SENT
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_SENT
         }
 
-        currentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        currentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
         assertThat(currentMessage!!.boxId).isEqualTo(Mms.MESSAGE_BOX_SENT)
     }
 
@@ -255,66 +206,57 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenGenericError_whenQuery_thenFoundByErrorType() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC
         }
 
-        val genericErrors = realm.where(Message::class.java)
-            .equalTo("errorType", MmsSms.ERR_TYPE_GENERIC)
-            .findAll()
+        val genericErrors =
+            realm.where(Message::class.java).equalTo("errorType", MmsSms.ERR_TYPE_GENERIC).findAll()
 
         assertThat(genericErrors).isNotEmpty()
     }
 
     @Test
     fun givenPermanentError_whenQuery_thenFoundByErrorType() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
-        val permanentErrors = realm.where(Message::class.java)
-            .equalTo("errorType", MmsSms.ERR_TYPE_GENERIC_PERMANENT)
-            .findAll()
+        val permanentErrors =
+            realm
+                .where(Message::class.java)
+                .equalTo("errorType", MmsSms.ERR_TYPE_GENERIC_PERMANENT)
+                .findAll()
 
         assertThat(permanentErrors).isNotEmpty()
     }
 
     @Test
     fun givenMmsNetworkError_whenQuery_thenFoundByErrorType() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.errorType = MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT
         }
 
-        val networkErrors = realm.where(Message::class.java)
-            .equalTo("errorType", MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT)
-            .findAll()
+        val networkErrors =
+            realm
+                .where(Message::class.java)
+                .equalTo("errorType", MmsSms.ERR_TYPE_MMS_PROTO_TRANSIENT)
+                .findAll()
 
         assertThat(networkErrors).isNotEmpty()
     }
@@ -324,24 +266,18 @@ class MmsRetryRecoveryInstrumentedTest {
     @Test
     fun givenFailedMmsWithParts_whenRetry_thenPartsPreserved() {
         // Create image MMS that failed
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            text = "Check this photo!"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createImageMms(realm, text = "Check this photo!")
         val messageId = message.id
 
         // Mark as failed
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_FAILED
             msg?.errorType = MmsSms.ERR_TYPE_GENERIC
         }
 
-        val failedMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val failedMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         // Parts should still be there
         assertThat(failedMessage!!.parts.size).isEqualTo(2) // text + image
@@ -349,40 +285,30 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenFailedMmsWithParts_whenRetrySucceeds_thenPartsStillThere() {
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            text = "Photo attachment"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createImageMms(realm, text = "Photo attachment")
         val messageId = message.id
         val originalPartCount = message.parts.size
 
         // Mark as failed
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_FAILED
         }
 
         // Mark as retrying
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_OUTBOX
         }
 
         // Mark as sent
         realm.executeTransaction { r ->
-            val msg = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val msg = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             msg?.boxId = Mms.MESSAGE_BOX_SENT
         }
 
-        val sentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val sentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(sentMessage!!.parts.size).isEqualTo(originalPartCount)
     }
@@ -395,17 +321,14 @@ class MmsRetryRecoveryInstrumentedTest {
         repeat(3) {
             val msg = InstrumentedMmsTestDataFactory.createOutgoingMms(realm)
             realm.executeTransaction { r ->
-                val m = r.where(Message::class.java)
-                    .equalTo("id", msg.id)
-                    .findFirst()
+                val m = r.where(Message::class.java).equalTo("id", msg.id).findFirst()
                 m?.boxId = Mms.MESSAGE_BOX_FAILED
                 m?.errorType = MmsSms.ERR_TYPE_GENERIC
             }
         }
 
-        val failedMessages = realm.where(Message::class.java)
-            .equalTo("boxId", Mms.MESSAGE_BOX_FAILED)
-            .findAll()
+        val failedMessages =
+            realm.where(Message::class.java).equalTo("boxId", Mms.MESSAGE_BOX_FAILED).findAll()
 
         assertThat(failedMessages.size).isEqualTo(3)
     }
@@ -421,15 +344,12 @@ class MmsRetryRecoveryInstrumentedTest {
         // Create failed message
         val failedMsg = InstrumentedMmsTestDataFactory.createOutgoingMms(realm)
         realm.executeTransaction { r ->
-            val m = r.where(Message::class.java)
-                .equalTo("id", failedMsg.id)
-                .findFirst()
+            val m = r.where(Message::class.java).equalTo("id", failedMsg.id).findFirst()
             m?.boxId = Mms.MESSAGE_BOX_FAILED
         }
 
-        val failedMessages = realm.where(Message::class.java)
-            .equalTo("boxId", Mms.MESSAGE_BOX_FAILED)
-            .findAll()
+        val failedMessages =
+            realm.where(Message::class.java).equalTo("boxId", Mms.MESSAGE_BOX_FAILED).findAll()
 
         assertThat(failedMessages.size).isEqualTo(1)
     }
@@ -442,17 +362,17 @@ class MmsRetryRecoveryInstrumentedTest {
 
         val message = InstrumentedMmsTestDataFactory.createOutgoingMms(realm)
         realm.executeTransaction { r ->
-            val m = r.where(Message::class.java)
-                .equalTo("id", message.id)
-                .findFirst()
+            val m = r.where(Message::class.java).equalTo("id", message.id).findFirst()
             m?.threadId = threadId
             m?.boxId = Mms.MESSAGE_BOX_FAILED
         }
 
-        val failedInThread = realm.where(Message::class.java)
-            .equalTo("threadId", threadId)
-            .equalTo("boxId", Mms.MESSAGE_BOX_FAILED)
-            .findAll()
+        val failedInThread =
+            realm
+                .where(Message::class.java)
+                .equalTo("threadId", threadId)
+                .equalTo("boxId", Mms.MESSAGE_BOX_FAILED)
+                .findAll()
 
         assertThat(failedInThread.size).isEqualTo(1)
     }
@@ -461,22 +381,16 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenFailedMms_whenDelete_thenRemoved() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val toDelete = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val toDelete = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             toDelete?.deleteFromRealm()
         }
 
-        val found = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val found = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(found).isNull()
     }
@@ -489,15 +403,11 @@ class MmsRetryRecoveryInstrumentedTest {
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val m = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val m = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             m?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
-        val updatedMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updatedMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         // errorType >= ERR_TYPE_GENERIC_PERMANENT means failed
         assertThat(updatedMessage!!.isFailedMessage()).isTrue()
@@ -505,10 +415,8 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenMmsInFailedBox_thenIsFailedMessage() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
 
         // boxId == MESSAGE_BOX_FAILED means failed
         assertThat(message.isFailedMessage()).isTrue()
@@ -516,10 +424,8 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenMmsInSentBox_thenNotFailedMessage() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_SENT
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_SENT)
 
         assertThat(message.isFailedMessage()).isFalse()
     }
@@ -528,37 +434,27 @@ class MmsRetryRecoveryInstrumentedTest {
 
     @Test
     fun givenFailedMmsWithErrorType_whenPrepareRetry_thenErrorCleared() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            boxId = Mms.MESSAGE_BOX_FAILED
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(realm, boxId = Mms.MESSAGE_BOX_FAILED)
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val m = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val m = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             m?.errorType = MmsSms.ERR_TYPE_GENERIC_PERMANENT
         }
 
         // Verify error is set
-        var currentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        var currentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
         assertThat(currentMessage!!.errorType).isGreaterThan(0)
 
         // Prepare for retry - clear error
         realm.executeTransaction { r ->
-            val m = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val m = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             m?.boxId = Mms.MESSAGE_BOX_OUTBOX
             m?.errorType = 0
         }
 
-        currentMessage = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        currentMessage = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
         assertThat(currentMessage!!.errorType).isEqualTo(0)
         assertThat(currentMessage.boxId).isEqualTo(Mms.MESSAGE_BOX_OUTBOX)
     }

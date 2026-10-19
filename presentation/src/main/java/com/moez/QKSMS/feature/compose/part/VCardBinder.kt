@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.compose.part
 
 import android.content.Context
@@ -24,6 +12,7 @@ import ezvcard.Ezvcard
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkViewHolder
 import org.prauga.messages.common.util.Colors
@@ -37,7 +26,6 @@ import org.prauga.messages.extensions.mapNotNull
 import org.prauga.messages.feature.compose.BubbleUtils
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
-import javax.inject.Inject
 
 class VCardBinder @Inject constructor(colors: Colors, private val context: Context) : PartBinder() {
 
@@ -51,7 +39,7 @@ class VCardBinder @Inject constructor(colors: Colors, private val context: Conte
         part: MmsPart,
         message: Message,
         canGroupWithPrevious: Boolean,
-        canGroupWithNext: Boolean
+        canGroupWithNext: Boolean,
     ) {
         val binding = MmsVcardListItemBinding.bind(holder.containerView)
 
@@ -78,14 +66,17 @@ class VCardBinder @Inject constructor(colors: Colors, private val context: Conte
             binding.label.setTextColor(theme.textTertiary)
         } else {
             binding.vCardBackground.setBackgroundTint(
-                holder.containerView.context.resolveThemeColor(
-                    R.attr.bubbleColor
-                )
+                holder.containerView.context.resolveThemeColor(R.attr.bubbleColor)
             )
-            binding.vCardAvatar.setTint(holder.containerView.context.resolveThemeColor(android.R.attr.textColorSecondary))
-            binding.name.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary))
-            binding.label.setTextColor(holder.containerView.context.resolveThemeColor(android.R.attr.textColorTertiary))
+            binding.vCardAvatar.setTint(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorSecondary)
+            )
+            binding.name.setTextColor(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorPrimary)
+            )
+            binding.label.setTextColor(
+                holder.containerView.context.resolveThemeColor(android.R.attr.textColorTertiary)
+            )
         }
     }
-
 }

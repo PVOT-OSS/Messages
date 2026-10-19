@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.base
 
 import android.os.Bundle
@@ -29,10 +17,10 @@ import com.bluelinelabs.conductor.archlifecycle.LifecycleController
 import org.prauga.messages.R
 
 abstract class QkController<
-        ViewContract : QkViewContract<State>,
-        State : Any,
-        Presenter : QkPresenter<ViewContract, State>> :
-    LifecycleController() {
+    ViewContract : QkViewContract<State>,
+    State : Any,
+    Presenter : QkPresenter<ViewContract, State>,
+> : LifecycleController() {
 
     abstract var presenter: Presenter
 
@@ -44,18 +32,20 @@ abstract class QkController<
 
     protected var containerView: View? = null
 
-    @LayoutRes
-    var layoutRes: Int = 0
+    @LayoutRes var layoutRes: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup,
+        savedViewState: Bundle?,
+    ): View {
         return inflater.inflate(layoutRes, container, false).also {
             containerView = it
             onViewCreated()
         }
     }
 
-    open fun onViewCreated() {
-    }
+    open fun onViewCreated() {}
 
     fun setTitle(@StringRes titleId: Int) {
         setTitle(activity?.getString(titleId))

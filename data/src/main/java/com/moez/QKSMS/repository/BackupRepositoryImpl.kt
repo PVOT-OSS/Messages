@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.repository
 
 import android.annotation.SuppressLint
@@ -28,44 +15,41 @@ import androidx.core.content.contentValuesOf
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import com.squareup.moshi.Moshi
-import org.prauga.messages.common.util.extensions.now
-import org.prauga.messages.model.BackupFile
-import org.prauga.messages.model.Message
-import org.prauga.messages.util.Preferences
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.Realm
-import okio.buffer
-import okio.source
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.Timer
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.schedule
+import okio.buffer
+import okio.source
+import org.prauga.messages.common.util.extensions.now
+import org.prauga.messages.model.BackupFile
+import org.prauga.messages.model.Message
+import org.prauga.messages.util.Preferences
+import timber.log.Timber
 
 @Singleton
-class BackupRepositoryImpl @Inject constructor(
+class BackupRepositoryImpl
+@Inject
+constructor(
     private val context: Context,
     private val moshi: Moshi,
     private val prefs: Preferences,
-    private val syncRepo: SyncRepository
+    private val syncRepo: SyncRepository,
 ) : BackupRepository {
 
-    data class Backup(
-        val messageCount: Int = 0,
-        val messages: List<BackupMessage> = listOf()
-    )
+    data class Backup(val messageCount: Int = 0, val messages: List<BackupMessage> = listOf())
 
     /**
      * Simpler version of [Backup] which allows us to read certain fields from the backup without
      * needing to parse the entire file
      */
-    data class BackupMetadata(
-        val messageCount: Int = 0
-    )
+    data class BackupMetadata(val messageCount: Int = 0)
 
     data class BackupMessage(
         val type: Int,
@@ -78,14 +62,14 @@ class BackupRepositoryImpl @Inject constructor(
         val protocol: Int,
         val serviceCenter: String?,
         val locked: Boolean,
-        val subId: Int
+        val subId: Int,
     )
 
     // Subjects to emit our progress events to
     private val backupProgress: Subject<BackupRepository.Progress> =
-            BehaviorSubject.createDefault(BackupRepository.Progress.Idle())
+        BehaviorSubject.createDefault(BackupRepository.Progress.Idle())
     private val restoreProgress: Subject<BackupRepository.Progress> =
-            BehaviorSubject.createDefault(BackupRepository.Progress.Idle())
+        BehaviorSubject.createDefault(BackupRepository.Progress.Idle())
 
     @Volatile private var stopFlag: Boolean = false
 
@@ -94,20 +78,23 @@ class BackupRepositoryImpl @Inject constructor(
     }
 
     override fun getBackupDocumentTree(): DocumentFile? {
-        return prefs.backupDirectory.get()
-                .takeIf { uri -> uri != Uri.EMPTY }
-                ?.let { uri -> DocumentFile.fromTreeUri(context, uri) }
-                ?.takeIf { dir -> dir.exists() && dir.canRead() && dir.canWrite() }
+        return prefs.backupDirectory
+            .get()
+            .takeIf { uri -> uri != Uri.EMPTY }
+            ?.let { uri -> DocumentFile.fromTreeUri(context, uri) }
+            ?.takeIf { dir -> dir.exists() && dir.canRead() && dir.canWrite() }
     }
 
     override fun getBackupPathUriForPicker(): Uri {
         return prefs.backupDirectory.get().takeIf { uri -> uri != Uri.EMPTY }
-                ?: getDefaultBackupPath().toUri()
+            ?: getDefaultBackupPath().toUri()
     }
 
     override fun persistBackupDirectory(directory: Uri) {
-        context.contentResolver.takePersistableUriPermission(directory,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        context.contentResolver.takePersistableUriPermission(
+            directory,
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION,
+        )
         prefs.backupDirectory.set(directory)
 
         Timber.v("Updated backup directory: $directory")
@@ -120,20 +107,23 @@ class BackupRepositoryImpl @Inject constructor(
         var messageCount: Int
 
         // Map all the messages into our object we'll use for the Json mapping
-        val backupMessages = Realm.getDefaultInstance().use { realm ->
-            // Get the messages from realm
-            val messages = realm.where(Message::class.java).sort("date").findAll().createSnapshot()
-            messageCount = messages.size
+        val backupMessages =
+            Realm.getDefaultInstance().use { realm ->
+                // Get the messages from realm
+                val messages =
+                    realm.where(Message::class.java).sort("date").findAll().createSnapshot()
+                messageCount = messages.size
 
-            // Map the messages to the new format
-            messages.mapIndexed { index, message ->
-                // Update the progress
-                backupProgress.onNext(BackupRepository.Progress.Running(messageCount, index))
-                messageToBackupMessage(message)
+                // Map the messages to the new format
+                messages.mapIndexed { index, message ->
+                    // Update the progress
+                    backupProgress.onNext(BackupRepository.Progress.Running(messageCount, index))
+                    messageToBackupMessage(message)
+                }
             }
-        }
 
-        // Update the status, and set the progress to be indeterminate since we can no longer calculate progress
+        // Update the status, and set the progress to be indeterminate since we can no longer
+        // calculate progress
         backupProgress.onNext(BackupRepository.Progress.Saving())
 
         // Convert the data to json
@@ -142,14 +132,13 @@ class BackupRepositoryImpl @Inject constructor(
 
         try {
             val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(now())
-            val inputStream = getBackupDocumentTree()
+            val inputStream =
+                getBackupDocumentTree()
                     ?.createFile("application/json", "backup-$timestamp.json")
                     ?.let { file -> context.contentResolver.openOutputStream(file.uri) }
                     ?: throw Exception("Failed to open output stream")
 
-            inputStream.use { stream ->
-                stream.write(json)
-            }
+            inputStream.use { stream -> stream.write(json) }
         } catch (e: Exception) {
             Timber.w(e)
         }
@@ -159,7 +148,8 @@ class BackupRepositoryImpl @Inject constructor(
         Timer().schedule(1000) { backupProgress.onNext(BackupRepository.Progress.Idle()) }
     }
 
-    private fun messageToBackupMessage(message: Message): BackupMessage = BackupMessage(
+    private fun messageToBackupMessage(message: Message): BackupMessage =
+        BackupMessage(
             type = message.boxId,
             address = message.address,
             date = message.date,
@@ -170,8 +160,8 @@ class BackupRepositoryImpl @Inject constructor(
             protocol = 0,
             serviceCenter = null,
             locked = message.locked,
-            subId = message.subId
-    )
+            subId = message.subId,
+        )
 
     override fun getBackupProgress(): Observable<BackupRepository.Progress> = backupProgress
 
@@ -179,10 +169,13 @@ class BackupRepositoryImpl @Inject constructor(
     override fun parseBackup(uri: Uri): BackupFile {
         val adapter = moshi.adapter(BackupMetadata::class.java)
 
-        val file = DocumentFile.fromSingleUri(context, uri)
+        val file =
+            DocumentFile.fromSingleUri(context, uri)
                 ?: throw IllegalArgumentException("Couldn't open backup file")
 
-        val metadata = context.contentResolver.openInputStream(file.uri)
+        val metadata =
+            context.contentResolver
+                .openInputStream(file.uri)
                 ?.source()
                 ?.buffer()
                 ?.use(adapter::fromJson)
@@ -198,7 +191,8 @@ class BackupRepositoryImpl @Inject constructor(
         restoreProgress.onNext(BackupRepository.Progress.Parsing())
 
         val adapter = moshi.adapter(Backup::class.java)
-        val backup = DocumentFile.fromSingleUri(context, uri)
+        val backup =
+            DocumentFile.fromSingleUri(context, uri)
                 ?.let { file -> context.contentResolver.openInputStream(file.uri) }
                 ?.source()
                 ?.buffer()
@@ -218,7 +212,8 @@ class BackupRepositoryImpl @Inject constructor(
             restoreProgress.onNext(BackupRepository.Progress.Running(messageCount, index))
 
             try {
-                val values = contentValuesOf(
+                val values =
+                    contentValuesOf(
                         Telephony.Sms.TYPE to message.type,
                         Telephony.Sms.ADDRESS to message.address,
                         Telephony.Sms.DATE to message.date,
@@ -229,8 +224,8 @@ class BackupRepositoryImpl @Inject constructor(
                         Telephony.Sms.BODY to message.body,
                         Telephony.Sms.PROTOCOL to message.protocol,
                         Telephony.Sms.SERVICE_CENTER to message.serviceCenter,
-                        Telephony.Sms.LOCKED to message.locked
-                )
+                        Telephony.Sms.LOCKED to message.locked,
+                    )
 
                 if (prefs.canUseSubId.get()) {
                     values.put(Telephony.Sms.SUBSCRIPTION_ID, message.subId)
@@ -265,5 +260,4 @@ class BackupRepositoryImpl @Inject constructor(
     private fun isBackupOrRestoreRunning(): Boolean {
         return backupProgress.blockingFirst().running || restoreProgress.blockingFirst().running
     }
-
 }

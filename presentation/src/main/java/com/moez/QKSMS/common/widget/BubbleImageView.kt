@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common.widget
 
 import android.content.Context
@@ -25,7 +12,6 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.widget.ImageView
 import org.prauga.messages.app.R
-import org.prauga.messages.common.util.extensions.dpToPx
 
 class BubbleImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
     ImageView(context, attrs) {
@@ -34,7 +20,7 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         val topLeft: Boolean,
         val topRight: Boolean,
         val bottomRight: Boolean,
-        val bottomLeft: Boolean
+        val bottomLeft: Boolean,
     ) {
 
         ONLY(true, true, true, true),
@@ -43,7 +29,7 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         IN_LAST(false, true, true, true),
         OUT_FIRST(true, true, false, true),
         OUT_MIDDLE(true, false, false, true),
-        OUT_LAST(true, false, true, true)
+        OUT_LAST(true, false, true, true),
     }
 
     var bubbleStyle = Style.ONLY
@@ -54,8 +40,10 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
         }
 
     private val path = Path()
-    private val radiusSmall = context.resources.getDimensionPixelSize(R.dimen.bubble_radius_small).toFloat()
-    private val radiusLarge = context.resources.getDimensionPixelSize(R.dimen.bubble_radius_large).toFloat()
+    private val radiusSmall =
+        context.resources.getDimensionPixelSize(R.dimen.bubble_radius_small).toFloat()
+    private val radiusLarge =
+        context.resources.getDimensionPixelSize(R.dimen.bubble_radius_large).toFloat()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -115,5 +103,4 @@ class BubbleImageView @JvmOverloads constructor(context: Context, attrs: Attribu
 
         path.close()
     }
-
 }

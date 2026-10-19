@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.widget
 
 import android.appwidget.AppWidgetManager
@@ -28,6 +16,7 @@ import android.widget.RemoteViewsService
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import androidx.core.text.italic
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
@@ -42,7 +31,6 @@ import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.util.GlideApp
 import org.prauga.messages.util.Preferences
 import org.prauga.messages.util.tryOrNull
-import javax.inject.Inject
 
 class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
 
@@ -50,35 +38,40 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         private const val MAX_CONVERSATIONS_COUNT = 25
     }
 
-    @Inject
-    lateinit var context: Context
-    @Inject
-    lateinit var colors: Colors
-    @Inject
-    lateinit var conversationRepo: ConversationRepository
-    @Inject
-    lateinit var dateFormatter: DateFormatter
-    @Inject
-    lateinit var prefs: Preferences
+    @Inject lateinit var context: Context
+    @Inject lateinit var colors: Colors
+    @Inject lateinit var conversationRepo: ConversationRepository
+    @Inject lateinit var dateFormatter: DateFormatter
+    @Inject lateinit var prefs: Preferences
 
-    private val appWidgetId = intent.getIntExtra(
-        AppWidgetManager.EXTRA_APPWIDGET_ID,
-        AppWidgetManager.INVALID_APPWIDGET_ID
-    )
+    private val appWidgetId =
+        intent.getIntExtra(
+            AppWidgetManager.EXTRA_APPWIDGET_ID,
+            AppWidgetManager.INVALID_APPWIDGET_ID,
+        )
     private val smallWidget = intent.getBooleanExtra("small_widget", false)
     private var conversations: List<Conversation> = listOf()
     private val appWidgetManager by lazy { AppWidgetManager.getInstance(context) }
 
-    private val night get() = prefs.night.get()
-    private val theme get() = colors.theme()
+    private val night
+        get() = prefs.night.get()
+
+    private val theme
+        get() = colors.theme()
+
     private val background
         get() = context.getColorCompat(if (night) R.color.backgroundDark else R.color.white)
+
     private val textPrimary
         get() = context.getColorCompat(if (night) R.color.textPrimaryDark else R.color.textPrimary)
+
     private val textSecondary
-        get() = context.getColorCompat(if (night) R.color.textSecondaryDark else R.color.textSecondary)
+        get() =
+            context.getColorCompat(if (night) R.color.textSecondaryDark else R.color.textSecondary)
+
     private val textTertiary
-        get() = context.getColorCompat(if (night) R.color.textTertiaryDark else R.color.textTertiary)
+        get() =
+            context.getColorCompat(if (night) R.color.textTertiaryDark else R.color.textTertiary)
 
     override fun onCreate() {
         appComponent.inject(this)
@@ -92,8 +85,8 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
     }
 
     /**
-     * Returns the number of rows to show. If there are more conversations than the max count,
-     * we'll return the max count + 1, where the last row just shows "View more conversations"
+     * Returns the number of rows to show. If there are more conversations than the max count, we'll
+     * return the max count + 1, where the last row just shows "View more conversations"
      */
     override fun getCount(): Int {
         val count = conversations.size.coerceAtMost(MAX_CONVERSATIONS_COUNT)
@@ -120,13 +113,15 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         remoteViews.setInt(R.id.icon, "setColorFilter", theme.textPrimary)
         remoteViews.setInt(R.id.avatarMask, "setColorFilter", background)
 
-        val contact = conversation.recipients.map { recipient ->
-            recipient.contact ?: Contact().apply {
-                numbers.add(PhoneNumber().apply {
-                    address = recipient.address
-                })
-            }
-        }.firstOrNull()
+        val contact =
+            conversation.recipients
+                .map { recipient ->
+                    recipient.contact
+                        ?: Contact().apply {
+                            numbers.add(PhoneNumber().apply { address = recipient.address })
+                        }
+                }
+                .firstOrNull()
 
         // Use the icon if there's no name, otherwise show an initial
         if (contact?.name.orEmpty().isNotEmpty()) {
@@ -138,17 +133,19 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         }
 
         remoteViews.setImageViewBitmap(R.id.photo, null)
-        val futureGet = GlideApp.with(context)
-            .asBitmap()
-            .load(contact?.photoUri)
-            .submit(48.dpToPx(context), 48.dpToPx(context))
+        val futureGet =
+            GlideApp.with(context)
+                .asBitmap()
+                .load(contact?.photoUri)
+                .submit(48.dpToPx(context), 48.dpToPx(context))
         tryOrNull(false) { remoteViews.setImageViewBitmap(R.id.photo, futureGet.get()) }
 
         // Name
         remoteViews.setTextColor(R.id.name, textPrimary)
-        remoteViews.setTextViewText(R.id.name, boldText(buildSpannedString {
-            append(conversation.getTitle())
-        }, conversation.unread))
+        remoteViews.setTextViewText(
+            R.id.name,
+            boldText(buildSpannedString { append(conversation.getTitle()) }, conversation.unread),
+        )
 
         // Date
         val timestamp =
@@ -157,23 +154,22 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         remoteViews.setTextViewText(R.id.date, boldText(timestamp, conversation.unread))
 
         // Snippet
-        val snippet = when {
-            conversation.draft.isNotEmpty() -> context.getString(
-                R.string.main_sender_draft,
-                conversation.draft
-            )
+        val snippet =
+            when {
+                conversation.draft.isNotEmpty() ->
+                    context.getString(R.string.main_sender_draft, conversation.draft)
 
-            conversation.me -> context.getString(R.string.main_sender_you, conversation.snippet)
-            else -> conversation.snippet
-        }
+                conversation.me -> context.getString(R.string.main_sender_you, conversation.snippet)
+                else -> conversation.snippet
+            }
         remoteViews.setTextColor(
             R.id.snippet,
-            if (conversation.unread) textPrimary else textTertiary
+            if (conversation.unread) textPrimary else textTertiary,
         )
         remoteViews.setTextViewText(R.id.snippet, boldText(snippet, conversation.unread))
         remoteViews.setTextViewText(
             R.id.snippet,
-            italicText(snippet, conversation.draft.isNotEmpty())
+            italicText(snippet, conversation.draft.isNotEmpty()),
         )
 
         // set fill-in intent to be used for current item
@@ -181,7 +177,7 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
             R.id.conversation,
             Intent()
                 .putExtra("activityToStart", StartActivityFromWidgetReceiver.COMPOSE_ACTIVITY)
-                .putExtra("threadId", conversation.id)
+                .putExtra("threadId", conversation.id),
         )
 
         return remoteViews
@@ -193,25 +189,24 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         view.setTextViewText(R.id.loadingText, context.getString(R.string.widget_more))
         view.setOnClickFillInIntent(
             R.id.loadingText,
-            Intent()
-                .putExtra("activityToStart", StartActivityFromWidgetReceiver.MAIN_ACTIVITY)
+            Intent().putExtra("activityToStart", StartActivityFromWidgetReceiver.MAIN_ACTIVITY),
         )
         return view
     }
 
-    private fun boldText(text: CharSequence?, shouldBold: Boolean): CharSequence? = when {
-        shouldBold -> SpannableStringBuilder()
-            .bold { append(text) }
+    private fun boldText(text: CharSequence?, shouldBold: Boolean): CharSequence? =
+        when {
+            shouldBold -> SpannableStringBuilder().bold { append(text) }
 
-        else -> text
-    }
+            else -> text
+        }
 
-    private fun italicText(text: CharSequence?, shouldBold: Boolean): CharSequence? = when {
-        shouldBold -> SpannableStringBuilder()
-            .italic { append(text) }
+    private fun italicText(text: CharSequence?, shouldBold: Boolean): CharSequence? =
+        when {
+            shouldBold -> SpannableStringBuilder().italic { append(text) }
 
-        else -> text
-    }
+            else -> text
+        }
 
     override fun getLoadingView(): RemoteViews {
         val view = RemoteViews(context.packageName, R.layout.widget_loading)
@@ -231,7 +226,5 @@ class WidgetAdapter(intent: Intent) : RemoteViewsService.RemoteViewsFactory {
         return false
     }
 
-    override fun onDestroy() {
-    }
-
+    override fun onDestroy() {}
 }

@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2023 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.util
 
 import android.net.Uri
@@ -12,5 +17,4 @@ class UriPreferenceConverter : Converter<Uri> {
     override fun serialize(value: Uri): String {
         return value.toString()
     }
-
 }

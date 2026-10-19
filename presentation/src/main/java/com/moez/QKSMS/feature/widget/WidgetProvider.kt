@@ -1,20 +1,7 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.feature.widget
@@ -30,6 +17,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.core.net.toUri
 import dagger.android.AndroidInjection
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.extensions.getColorCompat
@@ -39,14 +27,11 @@ import org.prauga.messages.manager.WidgetManager
 import org.prauga.messages.receiver.StartActivityFromWidgetReceiver
 import org.prauga.messages.util.Preferences
 import timber.log.Timber
-import javax.inject.Inject
 
 class WidgetProvider : AppWidgetProvider() {
 
-    @Inject
-    lateinit var colors: Colors
-    @Inject
-    lateinit var prefs: Preferences
+    @Inject lateinit var colors: Colors
+    @Inject lateinit var prefs: Preferences
 
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
@@ -57,13 +42,11 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
-    /**
-     * Update all widgets in the list
-     */
+    /** Update all widgets in the list */
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
+        appWidgetIds: IntArray,
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
@@ -73,9 +56,7 @@ class WidgetProvider : AppWidgetProvider() {
         }
     }
 
-    /**
-     * Notify all the widgets that they should update their adapter data
-     */
+    /** Notify all the widgets that they should update their adapter data */
     private fun updateData(context: Context) {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val appWidgetIds =
@@ -85,22 +66,18 @@ class WidgetProvider : AppWidgetProvider() {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.conversations)
     }
 
-    /**
-     * Update widget when widget size changes
-     */
+    /** Update widget when widget size changes */
     override fun onAppWidgetOptionsChanged(
         context: Context,
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
-        newOptions: Bundle
+        newOptions: Bundle,
     ) {
         updateWidget(context, appWidgetId, isSmallWidget(appWidgetManager, appWidgetId))
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
-    /**
-     * Returns true when widget has less than 4 columns, else false
-     */
+    /** Returns true when widget has less than 4 columns, else false */
     private fun isSmallWidget(appWidgetManager: AppWidgetManager, appWidgetId: Int): Boolean {
         val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
         val size = options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH)
@@ -115,9 +92,7 @@ class WidgetProvider : AppWidgetProvider() {
         return columns < 4
     }
 
-    /**
-     * Update the widget appWidgetId
-     */
+    /** Update the widget appWidgetId */
     private fun updateWidget(context: Context, appWidgetId: Int, smallWidget: Boolean) {
         Timber.v("updateWidget appWidgetId: $appWidgetId")
         val remoteViews = RemoteViews(context.packageName, R.layout.widget)
@@ -132,28 +107,30 @@ class WidgetProvider : AppWidgetProvider() {
         remoteViews.setInt(
             R.id.background,
             "setColorFilter",
-            context.getColorCompat(if (night) R.color.backgroundDark else R.color.white)
+            context.getColorCompat(if (night) R.color.backgroundDark else R.color.white),
         )
 
         remoteViews.setInt(
             R.id.toolbar,
             "setColorFilter",
-            context.getColorCompat(if (night) R.color.backgroundDark else R.color.backgroundLight)
+            context.getColorCompat(if (night) R.color.backgroundDark else R.color.backgroundLight),
         )
 
         remoteViews.setTextColor(
-            R.id.title, context.getColorCompat(
+            R.id.title,
+            context.getColorCompat(
                 when (night) {
                     true -> R.color.textPrimaryDark
                     false -> R.color.textPrimary
                 }
-            )
+            ),
         )
 
         // Set adapter for conversations
-        val intent = Intent(context, WidgetService::class.java)
-            .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
-            .putExtra("small_widget", smallWidget)
+        val intent =
+            Intent(context, WidgetService::class.java)
+                .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+                .putExtra("small_widget", smallWidget)
         intent.data = intent.toUri(Intent.URI_INTENT_SCHEME).toUri()
         remoteViews.setRemoteAdapter(R.id.conversations, intent)
 
@@ -165,18 +142,19 @@ class WidgetProvider : AppWidgetProvider() {
                 context,
                 0,
                 Intent(context, ComposeActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            ),
         )
 
         // use a single pending intent for launching main activity because they
         // can sometimes be in short supply in the OS
-        val mainActivityPendingIntent = PendingIntent.getActivity(
-            context,
-            99,
-            Intent(context, MainActivity::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
+        val mainActivityPendingIntent =
+            PendingIntent.getActivity(
+                context,
+                99,
+                Intent(context, MainActivity::class.java),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            )
 
         // title click to load app main activity / conversation view
         remoteViews.setOnClickPendingIntent(R.id.title, mainActivityPendingIntent)
@@ -188,11 +166,10 @@ class WidgetProvider : AppWidgetProvider() {
                 context,
                 1,
                 Intent(context, StartActivityFromWidgetReceiver::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            )
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE,
+            ),
         )
 
         AppWidgetManager.getInstance(context).updateAppWidget(appWidgetId, remoteViews)
     }
-
 }

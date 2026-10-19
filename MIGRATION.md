@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: Vishnu R <vishnurajesh45@gmail.com>
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # Migration Guide: Modular String Externalization
 
 This guide documents the refactoring that moved hardcoded strings, constants, and configuration values into appropriate resource files and configuration objects.
@@ -21,10 +26,10 @@ internal object OtpConstants {
     val OTP_KEYWORDS = listOf("otp", "verification code", ...)
     val SAFETY_KEYWORDS = listOf("do not share", ...)
     val MONEY_INDICATORS = listOf("rs", "balance", ...)
-    
+
     const val EMPTY_MESSAGE = "Empty message"
     const val NO_OTP_KEYWORD_MSG = "No OTP-like keywords..."
-    
+
     const val WHITESPACE_REGEX = "\\s+"
     const val NUMERIC_REGEX = "\\b\\d{3,10}\\b"
     ...
@@ -121,8 +126,8 @@ startAnimation(AlphaAnimation(0f, 1f).apply { duration = 200 })
 ```kotlin
 import org.prauga.messages.common.util.AnimationConfig
 
-startAnimation(AlphaAnimation(0f, 1f).apply { 
-    duration = AnimationConfig.FADE_DURATION_MS 
+startAnimation(AlphaAnimation(0f, 1f).apply {
+    duration = AnimationConfig.FADE_DURATION_MS
 })
 ```
 

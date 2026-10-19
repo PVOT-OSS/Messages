@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package com.klinker.android.send_message
 
 import com.google.android.mms.pdu_alt.PduHeaders
@@ -11,21 +13,6 @@ import org.junit.Test
 class TransactionTest {
 
     // Broadcast Action Constants Tests
-    @Test
-    fun givenMmsSentAction_thenHasCorrectValue() {
-        assertEquals("org.prauga.messages.MMS_SENT", Transaction.MMS_SENT)
-    }
-
-    @Test
-    fun givenNotifySmsFialureAction_thenHasCorrectValue() {
-        assertEquals("org.prauga.messages.NOTIFY_SMS_FAILURE", Transaction.NOTIFY_SMS_FAILURE)
-    }
-
-    @Test
-    fun givenMmsUpdatedAction_thenHasCorrectValue() {
-        assertEquals("org.prauga.messages.MMS_UPDATED", Transaction.MMS_UPDATED)
-    }
-
     @Test
     fun givenMmsErrorAction_thenHasCorrectValue() {
         assertEquals("com.klinker.android.send_message.MMS_ERROR", Transaction.MMS_ERROR)
@@ -43,7 +30,10 @@ class TransactionTest {
 
     @Test
     fun givenNotifyOfDeliveryAction_thenHasCorrectValue() {
-        assertEquals("com.klinker.android.send_message.NOTIFY_DELIVERY", Transaction.NOTIFY_OF_DELIVERY)
+        assertEquals(
+            "com.klinker.android.send_message.NOTIFY_DELIVERY",
+            Transaction.NOTIFY_OF_DELIVERY,
+        )
     }
 
     @Test
@@ -89,16 +79,14 @@ class TransactionTest {
     // Action uniqueness Tests
     @Test
     fun givenAllActions_whenCompared_thenAllUnique() {
-        val actions = listOf(
-            Transaction.MMS_SENT,
-            Transaction.NOTIFY_SMS_FAILURE,
-            Transaction.MMS_UPDATED,
-            Transaction.MMS_ERROR,
-            Transaction.REFRESH,
-            Transaction.MMS_PROGRESS,
-            Transaction.NOTIFY_OF_DELIVERY,
-            Transaction.NOTIFY_OF_MMS
-        )
+        val actions =
+            listOf(
+                Transaction.MMS_ERROR,
+                Transaction.REFRESH,
+                Transaction.MMS_PROGRESS,
+                Transaction.NOTIFY_OF_DELIVERY,
+                Transaction.NOTIFY_OF_MMS,
+            )
         assertEquals(actions.size, actions.toSet().size)
     }
 

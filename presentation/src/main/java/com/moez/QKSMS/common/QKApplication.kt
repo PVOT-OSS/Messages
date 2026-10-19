@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common
 
 import android.app.Activity
@@ -32,8 +20,10 @@ import com.uber.rxdogtag.autodispose.AutoDisposeConfigurer
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import io.reactivex.plugins.RxJavaPlugins
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -49,38 +39,27 @@ import org.prauga.messages.migration.QkMigration
 import org.prauga.messages.migration.QkRealmMigration
 import org.prauga.messages.util.NightModeManager
 import org.prauga.messages.worker.HousekeepingWorker
+import org.prauga.messages.worker.SmsSendRetryWorker
 import timber.log.Timber
-import javax.inject.Inject
 
 class QKApplication : Application(), HasAndroidInjector {
 
-    /**
-     * Inject these so that they are forced to initialize
-     */
-    @Suppress("unused")
-    @Inject
-    lateinit var qkMigration: QkMigration
+    /** Inject these so that they are forced to initialize */
+    @Suppress("unused") @Inject lateinit var qkMigration: QkMigration
 
-    @Inject
-    lateinit var billingManager: BillingManager
+    @Inject lateinit var billingManager: BillingManager
 
-    @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+    @Inject lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
-    @Inject
-    lateinit var fileLoggingTree: FileLoggingTree
+    @Inject lateinit var fileLoggingTree: FileLoggingTree
 
-    @Inject
-    lateinit var nightModeManager: NightModeManager
+    @Inject lateinit var nightModeManager: NightModeManager
 
-    @Inject
-    lateinit var realmMigration: QkRealmMigration
+    @Inject lateinit var realmMigration: QkRealmMigration
 
-    @Inject
-    lateinit var referralManager: ReferralManager
+    @Inject lateinit var referralManager: ReferralManager
 
-    @Inject
-    lateinit var workerFactory: WorkerFactory
+    @Inject lateinit var workerFactory: WorkerFactory
 
     override fun onCreate() {
         super.onCreate()
@@ -106,6 +85,8 @@ class QKApplication : Application(), HasAndroidInjector {
 
         qkMigration.performMigration()
 
+        SmsSendRetryWorker.kick(this, resetDelays = false)
+
         GlobalScope.launch(Dispatchers.IO) {
             referralManager.trackReferrer()
             billingManager.checkForPurchases()
@@ -121,28 +102,31 @@ class QKApplication : Application(), HasAndroidInjector {
         // (bundled library works with no play-services/gsm os versions)
         EmojiCompat.init(
             BundledEmojiCompatConfig(this)
-                .registerInitCallback(object : EmojiCompat.InitCallback() {
-                    override fun onInitialized() {
-                        super.onInitialized()
-                        Timber.v("bundled emojicompat initialized")
-                    }
+                .registerInitCallback(
+                    object : EmojiCompat.InitCallback() {
+                        override fun onInitialized() {
+                            super.onInitialized()
+                            Timber.v("bundled emojicompat initialized")
+                        }
 
-                    override fun onFailed(throwable: Throwable?) {
-                        super.onFailed(throwable)
-                        Timber.e("bundled emojicompat initialization failed")
+                        override fun onFailed(throwable: Throwable?) {
+                            super.onFailed(throwable)
+                            Timber.e("bundled emojicompat initialization failed")
+                        }
                     }
-                })
+                )
         )
 
+        // Handle undeliverable RxJava exceptions
+        RxJavaPlugins.setErrorHandler { e -> Timber.w(e, "Undeliverable RxJava exception") }
+
         // rxdogtag provides 'look-back' for exceptions in rxjava2 'chains'
-        RxDogTag.builder()
-            .configureWith(AutoDisposeConfigurer::configure)
-            .install()
+        RxDogTag.builder().configureWith(AutoDisposeConfigurer::configure).install()
 
         // init work manager with custom factory supporting dagger/injection capability
         WorkManager.initialize(
             this,
-            Configuration.Builder().setWorkerFactory(workerFactory).build()
+            Configuration.Builder().setWorkerFactory(workerFactory).build(),
         )
 
         // register, or re-register, housekeeping work manager
@@ -150,21 +134,25 @@ class QKApplication : Application(), HasAndroidInjector {
     }
 
     private fun registerActivityLifecycle() {
-        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
-            override fun onActivityCreated(
-                activity: Activity,
-                savedInstanceState: Bundle?
-            ) {
-                activity.applyEdgeToEdgeInsets()
-            }
+        registerActivityLifecycleCallbacks(
+            object : ActivityLifecycleCallbacks {
+                override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                    activity.applyEdgeToEdgeInsets()
+                }
 
-            override fun onActivityStarted(activity: Activity) {}
-            override fun onActivityResumed(activity: Activity) {}
-            override fun onActivityPaused(activity: Activity) {}
-            override fun onActivityStopped(activity: Activity) {}
-            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-            override fun onActivityDestroyed(activity: Activity) {}
-        })
+                override fun onActivityStarted(activity: Activity) {}
+
+                override fun onActivityResumed(activity: Activity) {}
+
+                override fun onActivityPaused(activity: Activity) {}
+
+                override fun onActivityStopped(activity: Activity) {}
+
+                override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+
+                override fun onActivityDestroyed(activity: Activity) {}
+            }
+        )
     }
 
     override fun androidInjector(): AndroidInjector<Any> {

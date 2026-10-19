@@ -1,43 +1,32 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.plus
 
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.plusAssign
+import javax.inject.Inject
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
 import org.prauga.messages.manager.BillingManager
-import javax.inject.Inject
 
-class PlusViewModel @Inject constructor(
-    private val billingManager: BillingManager,
-    private val navigator: Navigator
-) : QkViewModel<PlusView, PlusState>(PlusState()) {
+class PlusViewModel
+@Inject
+constructor(private val billingManager: BillingManager, private val navigator: Navigator) :
+    QkViewModel<PlusView, PlusState>(PlusState()) {
 
     init {
-        disposables += billingManager.upgradeStatus
-            .subscribe { upgraded -> newState { copy(upgraded = upgraded) } }
+        disposables +=
+            billingManager.upgradeStatus.subscribe { upgraded ->
+                newState { copy(upgraded = upgraded) }
+            }
 
-        disposables += billingManager.products
-            .subscribe { products ->
+        disposables +=
+            billingManager.products.subscribe { products ->
                 newState {
                     val upgrade = products.firstOrNull { it.sku == BillingManager.SKU_PLUS }
                     val upgradeDonate =
@@ -45,8 +34,8 @@ class PlusViewModel @Inject constructor(
                     copy(
                         upgradePrice = upgrade?.price ?: "",
                         upgradeDonatePrice = upgradeDonate?.price ?: "",
-                        currency = upgrade?.priceCurrencyCode ?: upgradeDonate?.priceCurrencyCode
-                        ?: ""
+                        currency =
+                            upgrade?.priceCurrencyCode ?: upgradeDonate?.priceCurrencyCode ?: "",
                     )
                 }
             }
@@ -56,34 +45,24 @@ class PlusViewModel @Inject constructor(
         super.bindView(view)
 
         Observable.merge(
-            view.upgradeIntent.map { BillingManager.SKU_PLUS },
-            view.upgradeDonateIntent.map { BillingManager.SKU_PLUS_DONATE })
+                view.upgradeIntent.map { BillingManager.SKU_PLUS },
+                view.upgradeDonateIntent.map { BillingManager.SKU_PLUS_DONATE },
+            )
             .autoDispose(view.scope())
             .subscribe { sku -> view.initiatePurchaseFlow(billingManager, sku) }
 
-//        view.donateIntent
-//                .autoDisposable(view.scope())
-//                .subscribe { navigator.showDonation() }
+        //        view.donateIntent
+        //                .autoDisposable(view.scope())
+        //                .subscribe { navigator.showDonation() }
 
-        view.themeClicks
-            .autoDispose(view.scope())
-            .subscribe { navigator.showSettings() }
+        view.themeClicks.autoDispose(view.scope()).subscribe { navigator.showSettings() }
 
-        view.scheduleClicks
-            .autoDispose(view.scope())
-            .subscribe { navigator.showScheduled(null) }
+        view.scheduleClicks.autoDispose(view.scope()).subscribe { navigator.showScheduled(null) }
 
-        view.backupClicks
-            .autoDispose(view.scope())
-            .subscribe { navigator.showBackup() }
+        view.backupClicks.autoDispose(view.scope()).subscribe { navigator.showBackup() }
 
-        view.delayedClicks
-            .autoDispose(view.scope())
-            .subscribe { navigator.showSettings() }
+        view.delayedClicks.autoDispose(view.scope()).subscribe { navigator.showSettings() }
 
-        view.nightClicks
-            .autoDispose(view.scope())
-            .subscribe { navigator.showSettings() }
+        view.nightClicks.autoDispose(view.scope()).subscribe { navigator.showSettings() }
     }
-
 }

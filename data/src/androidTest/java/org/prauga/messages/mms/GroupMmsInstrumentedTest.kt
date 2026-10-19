@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
- *
- * Instrumented tests for Group MMS functionality.
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.mms
 
 import android.content.Context
@@ -21,8 +21,8 @@ import org.prauga.messages.testutil.InstrumentedMmsTestDataFactory
 import org.prauga.messages.testutil.RealmTestHelper
 
 /**
- * Instrumented tests for Group MMS functionality.
- * Tests group message creation, persistence, and retrieval.
+ * Instrumented tests for Group MMS functionality. Tests group message creation, persistence, and
+ * retrieval.
  */
 @RunWith(AndroidJUnit4::class)
 class GroupMmsInstrumentedTest {
@@ -58,10 +58,7 @@ class GroupMmsInstrumentedTest {
     @Test
     fun givenGroupMms_whenCreate_thenHasMultipleRecipients() {
         val recipients = listOf("+15551111111", "+15552222222", "+15553333333")
-        val message = InstrumentedMmsTestDataFactory.createGroupMms(
-            realm,
-            recipients = recipients
-        )
+        val message = InstrumentedMmsTestDataFactory.createGroupMms(realm, recipients = recipients)
 
         assertThat(message.address).contains("+15551111111")
         assertThat(message.address).contains("+15552222222")
@@ -70,10 +67,7 @@ class GroupMmsInstrumentedTest {
 
     @Test
     fun givenGroupMms_whenCreate_thenBodyPreserved() {
-        val message = InstrumentedMmsTestDataFactory.createGroupMms(
-            realm,
-            text = "Hello group!"
-        )
+        val message = InstrumentedMmsTestDataFactory.createGroupMms(realm, text = "Hello group!")
 
         assertThat(message.body).isEqualTo("Hello group!")
     }
@@ -98,10 +92,8 @@ class GroupMmsInstrumentedTest {
     @Test
     fun givenGroupConversation_whenCreate_thenHasMultipleRecipients() {
         val addresses = listOf("+15551111111", "+15552222222", "+15553333333")
-        val conversation = InstrumentedMmsTestDataFactory.createGroupConversation(
-            realm,
-            addresses = addresses
-        )
+        val conversation =
+            InstrumentedMmsTestDataFactory.createGroupConversation(realm, addresses = addresses)
 
         assertThat(conversation.recipients.size).isEqualTo(3)
     }
@@ -109,15 +101,12 @@ class GroupMmsInstrumentedTest {
     @Test
     fun givenGroupConversation_whenRetrieve_thenRecipientsAccessible() {
         val addresses = listOf("+15551111111", "+15552222222")
-        val conversation = InstrumentedMmsTestDataFactory.createGroupConversation(
-            realm,
-            addresses = addresses
-        )
+        val conversation =
+            InstrumentedMmsTestDataFactory.createGroupConversation(realm, addresses = addresses)
         val conversationId = conversation.id
 
-        val retrieved = realm.where(Conversation::class.java)
-            .equalTo("id", conversationId)
-            .findFirst()
+        val retrieved =
+            realm.where(Conversation::class.java).equalTo("id", conversationId).findFirst()
 
         assertThat(retrieved).isNotNull()
         assertThat(retrieved!!.recipients.size).isEqualTo(2)
@@ -131,10 +120,7 @@ class GroupMmsInstrumentedTest {
 
     @Test
     fun givenGroupMms_whenCreateWithThreadId_thenThreadIdSet() {
-        val message = InstrumentedMmsTestDataFactory.createGroupMms(
-            realm,
-            threadId = 12345L
-        )
+        val message = InstrumentedMmsTestDataFactory.createGroupMms(realm, threadId = 12345L)
 
         assertThat(message.threadId).isEqualTo(12345L)
     }
@@ -146,22 +132,21 @@ class GroupMmsInstrumentedTest {
         InstrumentedMmsTestDataFactory.createGroupMms(
             realm,
             text = "Message 1",
-            threadId = threadId
+            threadId = threadId,
         )
         InstrumentedMmsTestDataFactory.createGroupMms(
             realm,
             text = "Message 2",
-            threadId = threadId
+            threadId = threadId,
         )
         InstrumentedMmsTestDataFactory.createGroupMms(
             realm,
             text = "Message 3",
-            threadId = threadId
+            threadId = threadId,
         )
 
-        val messagesInThread = realm.where(Message::class.java)
-            .equalTo("threadId", threadId)
-            .findAll()
+        val messagesInThread =
+            realm.where(Message::class.java).equalTo("threadId", threadId).findAll()
 
         assertThat(messagesInThread.size).isEqualTo(3)
     }
@@ -170,10 +155,11 @@ class GroupMmsInstrumentedTest {
 
     @Test
     fun givenTwoRecipients_whenCreateGroupMms_thenAddressContainsBoth() {
-        val message = InstrumentedMmsTestDataFactory.createGroupMms(
-            realm,
-            recipients = listOf("+15551111111", "+15552222222")
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createGroupMms(
+                realm,
+                recipients = listOf("+15551111111", "+15552222222"),
+            )
 
         assertThat(message.address).contains("+15551111111")
         assertThat(message.address).contains("+15552222222")
@@ -181,34 +167,19 @@ class GroupMmsInstrumentedTest {
 
     @Test
     fun givenFiveRecipients_whenCreateGroupMms_thenAddressContainsAll() {
-        val recipients = listOf(
-            "+15551111111",
-            "+15552222222",
-            "+15553333333",
-            "+15554444444",
-            "+15555555555"
-        )
-        val message = InstrumentedMmsTestDataFactory.createGroupMms(
-            realm,
-            recipients = recipients
-        )
+        val recipients =
+            listOf("+15551111111", "+15552222222", "+15553333333", "+15554444444", "+15555555555")
+        val message = InstrumentedMmsTestDataFactory.createGroupMms(realm, recipients = recipients)
 
-        recipients.forEach { recipient ->
-            assertThat(message.address).contains(recipient)
-        }
+        recipients.forEach { recipient -> assertThat(message.address).contains(recipient) }
     }
 
     @Test
     fun givenTenRecipients_whenCreateGroupMms_thenAddressContainsAll() {
         val recipients = (1..10).map { "+1555000000$it" }
-        val message = InstrumentedMmsTestDataFactory.createGroupMms(
-            realm,
-            recipients = recipients
-        )
+        val message = InstrumentedMmsTestDataFactory.createGroupMms(realm, recipients = recipients)
 
-        recipients.forEach { recipient ->
-            assertThat(message.address).contains(recipient)
-        }
+        recipients.forEach { recipient -> assertThat(message.address).contains(recipient) }
     }
 
     // ==================== Query Tests ====================
@@ -219,12 +190,10 @@ class GroupMmsInstrumentedTest {
         InstrumentedMmsTestDataFactory.createGroupMms(
             realm,
             text = "Group message",
-            threadId = threadId
+            threadId = threadId,
         )
 
-        val found = realm.where(Message::class.java)
-            .equalTo("threadId", threadId)
-            .findFirst()
+        val found = realm.where(Message::class.java).equalTo("threadId", threadId).findFirst()
 
         assertThat(found).isNotNull()
         assertThat(found!!.body).isEqualTo("Group message")
@@ -234,11 +203,11 @@ class GroupMmsInstrumentedTest {
     fun givenMultipleGroupConversations_whenQueryAll_thenAllFound() {
         InstrumentedMmsTestDataFactory.createGroupConversation(
             realm,
-            addresses = listOf("+15551111111", "+15552222222")
+            addresses = listOf("+15551111111", "+15552222222"),
         )
         InstrumentedMmsTestDataFactory.createGroupConversation(
             realm,
-            addresses = listOf("+15553333333", "+15554444444")
+            addresses = listOf("+15553333333", "+15554444444"),
         )
 
         val allConversations = realm.where(Conversation::class.java).findAll()
@@ -267,20 +236,22 @@ class GroupMmsInstrumentedTest {
 
     @Test
     fun givenOutgoingGroupMms_whenSent_thenInSentBox() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            address = "+15551111111, +15552222222"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(
+                realm,
+                address = "+15551111111, +15552222222",
+            )
 
         assertThat(message.boxId).isEqualTo(Mms.MESSAGE_BOX_SENT)
     }
 
     @Test
     fun givenOutgoingGroupMms_whenSent_thenMarkedAsRead() {
-        val message = InstrumentedMmsTestDataFactory.createOutgoingMms(
-            realm,
-            address = "+15551111111, +15552222222"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createOutgoingMms(
+                realm,
+                address = "+15551111111, +15552222222",
+            )
 
         assertThat(message.read).isTrue()
         assertThat(message.seen).isTrue()
@@ -294,15 +265,11 @@ class GroupMmsInstrumentedTest {
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val toDelete = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val toDelete = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             toDelete?.deleteFromRealm()
         }
 
-        val found = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val found = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(found).isNull()
     }
@@ -313,15 +280,12 @@ class GroupMmsInstrumentedTest {
         val conversationId = conversation.id
 
         realm.executeTransaction { r ->
-            val toDelete = r.where(Conversation::class.java)
-                .equalTo("id", conversationId)
-                .findFirst()
+            val toDelete =
+                r.where(Conversation::class.java).equalTo("id", conversationId).findFirst()
             toDelete?.deleteFromRealm()
         }
 
-        val found = realm.where(Conversation::class.java)
-            .equalTo("id", conversationId)
-            .findFirst()
+        val found = realm.where(Conversation::class.java).equalTo("id", conversationId).findFirst()
 
         assertThat(found).isNull()
     }
@@ -334,16 +298,12 @@ class GroupMmsInstrumentedTest {
         val messageId = message.id
 
         realm.executeTransaction { r ->
-            val toUpdate = r.where(Message::class.java)
-                .equalTo("id", messageId)
-                .findFirst()
+            val toUpdate = r.where(Message::class.java).equalTo("id", messageId).findFirst()
             toUpdate?.read = true
             toUpdate?.seen = true
         }
 
-        val updated = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val updated = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(updated!!.read).isTrue()
         assertThat(updated.seen).isTrue()
@@ -354,37 +314,35 @@ class GroupMmsInstrumentedTest {
     @Test
     fun givenGroupMms_whenRetrieve_thenDataComplete() {
         val recipients = listOf("+15551111111", "+15552222222", "+15553333333")
-        val original = InstrumentedMmsTestDataFactory.createGroupMms(
-            realm,
-            recipients = recipients,
-            text = "Group chat message",
-            threadId = 5555L
-        )
+        val original =
+            InstrumentedMmsTestDataFactory.createGroupMms(
+                realm,
+                recipients = recipients,
+                text = "Group chat message",
+                threadId = 5555L,
+            )
         val messageId = original.id
 
-        val retrieved = realm.where(Message::class.java)
-            .equalTo("id", messageId)
-            .findFirst()
+        val retrieved = realm.where(Message::class.java).equalTo("id", messageId).findFirst()
 
         assertThat(retrieved).isNotNull()
         assertThat(retrieved!!.body).isEqualTo("Group chat message")
         assertThat(retrieved.threadId).isEqualTo(5555L)
         assertThat(retrieved.type).isEqualTo("mms")
 
-        recipients.forEach { recipient ->
-            assertThat(retrieved.address).contains(recipient)
-        }
+        recipients.forEach { recipient -> assertThat(retrieved.address).contains(recipient) }
     }
 
     // ==================== Mixed Content Tests ====================
 
     @Test
     fun givenGroupMmsWithImage_whenCreate_thenHasBothParts() {
-        val message = InstrumentedMmsTestDataFactory.createImageMms(
-            realm,
-            text = "Group photo!",
-            address = "+15551111111, +15552222222"
-        )
+        val message =
+            InstrumentedMmsTestDataFactory.createImageMms(
+                realm,
+                text = "Group photo!",
+                address = "+15551111111, +15552222222",
+            )
 
         assertThat(message.parts.size).isEqualTo(2)
 
@@ -400,20 +358,16 @@ class GroupMmsInstrumentedTest {
     @Test
     fun givenConversation_whenCountRecipients_thenCorrect() {
         val addresses = listOf("+15551111111", "+15552222222", "+15553333333")
-        val conversation = InstrumentedMmsTestDataFactory.createGroupConversation(
-            realm,
-            addresses = addresses
-        )
+        val conversation =
+            InstrumentedMmsTestDataFactory.createGroupConversation(realm, addresses = addresses)
 
         assertThat(conversation.recipients.size).isEqualTo(3)
     }
 
     @Test
     fun givenSingleRecipientConversation_whenCheck_thenNotGroup() {
-        val conversation = InstrumentedMmsTestDataFactory.createConversation(
-            realm,
-            address = "+15551111111"
-        )
+        val conversation =
+            InstrumentedMmsTestDataFactory.createConversation(realm, address = "+15551111111")
 
         assertThat(conversation.recipients.size).isEqualTo(1)
     }

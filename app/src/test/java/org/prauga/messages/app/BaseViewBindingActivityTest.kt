@@ -1,11 +1,11 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.app
 
 import android.os.Build
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.viewbinding.ViewBinding
@@ -20,9 +20,8 @@ import org.robolectric.annotation.Config
 /**
  * Unit tests for BaseViewBindingActivity.
  *
- * These tests verify that the base activity correctly initializes ViewBinding,
- * sets the content view during onCreate, and maintains the binding throughout
- * the activity lifecycle.
+ * These tests verify that the base activity correctly initializes ViewBinding, sets the content
+ * view during onCreate, and maintains the binding throughout the activity lifecycle.
  */
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.P])
@@ -32,9 +31,7 @@ class BaseViewBindingActivityTest {
 
     @Before
     fun setup() {
-        activity = Robolectric.buildActivity(TestActivity::class.java)
-            .create()
-            .get()
+        activity = Robolectric.buildActivity(TestActivity::class.java).create().get()
     }
 
     @Test
@@ -52,7 +49,7 @@ class BaseViewBindingActivityTest {
         assertSame(
             "Binding should be the same instance across multiple accesses",
             firstBindingReference,
-            secondBindingReference
+            secondBindingReference,
         )
     }
 
@@ -69,11 +66,8 @@ class BaseViewBindingActivityTest {
 
     @Test
     fun givenActivityLifecycle_whenResumed_thenBindingStaysNonNull() {
-        val testActivity = Robolectric.buildActivity(TestActivity::class.java)
-            .create()
-            .start()
-            .resume()
-            .get()
+        val testActivity =
+            Robolectric.buildActivity(TestActivity::class.java).create().start().resume().get()
 
         val binding = testActivity.getBinding()
         assertNotNull("Binding should remain non-null through lifecycle", binding)
@@ -86,11 +80,10 @@ class BaseViewBindingActivityTest {
     }
 
     // Test Activity implementation
-    class TestActivity : BaseViewBindingActivity<TestViewBinding>(
-        { layoutInflater ->
+    class TestActivity :
+        BaseViewBindingActivity<TestViewBinding>({ layoutInflater ->
             TestViewBinding(FrameLayout(layoutInflater.context))
-        }
-    ) {
+        }) {
         fun getBinding(): TestViewBinding = binding
     }
 }

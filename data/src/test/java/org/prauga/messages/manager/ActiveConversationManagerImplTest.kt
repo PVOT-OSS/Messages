@@ -1,12 +1,14 @@
 /*
- * Copyright (C) 2025 Saalim Quadri <danascape@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.manager
 
-import org.junit.Before
-import org.junit.Test
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Before
+import org.junit.Test
 
 class ActiveConversationManagerImplTest {
 

@@ -1,21 +1,9 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.feature.qkreply
 
 import android.telephony.SmsMessage
@@ -28,6 +16,9 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
 import io.realm.RealmResults
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Named
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
@@ -41,11 +32,10 @@ import org.prauga.messages.model.Message
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.ActiveSubscriptionObservable
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
-import javax.inject.Named
 
-class QkReplyViewModel @Inject constructor(
+class QkReplyViewModel
+@Inject
+constructor(
     @Named("threadId") private val threadId: Long,
     private val conversationRepo: ConversationRepository,
     private val deleteMessages: DeleteMessages,
@@ -53,11 +43,12 @@ class QkReplyViewModel @Inject constructor(
     private val messageRepo: MessageRepository,
     private val navigator: Navigator,
     private val sendMessage: SendMessage,
-    private val subscriptionManager: SubscriptionManagerCompat
+    private val subscriptionManager: SubscriptionManagerCompat,
 ) : QkViewModel<QkReplyView, QkReplyState>(QkReplyState(threadId = threadId)) {
 
     private val conversation by lazy {
-        conversationRepo.getConversationAsync(threadId)
+        conversationRepo
+            .getConversationAsync(threadId)
             .asObservable()
             .filter { it.isLoaded }
             .filter { it.isValid }
@@ -73,39 +64,47 @@ class QkReplyViewModel @Inject constructor(
 
         // When the set of messages changes, update the state
         // If we're ever showing an empty set of messages, then it's time to shut down to activity
-        disposables += Observables
-            .combineLatest(messages, conversation) { messages, conversation ->
-                newState { copy(data = Pair(conversation, messages)) }
-                messages
-            }
-            .switchMap { messages -> messages.asObservable() }
-            .filter { it.isLoaded }
-            .filter { it.isValid }
-            .filter { it.isEmpty() }
-            .subscribe { newState { copy(hasError = true) } }
+        disposables +=
+            Observables.combineLatest(messages, conversation) { messages, conversation ->
+                    newState { copy(data = Pair(conversation, messages)) }
+                    messages
+                }
+                .switchMap { messages -> messages.asObservable() }
+                .filter { it.isLoaded }
+                .filter { it.isValid }
+                .filter { it.isEmpty() }
+                .subscribe { newState { copy(hasError = true) } }
 
-        disposables += conversation
-            .map { conversation -> conversation.getTitle() }
-            .distinctUntilChanged()
-            .subscribe { title -> newState { copy(title = title) } }
+        disposables +=
+            conversation
+                .map { conversation -> conversation.getTitle() }
+                .distinctUntilChanged()
+                .subscribe { title -> newState { copy(title = title) } }
 
-        val latestSubId = messages
-            .map { messages -> messages.lastOrNull()?.subId ?: -1 }
-            .distinctUntilChanged()
+        val latestSubId =
+            messages.map { messages -> messages.lastOrNull()?.subId ?: -1 }.distinctUntilChanged()
 
         val subscriptions = ActiveSubscriptionObservable(subscriptionManager)
-        disposables += Observables.combineLatest(latestSubId, subscriptions) { subId, subs ->
-            val sub = if (subs.size > 1) subs.firstOrNull { it.subscriptionId == subId }
-                ?: subs[0] else null
-            newState { copy(subscription = sub) }
-        }.subscribe()
+        disposables +=
+            Observables.combineLatest(latestSubId, subscriptions) { subId, subs ->
+                    val sub =
+                        if (subs.size > 1)
+                            SubscriptionManagerCompat.preferredSubscription(
+                                subs,
+                                subId,
+                                subscriptionManager.defaultSmsSubscriptionId,
+                            )
+                        else null
+                    newState { copy(subscription = sub) }
+                }
+                .subscribe()
     }
 
     override fun bindView(view: QkReplyView) {
         super.bindView(view)
 
         conversation
-            .take(1)  // only update saved draft to ui once
+            .take(1) // only update saved draft to ui once
             .map { conversation -> conversation.draft }
             .distinctUntilChanged()
             .autoDispose(view.scope())
@@ -115,17 +114,18 @@ class QkReplyViewModel @Inject constructor(
         view.menuItemIntent
             .filter { id -> id == R.id.read }
             .autoDispose(view.scope())
-            .subscribe {
-                markRead.execute(listOf(threadId)) { newState { copy(hasError = true) } }
-            }
+            .subscribe { markRead.execute(listOf(threadId)) { newState { copy(hasError = true) } } }
 
         // Call
         view.menuItemIntent
             .filter { id -> id == R.id.call }
             .withLatestFrom(state, conversation)
             .mapNotNull { (_, state, conversation) ->
-                state.data?.second?.lastOrNull { !it.isMe() }?.address // most recent non-me msg address
-                    ?: conversation.recipients.firstOrNull()?.address  // first recipient in convo
+                state.data
+                    ?.second
+                    ?.lastOrNull { !it.isMe() }
+                    ?.address // most recent non-me msg address
+                ?: conversation.recipients.firstOrNull()?.address // first recipient in convo
             }
             .doOnNext { navigator.makePhoneCall(it) }
             .autoDispose(view.scope())
@@ -202,11 +202,12 @@ class QkReplyViewModel @Inject constructor(
                 val subs = subscriptionManager.activeSubscriptionInfoList
                 val subIndex =
                     subs.indexOfFirst { it.subscriptionId == state.subscription?.subscriptionId }
-                val subscription = when {
-                    subIndex == -1 -> null
-                    subIndex < subs.size - 1 -> subs[subIndex + 1]
-                    else -> subs[0]
-                }
+                val subscription =
+                    when {
+                        subIndex == -1 -> null
+                        subIndex < subs.size - 1 -> subs[subIndex + 1]
+                        else -> subs[0]
+                    }
                 newState { copy(subscription = subscription) }
             }
             .autoDispose(view.scope())
@@ -222,11 +223,8 @@ class QkReplyViewModel @Inject constructor(
                 sendMessage.execute(SendMessage.Params(subId, threadId, addresses, body))
                 view.setDraft("")
             }
-            .doOnNext {
-                markRead.execute(listOf(threadId)) { newState { copy(hasError = true) } }
-            }
+            .doOnNext { markRead.execute(listOf(threadId)) { newState { copy(hasError = true) } } }
             .autoDispose(view.scope())
             .subscribe()
     }
-
 }

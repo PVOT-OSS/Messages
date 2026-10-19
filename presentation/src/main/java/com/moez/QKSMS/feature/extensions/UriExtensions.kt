@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.feature.extensions
 
 import android.content.Context
@@ -20,27 +25,23 @@ enum class LoadBestIconIntoImageView {
     EmbeddedIcon,
     DefaultAudioIcon,
     ActivityIcon,
-    GenericIcon
+    GenericIcon,
 }
 
-fun Uri.loadBestIconIntoImageView(context: Context, imageView: ImageView)
-    : LoadBestIconIntoImageView {
+fun Uri.loadBestIconIntoImageView(
+    context: Context,
+    imageView: ImageView,
+): LoadBestIconIntoImageView {
 
     // if resource is missing, use missing icon
     if (!resourceExists(context)) {
-        Glide
-            .with(context)
-            .load(android.R.drawable.ic_delete)
-            .into(imageView)
+        Glide.with(context).load(android.R.drawable.ic_delete).into(imageView)
         return LoadBestIconIntoImageView.Missing
     }
 
     // if attachment is image or video use image or video frame for icon
     if (isImage(context) || isVideo(context)) {
-        Glide
-            .with(context)
-            .load(this)
-            .into(imageView)
+        Glide.with(context).load(this).into(imageView)
         return LoadBestIconIntoImageView.ImageVideoIcon
     }
 
@@ -54,10 +55,7 @@ fun Uri.loadBestIconIntoImageView(context: Context, imageView: ImageView)
             setDataSource(context, this@loadBestIconIntoImageView)
             val embeddedPicture = embeddedPicture
             if (embeddedPicture != null) {
-                Glide
-                    .with(context)
-                    .load(embeddedPicture)
-                    .into(imageView)
+                Glide.with(context).load(embeddedPicture).into(imageView)
                 return retVal
             }
         }
@@ -80,10 +78,7 @@ fun Uri.loadBestIconIntoImageView(context: Context, imageView: ImageView)
     }
 
     // load icon
-    Glide
-        .with(context)
-        .load(appIcon)
-        .into(imageView)
+    Glide.with(context).load(appIcon).into(imageView)
 
     return retVal
 }

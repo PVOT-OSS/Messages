@@ -1,0 +1,112 @@
+# SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+version = 1
+SPDX-PackageName = "Pvot Messages"
+SPDX-PackageSupplier = "Saalim Quadri"
+SPDX-PackageDownloadLocation = "https://github.com/PVOT-OSS/Messages"
+
+[[annotations]]
+path = [".github/workflows/**", ".gitignore", "app/.gitignore", "tools/mms-test/.gitignore"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Saalim Quadri"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "gradle/wrapper/**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2007-2023 Gradle, Inc."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "carrier-configs/src/main/res/xml*/*.xml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Android Open Source Project"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = [
+    "app/src/main/ic_launcher-playstore.png",
+    "app/src/main/res/mipmap-*/ic_launcher*.png",
+    "fastlane/metadata/android/en-US/images/**/*.png",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Saalim Quadri"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = [
+    "presentation/src/main/res/drawable-xxxhdpi/circle_mask.png",
+    "presentation/src/main/res/drawable-xxxhdpi/ic_blocking_manager_*.png",
+    "presentation/src/main/res/drawable-xxxhdpi/rounded_rectangle_shadow.9.png",
+    "presentation/src/main/res/mipmap-xxxhdpi/ic_shortcut_*.png",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Moez Bhatti"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = [
+    "presentation/src/main/res/drawable/audio_preview_foreground.png",
+    "presentation/src/main/res/drawable-xxxhdpi/ic_speak_unseen_widget.png",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "gavine99"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "fastlane/metadata/android/en-US/images/phoneScreenshots/*.jpg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Saalim Quadri"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "data/src/main/assets/changelog.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["Moez Bhatti", "Saalim Quadri"]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "data/src/main/assets/emojis/*.json"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Ben Iofel"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "fdroid/metadata/org.prauga.messages.yml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Saalim Quadri"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "fastlane/metadata/android/en-US/changelogs/*.txt"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Saalim Quadri"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = [
+    "fastlane/metadata/android/en-US/full_description.txt",
+    "fastlane/metadata/android/en-US/short_description.txt",
+]
+precedence = "aggregate"
+SPDX-FileCopyrightText = ["octoshrimpy", "Saalim Quadri"]
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "gradle/gradle-daemon-jvm.properties"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Saalim Quadri"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "keystore/platform.jks"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "The Android Open Source Project"
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = "presentation/src/main/res/drawable/widget_preview.webp"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Konrad Pozniak"
+SPDX-License-Identifier = "GPL-3.0-or-later"

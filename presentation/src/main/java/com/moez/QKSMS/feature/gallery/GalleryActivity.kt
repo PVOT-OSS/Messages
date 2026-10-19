@@ -1,20 +1,7 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.feature.gallery
@@ -33,25 +20,22 @@ import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.base.QkActivity
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.setVisible
 import org.prauga.messages.databinding.GalleryActivityBinding
 import org.prauga.messages.model.MmsPart
-import javax.inject.Inject
 
-class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate),
-    GalleryView {
+class GalleryActivity :
+    QkActivity<GalleryActivityBinding>(GalleryActivityBinding::inflate), GalleryView {
 
-    @Inject
-    lateinit var dateFormatter: DateFormatter
+    @Inject lateinit var dateFormatter: DateFormatter
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var pagerAdapter: GalleryPagerAdapter
+    @Inject lateinit var pagerAdapter: GalleryPagerAdapter
 
     val partId by lazy { intent.getLongExtra("partId", 0L) }
 
@@ -69,28 +53,38 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
         viewModel.bindView(this)
 
         binding.pager.adapter = pagerAdapter
-        binding.pager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                this@GalleryActivity.onPageSelected(position)
+        binding.pager.registerOnPageChangeCallback(
+            object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    this@GalleryActivity.onPageSelected(position)
+                }
             }
-        })
+        )
 
-        pagerAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
-            override fun onChanged() {
-                pagerAdapter.data?.takeIf { pagerAdapter.itemCount > 0 }
-                    ?.indexOfFirst { part -> part.id == partId }
-                    ?.let { index ->
-                        onPageSelected(index)
-                        binding.pager.setCurrentItem(index, false)
-                        pagerAdapter.unregisterAdapterDataObserver(this)
-                    }
+        pagerAdapter.registerAdapterDataObserver(
+            object : RecyclerView.AdapterDataObserver() {
+                override fun onChanged() {
+                    pagerAdapter.data
+                        ?.takeIf { pagerAdapter.itemCount > 0 }
+                        ?.indexOfFirst { part -> part.id == partId }
+                        ?.let { index ->
+                            onPageSelected(index)
+                            binding.pager.setCurrentItem(index, false)
+                            pagerAdapter.unregisterAdapterDataObserver(this)
+                        }
+                }
             }
-        })
+        )
     }
 
     fun onPageSelected(position: Int) {
-        binding.toolbarSubtitle.text = pagerAdapter.getItem(position)?.messages?.firstOrNull()?.date
-            ?.let(dateFormatter::getDetailedTimestamp)
+        binding.toolbarSubtitle.text =
+            pagerAdapter
+                .getItem(position)
+                ?.messages
+                ?.firstOrNull()
+                ?.date
+                ?.let(dateFormatter::getDetailedTimestamp)
         binding.toolbarSubtitle.isVisible = binding.toolbarTitle.text.isNotBlank()
 
         pagerAdapter.getItem(position)?.run(pageChangedSubject::onNext)
@@ -113,7 +107,7 @@ class GalleryActivity : QkActivity<GalleryActivityBinding>(GalleryActivityBindin
         ActivityCompat.requestPermissions(
             this,
             arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            0
+            0,
         )
     }
 

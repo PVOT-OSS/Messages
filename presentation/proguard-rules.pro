@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+# SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # android-smsmms
 -dontwarn android.net.ConnectivityManager
 -dontwarn android.net.LinkProperties
@@ -7,6 +11,7 @@
 
 # ez-vcard
 -dontwarn ezvcard.**
+-keep class ezvcard.Ezvcard { *; }
 -dontwarn org.apache.log.**
 -dontwarn org.apache.log4j.**
 -dontwarn org.python.core.**

@@ -1,20 +1,7 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package org.prauga.messages.common.base
@@ -31,16 +18,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.viewbinding.ViewBinding
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.app.BaseViewBindingActivity
 import org.prauga.messages.util.Preferences
-import javax.inject.Inject
 
-abstract class QkActivity<Vb : ViewBinding>(
-    inflate: (LayoutInflater) -> Vb
-) : BaseViewBindingActivity<Vb>(inflate) {
-    @Inject
-    lateinit var prefs: Preferences
+abstract class QkActivity<Vb : ViewBinding>(inflate: (LayoutInflater) -> Vb) :
+    BaseViewBindingActivity<Vb>(inflate) {
+    @Inject lateinit var prefs: Preferences
 
     protected val menu: Subject<Menu> = BehaviorSubject.create()
 
@@ -104,7 +89,7 @@ abstract class QkActivity<Vb : ViewBinding>(
         if (disableScreenshots) {
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE
+                WindowManager.LayoutParams.FLAG_SECURE,
             )
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
@@ -112,5 +97,6 @@ abstract class QkActivity<Vb : ViewBinding>(
     }
 
     protected fun findToolbar(): Toolbar? = findViewById(R.id.toolbar)
+
     protected fun findToolbarTitle(): TextView? = findViewById(R.id.toolbarTitle)
 }

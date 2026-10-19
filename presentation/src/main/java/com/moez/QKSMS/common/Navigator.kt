@@ -1,21 +1,8 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.common
 
 import android.app.Activity
@@ -28,6 +15,8 @@ import android.os.Build
 import android.provider.ContactsContract
 import android.provider.Settings
 import android.provider.Telephony
+import javax.inject.Inject
+import javax.inject.Singleton
 import org.prauga.messages.BuildConfig
 import org.prauga.messages.compat.TelephonyCompat
 import org.prauga.messages.extensions.resourceExists
@@ -45,15 +34,15 @@ import org.prauga.messages.manager.BillingManager
 import org.prauga.messages.manager.NotificationManager
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.model.ScheduledMessage
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
-class Navigator @Inject constructor(
+class Navigator
+@Inject
+constructor(
     private val context: Context,
     private val billingManager: BillingManager,
     private val notificationManager: NotificationManager,
-    private val permissions: PermissionManager
+    private val permissions: PermissionManager,
 ) {
 
     private fun startActivity(intent: Intent) {
@@ -71,16 +60,14 @@ class Navigator @Inject constructor(
 
     /**
      * @param source String to indicate where this QKSMS+ screen was launched from. This should be
-     * one of [main_menu, compose_schedule, settings_night, settings_theme]
+     *   one of [main_menu, compose_schedule, settings_night, settings_theme]
      */
     fun showQksmsPlusActivity(source: String) {
         val intent = Intent(context, PlusActivity::class.java)
         startActivity(intent)
     }
 
-    /**
-     * This won't work unless we use startActivityForResult
-     */
+    /** This won't work unless we use startActivityForResult */
     fun showDefaultSmsDialog(context: Activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val roleManager = context.getSystemService(RoleManager::class.java) as RoleManager
@@ -105,20 +92,15 @@ class Navigator @Inject constructor(
 
         attachments
             ?.takeIf { it.isNotEmpty() }
-            ?.mapNotNull {
-                if (it.resourceExists(context)) it
-                else null
-            }
+            ?.mapNotNull { if (it.resourceExists(context)) it else null }
             ?.let { intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(it)) }
 
         startActivity(intent)
     }
 
     fun showCompose(scheduledMessage: ScheduledMessage) {
-        val scheduledThreadId = TelephonyCompat.getOrCreateThreadId(
-            context,
-            scheduledMessage.recipients
-        )
+        val scheduledThreadId =
+            TelephonyCompat.getOrCreateThreadId(context, scheduledMessage.recipients)
 
         val intent = Intent(context, ComposeActivity::class.java)
         intent.putExtra(Intent.EXTRA_TEXT, scheduledMessage.body)
@@ -135,8 +117,7 @@ class Navigator @Inject constructor(
             .takeIf { it.isNotEmpty() }
             ?.mapNotNull {
                 val uri = Uri.parse(it)
-                if (uri.resourceExists(context)) uri
-                else null
+                if (uri.resourceExists(context)) uri else null
             }
             ?.let { intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, ArrayList(it)) }
 
@@ -144,9 +125,18 @@ class Navigator @Inject constructor(
     }
 
     fun showConversation(threadId: Long, query: String? = null) {
-        val intent = Intent(context, ComposeActivity::class.java)
-            .putExtra("threadId", threadId)
-            .putExtra("query", query)
+        val intent =
+            Intent(context, ComposeActivity::class.java)
+                .putExtra("threadId", threadId)
+                .putExtra("query", query)
+        startActivity(intent)
+    }
+
+    fun showConversation(threadId: Long, messageId: Long) {
+        val intent =
+            Intent(context, ComposeActivity::class.java)
+                .putExtra("threadId", threadId)
+                .putExtra("messageId", messageId)
         startActivity(intent)
     }
 
@@ -194,10 +184,8 @@ class Navigator @Inject constructor(
     }
 
     fun showLicense() {
-        val intent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse("https://github.com/PVOT-OSS/Messages/blob/master/LICENSE")
-        )
+        val intent =
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages#license"))
         startActivityExternal(intent)
     }
 
@@ -218,12 +206,13 @@ class Navigator @Inject constructor(
     }
 
     fun showRating() {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages"))
-            .addFlags(
-                Intent.FLAG_ACTIVITY_NO_HISTORY
-                        or Intent.FLAG_ACTIVITY_NEW_DOCUMENT
-                        or Intent.FLAG_ACTIVITY_MULTIPLE_TASK
-            )
+        val intent =
+            Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/PVOT-OSS/Messages"))
+                .addFlags(
+                    Intent.FLAG_ACTIVITY_NO_HISTORY or
+                        Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+                )
 
         try {
             startActivityExternal(intent)
@@ -233,18 +222,14 @@ class Navigator @Inject constructor(
         }
     }
 
-    /**
-     * Launch the Play Store and display the Call Blocker listing
-     */
+    /** Launch the Play Store and display the Call Blocker listing */
     fun installCallBlocker() {
         val url = "https://play.google.com/store/apps/details?id=com.cuiet.blockCalls"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivityExternal(intent)
     }
 
-    /**
-     * Launch the Play Store and display the Call Control listing
-     */
+    /** Launch the Play Store and display the Call Control listing */
     fun installCallControl() {
         val url =
             "https://play.google.com/store/apps/details?id=com.flexaspect.android.everycallcontrol"
@@ -252,9 +237,7 @@ class Navigator @Inject constructor(
         startActivityExternal(intent)
     }
 
-    /**
-     * Launch the Play Store and display the Should I Answer? listing
-     */
+    /** Launch the Play Store and display the Should I Answer? listing */
     fun installSia() {
         val url = "https://play.google.com/store/apps/details?id=org.mistergroup.shouldianswer"
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -267,16 +250,16 @@ class Navigator @Inject constructor(
         intent.putExtra(Intent.EXTRA_EMAIL, arrayOf("saalim.priv@gmail.com"))
         intent.putExtra(Intent.EXTRA_SUBJECT, "Messages Support")
         intent.putExtra(
-            Intent.EXTRA_TEXT, StringBuilder("\n\n")
-            .append("\n\n--- Please write your message above this line ---\n\n")
-            .append("Package: ${context.packageName}\n")
-            .append("Version: ${BuildConfig.VERSION_NAME}\n")
-            .append("Device: ${Build.BRAND} ${Build.MODEL}\n")
-            .append("SDK: ${Build.VERSION.SDK_INT}\n")
-            .append(
-                "Upgraded"
-                .takeIf { billingManager.upgradeStatus.blockingFirst() } ?: "")
-            .toString())
+            Intent.EXTRA_TEXT,
+            StringBuilder("\n\n")
+                .append("\n\n--- Please write your message above this line ---\n\n")
+                .append("Package: ${context.packageName}\n")
+                .append("Version: ${BuildConfig.VERSION_NAME}\n")
+                .append("Device: ${Build.BRAND} ${Build.MODEL}\n")
+                .append("SDK: ${Build.VERSION.SDK_INT}\n")
+                .append("Upgraded".takeIf { billingManager.upgradeStatus.blockingFirst() } ?: "")
+                .toString(),
+        )
         startActivityExternal(intent)
     }
 
@@ -289,35 +272,41 @@ class Navigator @Inject constructor(
     }
 
     fun addContact(address: String) {
-        val intent = Intent(Intent.ACTION_INSERT)
-            .setType(ContactsContract.Contacts.CONTENT_TYPE)
-            .putExtra(ContactsContract.Intents.Insert.PHONE, address)
+        val intent =
+            Intent(Intent.ACTION_INSERT)
+                .setType(ContactsContract.Contacts.CONTENT_TYPE)
+                .putExtra(ContactsContract.Intents.Insert.PHONE, address)
 
         startActivityExternal(intent)
     }
 
     fun showContact(lookupKey: String) {
-        val intent = Intent(Intent.ACTION_VIEW)
-            .setData(Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey))
+        val intent =
+            Intent(Intent.ACTION_VIEW)
+                .setData(
+                    Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey)
+                )
 
         startActivityExternal(intent)
     }
 
     fun viewFile(uri: Uri, mimeType: String) {
-        val intent = Intent(Intent.ACTION_VIEW)
-            .setDataAndType(uri, mimeType.lowercase())
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .let { Intent.createChooser(it, null) }
+        val intent =
+            Intent(Intent.ACTION_VIEW)
+                .setDataAndType(uri, mimeType.lowercase())
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .let { Intent.createChooser(it, null) }
 
         startActivityExternal(intent)
     }
 
     fun shareFile(uri: Uri, mimeType: String) {
-        val intent = Intent(Intent.ACTION_SEND)
-            .setType(mimeType.lowercase())
-            .putExtra(Intent.EXTRA_STREAM, uri)
-            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            .let { Intent.createChooser(it, null) }
+        val intent =
+            Intent(Intent.ACTION_SEND)
+                .setType(mimeType.lowercase())
+                .putExtra(Intent.EXTRA_STREAM, uri)
+                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                .let { Intent.createChooser(it, null) }
 
         startActivityExternal(intent)
     }
@@ -343,19 +332,20 @@ class Navigator @Inject constructor(
             }
 
             val channelId = notificationManager.buildNotificationChannelId(threadId)
-            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-                .putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
-                .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+            val intent =
+                Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                    .putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
+                    .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
             startActivity(intent)
         }
     }
 
     fun showExactAlarmsSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                .setData(Uri.parse("package:${context.packageName}"))
+            val intent =
+                Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                    .setData(Uri.parse("package:${context.packageName}"))
             startActivity(intent)
         }
     }
-
 }

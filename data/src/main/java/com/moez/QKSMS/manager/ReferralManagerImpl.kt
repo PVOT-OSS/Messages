@@ -1,10 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 package org.prauga.messages.manager
 
 import javax.inject.Inject
 
 class ReferralManagerImpl @Inject constructor() : ReferralManager {
 
-    override suspend fun trackReferrer() {
-    }
-
+    override suspend fun trackReferrer() {}
 }

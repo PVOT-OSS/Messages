@@ -1,33 +1,16 @@
 /*
- * Copyright (C) 2017 Moez Bhatti <moez.bhatti@gmail.com>
- *
- * This file is part of QKSMS.
- *
- * QKSMS is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * QKSMS is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with QKSMS.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
+
 package org.prauga.messages.repository
 
-import org.prauga.messages.model.Recipient
-import org.prauga.messages.model.ScheduledMessage
-import io.realm.RealmList
 import io.realm.RealmResults
+import org.prauga.messages.model.ScheduledMessage
 
 interface ScheduledMessageRepository {
 
-    /**
-     * Saves a scheduled message
-     */
+    /** Saves a scheduled message */
     fun saveScheduledMessage(
         date: Long,
         subId: Int,
@@ -35,42 +18,27 @@ interface ScheduledMessageRepository {
         sendAsGroup: Boolean,
         body: String,
         attachments: List<String>,
-        conversationId: Long
+        conversationId: Long,
     ): ScheduledMessage
 
-    /**
-     * Updates scheduled messages with new uris
-     */
+    /** Updates scheduled messages with new uris */
     fun updateScheduledMessage(scheduledMessage: ScheduledMessage)
 
-    /**
-     * Returns all of the scheduled messages, sorted chronologically
-     */
+    /** Returns all of the scheduled messages, sorted chronologically */
     fun getScheduledMessages(): RealmResults<ScheduledMessage>
 
-    /**
-     * Returns the scheduled message with the given [id]
-     */
+    /** Returns the scheduled message with the given [id] */
     fun getScheduledMessage(id: Long): ScheduledMessage?
 
-    /**
-     * Returns all scheduled messages with the given [conversationId]
-     */
+    /** Returns all scheduled messages with the given [conversationId] */
     fun getScheduledMessagesForConversation(conversationId: Long): RealmResults<ScheduledMessage>
 
-    /**
-     * Deletes the scheduled message with the given [id]
-     */
+    /** Deletes the scheduled message with the given [id] */
     fun deleteScheduledMessage(id: Long)
 
-    /**
-     * Delete multiple scheduled messages by id list
-     */
+    /** Delete multiple scheduled messages by id list */
     fun deleteScheduledMessages(ids: List<Long>)
 
-    /**
-     * Get a list of all scheduled message ids (in scheduled date order)
-     */
+    /** Get a list of all scheduled message ids (in scheduled date order) */
     fun getAllScheduledMessageIdsSnapshot(): List<Long>
-
 }
