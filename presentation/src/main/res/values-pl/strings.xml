@@ -2,9 +2,7 @@
 <!--
      SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
      SPDX-License-Identifier: GPL-3.0-or-later
--->
-
-<resources>
+--><resources>
     <string name="shortcut_compose_long_label">Nowa rozmowa</string>
     <string name="shortcut_compose_short_label">Napisz</string>
     <string name="shortcut_compose_disabled_message">Skrót wyłączony</string>
@@ -47,13 +45,13 @@
     <string name="inbox_search_empty_text">Brak wyników</string>
     <string name="archived_empty_text">Miejsce dla twoich zarchiwizowanych rozmów</string>
     <string name="main_fab_cd">Rozpocznij nową rozmowę</string>
-    <string name="main_default_sms_title">Pokochaj SMSowanie na nowo</string>
-    <string name="main_default_sms_message">Ustaw QUIK jako domyślną aplikację do SMSów i MMSów</string>
+    <string name="main_default_sms_title">Pokochaj pisanie wiadomości na nowo</string>
+    <string name="main_default_sms_message">Ustaw Wiadomości jako domyślną aplikację do SMS</string>
     <string name="main_default_sms_change">Zmień</string>
     <string name="main_permission_required">Wymagane uprawnienie</string>
-    <string name="main_permission_sms">QUIK wymaga uprawnień do wysyłania i przeglądania wiadomości</string>
-    <string name="main_permission_contacts">QUIK wymaga uprawnień do przeglądania kontaktów</string>
-    <string name="main_permission_notifications">QUIK potrzebuje uprawnień do wyświetlania powiadomień</string>
+    <string name="main_permission_sms">Wiadomości wymagają uprawnień do wysyłania i przeglądania wiadomości SMS</string>
+    <string name="main_permission_contacts">Wiadomości wymagają dostępu do Twoich kontaktów</string>
+    <string name="main_permission_notifications">Wiadomości wymagsją uprawnień do wyświetlania powiadomień</string>
     <string name="main_permission_allow">Zezwól</string>
     <string name="scheduled_menu_send_now">Wyślij teraz</string>
     <string name="scheduled_menu_edit_message">Edytuj wiadomość</string>
@@ -66,7 +64,7 @@
     <string name="drawer_help">Pomoc i opinie</string>
     <string name="drawer_invite">Poleć znajomym</string>
     <string name="drawer_plus_banner_summary">Odblokuj nowe funkcje i wesprzyj rozwój aplikacji</string>
-    <string name="rate_title">Lubisz QUIK?</string>
+    <string name="rate_title">Lubisz aplikację Wiadomości?</string>
     <string name="rate_summary">Podziel się miłością i oceń nas w Sklepie Google Play!</string>
     <string name="rate_okay">W PORZĄDKU!</string>
     <string name="rate_dismiss">ODMAWIAM</string>
@@ -297,7 +295,7 @@
     <string name="blocking_drop_summary">Odrzuć przychodzące wiadomości od zablokowanych nadawców zamiast ich ukrywać</string>
     <string name="blocking_conversations">Zablokowane rozmowy</string>
     <string name="blocking_manager_title">Menadżer Blokowania</string>
-    <string name="blocking_manager_qksms_summary">Wbudowana funkcja blokowania w QUIK</string>
+    <string name="blocking_manager_qksms_summary">Wbudowana funkcja blokowania w aplikacji Wiadomości</string>
     <string name="blocking_manager_call_blocker_summary">Blokuj spam, numery i połączenia od nieznajomych za pomocą czarnej listy i harmonogramu</string>
     <string name="blocking_manager_call_control_summary">Automatycznie filtruj twoje rozmowy i wiadomości tekstowe w jednym wygodnym miejscu! Community IQ™ pozwala zapobiegać niechcianym wiadomościom od znanych spamerów</string>
     <string name="blocking_manager_sia_summary">Automatycznie filtruj wiadomości od niechcianych numerów za pomocą aplikacji \"Should I Answer?\"</string>
@@ -325,7 +323,7 @@
         <item quantity="many">Kontynuuj do %s i odblokuj te numery</item>
         <item quantity="other">Kontynuuj do %s i odblokuj te numery</item>
     </plurals>
-    <string name="about_title">QUIK</string>
+    <string name="about_title">Informacje</string>
     <string name="about_version_title">Wersja</string>
     <string name="about_developer_title">Programista</string>
     <string name="about_source_title">Kod źródłowy</string>
@@ -523,4 +521,28 @@
     <string name="compose_not_default_sms_message">Aby korzystać z aplikacji Wiadomości, ustaw ją jako domyślną aplikację do obsługi SMS</string>
     <string name="compose_change_default_app">Zmień domyślną aplikację</string>
     <string name="app_name">Wiadomości</string>
+    <string name="compose_menu_react">Zareaguj</string>
+    <string name="compose_menu_more">Więcej</string>
+    <string name="reaction_picker_love">❤️ Super</string>
+    <string name="reaction_picker_like">👍 Lubię to</string>
+    <string name="reaction_picker_dislike">👎 Nie lubię</string>
+    <string name="reaction_picker_laugh">😂 Haha</string>
+    <string name="reaction_picker_emphasize">‼️ Wykrzyknik</string>
+    <string name="reaction_picker_question">❓ Pytanie</string>
+    <string name="compose_record_audio_msg_attach_error">Nie można dołączyć wiadomości głosowej</string>
+    <string name="message_mms_not_downloaded">Wiadomość multimedialna nie została jeszcze pobrana. Dotknij, aby pobrać</string>
+    <string name="message_mms_expired">Wiadomość multimedialna wygasła lub jest niedostępna</string>
+    <string name="compose_mms_downloading">Pobieranie wiadomości multimedialnej…</string>
+    <string name="settings_mms_auto_download_title">Automatyczne pobieranie MMS</string>
+    <string name="settings_mms_auto_download_summary">Pobieraj wiadomości multimedialne natychmiast po ich nadejściu</string>
+    <string name="settings_mms_roaming_auto_download_title">Automatyczne pobieranie MMS w roamingu</string>
+    <string name="settings_mms_roaming_auto_download_summary">Pobieranie danych w roamingu może wiązać się z dodatkowymi kosztami</string>
+    <string name="compose_recipient_limit">Maksymalna liczba uczestników rozmowy u Twojego operatora: %d</string>
+    <string name="delete_confirmation_title">Usuń</string>
+    <plurals name="delete_confirmation_message">
+        <item quantity="one">Czy na pewno chcesz usunąć tę wiadomość?</item>
+        <item quantity="few">Czy na pewno chcesz usunąć %d wiadomości?</item>
+        <item quantity="many">Czy na pewno chcesz usunąć %d wiadomości?</item>
+        <item quantity="other">Czy na pewno chcesz usunąć %d wiadomości?</item>
+    </plurals>
 </resources>
