@@ -2,9 +2,7 @@
 <!--
      SPDX-FileCopyrightText: Priit Jõerüüt <jrthwlate@users.noreply.hosted.weblate.org>
      SPDX-License-Identifier: GPL-3.0-or-later
--->
-
-<resources>
+--><resources>
     <string name="shortcut_compose_long_label">Uus vestlus</string>
     <string name="shortcut_compose_short_label">Kirjuta</string>
     <string name="title_notification_prefs">Teavitused</string>
@@ -408,4 +406,26 @@
     <string name="qksms_plus_description_summary">Võid päästa kurnatud arendaja loovutades vaid %s</string>
     <string name="qksms_plus_upgrade_donate">Ava täisfunktsionaalsus ja toeta arendajat - kokku vaid %1$s %2$s</string>
     <string name="qksms_plus_error">Tekkis viga, palun proovi uuesti</string>
+    <string name="compose_menu_react">Reageeri</string>
+    <string name="compose_menu_more">Veel</string>
+    <string name="reaction_picker_love">❤️ Armastan</string>
+    <string name="reaction_picker_like">👍 Meeldib</string>
+    <string name="reaction_picker_dislike">👎 Ei meeldi</string>
+    <string name="reaction_picker_laugh">😂 Naljakas</string>
+    <string name="reaction_picker_emphasize">‼️ Vajab rõhutamist</string>
+    <string name="reaction_picker_question">❓ Tekitab küsimusi</string>
+    <string name="compose_record_audio_msg_attach_error">Häälsõnumi lisamine ei õnnestu</string>
+    <string name="message_mms_not_downloaded">Multimeediumisõnum pole veel allalaaditud. Laadimiseks klõpsa</string>
+    <string name="message_mms_expired">Multimeediumisõnum on aegunud või pole saadaval</string>
+    <string name="compose_mms_downloading">Laadin multimeediumisõnumit alla…</string>
+    <string name="settings_mms_auto_download_title">MMS-i automaatne allalaadimine</string>
+    <string name="settings_mms_auto_download_summary">Laadi multimeediumisõnum kohe saabumisel alla</string>
+    <string name="settings_mms_roaming_auto_download_title">Laadi multimeediumisõnum alla ka rändluse puhul</string>
+    <string name="settings_mms_roaming_auto_download_summary">Rändluse puhul võib allalaadimine osutuda kalliks</string>
+    <string name="compose_recipient_limit">Sinu võrguoperaator võimaldab vestluses osaleda kuni %d-l inimesel</string>
+    <string name="delete_confirmation_title">Kustutamine</string>
+    <plurals name="delete_confirmation_message">
+        <item quantity="one">Kas oled kindel, et soovid selle sõnumi kustutada?</item>
+        <item quantity="other">Kas oled kindel, et soovid selle %d sõnumit kustutada?</item>
+    </plurals>
 </resources>
