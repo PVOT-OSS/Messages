@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -37,6 +38,10 @@ open class QkTextView @JvmOverloads constructor(context: Context, attrs: Attribu
         } else {
             TextViewStyler.applyEditModeAttributes(this, attrs)
         }
+    }
+
+    override fun onTextContextMenuItem(id: Int): Boolean = ignoringMissingActivity {
+        super.onTextContextMenuItem(id)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
