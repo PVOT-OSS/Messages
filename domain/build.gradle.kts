@@ -7,8 +7,7 @@
 plugins {
     alias(libs.plugins.android.library)
     id("realm-android") // must come before Kotlin plugins
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.legacy.kapt)
 }
 
 android {

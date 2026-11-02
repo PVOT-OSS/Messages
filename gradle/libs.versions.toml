@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [versions]
-agp = "8.13.2"
+agp = "9.5.0"
 firebase-crashlytics-gradle = "3.0.6"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 appcompat = "1.7.1"
 autodispose-android-archcomponents = "1.4.1"
 conductor = "3.2.0"
@@ -127,5 +127,5 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
