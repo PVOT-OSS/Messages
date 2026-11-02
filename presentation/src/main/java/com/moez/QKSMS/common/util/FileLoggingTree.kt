@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2018 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -8,10 +9,14 @@ package org.prauga.messages.common.util
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.concurrent.ArrayBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import org.prauga.messages.util.FileUtils
@@ -28,21 +33,38 @@ class FileLoggingTree
 constructor(private val prefs: Preferences, private val context: Context) : Timber.DebugTree() {
     companion object {
         val TAG: String? = FileLoggingTree::class.simpleName
+        const val MAX_PENDING_WRITES = 1_000
     }
 
     private var logFileUri: Uri? = null
 
+    private val writer =
+        ThreadPoolExecutor(
+                1,
+                1,
+                30,
+                TimeUnit.SECONDS,
+                ArrayBlockingQueue(MAX_PENDING_WRITES),
+                { runnable -> Thread(runnable, "FileLoggingTree") },
+                ThreadPoolExecutor.DiscardOldestPolicy(),
+            )
+            .apply { allowCoreThreadTimeOut(true) }
+
+    internal val pendingWrites: Int
+        get() = writer.queue.size
+
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         if (!prefs.logging.get()) return
 
-        Schedulers.io().scheduleDirect {
-            synchronized(this) { // one thread can access file at a time
+        val time = System.currentTimeMillis()
+        writer.execute {
+            run {
                 val logItem =
                     "${    // date/time
                         SimpleDateFormat(
                             "yyyy-MM-dd HH:mm:ss:SSS",
                             Locale.getDefault(),
-                        ).format(System.currentTimeMillis())
+                        ).format(time)
                     } ${    // priority
                         when (priority) {
                             Log.VERBOSE -> "V"
@@ -91,3 +113,9 @@ constructor(private val prefs: Preferences, private val context: Context) : Timb
         }
     }
 }
+
+fun FileLoggingTree.plantWhile(enabled: Observable<Boolean>): Disposable =
+    enabled.distinctUntilChanged().subscribe { on ->
+        val planted = this in Timber.forest()
+        if (on && !planted) Timber.plant(this) else if (!on && planted) Timber.uproot(this)
+    }
