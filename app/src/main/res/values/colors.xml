@@ -39,6 +39,7 @@
 
     <color name="ic_launcher">#1976e7</color>
     <color name="ic_launcher_background">#FFFFFF</color>
+    <color name="splash_background">#FFFFFF</color>
 
     <!-- Main Activity -->
     <color name="home_filter_chip_selected">#6b5cee</color>
