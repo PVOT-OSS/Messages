@@ -297,11 +297,19 @@ constructor(
         }
     }
 
+    internal fun clearEmojiReactionFlags(realm: Realm) {
+        realm
+            .where(Message::class.java)
+            .equalTo("isEmojiReaction", true)
+            .findAll()
+            .setBoolean("isEmojiReaction", false)
+    }
+
     override fun deleteAndReparseAllEmojiReactions(realm: Realm) {
         val startTime = System.currentTimeMillis()
 
         realm.delete(EmojiReaction::class.java)
-        realm.where(Message::class.java).findAll().map { it.isEmojiReaction = false }
+        clearEmojiReactionFlags(realm)
 
         val allMessages =
             realm
