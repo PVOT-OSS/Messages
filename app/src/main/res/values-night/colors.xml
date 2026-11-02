@@ -37,7 +37,7 @@
     <color name="frost_stroke">#242424</color>
 
     <color name="ic_launcher">#1976e7</color>
-    <color name="ic_launcher_background">#191919</color>
+    <color name="ic_launcher_background">#FFFFFF</color>
 
     <!-- Main Activity -->
     <color name="home_filter_chip_selected">#6b5cee</color>
