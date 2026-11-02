@@ -24,7 +24,6 @@ import org.prauga.messages.common.util.ClipboardUtils
 import org.prauga.messages.common.util.extensions.makeToast
 import org.prauga.messages.extensions.asObservable
 import org.prauga.messages.extensions.mapNotNull
-import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoMedia
 import org.prauga.messages.feature.conversationinfo.ConversationInfoItem.ConversationInfoRecipient
 import org.prauga.messages.interactor.DeleteConversations
 import org.prauga.messages.interactor.MarkArchived
@@ -79,7 +78,7 @@ constructor(
                     conversation,
                     messageRepo.getPartsForConversation(threadId).asObservable(),
                 ) { conversation, parts ->
-                    val data = mutableListOf<ConversationInfoItem>()
+                    val header = mutableListOf<ConversationInfoItem>()
 
                     // If some data was deleted, this isn't the place to handle it
                     if (
@@ -91,16 +90,16 @@ constructor(
                         return@combineLatest
                     }
 
-                    data += conversation.recipients.map(::ConversationInfoRecipient)
-                    data +=
+                    header += conversation.recipients.map(::ConversationInfoRecipient)
+                    header +=
                         ConversationInfoItem.ConversationInfoSettings(
                             name = conversation.name,
                             recipients = conversation.recipients,
                             archived = conversation.archived,
                             blocked = conversation.blocked,
                         )
-                    data += parts.map(::ConversationInfoMedia)
 
+                    val data = ConversationInfoItems(header, parts.createSnapshot())
                     newState { copy(data = data) }
                 }
                 .subscribe()

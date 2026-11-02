@@ -20,13 +20,23 @@ import org.prauga.messages.common.util.extensions.setVisible
  */
 abstract class QkAdapter<T, VHT : RecyclerView.ViewHolder> : RecyclerView.Adapter<VHT>() {
 
+    companion object {
+        /** Above this many items in total, diffing would need too much time and memory */
+        const val MAX_DIFF_ITEMS = 10_000
+    }
+
     var data: List<T> = ArrayList()
         set(value) {
             if (field === value) return
 
-            val diff = DiffUtil.calculateDiff(getDiffUtilCallback(field, value))
-            field = value
-            diff.dispatchUpdatesTo(this)
+            if (field.size.toLong() + value.size > MAX_DIFF_ITEMS) {
+                field = value
+                notifyDataSetChanged()
+            } else {
+                val diff = DiffUtil.calculateDiff(getDiffUtilCallback(field, value))
+                field = value
+                diff.dispatchUpdatesTo(this)
+            }
             onDatasetChanged()
 
             emptyView?.setVisible(value.isEmpty())
