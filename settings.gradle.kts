@@ -4,6 +4,7 @@
  */
 
 pluginManagement {
+    includeBuild("PvotLib/build-logic")
     repositories {
         gradlePluginPortal()
         google()

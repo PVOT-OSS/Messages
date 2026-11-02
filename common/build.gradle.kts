@@ -5,16 +5,14 @@
  */
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.pvot.android.library)
 }
 
 android {
     namespace = "org.prauga.messages.common"
-    compileSdk { version = release(36) }
 
     defaultConfig {
-        minSdk = 23
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        minSdk = 24
     }
 }
 

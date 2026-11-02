@@ -5,17 +5,15 @@
  */
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.pvot.android.library)
     alias(libs.plugins.legacy.kapt)
 }
 
 android {
     namespace = "org.prauga.messages.data"
-    compileSdk { version = release(36) }
 
     defaultConfig {
-        minSdk = 23
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        minSdk = 24
     }
 }
 

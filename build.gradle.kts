@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import com.android.build.gradle.BaseExtension
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 // Needed until we upstream
 buildscript {
     dependencies {
@@ -23,26 +19,3 @@ plugins {
 }
 
 tasks.register<Delete>("clean") { delete(rootProject.layout.buildDirectory) }
-
-subprojects {
-    tasks.withType<KotlinCompile>().configureEach {
-        compilerOptions { jvmTarget.set(JvmTarget.JVM_17) }
-    }
-
-    plugins.withId("com.android.application") {
-        extensions.configure(BaseExtension::class.java) {
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
-            }
-        }
-    }
-    plugins.withId("com.android.library") {
-        extensions.configure(BaseExtension::class.java) {
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
-            }
-        }
-    }
-}

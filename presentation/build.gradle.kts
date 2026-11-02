@@ -5,19 +5,17 @@
  */
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.pvot.android.application)
     id("realm-android") // must come before Kotlin plugins
     alias(libs.plugins.legacy.kapt)
 }
 
 android {
     namespace = "org.prauga.messages"
-    compileSdk { version = release(36) }
 
     defaultConfig {
         applicationId = "org.prauga.messages"
         minSdk = 24
-        targetSdk = 36
 
         versionCode = 12
         versionName = "1.0.10"

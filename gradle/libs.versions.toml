@@ -128,4 +128,6 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
+pvot-android-application = { id = "pvot.android.application" }
+pvot-android-library = { id = "pvot.android.library" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
