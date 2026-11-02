@@ -192,32 +192,24 @@ constructor(
         originalMessageText: String,
         realm: Realm,
     ): Message? {
-        val startTime = System.currentTimeMillis()
-        val messages =
+        val text = originalMessageText.trim()
+        val match =
             realm
                 .where(Message::class.java)
                 .equalTo("threadId", threadId)
+                .beginGroup()
+                .contains("body", text)
+                .or()
+                .contains("parts.text", text.lineSequence().first())
+                .endGroup()
                 .sort("date", Sort.DESCENDING)
                 .findAll()
-        val endTime = System.currentTimeMillis()
-        Timber.d(
-            "Searching for target message in thread $threadId: found ${messages.size} messages in ${endTime - startTime}ms"
-        )
-        Timber.d("Looking for message text: '$originalMessageText'")
+                .find { message -> message.getText(false).trim() == text }
 
-        val match =
-            messages.find { message ->
-                message.getText(false).trim() == originalMessageText.trim()
-            }
-        if (match != null) {
-            Timber.d("Found match for reaction target: message ID ${match.id}")
-            return match
+        if (match == null) {
+            Timber.w("No target message found for a reaction in thread $threadId")
         }
-
-        Timber.w(
-            "No target message found for reaction text: '$originalMessageText' in thread $threadId"
-        )
-        return null
+        return match
     }
 
     private fun removeEmojiReaction(
