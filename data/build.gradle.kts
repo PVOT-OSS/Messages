@@ -12,9 +12,7 @@ plugins {
 android {
     namespace = "org.prauga.messages.data"
 
-    defaultConfig {
-        minSdk = 24
-    }
+    defaultConfig { minSdk = 24 }
 }
 
 dependencies {
@@ -45,6 +43,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.moshi.kotlin)
     testImplementation(libs.robolectric)
     testImplementation(libs.truth)
     testImplementation(libs.androidx.runner)
