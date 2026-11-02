@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -31,7 +32,7 @@ class ChipsAdapter @Inject constructor() :
         val binding = ContactChipBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return QkBindingViewHolder(binding).apply {
             binding.root.setOnClickListener {
-                val chip = getItem(adapterPosition)
+                val chip = getItemOrNull(adapterPosition) ?: return@setOnClickListener
                 showDetailedChip(binding.root.context, chip)
             }
         }

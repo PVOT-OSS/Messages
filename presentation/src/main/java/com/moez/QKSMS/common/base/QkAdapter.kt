@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -76,6 +77,8 @@ abstract class QkAdapter<T, VHT : RecyclerView.ViewHolder> : RecyclerView.Adapte
     fun getItem(position: Int): T {
         return data[position]
     }
+
+    fun getItemOrNull(position: Int): T? = data.getOrNull(position)
 
     override fun getItemCount(): Int {
         return data.size
