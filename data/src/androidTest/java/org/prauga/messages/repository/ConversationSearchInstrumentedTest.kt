@@ -69,7 +69,12 @@ class ConversationSearchInstrumentedTest {
             date = id
         }
 
-    private fun Realm.conversation(id: Long, address: String, last: Message, blocked: Boolean = false) =
+    private fun Realm.conversation(
+        id: Long,
+        address: String,
+        last: Message,
+        blocked: Boolean = false,
+    ) =
         insert(
             Conversation(
                 id = id,

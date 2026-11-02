@@ -11,10 +11,10 @@ import com.squareup.moshi.Moshi
 import io.realm.Realm
 import io.realm.Sort
 import javax.inject.Inject
-import org.prauga.messages.extensions.insertOrUpdate
-import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.extensions.drainMessages
 import org.prauga.messages.extensions.forEachMessagePage
+import org.prauga.messages.extensions.insertOrUpdate
+import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
 import org.prauga.messages.model.EmojiSyncNeeded
 import org.prauga.messages.model.Message
@@ -318,7 +318,11 @@ constructor(
                     val parsedReaction = parseEmojiReaction(message.getText(false))
                     if (parsedReaction != null) {
                         val targetMessage =
-                            findTargetMessage(message.threadId, parsedReaction.originalMessage, realm)
+                            findTargetMessage(
+                                message.threadId,
+                                parsedReaction.originalMessage,
+                                realm,
+                            )
                         saveEmojiReaction(message, parsedReaction, targetMessage, realm)
                     }
                 }

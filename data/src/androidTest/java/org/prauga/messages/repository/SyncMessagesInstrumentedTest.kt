@@ -61,8 +61,10 @@ class SyncMessagesInstrumentedTest {
         }
     }
 
-    private class FakeMessages(private val cursor: () -> Cursor, private val onRow: (Long) -> Unit) :
-        CursorToMessage {
+    private class FakeMessages(
+        private val cursor: () -> Cursor,
+        private val onRow: (Long) -> Unit,
+    ) : CursorToMessage {
         override fun getMessagesCursor() = cursor()
 
         override fun getMessageCursor(id: Long): Cursor? = null
