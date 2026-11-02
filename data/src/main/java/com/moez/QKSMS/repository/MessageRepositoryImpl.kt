@@ -54,9 +54,9 @@ import org.prauga.messages.carrier.CarrierMmsConfig
 import org.prauga.messages.common.util.extensions.now
 import org.prauga.messages.compat.TelephonyCompat
 import org.prauga.messages.extensions.MESSAGE_PAGE_SIZE
-import org.prauga.messages.extensions.forEachMessagePage
-import org.prauga.messages.extensions.drainMessages
 import org.prauga.messages.extensions.anyOf
+import org.prauga.messages.extensions.drainMessages
+import org.prauga.messages.extensions.forEachMessagePage
 import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.extensions.resourceExists
@@ -240,15 +240,39 @@ constructor(
         return uri
     }
 
-    override fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message> =
+    override fun getUnreadUnseenMessages(threadId: Long, limit: Long): RealmResults<Message> =
         Realm.getDefaultInstance()
             .also { it.refresh() }
-            .where(Message::class.java)
+            .unreadUnseen(threadId)
+            .sort("date", Sort.DESCENDING)
+            .limit(limit)
+            .findAll()
+
+    override fun getUnreadUnseenCount(threadId: Long): Long =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            realm.unreadUnseen(threadId).count()
+        }
+
+    override fun deleteUnreadUnseenMessages(threadId: Long, date: Long) =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+
+            var uris = emptyList<Uri>()
+            realm.drainMessages(
+                { unreadUnseen(threadId).lessThanOrEqualTo("date", date) },
+                afterEach = { deleteFromTelephony(uris) },
+            ) { page ->
+                uris = page.map { it.getUri() }
+                page.deleteAllFromRealm()
+            }
+        }
+
+    private fun Realm.unreadUnseen(threadId: Long) =
+        where(Message::class.java)
             .equalTo("seen", false)
             .equalTo("read", false)
             .equalTo("threadId", threadId)
-            .sort("date")
-            .findAll()
 
     override fun getUnreadMessages(threadId: Long): RealmResults<Message> =
         Realm.getDefaultInstance()
