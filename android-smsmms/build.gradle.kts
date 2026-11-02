@@ -17,6 +17,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.ktx)
+    implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.timber)
     implementation(libs.kotlin.stdlib)
 

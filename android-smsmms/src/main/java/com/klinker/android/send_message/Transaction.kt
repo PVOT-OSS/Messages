@@ -80,6 +80,7 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         Timber.v("sending mms")
         var messageUri: Uri? = existingUri
         var sentPI: PendingIntent? = null
+        val attempt = MmsHandoff.newAttempt()
         try {
             val fileName = "send." + Math.abs(Random().nextLong()).toString() + ".dat"
             val sendFile = File(context.cacheDir, fileName)
@@ -97,7 +98,7 @@ constructor(private val context: Context, settings: Settings = Settings()) {
                         null,
                     )
             messageUri = uri
-            sentPI = sentIntent(uri, sendFile)
+            sentPI = sentIntent(uri, sendFile, attempt)
 
             val updatedAction = "${context.packageName}.MMS_UPDATED"
             val updatedIntent = Intent(updatedAction).putExtra("uri", uri.toString())
@@ -141,7 +142,16 @@ constructor(private val context: Context, settings: Settings = Settings()) {
                 }
 
             if (contentUri != null) {
-                SmsManagerFactory.createSmsManager(CarrierMmsConfig.resolveSubscriptionId(subId))
+                val resolvedSubId = CarrierMmsConfig.resolveSubscriptionId(subId)
+                MmsHandoff.start(
+                    context,
+                    MmsHandoff.Kind.SEND,
+                    uri.toString(),
+                    resolvedSubId,
+                    attempt,
+                    sentBroadcast(uri, sendFile, attempt),
+                )
+                SmsManagerFactory.createSmsManager(resolvedSubId)
                     .sendMultimediaMessage(context, contentUri, null, configOverrides, sentPI)
             } else {
                 Timber.e("Error writing sending Mms")
@@ -154,7 +164,7 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         } catch (e: Throwable) {
             Timber.e(e, "Error using system sending method")
             try {
-                (sentPI ?: messageUri?.let { sentIntent(it, null) })?.send(
+                (sentPI ?: messageUri?.let { sentIntent(it, null, attempt) })?.send(
                     SmsManager.MMS_ERROR_UNSPECIFIED
                 )
             } catch (e: Exception) {
@@ -163,19 +173,24 @@ constructor(private val context: Context, settings: Settings = Settings()) {
         }
     }
 
-    private fun sentIntent(messageUri: Uri, sendFile: File?): PendingIntent {
+    private fun sentBroadcast(messageUri: Uri, sendFile: File?, attempt: Long): Intent {
         val sentAction = "${context.packageName}.MMS_SENT"
         val sentIntent = Intent(sentAction)
         BroadcastUtils.addClassName(context, sentIntent, sentAction)
 
         sentIntent.putExtra(EXTRA_CONTENT_URI, messageUri.toString())
+        sentIntent.putExtra(MmsHandoff.EXTRA_ATTEMPT, attempt)
         sendFile?.let { sentIntent.putExtra(EXTRA_FILE_PATH, it.path) }
+        return sentIntent
+    }
+
+    private fun sentIntent(messageUri: Uri, sendFile: File?, attempt: Long): PendingIntent {
         val mutable =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
         return PendingIntent.getBroadcast(
             context,
-            messageUri.hashCode(),
-            sentIntent,
+            "$messageUri#$attempt".hashCode(),
+            sentBroadcast(messageUri, sendFile, attempt),
             PendingIntent.FLAG_UPDATE_CURRENT or mutable,
         )
     }
