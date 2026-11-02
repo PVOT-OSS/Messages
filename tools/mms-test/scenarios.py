@@ -170,7 +170,7 @@ class Context:
         tool.send(send_args)
 
     def broadcast(self, action, *extras):
-        self.device.adb("shell", "am", "broadcast", "-a", f"org.prauga.messages.{action}",
+        self.device.adb("shell", "am", "broadcast", "--user", "current", "-a", f"org.prauga.messages.{action}",
                         "-n", f"{PACKAGE}/org.prauga.messages.receiver.TestMmsPushReceiver", *extras)
 
     def set_pref(self, key, value=None):
@@ -183,7 +183,7 @@ class Context:
         self.broadcast("TEST_MMS_DOWNLOAD", "--es", "uri", f"content://mms/{row['_id']}")
 
     def open_app(self):
-        self.device.adb("shell", "am", "start", "-W", "-n",
+        self.device.adb("shell", "am", "start", "--user", "current", "-W", "-n",
                         f"{PACKAGE}/org.prauga.messages.feature.main.MainActivity")
 
     def block(self, address, unblock=False):
@@ -220,7 +220,7 @@ class Context:
         self.device.adb("shell", "input", "keyevent", "KEYCODE_WAKEUP")
         self.device.adb("shell", "wm", "dismiss-keyguard", check=False)
         self.device.adb("shell", "cmd", "statusbar", "collapse", check=False)
-        self.device.adb("shell", "am", "start", "-W", "-n",
+        self.device.adb("shell", "am", "start", "--user", "current", "-W", "-n",
                         f"{PACKAGE}/org.prauga.messages.feature.compose.ComposeActivity",
                         "--el", "threadId", str(thread_id))
         time.sleep(2)

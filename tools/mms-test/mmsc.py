@@ -211,7 +211,7 @@ def push(args):
     print(f"pushed {message_id} -> {location}")
 
 def deliver_push(pdu: bytes, args):
-    command = [*adb(args), "shell", "am", "broadcast",
+    command = [*adb(args), "shell", "am", "broadcast", "--user", "current",
                "-a", "org.prauga.messages.TEST_MMS_PUSH",
                "-n", f"{args.package}/org.prauga.messages.receiver.TestMmsPushReceiver",
                "--es", "pdu", pdu.hex()]
@@ -222,7 +222,7 @@ def deliver_push(pdu: bytes, args):
         print(result.stdout, result.stderr, file=sys.stderr)
 
 def send(args):
-    command = [*adb(args), "shell", "am", "broadcast",
+    command = [*adb(args), "shell", "am", "broadcast", "--user", "current",
                "-a", "org.prauga.messages.TEST_MMS_SEND",
                "-n", f"{args.package}/org.prauga.messages.receiver.TestMmsPushReceiver",
                "--es", "to", ",".join(args.to),
