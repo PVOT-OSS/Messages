@@ -27,7 +27,6 @@ interface ConversationRepository {
 
     fun setConversationName(id: Long, name: String): Completable
 
-
     fun searchConversationsGrouped(query: CharSequence): List<org.prauga.messages.model.SearchItem>
 
     fun getBlockedConversations(): RealmResults<Conversation>

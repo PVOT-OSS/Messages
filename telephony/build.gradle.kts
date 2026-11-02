@@ -11,9 +11,7 @@ plugins {
 android {
     namespace = "org.prauga.messages.telephony"
 
-    defaultConfig {
-        minSdk = 24
-    }
+    defaultConfig { minSdk = 24 }
 
     lint { abortOnError = false }
 }

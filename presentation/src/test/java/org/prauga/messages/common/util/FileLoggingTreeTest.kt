@@ -34,8 +34,7 @@ class FileLoggingTreeTest {
         tree = FileLoggingTree(prefs, context)
     }
 
-    @After
-    fun tearDown() = Timber.uprootAll()
+    @After fun tearDown() = Timber.uprootAll()
 
     @Test
     fun givenFileLoggingOn_whenLoggingABurst_thenThreadsAndQueueStayBounded() {
