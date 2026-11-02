@@ -98,6 +98,7 @@ moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "mosh
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
 okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 photoview = { module = "com.github.chrisbanes:photoview", version.ref = "photoview" }
+pvot-design-system-views = { module = "com.prauga.pvot:design-system-views" }
 realm-android-adapters = { module = "com.github.realm:realm-android-adapters", version.ref = "realm-android-adapters" }
 realm-android-library = { module = "io.realm:realm-android-library", version.ref = "realm-annotations" }
 realm-annotations-processor = { module = "io.realm:realm-annotations-processor", version.ref = "realm-annotations" }
