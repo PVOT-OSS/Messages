@@ -681,6 +681,15 @@ class ComposeActivity :
         startActivityForResult(Intent.createChooser(intent, null), requestCode)
     }
 
+    override fun requestFile() {
+        val intent =
+            Intent(Intent.ACTION_GET_CONTENT)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                .setType("*/*")
+        startActivityForResult(intent, ComposeView.AttachAFileRequestCode)
+    }
+
     override fun setDraft(draft: String) {
         binding.message.setText(draft)
         binding.message.setSelection(draft.length)
