@@ -58,11 +58,11 @@ constructor(private val colors: Colors, private val conversationRepo: Conversati
 
         return QkViewHolder(binding.root).apply {
             binding.root.setOnClickListener {
-                val item = getItem(adapterPosition)
+                val item = getItemOrNull(adapterPosition) ?: return@setOnClickListener
                 clicks.onNext(item)
             }
             binding.root.setOnLongClickListener {
-                val item = getItem(adapterPosition)
+                val item = getItemOrNull(adapterPosition) ?: return@setOnLongClickListener true
                 longClicks.onNext(item)
                 true
             }
