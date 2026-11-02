@@ -40,6 +40,7 @@ import org.prauga.messages.model.MmsPart
 import org.prauga.messages.model.PhoneNumber
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SyncLog
+import org.prauga.messages.util.ContactMatcher
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
@@ -219,7 +220,8 @@ constructor(
             }
 
             // Sync recipients
-            val contacts = r.copyToRealmOrUpdate(getContacts())
+            val contacts =
+                ContactMatcher(r.copyToRealmOrUpdate(getContacts()), phoneNumberUtils::compare)
             recipientCursor?.use {
                 recipientCursor.forEach { cursor ->
                     tryOrNull {
@@ -228,12 +230,7 @@ constructor(
                         )
                         val rec =
                             cursorToRecipient.map(cursor).apply {
-                                contact =
-                                    contacts.firstOrNull { c ->
-                                        c.numbers.any { num ->
-                                            phoneNumberUtils.compare(address, num.address)
-                                        }
-                                    }
+                                contact = contacts.find(address)
                             }
                         r.insertOrUpdate(rec)
                     }
@@ -377,13 +374,9 @@ constructor(
                 realm.insertOrUpdate(getContactGroups(contacts))
 
                 // Update all the recipients with the new contacts
+                val matcher = ContactMatcher(contacts, phoneNumberUtils::compare)
                 recipients.forEach { recipient ->
-                    recipient.contact =
-                        contacts.find { contact ->
-                            contact.numbers.any {
-                                phoneNumberUtils.compare(recipient.address, it.address)
-                            }
-                        }
+                    recipient.contact = matcher.find(recipient.address)
                 }
 
                 realm.insertOrUpdate(recipients)
