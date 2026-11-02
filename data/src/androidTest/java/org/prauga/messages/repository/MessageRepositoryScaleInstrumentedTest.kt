@@ -25,6 +25,7 @@ import org.prauga.messages.manager.ActiveConversationManager
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.mapper.CursorToPart
 import org.prauga.messages.model.Message
+import org.prauga.messages.model.MessageSelection
 import org.prauga.messages.testutil.RealmTestHelper
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.Preferences
@@ -198,5 +199,48 @@ class MessageRepositoryScaleInstrumentedTest {
         realm.refresh()
         val left = realm.where(Message::class.java).findAll().map { it.id }
         assertThat(left).containsExactlyElementsIn(5_001L..5_030L)
+    }
+
+    private fun selectionFixture(): MessageSelection {
+        realm.executeTransaction { r ->
+            r.insert((1L..5_000L).map { sms(it, 1, it) })
+            r.insert(sms(5_001, 1, 5_001).apply { isEmojiReaction = true })
+            r.insert(sms(5_002, 2, 5_002))
+            r.insert((5_003L..5_005L).map { sms(it, 1, it) })
+        }
+        return MessageSelection(1, upToId = 5_002, except = setOf(10, 20), picked = setOf(5_004))
+    }
+
+    @Test
+    fun givenEverythingSelectedButSome_whenReadingIt_thenOnlyThoseShownAreVisitedOldestFirst() {
+        val selection = selectionFixture()
+        val visited = mutableListOf<Long>()
+
+        repository.forEachMessage(selection) {
+            visited += it.id
+            true
+        }
+
+        val expected = (1L..5_000L).filter { it != 10L && it != 20L } + 5_004L
+        assertThat(visited).containsExactlyElementsIn(expected).inOrder()
+    }
+
+    @Test
+    fun givenASelection_whenStoppingEarly_thenNoMoreAreVisited() {
+        val selection = selectionFixture()
+        var visited = 0
+
+        repository.forEachMessage(selection) { ++visited < 3 }
+
+        assertThat(visited).isEqualTo(3)
+    }
+
+    @Test
+    fun givenEverythingSelectedButSome_whenDeleting_thenOnlyTheSelectedAreGone() {
+        repository.deleteMessages(selectionFixture())
+
+        realm.refresh()
+        val left = realm.where(Message::class.java).findAll().map { it.id }
+        assertThat(left).containsExactly(10L, 20L, 5_001L, 5_002L, 5_003L, 5_005L)
     }
 }

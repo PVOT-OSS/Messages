@@ -10,6 +10,7 @@ import android.net.Uri
 import io.realm.RealmResults
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Message
+import org.prauga.messages.model.MessageSelection
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.model.ReceivedSmsDetails
 
@@ -40,6 +41,14 @@ interface MessageRepository {
     fun getUnreadUnseenMessages(threadId: Long, limit: Long): RealmResults<Message>
 
     fun getUnreadUnseenCount(threadId: Long): Long
+
+    /**
+     * Calls [block] on each selected message, oldest first, until it returns false. The messages
+     * are only valid inside [block].
+     */
+    fun forEachMessage(selection: MessageSelection, block: (Message) -> Boolean)
+
+    fun deleteMessages(selection: MessageSelection)
 
     /** Deletes the unread, unseen messages in the conversation received at or before [date] */
     fun deleteUnreadUnseenMessages(threadId: Long, date: Long)

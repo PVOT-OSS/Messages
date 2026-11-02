@@ -62,6 +62,7 @@ import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.base.Selection
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.autoScrollToStart
 import org.prauga.messages.common.util.extensions.dpToPx
@@ -102,7 +103,7 @@ class ComposeActivity :
     override val messagePartContextMenuRegistrar: Subject<View> by lazy {
         messageAdapter.partContextMenuRegistrar
     }
-    override val messagesSelectedIntent by lazy { messageAdapter.selectionChanges }
+    override val messagesSelectedIntent by lazy { messageAdapter.selections }
     override val cancelSendingIntent: Subject<Long> by lazy { messageAdapter.cancelSendingClicks }
     override val sendNowIntent: Subject<Long> by lazy { messageAdapter.sendNowClicks }
     override val resendIntent: Subject<Long> by lazy { messageAdapter.resendClicks }
@@ -140,7 +141,7 @@ class ComposeActivity :
     }
     override val viewQksmsPlusIntent: Subject<Unit> = PublishSubject.create()
     override val backPressedIntent: Subject<Unit> = PublishSubject.create()
-    override val confirmDeleteIntent: Subject<List<Long>> = PublishSubject.create()
+    override val confirmDeleteIntent: Subject<Selection> = PublishSubject.create()
     override val clearCurrentMessageIntent: Subject<Boolean> = PublishSubject.create()
     override val messageLinkAskIntent: Subject<Uri> by lazy { messageAdapter.messageLinkClicks }
     override val shadeIntent by lazy { binding.shadeBackground.clicks() }
@@ -534,8 +535,8 @@ class ComposeActivity :
         messageAdapter.toggleSelectAll()
     }
 
-    override fun expandMessages(messageIds: List<Long>, expand: Boolean) {
-        messageAdapter.expandMessages(messageIds, expand)
+    override fun expandMessages(selection: Selection) {
+        messageAdapter.expandMessages(selection)
     }
 
     override fun showDetails(details: String) {
@@ -711,14 +712,14 @@ class ComposeActivity :
         }
     }
 
-    override fun showDeleteDialog(messages: List<Long>) {
-        val count = messages.size
+    override fun showDeleteDialog(selection: Selection) {
+        val count = selection.count
         val dialog =
             AlertDialog.Builder(this, R.style.AppThemeDialog)
                 .setTitle(R.string.dialog_delete_title)
                 .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
                 .setPositiveButton(R.string.button_delete) { _, _ ->
-                    confirmDeleteIntent.onNext(messages)
+                    confirmDeleteIntent.onNext(selection)
                 }
                 .setNegativeButton(R.string.button_cancel, null)
                 .create()

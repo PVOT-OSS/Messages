@@ -39,6 +39,7 @@ import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkRealmAdapter
 import org.prauga.messages.common.base.QkViewHolder
+import org.prauga.messages.common.base.Selection
 import org.prauga.messages.common.util.Colors
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.TextViewStyler
@@ -162,6 +163,9 @@ constructor(
 
     private val contactCache = ContactCache()
     private val expanded = HashMap<Long, Boolean>()
+    private val expandedSelections = mutableListOf<Selection>()
+
+    override val selectAllByRange = true
     private val subs = subscriptionManager.activeSubscriptionInfoList
 
     var theme: Colors.Theme = colors.theme()
@@ -563,6 +567,8 @@ constructor(
             setVisible(
                 when {
                     expanded[message.id] == true -> true
+                    expanded[message.id] == null && expandedSelections.any { message.id in it } ->
+                        true
                     message.isSending() -> true
                     message.isFailedMessage() -> true
                     bodyTextTruncated -> true
@@ -593,8 +599,8 @@ constructor(
         }
     }
 
-    fun expandMessages(messageIds: List<Long>, expand: Boolean) {
-        messageIds.forEach { expanded[it] = expand }
+    fun expandMessages(selection: Selection) {
+        expandedSelections += selection
         notifyDataSetChanged()
     }
 

@@ -39,6 +39,16 @@ fun Realm.drainMessages(
 fun Realm.forEachMessagePage(
     query: Realm.() -> RealmQuery<Message>,
     block: (RealmResults<Message>) -> Unit,
+) =
+    forEachMessagePageWhile(query) { page ->
+        block(page)
+        true
+    }
+
+/** Like [forEachMessagePage], until [block] returns false. */
+fun Realm.forEachMessagePageWhile(
+    query: Realm.() -> RealmQuery<Message>,
+    block: (RealmResults<Message>) -> Boolean,
 ) {
     var lastDate = 0L
     var lastId = 0L
@@ -67,7 +77,6 @@ fun Realm.forEachMessagePage(
         lastDate = last.date
         lastId = last.id
         first = false
-        block(page)
-        if (page.size < MESSAGE_PAGE_SIZE) return
+        if (!block(page) || page.size < MESSAGE_PAGE_SIZE) return
     }
 }
