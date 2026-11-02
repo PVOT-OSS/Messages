@@ -20,6 +20,7 @@ import android.telephony.SmsManager;
 import com.klinker.android.send_message.BroadcastUtils;
 import org.prauga.messages.carrier.CarrierMmsConfig;
 import org.prauga.messages.carrier.MmsConfigOverrides;
+import com.klinker.android.send_message.MmsHandoff;
 import com.klinker.android.send_message.MmsReceivedReceiver;
 import com.klinker.android.send_message.SmsManagerFactory;
 
@@ -62,6 +63,7 @@ public class DownloadManager {
                 .scheme(ContentResolver.SCHEME_CONTENT)
                 .build();
 
+        final long attempt = MmsHandoff.INSTANCE.newAttempt();
         Intent download = new Intent(MmsReceivedReceiver.MMS_RECEIVED);
         BroadcastUtils.addClassName(context, download, MmsReceivedReceiver.MMS_RECEIVED);
         download.putExtra(MmsReceivedReceiver.EXTRA_FILE_PATH, mDownloadFile.getPath());
@@ -69,16 +71,20 @@ public class DownloadManager {
         download.putExtra(MmsReceivedReceiver.EXTRA_TRIGGER_PUSH, byPush);
         download.putExtra(MmsReceivedReceiver.EXTRA_URI, uri);
         download.putExtra(MmsReceivedReceiver.EXTRA_SUBSCRIPTION_ID, subscriptionId);
+        download.putExtra(MmsHandoff.EXTRA_ATTEMPT, attempt);
 
         final int mutable = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0;
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, location.hashCode(), download, PendingIntent.FLAG_UPDATE_CURRENT | mutable);
+                context, (location + "#" + attempt).hashCode(), download,
+                PendingIntent.FLAG_UPDATE_CURRENT | mutable);
 
-        final SmsManager smsManager = SmsManagerFactory.INSTANCE.createSmsManager(
-                CarrierMmsConfig.resolveSubscriptionId(subscriptionId));
+        final int resolvedSubId = CarrierMmsConfig.resolveSubscriptionId(subscriptionId);
+        final SmsManager smsManager = SmsManagerFactory.INSTANCE.createSmsManager(resolvedSubId);
         Bundle configOverrides = MmsConfigOverrides.create(context, subscriptionId);
 
         try {
+            MmsHandoff.INSTANCE.start(context, MmsHandoff.Kind.DOWNLOAD, location, resolvedSubId,
+                    attempt, download);
             smsManager.downloadMultimediaMessage(context, location, contentUri, configOverrides, pendingIntent);
         } catch (RuntimeException e) {
             Timber.e(e, "Unable to start MMS download");
