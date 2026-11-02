@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.provider.Telephony.Sms
 import android.telephony.SmsMessage
 import androidx.work.ExistingWorkPolicy
@@ -71,7 +72,12 @@ class SmsReceiver : BroadcastReceiver() {
                     .enqueue(
                         OneTimeWorkRequestBuilder<ReceiveSmsWorker>()
                             .setInputData(workDataOf(INPUT_DATA_KEY_MESSAGE_ID to messageId))
-                            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                            .apply {
+                                // Below Android 12, expedited work must run as a foreground service
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+                                }
+                            }
                             .build()
                     )
             }
