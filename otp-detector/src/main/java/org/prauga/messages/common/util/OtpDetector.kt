@@ -198,7 +198,8 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
             score += 2.0
         }
 
-        if (Regex("(:|is|=)\\s*${Regex.escape(candidate.code)}").containsMatchIn(lineInfo.line)) {
+        val assignment = Regex("(:|：|is|=|为|為|是)\\s*${Regex.escape(candidate.code)}")
+        if (assignment.containsMatchIn(lineInfo.line)) {
             score += 1.5
         }
 
