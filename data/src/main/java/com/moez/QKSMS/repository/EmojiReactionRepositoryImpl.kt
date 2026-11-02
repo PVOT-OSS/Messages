@@ -14,6 +14,7 @@ import javax.inject.Inject
 import org.prauga.messages.extensions.insertOrUpdate
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
+import org.prauga.messages.model.EmojiSyncNeeded
 import org.prauga.messages.model.Message
 import org.prauga.messages.util.EmojiPatternStrings
 import timber.log.Timber
@@ -292,8 +293,10 @@ constructor(
     override fun deleteAndReparseAllEmojiReactions(realm: Realm) {
         val startTime = System.currentTimeMillis()
 
-        realm.delete(EmojiReaction::class.java)
-        clearEmojiReactionFlags(realm)
+        realm.executeTransaction { r ->
+            r.delete(EmojiReaction::class.java)
+            clearEmojiReactionFlags(r)
+        }
 
         val allMessages =
             realm
@@ -316,17 +319,41 @@ constructor(
                 ) // parse oldest to newest to handle reactions & removals properly
                 .findAll()
 
-        allMessages.forEach { message ->
-            val text = message.getText(false)
-            val parsedReaction = parseEmojiReaction(text)
-            if (parsedReaction != null) {
-                val targetMessage =
-                    findTargetMessage(message.threadId, parsedReaction.originalMessage, realm)
-                saveEmojiReaction(message, parsedReaction, targetMessage, realm)
+        var pending = 0
+        realm.beginTransaction()
+        try {
+            allMessages.forEach { message ->
+                val parsedReaction = parseEmojiReaction(message.getText(false))
+                if (parsedReaction != null) {
+                    val targetMessage =
+                        findTargetMessage(message.threadId, parsedReaction.originalMessage, realm)
+                    saveEmojiReaction(message, parsedReaction, targetMessage, realm)
+                    if (++pending >= REPARSE_BATCH_SIZE) {
+                        realm.commitTransaction()
+                        realm.beginTransaction()
+                        pending = 0
+                    }
+                }
             }
+            realm.commitTransaction()
+        } catch (e: Throwable) {
+            if (realm.isInTransaction) realm.cancelTransaction()
+            throw e
         }
 
         val endTime = System.currentTimeMillis()
         Timber.d("Deleted and reparsed all emoji reactions in ${endTime - startTime}ms")
+    }
+
+    override fun reparseIfNeeded() {
+        Realm.getDefaultInstance().use { realm ->
+            if (realm.where(EmojiSyncNeeded::class.java).count() == 0L) return
+            deleteAndReparseAllEmojiReactions(realm)
+            realm.executeTransaction { r -> r.delete(EmojiSyncNeeded::class.java) }
+        }
+    }
+
+    companion object {
+        const val REPARSE_BATCH_SIZE = 2_000
     }
 }

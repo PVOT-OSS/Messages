@@ -239,14 +239,14 @@ constructor(
                     }
                 }
             }
-
-            syncProgress.onNext(SyncRepository.SyncProgress.Running(0, 0, true))
-
-            // Now that we have all the messages, we can scan for emoji reactions
-            reactions.deleteAndReparseAllEmojiReactions(r)
-
-            r.insert(SyncLog())
         }
+
+        syncProgress.onNext(SyncRepository.SyncProgress.Running(0, 0, true))
+
+        // Now that we have all the messages, we can scan for emoji reactions
+        reactions.deleteAndReparseAllEmojiReactions(realm)
+
+        realm.executeTransaction { r -> r.insert(SyncLog()) }
     }
 
     private fun Realm.inBatches(block: (written: () -> Unit) -> Unit) {
