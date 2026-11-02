@@ -151,8 +151,6 @@ constructor(
     }
 
     override fun parseEmojiReaction(body: String): ParsedEmojiReaction? {
-        Timber.d("Attempting to parse reaction from body: '$body'")
-
         val removal = parseRemoval(body)
         if (removal != null) return removal
 
@@ -167,7 +165,6 @@ constructor(
             return result
         }
 
-        Timber.d("No reaction pattern matched for body: '$body'")
         return null
     }
 
@@ -210,12 +207,7 @@ constructor(
 
         val match =
             messages.find { message ->
-                val msgText = message.getText(false).trim()
-                val matches = msgText == originalMessageText.trim()
-                if (!matches && msgText.isNotEmpty()) {
-                    Timber.v("  Checked message ${message.id}: '$msgText' - no match")
-                }
-                matches
+                message.getText(false).trim() == originalMessageText.trim()
             }
         if (match != null) {
             Timber.d("Found match for reaction target: message ID ${match.id}")
