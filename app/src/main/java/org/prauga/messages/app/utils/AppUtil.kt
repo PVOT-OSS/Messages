@@ -18,8 +18,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 
 object AppUtil {
-    fun Activity.applyEdgeToEdgeInsets() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+    /**
+     * Pads the content clear of the system bars, which Android 15 and later draw over every app.
+     * [barsStyled] is for activities that went edge-to-edge themselves and chose their bar colours.
+     */
+    fun Activity.applyEdgeToEdgeInsets(barsStyled: Boolean = false) {
+        if (barsStyled || Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             val view = findViewById<View>(android.R.id.content)
             val insetsController = WindowCompat.getInsetsController(window, window.decorView)
 
@@ -34,8 +38,10 @@ object AppUtil {
                     (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                         Configuration.UI_MODE_NIGHT_YES
 
-                insetsController?.isAppearanceLightStatusBars = !isNightMode
-                insetsController?.isAppearanceLightNavigationBars = !isNightMode
+                if (!barsStyled) {
+                    insetsController?.isAppearanceLightStatusBars = !isNightMode
+                    insetsController?.isAppearanceLightNavigationBars = !isNightMode
+                }
                 v.updatePadding(
                     left = bars.left,
                     top = bars.top,
