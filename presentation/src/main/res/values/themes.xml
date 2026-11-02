@@ -19,54 +19,24 @@
         <item name="android:windowBackground">@color/backgroundDark</item>
     </style>
 
-    <style name="AppTheme" parent="AppBaseTheme">
-        <item name="android:statusBarColor">@color/backgroundLight</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
+    <style name="AppTheme" parent="AppBaseTheme" />
 
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:divider">@color/separatorLight</item>
-        <item name="android:queryBackground">@color/bubbleLight</item>
-        <item name="android:statusBarColor">@color/black</item>
-        <item name="android:textColorPrimary">@color/text_primary</item>
-        <item name="android:textColorSecondary">@color/text_secondary</item>
-        <item name="android:textColorTertiary">@color/text_tertiary</item>
-        <item name="android:windowBackground">@color/backgroundLight</item>
+    <style name="AppBaseTheme" parent="PvotTheme.Light">
+        <item name="android:divider">?attr/colorOutlineVariant</item>
+        <item name="android:queryBackground">?attr/colorSurfaceVariant</item>
         <item name="android:windowContentTransitions">true</item>
-        <item name="actionBarPopupTheme">@style/PopupTheme</item>
-        <item name="bubbleColor">@color/bubbleLight</item>
-        <item name="colorPrimary">@color/backgroundLight</item>
-        <item name="colorPrimaryDark">@color/backgroundLight</item>
+        <item name="bubbleColor">?attr/colorSurfaceVariant</item>
         <item name="selectableItemBackground">@drawable/ripple</item>
         <item name="switchThumbEnabled">@color/switchThumbEnabledLight</item>
         <item name="switchThumbDisabled">@color/switchThumbDisabledLight</item>
         <item name="switchTrackEnabled">@color/switchTrackEnabledLight</item>
         <item name="switchTrackDisabled">@color/switchTrackDisabledLight</item>
-        <item name="windowActionBar">false</item>
     </style>
 
-    <style name="AppThemeDialog" parent="Theme.AppCompat.Light.Dialog">
-        <item name="android:textColorPrimary">@color/textPrimary</item>
-        <item name="android:textColorSecondary">@color/textSecondary</item>
-        <item name="android:textColorTertiary">@color/textTertiary</item>
-        <item name="android:windowBackground">@color/backgroundLight</item>
-        <item name="actionBarPopupTheme">@style/PopupTheme</item>
-        <item name="bubbleColor">@color/bubbleLight</item>
-        <item name="colorPrimary">@color/textPrimary</item>
-        <item name="colorPrimaryDark">@color/textPrimary</item>
-        <item name="colorAccent">@color/textPrimary</item>
-        <item name="android:buttonBarButtonStyle">@style/DialogButtonStyle</item>
+    <style name="AppThemeDialog" parent="PvotTheme.Light.Dialog">
+        <item name="bubbleColor">?attr/colorSurfaceVariant</item>
         <item name="selectableItemBackground">@drawable/ripple</item>
         <item name="windowActionBar">false</item>
-    </style>
-
-    <style name="DialogButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-        <item name="android:textColor">@color/textPrimary</item>
-    </style>
-
-    <style name="PopupTheme" parent="ThemeOverlay.AppCompat.Light">
-        <item name="android:colorBackground">@color/backgroundLight</item>
-        <item name="android:textColor">@color/textPrimary</item>
     </style>
 
     <!-- Black mode. No changes needed when not in night theme -->
@@ -79,6 +49,5 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="PopupTheme.Black" />
 
 </resources>
