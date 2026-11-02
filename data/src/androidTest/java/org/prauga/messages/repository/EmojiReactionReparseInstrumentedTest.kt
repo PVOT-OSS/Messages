@@ -12,6 +12,7 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import io.realm.Realm
 import io.realm.RealmList
+import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 import org.junit.After
 import org.junit.Before
@@ -19,6 +20,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
+import org.prauga.messages.model.EmojiSyncNeeded
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.testutil.RealmTestHelper
@@ -92,7 +94,7 @@ class EmojiReactionReparseInstrumentedTest {
             r.insert(sms(3, "unrelated", 3, reaction = true))
         }
 
-        realm.executeTransaction { r -> repository.deleteAndReparseAllEmojiReactions(r) }
+        repository.deleteAndReparseAllEmojiReactions(realm)
 
         val saved = realm.where(EmojiReaction::class.java).findAll()
         assertThat(saved).hasSize(1)
@@ -109,11 +111,9 @@ class EmojiReactionReparseInstrumentedTest {
             r.insert((1..count).map { sms(it.toLong(), "ordinary message $it", it.toLong()) })
         }
 
-        realm.beginTransaction()
         val before = bytesAllocated()
         repository.deleteAndReparseAllEmojiReactions(realm)
         val perMessage = (bytesAllocated() - before) / count
-        realm.commitTransaction()
 
         assertThat(perMessage).isLessThan(PER_MESSAGE_LIMIT)
     }
@@ -171,6 +171,63 @@ class EmojiReactionReparseInstrumentedTest {
         }
 
         assertThat(repository.findTargetMessage(1, "ok", realm)?.id).isEqualTo(3L)
+    }
+
+    private fun reaction(id: Long, target: String) =
+        sms(id, "\u200aReacted \u200b👍\u200b to \u200a$target\u200a\u200a", id)
+
+    @Test
+    fun givenManyReactions_whenReparsing_thenTheyAreCommittedInBatches() {
+        val count = 5_000L
+        realm.executeTransaction { r ->
+            r.insert((1..count).map { sms(it, "target $it", it) })
+            r.insert((1..count).map { reaction(count + it, "target $it") })
+        }
+        val done = AtomicBoolean(false)
+        var seenBeforeDone = 0L
+        val watcher = Thread {
+            while (!done.get()) {
+                Realm.getInstance(realm.configuration).use {
+                    val seen = it.where(EmojiReaction::class.java).count()
+                    if (!done.get()) seenBeforeDone = maxOf(seenBeforeDone, seen)
+                }
+            }
+        }
+        watcher.start()
+
+        repository.deleteAndReparseAllEmojiReactions(realm)
+        done.set(true)
+        watcher.join()
+
+        assertThat(seenBeforeDone).isAtLeast(EmojiReactionRepositoryImpl.REPARSE_BATCH_SIZE.toLong())
+        realm.refresh()
+        assertThat(realm.where(EmojiReaction::class.java).count()).isEqualTo(count)
+    }
+
+    @Test
+    fun givenUpgradeAskedForAReparse_whenReparseIfNeeded_thenReparsedOnceWithoutLeakingRealm() {
+        realm.executeTransaction { r ->
+            r.insert(listOf(sms(1, "hello there", 1), reaction(2, "hello there")))
+            r.createObject(EmojiSyncNeeded::class.java)
+        }
+        val openInstances = Realm.getGlobalInstanceCount(realm.configuration)
+
+        repository.reparseIfNeeded()
+
+        realm.refresh()
+        assertThat(realm.where(EmojiReaction::class.java).count()).isEqualTo(1L)
+        assertThat(realm.where(EmojiSyncNeeded::class.java).count()).isEqualTo(0L)
+        assertThat(Realm.getGlobalInstanceCount(realm.configuration)).isEqualTo(openInstances)
+    }
+
+    @Test
+    fun givenNoReparseAsked_whenReparseIfNeeded_thenReactionsAreLeftAlone() {
+        realm.executeTransaction { r -> r.insert(listOf(sms(1, "hello there", 1), reaction(2, "hello there"))) }
+
+        repository.reparseIfNeeded()
+
+        realm.refresh()
+        assertThat(realm.where(EmojiReaction::class.java).count()).isEqualTo(0L)
     }
 
     private companion object {
