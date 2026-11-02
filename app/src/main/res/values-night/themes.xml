@@ -4,8 +4,11 @@
      SPDX-License-Identifier: GPL-3.0-or-later
 -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="MessagesTheme" parent="PvotTheme.Dark" />
+    <style name="MessagesTheme" parent="PvotTheme.Dark">
+        <item name="android:windowSplashScreenBackground" tools:targetApi="31">@color/pvot_background_dark</item>
+        <item name="android:windowSplashScreenIconBackgroundColor" tools:targetApi="31">@color/ic_launcher_background</item>
+    </style>
 
 </resources>
