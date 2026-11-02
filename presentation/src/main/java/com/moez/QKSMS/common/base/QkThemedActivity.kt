@@ -121,7 +121,7 @@ abstract class QkThemedActivity<Vb : ViewBinding>(inflate: (LayoutInflater) -> V
         }
 
         // Set the color for the recent apps title
-        val toolbarColor = resolveThemeColor(R.attr.colorPrimary)
+        val toolbarColor = resolveThemeColor(android.R.attr.colorBackground)
         val icon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
         val taskDesc =
             ActivityManager.TaskDescription(getString(R.string.app_name), icon, toolbarColor)
