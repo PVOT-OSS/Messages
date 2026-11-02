@@ -15,8 +15,6 @@ import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject
@@ -123,11 +121,6 @@ class BlockedMessagesController :
                 .create()
 
         dialog.show()
-
-        themedActivity?.theme?.take(1)?.autoDispose(scope())?.subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun goBack() {
