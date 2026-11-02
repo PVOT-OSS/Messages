@@ -11,7 +11,6 @@ import io.reactivex.Observable
 import io.realm.RealmResults
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Recipient
-import org.prauga.messages.model.SearchResult
 
 interface ConversationRepository {
 
@@ -28,7 +27,6 @@ interface ConversationRepository {
 
     fun setConversationName(id: Long, name: String): Completable
 
-    fun searchConversations(query: CharSequence): List<SearchResult>
 
     fun searchConversationsGrouped(query: CharSequence): List<org.prauga.messages.model.SearchItem>
 

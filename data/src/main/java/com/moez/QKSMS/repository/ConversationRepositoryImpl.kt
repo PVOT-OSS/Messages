@@ -31,7 +31,6 @@ import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SearchItem
-import org.prauga.messages.model.SearchResult
 import org.prauga.messages.util.PhoneNumberUtils
 import org.prauga.messages.util.tryOrNull
 
@@ -154,59 +153,6 @@ constructor(
             .subscribeOn(
                 Schedulers.io()
             ) // Ensure the operation is performed on a background thread
-
-    override fun searchConversations(query: CharSequence): List<SearchResult> {
-        val realm = Realm.getDefaultInstance()
-
-        val normalizedQuery = query.removeAccents()
-        val conversations =
-            realm.copyFromRealm(
-                realm
-                    .where(Conversation::class.java)
-                    .notEqualTo("id", 0L)
-                    .isNotNull("lastMessage")
-                    .equalTo("blocked", false)
-                    .isNotEmpty("recipients")
-                    .sort("pinned", Sort.DESCENDING, "lastMessage.date", Sort.DESCENDING)
-                    .findAll()
-            )
-
-        val conversationsById = conversations.associateBy { it.id }
-
-        val messagesByConversation =
-            realm
-                .copyFromRealm(
-                    realm
-                        .where(Message::class.java)
-                        .beginGroup()
-                        .contains("body", normalizedQuery, Case.INSENSITIVE)
-                        .or()
-                        .contains("parts.text", normalizedQuery, Case.INSENSITIVE)
-                        .endGroup()
-                        .findAll()
-                )
-                .asSequence()
-                .groupBy { message -> message.threadId }
-                .mapNotNull { (threadId, messages) ->
-                    conversationsById[threadId]?.let { conversation ->
-                        SearchResult(normalizedQuery, conversation, messages.size)
-                    }
-                }
-                .sortedByDescending { result -> result.messages }
-                .toList()
-
-        realm.close()
-
-        val conversationMatches =
-            conversations
-                .filter { conversation -> conversationFilter.filter(conversation, normalizedQuery) }
-                .map { conversation -> SearchResult(normalizedQuery, conversation, 0) }
-                .filter { match ->
-                    messagesByConversation.none { it.conversation.id == match.conversation.id }
-                }
-
-        return conversationMatches + messagesByConversation
-    }
 
     override fun searchConversationsGrouped(query: CharSequence): List<SearchItem> {
         val realm = Realm.getDefaultInstance()
