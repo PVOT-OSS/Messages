@@ -44,7 +44,14 @@ object MmsHandoff {
 
     fun newAttempt(): Long = System.currentTimeMillis()
 
-    fun start(context: Context, kind: Kind, key: String, subId: Int, attempt: Long, result: Intent) {
+    fun start(
+        context: Context,
+        kind: Kind,
+        key: String,
+        subId: Int,
+        attempt: Long,
+        result: Intent,
+    ) {
         try {
             state(context).start(name(kind, key), attempt, subId)
             val data =
@@ -127,8 +134,7 @@ object MmsHandoff {
     ) {
         if (!state(context).timeOut(name(kind, key), attempt, noNetwork)) return
         cancel(context, kind, key, if (noNetwork) STAGE_DEADLINE else STAGE_PROBE)
-        val intent =
-            decode(result).putExtra(EXTRA_ATTEMPT, attempt).putExtra(EXTRA_TIMED_OUT, true)
+        val intent = decode(result).putExtra(EXTRA_ATTEMPT, attempt).putExtra(EXTRA_TIMED_OUT, true)
         context.sendOrderedBroadcast(
             intent,
             null,
@@ -143,9 +149,9 @@ object MmsHandoff {
     private fun cancel(context: Context, kind: Kind, key: String, vararg stages: String) {
         try {
             val workManager = WorkManager.getInstance(context)
-            stages.ifEmpty { arrayOf(STAGE_PROBE, STAGE_DEADLINE) }.forEach { stage ->
-                workManager.cancelUniqueWork(work(kind, key, stage))
-            }
+            stages
+                .ifEmpty { arrayOf(STAGE_PROBE, STAGE_DEADLINE) }
+                .forEach { stage -> workManager.cancelUniqueWork(work(kind, key, stage)) }
         } catch (e: Exception) {
             Timber.w(e, "Unable to stop watching the MMS ${kind.name.lowercase()} of $key")
         }
@@ -156,7 +162,8 @@ object MmsHandoff {
 
     private fun name(kind: Kind, key: String) = "${kind.name.lowercase()}:$key"
 
-    private fun work(kind: Kind, key: String, stage: String) = "mms-handoff-$stage:${name(kind, key)}"
+    private fun work(kind: Kind, key: String, stage: String) =
+        "mms-handoff-$stage:${name(kind, key)}"
 
     @Suppress("DEPRECATION")
     internal fun encode(intent: Intent): String {
@@ -172,10 +179,9 @@ object MmsHandoff {
 
     internal fun decode(value: String): Intent =
         Intent.parseUri(value, Intent.URI_INTENT_SCHEME).apply {
-            getStringExtra(KEY_URI_EXTRAS)
-                ?.split(',')
-                ?.filter(String::isNotEmpty)
-                ?.forEach { key -> getStringExtra(key)?.let { putExtra(key, Uri.parse(it)) } }
+            getStringExtra(KEY_URI_EXTRAS)?.split(',')?.filter(String::isNotEmpty)?.forEach { key ->
+                getStringExtra(key)?.let { putExtra(key, Uri.parse(it)) }
+            }
             removeExtra(KEY_URI_EXTRAS)
         }
 }

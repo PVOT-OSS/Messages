@@ -68,7 +68,8 @@ class MmsHandoffState(private val prefs: SharedPreferences) {
 
     fun probeTrusted(subId: Int): Boolean = !prefs.getBoolean(probeKey(subId), false)
 
-    private fun distrustProbe(subId: Int) = prefs.edit(commit = true) { putBoolean(probeKey(subId), true) }
+    private fun distrustProbe(subId: Int) =
+        prefs.edit(commit = true) { putBoolean(probeKey(subId), true) }
 
     private fun read(key: String): Entry? =
         prefs
