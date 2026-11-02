@@ -5,7 +5,6 @@
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -22,6 +21,7 @@ android {
 dependencies {
     implementation(libs.timber)
     implementation(libs.kotlin.stdlib)
+    testFixturesImplementation(libs.kotlin.stdlib)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
