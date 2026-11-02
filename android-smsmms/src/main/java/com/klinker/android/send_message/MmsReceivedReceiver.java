@@ -6,6 +6,7 @@
 
 package com.klinker.android.send_message;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -51,6 +52,17 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
         final boolean byPush = intent.getBooleanExtra(EXTRA_TRIGGER_PUSH, false);
         final int subId = intent.getIntExtra(EXTRA_SUBSCRIPTION_ID, Utils.getDefaultSubscriptionId());
         final String path = intent.getStringExtra(EXTRA_FILE_PATH);
+        final boolean timedOut = intent.getBooleanExtra(MmsHandoff.EXTRA_TIMED_OUT, false);
+
+        final boolean succeeded = getResultCode() == Activity.RESULT_OK;
+        final MmsHandoffState.Outcome outcome = location == null ? MmsHandoffState.Outcome.CURRENT
+                : MmsHandoff.INSTANCE.result(context, MmsHandoff.Kind.DOWNLOAD, location, intent,
+                        succeeded);
+        if (outcome == MmsHandoffState.Outcome.STALE
+                || (outcome == MmsHandoffState.Outcome.LATE && !succeeded)) {
+            deleteFile(path);
+            return;
+        }
 
         MmsRetry retry = MmsSendResult.retryForError(getResultCode(),
                 intent.getIntExtra(SmsManager.EXTRA_MMS_HTTP_STATUS, 0),
@@ -85,7 +97,7 @@ public class MmsReceivedReceiver extends BroadcastReceiver {
                 markPermanentlyFailed(context, location);
                 break;
             case MANUAL:
-                if (byPush) {
+                if (byPush && !timedOut) {
                     NotificationInd notification = loadNotification(context, notificationUri);
                     if (notification != null && notification.getTransactionId() != null) {
                         MmsAcknowledger.sendNotifyResp(context, subId,
