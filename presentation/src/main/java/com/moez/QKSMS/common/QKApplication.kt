@@ -90,8 +90,6 @@ class QKApplication : Application(), HasAndroidInjector {
 
         qkMigration.performMigration()
 
-        SmsSendRetryWorker.kick(this, resetDelays = false)
-
         GlobalScope.launch(Dispatchers.IO) {
             referralManager.trackReferrer()
             billingManager.checkForPurchases()
@@ -137,6 +135,8 @@ class QKApplication : Application(), HasAndroidInjector {
 
         // register, or re-register, housekeeping work manager
         HousekeepingWorker.register(applicationContext)
+
+        SmsSendRetryWorker.kick(this, resetDelays = false)
     }
 
     private fun registerActivityLifecycle() {
