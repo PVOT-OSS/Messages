@@ -4,14 +4,13 @@
  */
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.pvot.android.library)
 }
 
 android {
     namespace = "com.google.android.mms"
-    compileSdk { version = release(36) }
 
-    defaultConfig { minSdk = 23 }
+    defaultConfig { minSdk = 24 }
 
     testFixtures { enable = true }
 
