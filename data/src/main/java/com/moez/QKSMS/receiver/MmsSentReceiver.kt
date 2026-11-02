@@ -16,6 +16,8 @@ import android.provider.Telephony
 import android.telephony.SmsManager
 import com.google.android.mms.MmsException
 import com.google.android.mms.util_alt.SqliteWrapper
+import com.klinker.android.send_message.MmsHandoff
+import com.klinker.android.send_message.MmsHandoffState
 import com.klinker.android.send_message.MmsRetry
 import com.klinker.android.send_message.MmsSendResult
 import com.klinker.android.send_message.Transaction
@@ -52,6 +54,19 @@ class MmsSentReceiver : BroadcastReceiver() {
             )
         Timber.v("MMS send result: $result")
 
+        val filePath = intent.getStringExtra(Transaction.EXTRA_FILE_PATH)
+        val succeeded = result.retry == MmsRetry.NONE
+        val outcome =
+            MmsHandoff.result(context, MmsHandoff.Kind.SEND, uri.toString(), intent, succeeded)
+        if (
+            outcome == MmsHandoffState.Outcome.STALE ||
+                (outcome == MmsHandoffState.Outcome.LATE && !succeeded)
+        ) {
+            filePath?.let { File(it).delete() }
+            return
+        }
+        val recovered = outcome == MmsHandoffState.Outcome.LATE
+
         val contentId = tryOrNull(false) { ContentUris.parseId(uri) }
         val messageId = contentId?.let(::findMessageId)
 
@@ -84,6 +99,9 @@ class MmsSentReceiver : BroadcastReceiver() {
                     val values = ContentValues(1)
                     values.put(Telephony.Mms.MESSAGE_BOX, Telephony.Mms.MESSAGE_BOX_SENT)
                     SqliteWrapper.update(context, context.contentResolver, uri, values, null, null)
+                    if (recovered) {
+                        contentId?.let { updateErrorTypeInRealm(it, Telephony.MmsSms.NO_ERROR) }
+                    }
                 }
 
                 else -> {
@@ -114,7 +132,6 @@ class MmsSentReceiver : BroadcastReceiver() {
                 }
             }
 
-        val filePath = intent.getStringExtra(Transaction.EXTRA_FILE_PATH)
         Timber.v(filePath)
         filePath?.let { File(it).delete() }
 
@@ -122,6 +139,11 @@ class MmsSentReceiver : BroadcastReceiver() {
             val pendingResult = goAsync()
             syncMessage.execute(contentUri) {
                 if (failed) messageId?.let(notificationManager::notifyFailed)
+                if (recovered) {
+                    messageId?.let(::findThreadId)?.let { threadId ->
+                        notificationManager.cancel(threadId.toInt() + 100000)
+                    }
+                }
                 pendingResult.finish()
             }
         }
@@ -148,6 +170,13 @@ class MmsSentReceiver : BroadcastReceiver() {
                 .equalTo("contentId", contentId)
                 .findFirst()
                 ?.id
+        }
+    }
+
+    private fun findThreadId(messageId: Long): Long? = tryOrNull {
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            realm.where(Message::class.java).equalTo("id", messageId).findFirst()?.threadId
         }
     }
 
