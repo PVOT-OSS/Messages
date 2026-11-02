@@ -169,4 +169,34 @@ class MessageRepositoryScaleInstrumentedTest {
         val left = realm.where(Message::class.java).findAll().map { it.id }
         assertThat(left).containsExactlyElementsIn(5_001L..6_000L)
     }
+
+    @Test
+    fun givenManyUnreadInAThread_whenNotifying_thenOnlyTheNewestAreLoaded() {
+        realm.executeTransaction { r ->
+            r.insert((1L..5_000L).map { sms(it, 1, it, seen = false) })
+            r.insert((5_001L..5_100L).map { sms(it, 2, it, seen = false) })
+            r.insert((5_101L..5_200L).map { sms(it, 1, it) })
+        }
+
+        val newest = repository.getUnreadUnseenMessages(1, 25)
+
+        assertThat(newest.map { it.id }).containsExactlyElementsIn(5_000L downTo 4_976L).inOrder()
+        assertThat(repository.getUnreadUnseenCount(1)).isEqualTo(5_000L)
+    }
+
+    @Test
+    fun givenUnreadBeyondAPage_whenDeletingUnseenUpToADate_thenOnlyThoseAreGone() {
+        realm.executeTransaction { r ->
+            r.insert((1L..5_000L).map { sms(it, 1, it, seen = false) })
+            r.insert((5_001L..5_010L).map { sms(it, 1, it, seen = false) })
+            r.insert((5_011L..5_020L).map { sms(it, 1, it - 5_000) })
+            r.insert((5_021L..5_030L).map { sms(it, 2, it - 5_000, seen = false) })
+        }
+
+        repository.deleteUnreadUnseenMessages(1, 5_000)
+
+        realm.refresh()
+        val left = realm.where(Message::class.java).findAll().map { it.id }
+        assertThat(left).containsExactlyElementsIn(5_001L..5_030L)
+    }
 }

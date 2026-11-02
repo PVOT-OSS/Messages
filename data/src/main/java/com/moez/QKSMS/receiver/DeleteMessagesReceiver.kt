@@ -20,10 +20,25 @@ class DeleteMessagesReceiver : BroadcastReceiver() {
         AndroidInjection.inject(this, context)
 
         val pendingResult = goAsync()
-        val threadId = intent.getLongExtra("threadId", 0)
-        val messageIds = intent.getLongArrayExtra("messageIds") ?: longArrayOf()
-        deleteMessages.execute(DeleteMessages.Params(messageIds.toList(), threadId)) {
-            pendingResult.finish()
+        deleteMessages.execute(params(intent)) { pendingResult.finish() }
+    }
+
+    companion object {
+        const val EXTRA_UNSEEN_UNTIL = "unseenUntil"
+
+        fun params(intent: Intent): DeleteMessages.Params {
+            val threadId = intent.getLongExtra("threadId", 0)
+            val messageIds = intent.getLongArrayExtra("messageIds")
+            return when {
+                messageIds != null -> DeleteMessages.Params(messageIds.toList(), threadId)
+                intent.hasExtra(EXTRA_UNSEEN_UNTIL) ->
+                    DeleteMessages.Params(
+                        emptyList(),
+                        threadId,
+                        unseenUntil = intent.getLongExtra(EXTRA_UNSEEN_UNTIL, 0),
+                    )
+                else -> DeleteMessages.Params(emptyList(), threadId)
+            }
         }
     }
 }

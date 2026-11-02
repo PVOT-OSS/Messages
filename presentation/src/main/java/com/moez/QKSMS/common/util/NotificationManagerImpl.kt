@@ -97,7 +97,14 @@ constructor(
             return
         }
 
-        val messages = messageRepo.getUnreadUnseenMessages(threadId)
+        val messages =
+            messageRepo
+                .getUnreadUnseenMessages(
+                    threadId,
+                    NotificationCompat.MessagingStyle.MAXIMUM_RETAINED_MESSAGES.toLong(),
+                )
+                .reversed()
+        val count = unreadUnseenCount(threadId, messages.size)
 
         // If there are no messages to be displayed, make sure that the notification is dismissed
         if (messages.isEmpty()) {
@@ -158,7 +165,7 @@ constructor(
                 .setColor(colors.theme(lastRecipient).theme)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setNumber(messages.size)
+                .setNumber(count)
                 .setAutoCancel(true)
                 .setContentIntent(contentPI)
                 .setDeleteIntent(seenPI)
@@ -263,8 +270,8 @@ constructor(
                     .setContentText(
                         context.resources.getQuantityString(
                             R.plurals.notification_new_messages,
-                            messages.size,
-                            messages.size,
+                            count,
+                            count,
                         )
                     )
             }
@@ -275,8 +282,8 @@ constructor(
                     .setContentText(
                         context.resources.getQuantityString(
                             R.plurals.notification_new_messages,
-                            messages.size,
-                            messages.size,
+                            count,
+                            count,
                         )
                     )
             }
@@ -490,7 +497,6 @@ constructor(
 
         // Add delete button only for non-OTP messages
         if (!isOtpMessage) {
-            val messageIds = messages.map { it.id }.toLongArray()
             val deleteIntent =
                 Intent(context, DeleteConfirmationReceiver::class.java)
                     .putExtra("threadId", threadId)
@@ -760,15 +766,19 @@ constructor(
             .setOngoing(true)
     }
 
+    private fun unreadUnseenCount(threadId: Long, atLeast: Int): Int =
+        messageRepo
+            .getUnreadUnseenCount(threadId)
+            .coerceIn(atLeast.toLong(), Int.MAX_VALUE.toLong())
+            .toInt()
+
     override fun cancel(i: Int) {
         notificationManager.cancel(i)
     }
 
     override fun showDeleteConfirmation(threadId: Long) {
-        val messages = messageRepo.getUnreadUnseenMessages(threadId)
-        if (messages.isEmpty()) {
-            return
-        }
+        val newest = messageRepo.getUnreadUnseenMessages(threadId, 1).firstOrNull() ?: return
+        val count = unreadUnseenCount(threadId, 1)
 
         val conversation = conversationRepo.getConversation(threadId) ?: return
         val lastRecipient =
@@ -801,11 +811,10 @@ constructor(
             )
 
         // Create Yes button (confirm delete)
-        val messageIds = messages.map { it.id }.toLongArray()
         val confirmDeleteIntent =
             Intent(context, DeleteMessagesReceiver::class.java)
                 .putExtra("threadId", threadId)
-                .putExtra("messageIds", messageIds)
+                .putExtra(DeleteMessagesReceiver.EXTRA_UNSEEN_UNTIL, newest.date)
         val confirmDeletePI =
             PendingIntent.getBroadcast(
                 context,
@@ -854,8 +863,8 @@ constructor(
                 .setContentText(
                     context.resources.getQuantityString(
                         R.plurals.delete_confirmation_message,
-                        messages.size,
-                        messages.size,
+                        count,
+                        count,
                     )
                 )
                 .addAction(yesAction)
