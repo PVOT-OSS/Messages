@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -46,6 +47,10 @@ class QkEditText @JvmOverloads constructor(context: Context, attrs: AttributeSet
         } else {
             TextViewStyler.applyEditModeAttributes(this, attrs)
         }
+    }
+
+    override fun onTextContextMenuItem(id: Int): Boolean = ignoringMissingActivity {
+        super.onTextContextMenuItem(id)
     }
 
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection {
