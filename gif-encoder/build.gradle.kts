@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-plugins { alias(libs.plugins.android.library) }
+plugins { alias(libs.plugins.pvot.android.library) }
 
 android {
     namespace = "com.bumptech.glide.gifencoder"
-    compileSdk { version = release(36) }
 
-    defaultConfig { minSdk = 23 }
+    defaultConfig { minSdk = 24 }
 
     lint { abortOnError = false }
 }

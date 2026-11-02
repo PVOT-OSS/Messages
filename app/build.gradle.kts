@@ -4,18 +4,17 @@
  */
 
 plugins {
-    alias(libs.plugins.android.library)
+    alias(libs.plugins.pvot.android.library)
 }
 
 android {
     namespace = "org.prauga.messages.app"
-    compileSdk { version = release(36) }
+    resourcePrefix = null
 
     buildFeatures { viewBinding = true }
 
     defaultConfig {
-        minSdk = 23
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        minSdk = 24
     }
 
     testOptions { unitTests.isIncludeAndroidResources = true }
