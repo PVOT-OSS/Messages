@@ -72,7 +72,9 @@ class EmojiReactionReparseInstrumentedTest {
     fun givenHugeInbox_whenClearingReactionFlags_thenMemoryUseDoesNotGrowWithTheInbox() {
         val count = 100_000
         realm.executeTransaction { r ->
-            r.insert((1..count).map { sms(it.toLong(), "message $it", it.toLong(), it % 2000 == 0) })
+            r.insert(
+                (1..count).map { sms(it.toLong(), "message $it", it.toLong(), it % 2000 == 0) }
+            )
         }
 
         val before = bytesAllocated()
@@ -221,7 +223,9 @@ class EmojiReactionReparseInstrumentedTest {
 
     @Test
     fun givenNoReparseAsked_whenReparseIfNeeded_thenReactionsAreLeftAlone() {
-        realm.executeTransaction { r -> r.insert(listOf(sms(1, "hello there", 1), reaction(2, "hello there"))) }
+        realm.executeTransaction { r ->
+            r.insert(listOf(sms(1, "hello there", 1), reaction(2, "hello there")))
+        }
 
         repository.reparseIfNeeded()
 

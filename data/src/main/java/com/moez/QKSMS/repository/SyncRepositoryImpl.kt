@@ -229,9 +229,7 @@ constructor(
                             SyncRepository.SyncProgress.Running(max, ++progress, false)
                         )
                         val rec =
-                            cursorToRecipient.map(cursor).apply {
-                                contact = contacts.find(address)
-                            }
+                            cursorToRecipient.map(cursor).apply { contact = contacts.find(address) }
                         r.insertOrUpdate(rec)
                     }
                 }
