@@ -116,6 +116,8 @@ interface ComposeView : QkView<ComposeState> {
 
     fun requestGallery(mimeType: String, requestCode: Int)
 
+    fun requestFile()
+
     fun requestDatePicker()
 
     fun requestContact()

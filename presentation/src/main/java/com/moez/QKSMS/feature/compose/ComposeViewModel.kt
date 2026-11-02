@@ -899,7 +899,7 @@ constructor(
         view.attachAnyFileIntent
             .doOnNext { newState { copy(attaching = false) } }
             .autoDispose(view.scope())
-            .subscribe { view.requestGallery("*/*", ComposeView.AttachAFileRequestCode) }
+            .subscribe { view.requestFile() }
 
         // Choose a time to schedule the message
         view.scheduleIntent
