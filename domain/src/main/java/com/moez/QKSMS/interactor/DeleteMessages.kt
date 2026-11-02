@@ -20,12 +20,24 @@ constructor(
     private val updateBadge: UpdateBadge,
 ) : Interactor<DeleteMessages.Params>() {
 
-    data class Params(val messageIds: List<Long>, val threadId: Long)
+    /**
+     * With [unseenUntil], deletes the unread, unseen messages up to that date instead of
+     * [messageIds]
+     */
+    data class Params(
+        val messageIds: List<Long>,
+        val threadId: Long,
+        val unseenUntil: Long? = null,
+    )
 
     override fun buildObservable(params: Params): Flowable<*> {
-        return Flowable.just(params.messageIds)
-            .doOnNext { messageIds ->
-                messageRepo.deleteMessages(messageIds)
+        return Flowable.just(params)
+            .doOnNext {
+                when (params.unseenUntil) {
+                    null -> messageRepo.deleteMessages(params.messageIds)
+                    else ->
+                        messageRepo.deleteUnreadUnseenMessages(params.threadId, params.unseenUntil)
+                }
             } // Delete the messages
             .doOnNext {
                 conversationRepo.updateConversations(params.threadId)

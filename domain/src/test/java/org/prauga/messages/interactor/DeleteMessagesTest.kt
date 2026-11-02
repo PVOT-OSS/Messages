@@ -9,7 +9,9 @@ import io.reactivex.Flowable
 import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyCollection
 import org.mockito.Mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
@@ -151,5 +153,19 @@ class DeleteMessagesTest {
         testSubscriber.assertComplete()
         verify(conversationRepo).updateConversations(999L)
         verify(notificationManager).update(999L)
+    }
+
+    @Test
+    fun givenUnseenUntil_whenBuildObservable_thenDeletesUnseenUpToThatDate() {
+        val params = DeleteMessages.Params(emptyList(), threadId = 100L, unseenUntil = 1_000L)
+        val testSubscriber = TestSubscriber<Any>()
+
+        deleteMessages.buildObservable(params).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(messageRepo).deleteUnreadUnseenMessages(100L, 1_000L)
+        verify(messageRepo, never()).deleteMessages(anyCollection())
+        verify(conversationRepo).updateConversations(100L)
+        verify(notificationManager).update(100L)
     }
 }

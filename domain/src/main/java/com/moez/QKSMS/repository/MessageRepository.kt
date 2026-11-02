@@ -34,10 +34,15 @@ interface MessageRepository {
     fun savePart(id: Long): Uri?
 
     /**
-     * Retrieves the list of messages which should be shown in the notification for a given
-     * conversation
+     * Retrieves the newest [limit] messages which should be shown in the notification for a given
+     * conversation, newest first
      */
-    fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message>
+    fun getUnreadUnseenMessages(threadId: Long, limit: Long): RealmResults<Message>
+
+    fun getUnreadUnseenCount(threadId: Long): Long
+
+    /** Deletes the unread, unseen messages in the conversation received at or before [date] */
+    fun deleteUnreadUnseenMessages(threadId: Long, date: Long)
 
     /**
      * Retrieves the list of messages which should be shown in the quickreply popup for a given
