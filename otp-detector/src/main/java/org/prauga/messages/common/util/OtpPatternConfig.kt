@@ -44,7 +44,7 @@ object OtpPatternConfig {
      * Example matches: "12-34-56", "12 34 56", "1234-5678", "12 34 56 78" Does not match: "1-2"
      * (groups too small)
      */
-    const val SPACED_NUMERIC_REGEX = "\\b\\d{2,4}([\\s-]\\d{2,4})+\\b"
+    const val SPACED_NUMERIC_REGEX = "(?<![\\dA-Za-z_])\\d{2,4}([\\s-]\\d{2,4})+(?![\\dA-Za-z_])"
 
     /**
      * Matches alphanumeric codes between 4-10 characters.
@@ -55,7 +55,7 @@ object OtpPatternConfig {
      * Example matches: "A1B2C3", "XYZ123", "abc123def", "1A2B3C4D5E" Does not match: "ABC" (no
      * numbers), "123" (no letters), "A1B" (too short)
      */
-    const val ALPHANUMERIC_REGEX = "\\b[0-9A-Za-z]{4,10}\\b"
+    const val ALPHANUMERIC_REGEX = "(?<![\\dA-Za-z_])[0-9A-Za-z]{4,10}(?![\\dA-Za-z_])"
 
     /**
      * Pattern to identify lines containing OTP-related keywords.
