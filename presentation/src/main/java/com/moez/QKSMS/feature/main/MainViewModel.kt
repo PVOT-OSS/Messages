@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.plusAssign
@@ -43,7 +44,6 @@ import org.prauga.messages.manager.BillingManager
 import org.prauga.messages.manager.ChangelogManager
 import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.manager.RatingManager
-import org.prauga.messages.model.EmojiSyncNeeded
 import org.prauga.messages.model.SearchItem
 import org.prauga.messages.model.SyncLog
 import org.prauga.messages.repository.ConversationRepository
@@ -51,6 +51,7 @@ import org.prauga.messages.repository.EmojiReactionRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.repository.SyncRepository
 import org.prauga.messages.util.Preferences
+import timber.log.Timber
 
 class MainViewModel
 @Inject
@@ -154,13 +155,10 @@ constructor(
         }
 
         // This is only used when we update to a version that newly supports emoji reactions
-        Realm.getDefaultInstance().executeTransactionAsync { realm ->
-            val emojiSyncNeeded = realm.where(EmojiSyncNeeded::class.java).findFirst()
-            if (emojiSyncNeeded != null) {
-                reactions.deleteAndReparseAllEmojiReactions(realm)
-                emojiSyncNeeded.deleteFromRealm()
-            }
-        }
+        disposables +=
+            Completable.fromAction { reactions.reparseIfNeeded() }
+                .subscribeOn(Schedulers.io())
+                .subscribe({}, Timber::w)
 
         // Sync contacts when we detect a change
         if (permissionManager.hasContacts()) {

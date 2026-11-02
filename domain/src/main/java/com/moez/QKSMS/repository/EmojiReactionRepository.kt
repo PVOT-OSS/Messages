@@ -34,5 +34,9 @@ interface EmojiReactionRepository {
         realm: Realm,
     )
 
+    /** Runs its own transactions, so call it outside of one. */
     fun deleteAndReparseAllEmojiReactions(realm: Realm)
+
+    /** Reparses every reaction if an upgrade asked for it, on the calling thread. */
+    fun reparseIfNeeded()
 }
