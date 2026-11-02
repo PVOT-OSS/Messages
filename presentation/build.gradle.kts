@@ -83,6 +83,7 @@ dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.viewpager2)
     implementation(libs.material)
+    implementation(libs.pvot.design.system.views)
     implementation(libs.androidx.work.runtime.ktx)
 
     // conductor
