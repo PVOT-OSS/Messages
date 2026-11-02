@@ -25,13 +25,15 @@ object OtpPatternConfig {
     /**
      * Matches numeric codes between 3-10 digits.
      *
-     * This is the primary pattern for detecting standard OTP codes. Word boundaries ensure we don't
-     * match parts of longer numbers.
+     * This is the primary pattern for detecting standard OTP codes. No ASCII letter, digit or
+     * underscore may touch the code, so it can't be part of a longer number, while Chinese text
+     * right next to it still separates it (Android's `\b` treats Chinese characters as word
+     * characters).
      *
      * Example matches: "123", "456789", "1234567890" Does not match: "12" (too short),
      * "12345678901" (too long)
      */
-    const val NUMERIC_REGEX = "\\b\\d{3,10}\\b"
+    const val NUMERIC_REGEX = "(?<![\\dA-Za-z_])\\d{3,10}(?![\\dA-Za-z_])"
 
     /**
      * Matches spaced or hyphenated numeric codes.

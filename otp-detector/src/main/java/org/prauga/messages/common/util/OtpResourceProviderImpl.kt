@@ -85,8 +85,9 @@ class OtpResourceProviderImpl(private val context: Context) : OtpResourceProvide
             )
     }
 
-    private val otpKeywordArrays = listOf(R.array.otp_keywords)
-    private val safetyKeywordArrays = listOf(R.array.otp_safety_keywords)
+    private val otpKeywordArrays = listOf(R.array.otp_keywords, R.array.otp_keywords_zh)
+    private val safetyKeywordArrays =
+        listOf(R.array.otp_safety_keywords, R.array.otp_safety_keywords_zh)
     private val moneyIndicatorArrays = listOf(R.array.otp_money_indicators)
 
     override fun getOtpKeywords(): List<String> =
