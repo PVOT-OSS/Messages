@@ -572,11 +572,9 @@ constructor(
 
                     // Get the image dimensions
                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                    BitmapFactory.decodeStream(
-                        context.contentResolver.openInputStream(uri),
-                        null,
-                        options,
-                    )
+                    context.contentResolver.openInputStream(uri)?.use { stream ->
+                        BitmapFactory.decodeStream(stream, null, options)
+                    }
                     val width = options.outWidth
                     val height = options.outHeight
                     val aspectRatio = width.toFloat() / height.toFloat()
