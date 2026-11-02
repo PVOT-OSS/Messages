@@ -20,6 +20,7 @@ import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
 import org.prauga.messages.model.Message
 import org.prauga.messages.testutil.RealmTestHelper
+import timber.log.Timber
 
 @RunWith(AndroidJUnit4::class)
 class EmojiReactionReparseInstrumentedTest {
@@ -45,6 +46,7 @@ class EmojiReactionReparseInstrumentedTest {
 
     @After
     fun tearDown() {
+        Timber.uprootAll()
         realm.close()
         RealmTestHelper.tearDown()
     }
@@ -95,5 +97,26 @@ class EmojiReactionReparseInstrumentedTest {
         assertThat(saved.first()!!.emoji).isEqualTo("👍")
         val flagged = realm.where(Message::class.java).equalTo("isEmojiReaction", true).findAll()
         assertThat(flagged.map { it.id }).containsExactly(2L)
+    }
+
+    @Test
+    fun givenHugeInboxWithReleaseLogging_whenReparsing_thenEachMessageCostsLittleMemory() {
+        Timber.plant(Timber.DebugTree())
+        val count = 20_000
+        realm.executeTransaction { r ->
+            r.insert((1..count).map { sms(it.toLong(), "ordinary message $it", it.toLong()) })
+        }
+
+        realm.beginTransaction()
+        val before = bytesAllocated()
+        repository.deleteAndReparseAllEmojiReactions(realm)
+        val perMessage = (bytesAllocated() - before) / count
+        realm.commitTransaction()
+
+        assertThat(perMessage).isLessThan(PER_MESSAGE_LIMIT)
+    }
+
+    private companion object {
+        const val PER_MESSAGE_LIMIT = 4_000L
     }
 }
