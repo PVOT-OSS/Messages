@@ -16,6 +16,7 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.prauga.messages.manager.NotificationManager
+import org.prauga.messages.model.MessageSelection
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 
@@ -167,5 +168,19 @@ class DeleteMessagesTest {
         verify(messageRepo, never()).deleteMessages(anyCollection())
         verify(conversationRepo).updateConversations(100L)
         verify(notificationManager).update(100L)
+    }
+
+    @Test
+    fun givenASelection_whenBuildObservable_thenDeletesWhatItDescribes() {
+        val selection = MessageSelection(100L, upToId = 1_000_000L, except = setOf(5L))
+        val params = DeleteMessages.Params(emptyList(), threadId = 100L, selection = selection)
+        val testSubscriber = TestSubscriber<Any>()
+
+        deleteMessages.buildObservable(params).subscribe(testSubscriber)
+
+        testSubscriber.assertComplete()
+        verify(messageRepo).deleteMessages(selection)
+        verify(messageRepo, never()).deleteMessages(anyCollection())
+        verify(conversationRepo).updateConversations(100L)
     }
 }
