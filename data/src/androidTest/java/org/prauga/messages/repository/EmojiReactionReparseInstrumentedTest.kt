@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import io.realm.Realm
+import io.realm.RealmList
 import java.util.concurrent.atomic.AtomicLong
 import org.junit.After
 import org.junit.Before
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
 import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
 import org.prauga.messages.testutil.RealmTestHelper
 import timber.log.Timber
 
@@ -114,6 +116,61 @@ class EmojiReactionReparseInstrumentedTest {
         realm.commitTransaction()
 
         assertThat(perMessage).isLessThan(PER_MESSAGE_LIMIT)
+    }
+
+    @Test
+    fun givenHugeThread_whenFindingAReactionTarget_thenFoundWithoutLoadingTheThread() {
+        val count = 100_000
+        realm.executeTransaction { r ->
+            r.insert((1..count).map { sms(it.toLong(), "message $it", it.toLong()) })
+        }
+
+        val before = bytesAllocated()
+        val target = repository.findTargetMessage(1, "message 50000", realm)
+        val allocated = bytesAllocated() - before
+
+        assertThat(target?.id).isEqualTo(50_000L)
+        assertThat(allocated).isLessThan(1_000_000L)
+    }
+
+    @Test
+    fun givenMmsWithSeveralTextParts_whenFindingAReactionTarget_thenFound() {
+        realm.executeTransaction { r ->
+            r.insert(
+                Message().apply {
+                    id = 1
+                    threadId = 1
+                    type = "mms"
+                    date = 1
+                    parts =
+                        RealmList(
+                            MmsPart().apply {
+                                id = 1
+                                messageId = 1
+                                type = "text/plain"
+                                text = "hello"
+                            },
+                            MmsPart().apply {
+                                id = 2
+                                messageId = 1
+                                type = "text/plain"
+                                text = "world"
+                            },
+                        )
+                }
+            )
+        }
+
+        assertThat(repository.findTargetMessage(1, " hello\nworld ", realm)?.id).isEqualTo(1L)
+    }
+
+    @Test
+    fun givenSameTextSentTwice_whenFindingAReactionTarget_thenNewestIsChosen() {
+        realm.executeTransaction { r ->
+            r.insert(listOf(sms(1, "ok", 1), sms(2, "ok then", 2), sms(3, "ok", 3)))
+        }
+
+        assertThat(repository.findTargetMessage(1, "ok", realm)?.id).isEqualTo(3L)
     }
 
     private companion object {
