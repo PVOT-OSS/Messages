@@ -7,8 +7,7 @@
 plugins {
     alias(libs.plugins.android.application)
     id("realm-android") // must come before Kotlin plugins
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.legacy.kapt)
 }
 
 android {
@@ -25,11 +24,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    extensions
-        .getByType(BasePluginExtension::class.java)
-        .archivesName
-        .set("Messages-v${defaultConfig.versionName}")
 
     buildFeatures {
         buildConfig = true
@@ -56,7 +50,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             signingConfig = signingConfigs.getByName("platform")
         }
     }
@@ -69,6 +63,8 @@ android {
 
     lint { abortOnError = false }
 }
+
+base { archivesName = "Messages-v${android.defaultConfig.versionName}" }
 
 dependencies {
     // lifecycle
