@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -152,6 +153,15 @@ class OtpResourceProviderImplTest {
         // Then
         val uniqueKeywords = keywords.toSet()
         assertEquals("Should not have duplicate keywords", keywords.size, uniqueKeywords.size)
+    }
+
+    @Test
+    @Config(qualifiers = "zh-rCN")
+    fun givenChineseSystemLanguage_whenGetOtpKeywords_thenStillIncludesEnglish() {
+        val result = OtpResourceProviderImpl(RuntimeEnvironment.getApplication()).getOtpKeywords()
+
+        assertTrue("Should contain 'otp'", result.contains("otp"))
+        assertTrue("Should contain 'verification code'", result.contains("verification code"))
     }
 
     @Test

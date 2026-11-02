@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2026 Vishnu R <vishnurajesh45@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -14,7 +15,7 @@ import timber.log.Timber
  * Implementation of [OtpResourceProvider] that loads resources from Android resource files.
  *
  * This class handles:
- * - Loading string arrays from resources with automatic locale support
+ * - Loading the string arrays of every supported language, whatever the system language
  * - Normalizing all keywords to lowercase for case-insensitive matching
  * - Fallback to default English keywords if resources are missing
  * - Error message retrieval with locale support
@@ -84,31 +85,30 @@ class OtpResourceProviderImpl(private val context: Context) : OtpResourceProvide
             )
     }
 
-    override fun getOtpKeywords(): List<String> {
-        return try {
-            context.resources.getStringArray(R.array.otp_keywords).map { it.lowercase() }
-        } catch (e: Resources.NotFoundException) {
-            Timber.w(e, "OTP keywords resource not found, using defaults")
-            DEFAULT_OTP_KEYWORDS
-        }
-    }
+    private val otpKeywordArrays = listOf(R.array.otp_keywords)
+    private val safetyKeywordArrays = listOf(R.array.otp_safety_keywords)
+    private val moneyIndicatorArrays = listOf(R.array.otp_money_indicators)
 
-    override fun getSafetyKeywords(): List<String> {
-        return try {
-            context.resources.getStringArray(R.array.otp_safety_keywords).map { it.lowercase() }
-        } catch (e: Resources.NotFoundException) {
-            Timber.w(e, "OTP safety keywords resource not found, using defaults")
-            DEFAULT_SAFETY_KEYWORDS
-        }
-    }
+    override fun getOtpKeywords(): List<String> =
+        load("keywords", otpKeywordArrays, DEFAULT_OTP_KEYWORDS)
 
-    override fun getMoneyIndicators(): List<String> {
-        return try {
-            context.resources.getStringArray(R.array.otp_money_indicators).map { it.lowercase() }
-        } catch (e: Resources.NotFoundException) {
-            Timber.w(e, "OTP money indicators resource not found, using defaults")
-            DEFAULT_MONEY_INDICATORS
-        }
+    override fun getSafetyKeywords(): List<String> =
+        load("safety keywords", safetyKeywordArrays, DEFAULT_SAFETY_KEYWORDS)
+
+    override fun getMoneyIndicators(): List<String> =
+        load("money indicators", moneyIndicatorArrays, DEFAULT_MONEY_INDICATORS)
+
+    private fun load(name: String, arrays: List<Int>, defaults: List<String>): List<String> {
+        val words =
+            arrays.flatMap { array ->
+                try {
+                    context.resources.getStringArray(array).toList()
+                } catch (e: Resources.NotFoundException) {
+                    Timber.w(e, "OTP $name resource not found")
+                    emptyList()
+                }
+            }
+        return words.ifEmpty { defaults }.map { it.lowercase() }.distinct()
     }
 
     override fun getErrorMessage(errorType: OtpErrorType): String {
