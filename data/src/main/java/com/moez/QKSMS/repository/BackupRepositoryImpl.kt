@@ -26,8 +26,10 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.concurrent.schedule
 import okio.buffer
+import okio.sink
 import okio.source
 import org.prauga.messages.common.util.extensions.now
+import org.prauga.messages.extensions.forEachMessagePage
 import org.prauga.messages.model.BackupFile
 import org.prauga.messages.model.Message
 import org.prauga.messages.util.Preferences
@@ -42,8 +44,6 @@ constructor(
     private val prefs: Preferences,
     private val syncRepo: SyncRepository,
 ) : BackupRepository {
-
-    data class Backup(val messageCount: Int = 0, val messages: List<BackupMessage> = listOf())
 
     /**
      * Simpler version of [Backup] which allows us to read certain fields from the backup without
@@ -72,6 +72,8 @@ constructor(
         BehaviorSubject.createDefault(BackupRepository.Progress.Idle())
 
     @Volatile private var stopFlag: Boolean = false
+
+    private val json = BackupJson(moshi)
 
     override fun getDefaultBackupPath(): String {
         return "${Environment.getExternalStorageDirectory()}/QKSMS/Backups"
@@ -104,43 +106,34 @@ constructor(
         // If a backup or restore is already running, don't do anything
         if (isBackupOrRestoreRunning()) return
 
-        var messageCount: Int
-
-        // Map all the messages into our object we'll use for the Json mapping
-        val backupMessages =
-            Realm.getDefaultInstance().use { realm ->
-                // Get the messages from realm
-                val messages =
-                    realm.where(Message::class.java).sort("date").findAll().createSnapshot()
-                messageCount = messages.size
-
-                // Map the messages to the new format
-                messages.mapIndexed { index, message ->
-                    // Update the progress
-                    backupProgress.onNext(BackupRepository.Progress.Running(messageCount, index))
-                    messageToBackupMessage(message)
-                }
-            }
-
-        // Update the status, and set the progress to be indeterminate since we can no longer
-        // calculate progress
-        backupProgress.onNext(BackupRepository.Progress.Saving())
-
-        // Convert the data to json
-        val adapter = moshi.adapter(Backup::class.java).indent("\t")
-        val json = adapter.toJson(Backup(messageCount, backupMessages)).toByteArray()
+        val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(now())
+        val file = getBackupDocumentTree()?.createFile("application/json", "backup-$timestamp.json")
 
         try {
-            val timestamp = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(now())
-            val inputStream =
-                getBackupDocumentTree()
-                    ?.createFile("application/json", "backup-$timestamp.json")
-                    ?.let { file -> context.contentResolver.openOutputStream(file.uri) }
+            val stream =
+                file?.let { context.contentResolver.openOutputStream(it.uri) }
                     ?: throw Exception("Failed to open output stream")
 
-            inputStream.use { stream -> stream.write(json) }
+            stream.sink().buffer().use { sink ->
+                Realm.getDefaultInstance().use { realm ->
+                    val messageCount = realm.where(Message::class.java).count().toInt()
+                    var index = 0
+                    json.write(sink, messageCount) { write ->
+                        realm.forEachMessagePage({ where(Message::class.java) }) { page ->
+                            page.forEach { message ->
+                                backupProgress.onNext(
+                                    BackupRepository.Progress.Running(messageCount, index++)
+                                )
+                                write(messageToBackupMessage(message))
+                            }
+                        }
+                        backupProgress.onNext(BackupRepository.Progress.Saving())
+                    }
+                }
+            }
         } catch (e: Exception) {
             Timber.w(e)
+            file?.delete()
         }
 
         // Mark the task finished, and set it as Idle a second later
@@ -190,52 +183,33 @@ constructor(
 
         restoreProgress.onNext(BackupRepository.Progress.Parsing())
 
-        val adapter = moshi.adapter(Backup::class.java)
-        val backup =
-            DocumentFile.fromSingleUri(context, uri)
-                ?.let { file -> context.contentResolver.openInputStream(file.uri) }
-                ?.source()
-                ?.buffer()
-                ?.use(adapter::fromJson)
-
-        val messageCount = backup?.messages?.size ?: 0
+        val messageCount = readBackup(uri) { true }
         var errorCount = 0
+        var index = 0
+        var stopped = false
 
-        backup?.messages?.forEachIndexed { index, message ->
+        readBackup(uri) { message ->
             if (stopFlag) {
-                stopFlag = false
-                restoreProgress.onNext(BackupRepository.Progress.Idle())
-                return
+                stopped = true
+                return@readBackup false
             }
 
             // Update the progress
-            restoreProgress.onNext(BackupRepository.Progress.Running(messageCount, index))
+            restoreProgress.onNext(BackupRepository.Progress.Running(messageCount, index++))
 
             try {
-                val values =
-                    contentValuesOf(
-                        Telephony.Sms.TYPE to message.type,
-                        Telephony.Sms.ADDRESS to message.address,
-                        Telephony.Sms.DATE to message.date,
-                        Telephony.Sms.DATE_SENT to message.dateSent,
-                        Telephony.Sms.READ to message.read,
-                        Telephony.Sms.SEEN to 1,
-                        Telephony.Sms.STATUS to message.status,
-                        Telephony.Sms.BODY to message.body,
-                        Telephony.Sms.PROTOCOL to message.protocol,
-                        Telephony.Sms.SERVICE_CENTER to message.serviceCenter,
-                        Telephony.Sms.LOCKED to message.locked,
-                    )
-
-                if (prefs.canUseSubId.get()) {
-                    values.put(Telephony.Sms.SUBSCRIPTION_ID, message.subId)
-                }
-
-                context.contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
+                restoreMessage(message!!)
             } catch (e: Exception) {
                 Timber.w(e)
                 errorCount++
             }
+            true
+        }
+
+        if (stopped) {
+            stopFlag = false
+            restoreProgress.onNext(BackupRepository.Progress.Idle())
+            return
         }
 
         if (errorCount > 0) {
@@ -249,6 +223,37 @@ constructor(
         // Mark the task finished, and set it as Idle a second later
         restoreProgress.onNext(BackupRepository.Progress.Finished())
         Timer().schedule(1000) { restoreProgress.onNext(BackupRepository.Progress.Idle()) }
+    }
+
+    @SuppressLint("Recycle") // InputStream is closed by Okio BufferedSource
+    private fun readBackup(uri: Uri, onMessage: (BackupMessage?) -> Boolean): Int =
+        DocumentFile.fromSingleUri(context, uri)
+            ?.let { file -> context.contentResolver.openInputStream(file.uri) }
+            ?.source()
+            ?.buffer()
+            ?.use { source -> json.read(source, onMessage) } ?: 0
+
+    private fun restoreMessage(message: BackupMessage) {
+        val values =
+            contentValuesOf(
+                Telephony.Sms.TYPE to message.type,
+                Telephony.Sms.ADDRESS to message.address,
+                Telephony.Sms.DATE to message.date,
+                Telephony.Sms.DATE_SENT to message.dateSent,
+                Telephony.Sms.READ to message.read,
+                Telephony.Sms.SEEN to 1,
+                Telephony.Sms.STATUS to message.status,
+                Telephony.Sms.BODY to message.body,
+                Telephony.Sms.PROTOCOL to message.protocol,
+                Telephony.Sms.SERVICE_CENTER to message.serviceCenter,
+                Telephony.Sms.LOCKED to message.locked,
+            )
+
+        if (prefs.canUseSubId.get()) {
+            values.put(Telephony.Sms.SUBSCRIPTION_ID, message.subId)
+        }
+
+        context.contentResolver.insert(Telephony.Sms.CONTENT_URI, values)
     }
 
     override fun getRestoreProgress(): Observable<BackupRepository.Progress> = restoreProgress
