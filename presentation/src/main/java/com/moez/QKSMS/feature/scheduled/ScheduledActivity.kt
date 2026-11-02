@@ -13,8 +13,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.jakewharton.rxbinding2.view.clicks
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -113,11 +111,6 @@ class ScheduledActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun showSendNowDialog(messages: List<Long>) {
@@ -133,11 +126,6 @@ class ScheduledActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun showEditMessageDialog(message: Long) {
@@ -152,11 +140,6 @@ class ScheduledActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
