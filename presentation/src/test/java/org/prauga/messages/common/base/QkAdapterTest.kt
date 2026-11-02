@@ -56,4 +56,51 @@ class QkAdapterTest {
 
         assertTrue(adapter.taps.isEmpty())
     }
+
+    /** A list of any size that remembers how many of its items were read */
+    private class CountingList(override val size: Int) : AbstractList<String>() {
+        var reads = 0
+
+        override fun get(index: Int): String {
+            reads++
+            return "item $index"
+        }
+    }
+
+    private class Changes : RecyclerView.AdapterDataObserver() {
+        var full = 0
+        var inserted = 0
+
+        override fun onChanged() {
+            full++
+        }
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            inserted += itemCount
+        }
+    }
+
+    @Test
+    fun givenAHugeList_whenSet_thenItIsNotDiffedItemByItem() {
+        val adapter = TapAdapter().apply { data = listOf("a") }
+        val changes = Changes().also(adapter::registerAdapterDataObserver)
+        val huge = CountingList(1_000_000_000)
+
+        adapter.data = huge
+
+        assertEquals(0, huge.reads)
+        assertEquals(1, changes.full)
+        assertEquals(1_000_000_000, adapter.itemCount)
+    }
+
+    @Test
+    fun givenASmallList_whenSet_thenOnlyTheDifferenceIsDispatched() {
+        val adapter = TapAdapter().apply { data = listOf("a") }
+        val changes = Changes().also(adapter::registerAdapterDataObserver)
+
+        adapter.data = listOf("a", "b", "c")
+
+        assertEquals(0, changes.full)
+        assertEquals(2, changes.inserted)
+    }
 }
