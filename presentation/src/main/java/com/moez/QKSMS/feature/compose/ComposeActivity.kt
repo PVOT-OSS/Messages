@@ -11,6 +11,7 @@ import android.animation.LayoutTransition
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentValues
@@ -80,6 +81,7 @@ import org.prauga.messages.feature.compose.editing.ChipsAdapter
 import org.prauga.messages.feature.contacts.ContactsActivity
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
+import timber.log.Timber
 
 class ComposeActivity :
     QkThemedActivity<ComposeActivityBinding>(ComposeActivityBinding::inflate), ComposeView {
@@ -664,10 +666,19 @@ class ComposeActivity :
                     contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)
                 }
 
+        val destination = cameraDestination ?: return
         val intent =
             Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                .putExtra(MediaStore.EXTRA_OUTPUT, cameraDestination)
-        startActivityForResult(Intent.createChooser(intent, null), ComposeView.TakePhotoRequestCode)
+                .putExtra(MediaStore.EXTRA_OUTPUT, destination)
+                .addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+        intent.clipData = ClipData.newRawUri(null, destination)
+        try {
+            startActivityForResult(intent, ComposeView.TakePhotoRequestCode)
+        } catch (e: ActivityNotFoundException) {
+            Timber.w(e)
+        }
     }
 
     override fun requestGallery(mimeType: String, requestCode: Int) {
@@ -687,7 +698,11 @@ class ComposeActivity :
                 .addCategory(Intent.CATEGORY_OPENABLE)
                 .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
                 .setType("*/*")
-        startActivityForResult(intent, ComposeView.AttachAFileRequestCode)
+        try {
+            startActivityForResult(intent, ComposeView.AttachAFileRequestCode)
+        } catch (e: ActivityNotFoundException) {
+            Timber.w(e)
+        }
     }
 
     override fun setDraft(draft: String) {
