@@ -2,8 +2,6 @@
 # SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
--dontoptimize
-
 # android-smsmms
 -dontwarn android.net.ConnectivityManager
 -dontwarn android.net.LinkProperties
@@ -124,9 +122,6 @@
     @dagger.Provides <methods>;
 }
 
-# RxJava
--keep class io.reactivex.** { *; }
--keep class io.reactivex.subjects.** { *; }
 -keep class androidx.activity.result.** { *; }
 -keep class org.prauga.messages.** { *; }
 
