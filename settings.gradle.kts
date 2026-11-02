@@ -36,7 +36,8 @@ rootProject.name = "Messages"
 
 includeBuild("PvotLib") {
     dependencySubstitution {
-        substitute(module("com.prauga.pvot:design-system-views")).using(project(":design-system-views"))
+        substitute(module("com.prauga.pvot:design-system-views"))
+            .using(project(":design-system-views"))
     }
 }
 
