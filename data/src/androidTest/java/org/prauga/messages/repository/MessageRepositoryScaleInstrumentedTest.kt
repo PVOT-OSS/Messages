@@ -180,8 +180,10 @@ class MessageRepositoryScaleInstrumentedTest {
         }
 
         val newest = repository.getUnreadUnseenMessages(1, 25)
+        val ids = newest.map { it.id }
+        newest.realm.close()
 
-        assertThat(newest.map { it.id }).containsExactlyElementsIn(5_000L downTo 4_976L).inOrder()
+        assertThat(ids).containsExactlyElementsIn(5_000L downTo 4_976L).inOrder()
         assertThat(repository.getUnreadUnseenCount(1)).isEqualTo(5_000L)
     }
 
