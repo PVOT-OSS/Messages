@@ -10,7 +10,6 @@ import android.app.Activity
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import org.prauga.messages.R
-import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.databinding.TextInputDialogBinding
 
 class TextInputDialog(context: Activity, hint: String, listener: (String) -> Unit) :
@@ -28,14 +27,6 @@ class TextInputDialog(context: Activity, hint: String, listener: (String) -> Uni
         }
         setButton(BUTTON_POSITIVE, context.getString(R.string.button_save)) { _, _ ->
             listener(layout.field.text.toString())
-        }
-
-        setOnShowListener {
-            (context as? QkThemedActivity<*>)?.colors?.theme()?.let { theme ->
-                getButton(BUTTON_NEUTRAL)?.setTextColor(theme.theme)
-                getButton(BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-                getButton(BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            }
         }
     }
 

@@ -548,11 +548,6 @@ class ComposeActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun showMessageLinkAskDialog(uri: Uri) {
@@ -567,11 +562,6 @@ class ComposeActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun requestDefaultSms() {
@@ -725,11 +715,6 @@ class ComposeActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun showClearCurrentMessageDialog() {
@@ -744,11 +729,6 @@ class ComposeActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
