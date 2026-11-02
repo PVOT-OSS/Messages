@@ -190,9 +190,10 @@ class OtpDetector(private val resourceProvider: OtpResourceProvider) {
         }
 
         // Typical OTP line patterns
+        val lowerLine = lineInfo.line.lowercase()
         if (
             Regex(OtpPatternConfig.OTP_LINE_PATTERN, RegexOption.IGNORE_CASE)
-                .containsMatchIn(lineInfo.line)
+                .containsMatchIn(lineInfo.line) || otpKeywords.any { lowerLine.contains(it) }
         ) {
             score += 2.0
         }
