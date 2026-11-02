@@ -7,16 +7,20 @@
 package org.prauga.messages.common
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.util.extensions.dpToPx
 import org.prauga.messages.common.util.extensions.setPadding
 import org.prauga.messages.injection.appComponent
+import timber.log.Timber
 
 /** Wrapper around AlertDialog which makes it easier to display lists that use our UI */
 class QkDialog @Inject constructor(private val context: Context, val adapter: MenuItemAdapter) {
@@ -39,7 +43,7 @@ class QkDialog @Inject constructor(private val context: Context, val adapter: Me
                 .setView(recyclerView)
                 .create()
 
-        val clicks = adapter.menuItemClicks.subscribe { dialog.dismiss() }
+        val clicks = adapter.menuItemClicks.dismissOnNext(dialog)
 
         dialog.setOnDismissListener { clicks.dispose() }
 
@@ -50,3 +54,6 @@ class QkDialog @Inject constructor(private val context: Context, val adapter: Me
         this.title = context.getString(title)
     }
 }
+
+fun Observable<*>.dismissOnNext(dialog: Dialog): Disposable =
+    subscribe({ if (dialog.isShowing) dialog.dismiss() }, Timber::w)
