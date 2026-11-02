@@ -57,6 +57,7 @@ import org.prauga.messages.extensions.MESSAGE_PAGE_SIZE
 import org.prauga.messages.extensions.anyOf
 import org.prauga.messages.extensions.drainMessages
 import org.prauga.messages.extensions.forEachMessagePage
+import org.prauga.messages.extensions.forEachMessagePageWhile
 import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.extensions.resourceExists
@@ -66,6 +67,7 @@ import org.prauga.messages.mapper.CursorToPart
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
+import org.prauga.messages.model.MessageSelection
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.model.ReceivedSmsDetails
 import org.prauga.messages.receiver.SendSmsReceiver
@@ -101,8 +103,10 @@ constructor(
     }
 
     private fun getMessagesBase(threadId: Long, query: String) =
-        Realm.getDefaultInstance()
-            .where(Message::class.java)
+        Realm.getDefaultInstance().shownMessages(threadId, query).sort("date")
+
+    private fun Realm.shownMessages(threadId: Long, query: String) =
+        where(Message::class.java)
             .equalTo("threadId", threadId)
             .equalTo("isEmojiReaction", false)
             .let {
@@ -116,7 +120,51 @@ constructor(
                             .endGroup()
                 }
             }
-            .sort("date")
+
+    private fun Realm.selected(selection: MessageSelection) =
+        shownMessages(selection.threadId, selection.query)
+            .beginGroup()
+            .beginGroup()
+            .lessThanOrEqualTo("id", selection.upToId)
+            .apply {
+                if (selection.except.isNotEmpty()) {
+                    not().`in`("id", selection.except.toTypedArray())
+                }
+            }
+            .endGroup()
+            .apply {
+                if (selection.picked.isNotEmpty()) {
+                    or().`in`("id", selection.picked.toTypedArray())
+                }
+            }
+            .endGroup()
+
+    override fun forEachMessage(selection: MessageSelection, block: (Message) -> Boolean) =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            var more = true
+            realm.forEachMessagePageWhile({ selected(selection) }) { page ->
+                for (message in page) {
+                    more = more && block(message)
+                    if (!more) break
+                }
+                more
+            }
+        }
+
+    override fun deleteMessages(selection: MessageSelection) =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+
+            var uris = emptyList<Uri>()
+            realm.drainMessages(
+                { selected(selection) },
+                afterEach = { deleteFromTelephony(uris) },
+            ) { page ->
+                uris = page.map { it.getUri() }
+                page.deleteAllFromRealm()
+            }
+        }
 
     override fun getMessages(threadId: Long, query: String): RealmResults<Message> =
         getMessagesBase(threadId, query).findAllAsync()

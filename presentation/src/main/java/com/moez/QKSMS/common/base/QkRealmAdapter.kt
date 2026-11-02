@@ -38,7 +38,18 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
 
     val selectionChanges: Subject<List<Long>> = BehaviorSubject.create()
 
+    /** Emitted on every change by adapters that [selectAllByRange] */
+    val selections: Subject<Selection> = BehaviorSubject.create()
+
+    /** Select all by remembering the newest id, instead of listing every id */
+    protected open val selectAllByRange = false
+
     private var selection = mutableListOf<Long>()
+    private val selected = hashSetOf<Long>()
+
+    /** While everything is selected, the newest id and how many items there were */
+    private var upToId = 0L
+    private var rangeCount = 0
 
     /** Mark this message as highlighted */
     var highlight: Long = -1L
@@ -49,6 +60,14 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
             notifyDataSetChanged()
         }
 
+    private fun selectedCount(): Int =
+        when (upToId) {
+            0L -> selection.size
+            else ->
+                rangeCount - selection.count { id -> id <= upToId } +
+                    selection.count { id -> id > upToId }
+        }
+
     /**
      * Toggles the selected state for a particular view
      *
@@ -56,41 +75,72 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
      * toggle. If we are not in selection mode, then we will only toggle if [force]
      */
     protected fun toggleSelection(id: Long, force: Boolean = true): Boolean {
-        if (!force && selection.isEmpty()) return false
+        if (!force && selectedCount() == 0) return false
 
-        when (selection.contains(id)) {
+        when (selected.remove(id)) {
             true -> selection -= id
-            false -> selection += id
+            false -> {
+                selected += id
+                selection += id
+            }
+        }
+        if (upToId != 0L && selectedCount() == 0) {
+            upToId = 0
+            selection.clear()
+            selected.clear()
         }
 
-        selectionChanges.onNext(selection)
+        emitSelection()
 
         return true
     }
 
     protected fun isSelected(id: Long): Boolean {
-        return selection.contains(id)
+        return if (id <= upToId) id !in selected else id in selected
     }
 
     fun clearSelection() {
+        upToId = 0
         selection.clear()
-        selectionChanges.onNext(selection)
+        selected.clear()
+        emitSelection()
         notifyDataSetChanged()
     }
 
     fun toggleSelectAll() {
-        val needToSelectAll = (selection.size != itemCount)
+        val needToSelectAll = (selectedCount() != itemCount)
 
+        upToId = 0
         selection.clear()
+        selected.clear()
 
         if (needToSelectAll) {
-            for (position in 0 until itemCount) selection += getItemId(position)
+            val newest = if (selectAllByRange) newestId() else null
+            if (newest != null && newest > 0) {
+                upToId = newest
+                rangeCount = itemCount
+            } else {
+                for (position in 0 until itemCount) {
+                    val id = getItemId(position)
+                    if (selected.add(id)) selection += id
+                }
+            }
         }
 
         // fire a single change event now
-        selectionChanges.onNext(selection)
+        emitSelection()
 
         notifyDataSetChanged()
+    }
+
+    protected open fun newestId(): Long? = (data as? RealmResults<T>)?.max("id")?.toLong()
+
+    private fun emitSelection() {
+        selectionChanges.onNext(selection)
+        if (!selectAllByRange) return
+
+        val (except, picked) = selection.partition { id -> id <= upToId }
+        selections.onNext(Selection(upToId, except.toSet(), picked.toSet(), selectedCount()))
     }
 
     override fun getItem(index: Int): T? {
@@ -104,6 +154,9 @@ abstract class QkRealmAdapter<T : RealmModel, VH : QkViewHolder> :
 
     override fun updateData(data: OrderedRealmCollection<T>?) {
         if (getData() === data) return
+
+        // A range only describes the items it was made from
+        if (upToId != 0L) clearSelection()
 
         removeListener(getData())
         addListener(data)

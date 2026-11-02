@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import androidx.core.content.contentValuesOf
 import androidx.core.net.toFile
 import java.io.File
+import java.io.OutputStream
 import org.prauga.messages.extensions.isEmpty
 
 class FileUtils {
@@ -98,9 +99,16 @@ class FileUtils {
             uri: Uri,
             bytes: ByteArray,
             mode: String,
+        ): Exception? = writeStream(context, uri, mode) { it.write(bytes) }
+
+        private fun writeStream(
+            context: Context,
+            uri: Uri,
+            mode: String,
+            write: (OutputStream) -> Unit,
         ): Exception? =
             try {
-                context.contentResolver.openOutputStream(uri, mode)?.use { it.write(bytes) }
+                context.contentResolver.openOutputStream(uri, mode)?.use(write)
                 null
             } catch (e: Exception) {
                 e
@@ -122,10 +130,20 @@ class FileUtils {
             mimeType: String,
             bytes: ByteArray,
         ): Pair<Uri, Exception?> =
+            createAndWrite(context, location, filename, mimeType) { it.write(bytes) }
+
+        /** Like the [ByteArray] version, but [write] streams the content into the file */
+        fun createAndWrite(
+            context: Context,
+            location: Location,
+            filename: String,
+            mimeType: String,
+            write: (OutputStream) -> Unit,
+        ): Pair<Uri, Exception?> =
             create(location, context, filename, mimeType).let { (uri, e) ->
                 if (e is Exception) Pair(Uri.EMPTY, e)
                 else {
-                    val we = writeBytes(context, uri, bytes, "w")
+                    val we = writeStream(context, uri, "w", write)
                     if (we is Exception) {
                         deleteFile(uri)
                         Pair(Uri.EMPTY, we)
