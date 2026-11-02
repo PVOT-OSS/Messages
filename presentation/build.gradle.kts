@@ -59,6 +59,8 @@ android {
         includeInBundle = false
     }
 
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     lint { abortOnError = false }
 }
 
@@ -139,6 +141,9 @@ dependencies {
     testImplementation(libs.androidx.runner)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
 
     // moshi
     implementation(libs.moshi)
