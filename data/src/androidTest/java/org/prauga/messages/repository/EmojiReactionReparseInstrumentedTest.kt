@@ -18,6 +18,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.prauga.messages.extensions.MESSAGE_PAGE_SIZE
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
 import org.prauga.messages.model.EmojiSyncNeeded
@@ -74,11 +75,9 @@ class EmojiReactionReparseInstrumentedTest {
             r.insert((1..count).map { sms(it.toLong(), "message $it", it.toLong(), it % 2000 == 0) })
         }
 
-        realm.beginTransaction()
         val before = bytesAllocated()
         repository.clearEmojiReactionFlags(realm)
         val allocated = bytesAllocated() - before
-        realm.commitTransaction()
 
         assertThat(realm.where(Message::class.java).equalTo("isEmojiReaction", true).count())
             .isEqualTo(0)
@@ -199,7 +198,7 @@ class EmojiReactionReparseInstrumentedTest {
         done.set(true)
         watcher.join()
 
-        assertThat(seenBeforeDone).isAtLeast(EmojiReactionRepositoryImpl.REPARSE_BATCH_SIZE.toLong())
+        assertThat(seenBeforeDone).isAtLeast(MESSAGE_PAGE_SIZE)
         realm.refresh()
         assertThat(realm.where(EmojiReaction::class.java).count()).isEqualTo(count)
     }

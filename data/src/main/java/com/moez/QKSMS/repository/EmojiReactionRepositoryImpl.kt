@@ -13,6 +13,8 @@ import io.realm.Sort
 import javax.inject.Inject
 import org.prauga.messages.extensions.insertOrUpdate
 import org.prauga.messages.manager.KeyManager
+import org.prauga.messages.extensions.drainMessages
+import org.prauga.messages.extensions.forEachMessagePage
 import org.prauga.messages.model.EmojiReaction
 import org.prauga.messages.model.EmojiSyncNeeded
 import org.prauga.messages.model.Message
@@ -283,24 +285,21 @@ constructor(
     }
 
     internal fun clearEmojiReactionFlags(realm: Realm) {
-        realm
-            .where(Message::class.java)
-            .equalTo("isEmojiReaction", true)
-            .findAll()
-            .setBoolean("isEmojiReaction", false)
+        realm.drainMessages({ where(Message::class.java).equalTo("isEmojiReaction", true) }) { page
+            ->
+            page.setBoolean("isEmojiReaction", false)
+        }
     }
 
     override fun deleteAndReparseAllEmojiReactions(realm: Realm) {
         val startTime = System.currentTimeMillis()
 
-        realm.executeTransaction { r ->
-            r.delete(EmojiReaction::class.java)
-            clearEmojiReactionFlags(r)
-        }
+        realm.executeTransaction { r -> r.delete(EmojiReaction::class.java) }
+        clearEmojiReactionFlags(realm)
 
-        val allMessages =
-            realm
-                .where(Message::class.java)
+        // parse oldest to newest to handle reactions & removals properly
+        realm.forEachMessagePage({
+            where(Message::class.java)
                 .beginGroup()
                 .beginGroup()
                 .equalTo("type", "sms")
@@ -313,32 +312,17 @@ constructor(
                 .isNotEmpty("parts.text")
                 .endGroup()
                 .endGroup()
-                .sort(
-                    "date",
-                    Sort.ASCENDING,
-                ) // parse oldest to newest to handle reactions & removals properly
-                .findAll()
-
-        var pending = 0
-        realm.beginTransaction()
-        try {
-            allMessages.forEach { message ->
-                val parsedReaction = parseEmojiReaction(message.getText(false))
-                if (parsedReaction != null) {
-                    val targetMessage =
-                        findTargetMessage(message.threadId, parsedReaction.originalMessage, realm)
-                    saveEmojiReaction(message, parsedReaction, targetMessage, realm)
-                    if (++pending >= REPARSE_BATCH_SIZE) {
-                        realm.commitTransaction()
-                        realm.beginTransaction()
-                        pending = 0
+        }) { page ->
+            realm.executeTransaction {
+                page.forEach { message ->
+                    val parsedReaction = parseEmojiReaction(message.getText(false))
+                    if (parsedReaction != null) {
+                        val targetMessage =
+                            findTargetMessage(message.threadId, parsedReaction.originalMessage, realm)
+                        saveEmojiReaction(message, parsedReaction, targetMessage, realm)
                     }
                 }
             }
-            realm.commitTransaction()
-        } catch (e: Throwable) {
-            if (realm.isInTransaction) realm.cancelTransaction()
-            throw e
         }
 
         val endTime = System.currentTimeMillis()
@@ -351,9 +335,5 @@ constructor(
             deleteAndReparseAllEmojiReactions(realm)
             realm.executeTransaction { r -> r.delete(EmojiSyncNeeded::class.java) }
         }
-    }
-
-    companion object {
-        const val REPARSE_BATCH_SIZE = 2_000
     }
 }
