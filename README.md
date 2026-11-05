@@ -31,6 +31,8 @@ Messages is available to download from the official [github releases page](https
 <img src="https://user-images.githubusercontent.com/69304392/148696068-0cfea65d-b18f-4685-82b5-329a330b1c0d.png"
 alt="Download from GitHub releases" height="100" /></a>
 
+[![Exodus Privacy](https://img.shields.io/badge/Exodus-0%20trackers-brightgreen)](https://reports.exodus-privacy.eu.org/en/reports/org.prauga.messages/latest/)
+
 ## Chat
 
 You can chat with the community over at [@Pvot_OS:telegram](https://t.me/pvot_os)
