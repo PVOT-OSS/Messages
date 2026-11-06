@@ -56,6 +56,7 @@ class MmsSendRetryWorker(appContext: Context, workerParams: WorkerParameters) :
 
         fun clear(context: Context, messageId: Long) {
             backoff(context).clear(messageId.toString())
+            WorkManager.getInstance(context).cancelUniqueWork("mms-send-retry:$messageId")
         }
     }
 }

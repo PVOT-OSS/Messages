@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 ADAIBLOG <186315423+ADAIBLOG@users.noreply.github.com>
+     SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
+     SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
+<resources>
+    <string-array name="otp_keywords_zh">
+        <item>验证码</item>
+        <item>登录码</item>
+        <item>安全码</item>
+        <item>动态码</item>
+        <item>一次性密码</item>
+        <item>二次验证码</item>
+        <item>两步验证</item>
+        <item>校验码</item>
+        <item>确认码</item>
+        <item>认证码</item>
+        <item>动态密码</item>
+        <item>驗證碼</item>
+        <item>認證碼</item>
+        <item>安全碼</item>
+        <item>動態碼</item>
+        <item>登入碼</item>
+        <item>一次性密碼</item>
+    </string-array>
+
+    <string-array name="otp_safety_keywords_zh">
+        <item>请勿分享</item>
+        <item>切勿分享</item>
+        <item>不要分享</item>
+        <item>保密</item>
+        <item>有效期</item>
+        <item>分钟内过期</item>
+        <item>请勿泄露</item>
+        <item>请勿告诉他人</item>
+        <item>请勿转发</item>
+        <item>分钟内有效</item>
+        <item>請勿分享</item>
+        <item>請勿洩露</item>
+        <item>分鐘內有效</item>
+    </string-array>
+
+    <string-array name="otp_money_indicators_zh">
+        <item>元</item>
+        <item>人民币</item>
+        <item>¥</item>
+        <item>￥</item>
+        <item>余额</item>
+        <item>金额</item>
+        <item>订单号</item>
+    </string-array>
+</resources>

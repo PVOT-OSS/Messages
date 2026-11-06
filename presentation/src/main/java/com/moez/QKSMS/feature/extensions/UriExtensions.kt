@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -18,6 +19,7 @@ import org.prauga.messages.extensions.isAudio
 import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.extensions.resourceExists
+import timber.log.Timber
 
 enum class LoadBestIconIntoImageView {
     Missing,
@@ -51,13 +53,10 @@ fun Uri.loadBestIconIntoImageView(
 
     // if audio mime type, try and use embedded image (ie. id3 cover art) if one exists
     if (isAudio(context)) {
-        MediaMetadataRetriever().apply {
-            setDataSource(context, this@loadBestIconIntoImageView)
-            val embeddedPicture = embeddedPicture
-            if (embeddedPicture != null) {
-                Glide.with(context).load(embeddedPicture).into(imageView)
-                return retVal
-            }
+        val embeddedPicture = embeddedPicture(context)
+        if (embeddedPicture != null) {
+            Glide.with(context).load(embeddedPicture).into(imageView)
+            return retVal
         }
 
         // else, use applications built-in audio icon
@@ -81,4 +80,17 @@ fun Uri.loadBestIconIntoImageView(
     Glide.with(context).load(appIcon).into(imageView)
 
     return retVal
+}
+
+fun Uri.embeddedPicture(context: Context): ByteArray? {
+    val retriever = MediaMetadataRetriever()
+    return try {
+        retriever.setDataSource(context, this)
+        retriever.embeddedPicture
+    } catch (e: RuntimeException) {
+        Timber.w(e)
+        null
+    } finally {
+        runCatching { retriever.release() }
+    }
 }

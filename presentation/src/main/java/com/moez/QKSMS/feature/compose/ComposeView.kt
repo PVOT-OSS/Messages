@@ -15,6 +15,7 @@ import com.moez.QKSMS.common.QkMediaPlayer
 import io.reactivex.Observable
 import io.reactivex.subjects.Subject
 import org.prauga.messages.common.base.QkView
+import org.prauga.messages.common.base.Selection
 import org.prauga.messages.common.widget.MicInputCloudView
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
@@ -47,7 +48,7 @@ interface ComposeView : QkView<ComposeState> {
     val sendAsGroupIntent: Observable<*>
     val messagePartClickIntent: Subject<Long>
     val messagePartContextMenuRegistrar: Subject<View>
-    val messagesSelectedIntent: Observable<List<Long>>
+    val messagesSelectedIntent: Observable<Selection>
     val cancelSendingIntent: Subject<Long>
     val sendNowIntent: Subject<Long>
     val resendIntent: Subject<Long>
@@ -70,7 +71,7 @@ interface ComposeView : QkView<ComposeState> {
     val sendIntent: Observable<Unit>
     val viewQksmsPlusIntent: Subject<Unit>
     val backPressedIntent: Observable<Unit>
-    val confirmDeleteIntent: Observable<List<Long>>
+    val confirmDeleteIntent: Observable<Selection>
     val clearCurrentMessageIntent: Subject<Boolean>
     val messageLinkAskIntent: Observable<Uri>
     val shadeIntent: Observable<Unit>
@@ -91,7 +92,7 @@ interface ComposeView : QkView<ComposeState> {
 
     fun toggleSelectAll()
 
-    fun expandMessages(messageIds: List<Long>, expand: Boolean)
+    fun expandMessages(selection: Selection)
 
     fun showDetails(details: String)
 
@@ -115,6 +116,8 @@ interface ComposeView : QkView<ComposeState> {
 
     fun requestGallery(mimeType: String, requestCode: Int)
 
+    fun requestFile()
+
     fun requestDatePicker()
 
     fun requestContact()
@@ -125,7 +128,7 @@ interface ComposeView : QkView<ComposeState> {
 
     fun showQksmsPlusSnackbar(@StringRes message: Int)
 
-    fun showDeleteDialog(messages: List<Long>)
+    fun showDeleteDialog(selection: Selection)
 
     fun showClearCurrentMessageDialog()
 

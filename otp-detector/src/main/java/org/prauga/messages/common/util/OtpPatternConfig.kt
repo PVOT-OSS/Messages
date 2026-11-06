@@ -25,13 +25,15 @@ object OtpPatternConfig {
     /**
      * Matches numeric codes between 3-10 digits.
      *
-     * This is the primary pattern for detecting standard OTP codes. Word boundaries ensure we don't
-     * match parts of longer numbers.
+     * This is the primary pattern for detecting standard OTP codes. No ASCII letter, digit or
+     * underscore may touch the code, so it can't be part of a longer number, while Chinese text
+     * right next to it still separates it (Android's `\b` treats Chinese characters as word
+     * characters).
      *
      * Example matches: "123", "456789", "1234567890" Does not match: "12" (too short),
      * "12345678901" (too long)
      */
-    const val NUMERIC_REGEX = "\\b\\d{3,10}\\b"
+    const val NUMERIC_REGEX = "(?<![\\dA-Za-z_])\\d{3,10}(?![\\dA-Za-z_])"
 
     /**
      * Matches spaced or hyphenated numeric codes.
@@ -42,7 +44,7 @@ object OtpPatternConfig {
      * Example matches: "12-34-56", "12 34 56", "1234-5678", "12 34 56 78" Does not match: "1-2"
      * (groups too small)
      */
-    const val SPACED_NUMERIC_REGEX = "\\b\\d{2,4}([\\s-]\\d{2,4})+\\b"
+    const val SPACED_NUMERIC_REGEX = "(?<![\\dA-Za-z_])\\d{2,4}([\\s-]\\d{2,4})+(?![\\dA-Za-z_])"
 
     /**
      * Matches alphanumeric codes between 4-10 characters.
@@ -53,7 +55,7 @@ object OtpPatternConfig {
      * Example matches: "A1B2C3", "XYZ123", "abc123def", "1A2B3C4D5E" Does not match: "ABC" (no
      * numbers), "123" (no letters), "A1B" (too short)
      */
-    const val ALPHANUMERIC_REGEX = "\\b[0-9A-Za-z]{4,10}\\b"
+    const val ALPHANUMERIC_REGEX = "(?<![\\dA-Za-z_])[0-9A-Za-z]{4,10}(?![\\dA-Za-z_])"
 
     /**
      * Pattern to identify lines containing OTP-related keywords.

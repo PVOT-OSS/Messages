@@ -11,6 +11,7 @@ import android.animation.LayoutTransition
 import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.ContentValues
@@ -62,6 +63,7 @@ import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.base.Selection
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.autoScrollToStart
 import org.prauga.messages.common.util.extensions.dpToPx
@@ -79,6 +81,7 @@ import org.prauga.messages.feature.compose.editing.ChipsAdapter
 import org.prauga.messages.feature.contacts.ContactsActivity
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Recipient
+import timber.log.Timber
 
 class ComposeActivity :
     QkThemedActivity<ComposeActivityBinding>(ComposeActivityBinding::inflate), ComposeView {
@@ -102,7 +105,7 @@ class ComposeActivity :
     override val messagePartContextMenuRegistrar: Subject<View> by lazy {
         messageAdapter.partContextMenuRegistrar
     }
-    override val messagesSelectedIntent by lazy { messageAdapter.selectionChanges }
+    override val messagesSelectedIntent by lazy { messageAdapter.selections }
     override val cancelSendingIntent: Subject<Long> by lazy { messageAdapter.cancelSendingClicks }
     override val sendNowIntent: Subject<Long> by lazy { messageAdapter.sendNowClicks }
     override val resendIntent: Subject<Long> by lazy { messageAdapter.resendClicks }
@@ -140,7 +143,7 @@ class ComposeActivity :
     }
     override val viewQksmsPlusIntent: Subject<Unit> = PublishSubject.create()
     override val backPressedIntent: Subject<Unit> = PublishSubject.create()
-    override val confirmDeleteIntent: Subject<List<Long>> = PublishSubject.create()
+    override val confirmDeleteIntent: Subject<Selection> = PublishSubject.create()
     override val clearCurrentMessageIntent: Subject<Boolean> = PublishSubject.create()
     override val messageLinkAskIntent: Subject<Uri> by lazy { messageAdapter.messageLinkClicks }
     override val shadeIntent by lazy { binding.shadeBackground.clicks() }
@@ -534,8 +537,8 @@ class ComposeActivity :
         messageAdapter.toggleSelectAll()
     }
 
-    override fun expandMessages(messageIds: List<Long>, expand: Boolean) {
-        messageAdapter.expandMessages(messageIds, expand)
+    override fun expandMessages(selection: Selection) {
+        messageAdapter.expandMessages(selection)
     }
 
     override fun showDetails(details: String) {
@@ -547,11 +550,6 @@ class ComposeActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun showMessageLinkAskDialog(uri: Uri) {
@@ -566,11 +564,6 @@ class ComposeActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun requestDefaultSms() {
@@ -673,10 +666,19 @@ class ComposeActivity :
                     contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv)
                 }
 
+        val destination = cameraDestination ?: return
         val intent =
             Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                .putExtra(MediaStore.EXTRA_OUTPUT, cameraDestination)
-        startActivityForResult(Intent.createChooser(intent, null), ComposeView.TakePhotoRequestCode)
+                .putExtra(MediaStore.EXTRA_OUTPUT, destination)
+                .addFlags(
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                )
+        intent.clipData = ClipData.newRawUri(null, destination)
+        try {
+            startActivityForResult(intent, ComposeView.TakePhotoRequestCode)
+        } catch (e: ActivityNotFoundException) {
+            Timber.w(e)
+        }
     }
 
     override fun requestGallery(mimeType: String, requestCode: Int) {
@@ -688,6 +690,19 @@ class ComposeActivity :
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .setType(mimeType)
         startActivityForResult(Intent.createChooser(intent, null), requestCode)
+    }
+
+    override fun requestFile() {
+        val intent =
+            Intent(Intent.ACTION_GET_CONTENT)
+                .addCategory(Intent.CATEGORY_OPENABLE)
+                .putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                .setType("*/*")
+        try {
+            startActivityForResult(intent, ComposeView.AttachAFileRequestCode)
+        } catch (e: ActivityNotFoundException) {
+            Timber.w(e)
+        }
     }
 
     override fun setDraft(draft: String) {
@@ -711,24 +726,19 @@ class ComposeActivity :
         }
     }
 
-    override fun showDeleteDialog(messages: List<Long>) {
-        val count = messages.size
+    override fun showDeleteDialog(selection: Selection) {
+        val count = selection.count
         val dialog =
             AlertDialog.Builder(this, R.style.AppThemeDialog)
                 .setTitle(R.string.dialog_delete_title)
                 .setMessage(resources.getQuantityString(R.plurals.dialog_delete_chat, count, count))
                 .setPositiveButton(R.string.button_delete) { _, _ ->
-                    confirmDeleteIntent.onNext(messages)
+                    confirmDeleteIntent.onNext(selection)
                 }
                 .setNegativeButton(R.string.button_cancel, null)
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun showClearCurrentMessageDialog() {
@@ -743,11 +753,6 @@ class ComposeActivity :
                 .create()
 
         dialog.show()
-
-        theme.take(1).autoDispose(scope()).subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

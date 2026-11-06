@@ -11,9 +11,12 @@ import com.squareup.moshi.Moshi
 import io.realm.Realm
 import io.realm.Sort
 import javax.inject.Inject
+import org.prauga.messages.extensions.drainMessages
+import org.prauga.messages.extensions.forEachMessagePage
 import org.prauga.messages.extensions.insertOrUpdate
 import org.prauga.messages.manager.KeyManager
 import org.prauga.messages.model.EmojiReaction
+import org.prauga.messages.model.EmojiSyncNeeded
 import org.prauga.messages.model.Message
 import org.prauga.messages.util.EmojiPatternStrings
 import timber.log.Timber
@@ -151,8 +154,6 @@ constructor(
     }
 
     override fun parseEmojiReaction(body: String): ParsedEmojiReaction? {
-        Timber.d("Attempting to parse reaction from body: '$body'")
-
         val removal = parseRemoval(body)
         if (removal != null) return removal
 
@@ -167,7 +168,6 @@ constructor(
             return result
         }
 
-        Timber.d("No reaction pattern matched for body: '$body'")
         return null
     }
 
@@ -195,37 +195,24 @@ constructor(
         originalMessageText: String,
         realm: Realm,
     ): Message? {
-        val startTime = System.currentTimeMillis()
-        val messages =
+        val text = originalMessageText.trim()
+        val match =
             realm
                 .where(Message::class.java)
                 .equalTo("threadId", threadId)
+                .beginGroup()
+                .contains("body", text)
+                .or()
+                .contains("parts.text", text.lineSequence().first())
+                .endGroup()
                 .sort("date", Sort.DESCENDING)
                 .findAll()
-        val endTime = System.currentTimeMillis()
-        Timber.d(
-            "Searching for target message in thread $threadId: found ${messages.size} messages in ${endTime - startTime}ms"
-        )
-        Timber.d("Looking for message text: '$originalMessageText'")
+                .find { message -> message.getText(false).trim() == text }
 
-        val match =
-            messages.find { message ->
-                val msgText = message.getText(false).trim()
-                val matches = msgText == originalMessageText.trim()
-                if (!matches && msgText.isNotEmpty()) {
-                    Timber.v("  Checked message ${message.id}: '$msgText' - no match")
-                }
-                matches
-            }
-        if (match != null) {
-            Timber.d("Found match for reaction target: message ID ${match.id}")
-            return match
+        if (match == null) {
+            Timber.w("No target message found for a reaction in thread $threadId")
         }
-
-        Timber.w(
-            "No target message found for reaction text: '$originalMessageText' in thread $threadId"
-        )
-        return null
+        return match
     }
 
     private fun removeEmojiReaction(
@@ -297,15 +284,22 @@ constructor(
         }
     }
 
+    internal fun clearEmojiReactionFlags(realm: Realm) {
+        realm.drainMessages({ where(Message::class.java).equalTo("isEmojiReaction", true) }) { page
+            ->
+            page.setBoolean("isEmojiReaction", false)
+        }
+    }
+
     override fun deleteAndReparseAllEmojiReactions(realm: Realm) {
         val startTime = System.currentTimeMillis()
 
-        realm.delete(EmojiReaction::class.java)
-        realm.where(Message::class.java).findAll().map { it.isEmojiReaction = false }
+        realm.executeTransaction { r -> r.delete(EmojiReaction::class.java) }
+        clearEmojiReactionFlags(realm)
 
-        val allMessages =
-            realm
-                .where(Message::class.java)
+        // parse oldest to newest to handle reactions & removals properly
+        realm.forEachMessagePage({
+            where(Message::class.java)
                 .beginGroup()
                 .beginGroup()
                 .equalTo("type", "sms")
@@ -318,23 +312,32 @@ constructor(
                 .isNotEmpty("parts.text")
                 .endGroup()
                 .endGroup()
-                .sort(
-                    "date",
-                    Sort.ASCENDING,
-                ) // parse oldest to newest to handle reactions & removals properly
-                .findAll()
-
-        allMessages.forEach { message ->
-            val text = message.getText(false)
-            val parsedReaction = parseEmojiReaction(text)
-            if (parsedReaction != null) {
-                val targetMessage =
-                    findTargetMessage(message.threadId, parsedReaction.originalMessage, realm)
-                saveEmojiReaction(message, parsedReaction, targetMessage, realm)
+        }) { page ->
+            realm.executeTransaction {
+                page.forEach { message ->
+                    val parsedReaction = parseEmojiReaction(message.getText(false))
+                    if (parsedReaction != null) {
+                        val targetMessage =
+                            findTargetMessage(
+                                message.threadId,
+                                parsedReaction.originalMessage,
+                                realm,
+                            )
+                        saveEmojiReaction(message, parsedReaction, targetMessage, realm)
+                    }
+                }
             }
         }
 
         val endTime = System.currentTimeMillis()
         Timber.d("Deleted and reparsed all emoji reactions in ${endTime - startTime}ms")
+    }
+
+    override fun reparseIfNeeded() {
+        Realm.getDefaultInstance().use { realm ->
+            if (realm.where(EmojiSyncNeeded::class.java).count() == 0L) return
+            deleteAndReparseAllEmojiReactions(realm)
+            realm.executeTransaction { r -> r.delete(EmojiSyncNeeded::class.java) }
+        }
     }
 }

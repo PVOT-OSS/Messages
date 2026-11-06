@@ -5,31 +5,23 @@
  */
 
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.pvot.android.application)
     id("realm-android") // must come before Kotlin plugins
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.legacy.kapt)
 }
 
 android {
     namespace = "org.prauga.messages"
-    compileSdk { version = release(36) }
 
     defaultConfig {
         applicationId = "org.prauga.messages"
         minSdk = 24
-        targetSdk = 36
 
         versionCode = 12
         versionName = "1.0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    extensions
-        .getByType(BasePluginExtension::class.java)
-        .archivesName
-        .set("Messages-v${defaultConfig.versionName}")
 
     buildFeatures {
         buildConfig = true
@@ -56,7 +48,10 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             signingConfig = signingConfigs.getByName("platform")
         }
     }
@@ -67,8 +62,12 @@ android {
         includeInBundle = false
     }
 
+    testOptions { unitTests.isIncludeAndroidResources = true }
+
     lint { abortOnError = false }
 }
+
+base { archivesName = "Messages-v${android.defaultConfig.versionName}" }
 
 dependencies {
     // lifecycle
@@ -84,6 +83,7 @@ dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.viewpager2)
     implementation(libs.material)
+    implementation(libs.pvot.design.system.views)
     implementation(libs.androidx.work.runtime.ktx)
 
     // conductor
@@ -145,6 +145,9 @@ dependencies {
     testImplementation(libs.androidx.runner)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.test.core)
 
     // moshi
     implementation(libs.moshi)

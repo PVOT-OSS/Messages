@@ -152,10 +152,5 @@ class ConversationInfoController(val threadId: Long = 0) :
                 .create()
 
         dialog.show()
-
-        themedActivity?.theme?.take(1)?.autoDispose(scope())?.subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 }

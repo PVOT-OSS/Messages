@@ -53,7 +53,11 @@ import kotlin.math.sqrt
 import org.prauga.messages.carrier.CarrierMmsConfig
 import org.prauga.messages.common.util.extensions.now
 import org.prauga.messages.compat.TelephonyCompat
+import org.prauga.messages.extensions.MESSAGE_PAGE_SIZE
 import org.prauga.messages.extensions.anyOf
+import org.prauga.messages.extensions.drainMessages
+import org.prauga.messages.extensions.forEachMessagePage
+import org.prauga.messages.extensions.forEachMessagePageWhile
 import org.prauga.messages.extensions.isImage
 import org.prauga.messages.extensions.isVideo
 import org.prauga.messages.extensions.resourceExists
@@ -63,6 +67,7 @@ import org.prauga.messages.mapper.CursorToPart
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
+import org.prauga.messages.model.MessageSelection
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.model.ReceivedSmsDetails
 import org.prauga.messages.receiver.SendSmsReceiver
@@ -98,8 +103,10 @@ constructor(
     }
 
     private fun getMessagesBase(threadId: Long, query: String) =
-        Realm.getDefaultInstance()
-            .where(Message::class.java)
+        Realm.getDefaultInstance().shownMessages(threadId, query).sort("date")
+
+    private fun Realm.shownMessages(threadId: Long, query: String) =
+        where(Message::class.java)
             .equalTo("threadId", threadId)
             .equalTo("isEmojiReaction", false)
             .let {
@@ -113,7 +120,51 @@ constructor(
                             .endGroup()
                 }
             }
-            .sort("date")
+
+    private fun Realm.selected(selection: MessageSelection) =
+        shownMessages(selection.threadId, selection.query)
+            .beginGroup()
+            .beginGroup()
+            .lessThanOrEqualTo("id", selection.upToId)
+            .apply {
+                if (selection.except.isNotEmpty()) {
+                    not().`in`("id", selection.except.toTypedArray())
+                }
+            }
+            .endGroup()
+            .apply {
+                if (selection.picked.isNotEmpty()) {
+                    or().`in`("id", selection.picked.toTypedArray())
+                }
+            }
+            .endGroup()
+
+    override fun forEachMessage(selection: MessageSelection, block: (Message) -> Boolean) =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            var more = true
+            realm.forEachMessagePageWhile({ selected(selection) }) { page ->
+                for (message in page) {
+                    more = more && block(message)
+                    if (!more) break
+                }
+                more
+            }
+        }
+
+    override fun deleteMessages(selection: MessageSelection) =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+
+            var uris = emptyList<Uri>()
+            realm.drainMessages(
+                { selected(selection) },
+                afterEach = { deleteFromTelephony(uris) },
+            ) { page ->
+                uris = page.map { it.getUri() }
+                page.deleteAllFromRealm()
+            }
+        }
 
     override fun getMessages(threadId: Long, query: String): RealmResults<Message> =
         getMessagesBase(threadId, query).findAllAsync()
@@ -237,15 +288,39 @@ constructor(
         return uri
     }
 
-    override fun getUnreadUnseenMessages(threadId: Long): RealmResults<Message> =
+    override fun getUnreadUnseenMessages(threadId: Long, limit: Long): RealmResults<Message> =
         Realm.getDefaultInstance()
             .also { it.refresh() }
-            .where(Message::class.java)
+            .unreadUnseen(threadId)
+            .sort("date", Sort.DESCENDING)
+            .limit(limit)
+            .findAll()
+
+    override fun getUnreadUnseenCount(threadId: Long): Long =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+            realm.unreadUnseen(threadId).count()
+        }
+
+    override fun deleteUnreadUnseenMessages(threadId: Long, date: Long) =
+        Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
+
+            var uris = emptyList<Uri>()
+            realm.drainMessages(
+                { unreadUnseen(threadId).lessThanOrEqualTo("date", date) },
+                afterEach = { deleteFromTelephony(uris) },
+            ) { page ->
+                uris = page.map { it.getUri() }
+                page.deleteAllFromRealm()
+            }
+        }
+
+    private fun Realm.unreadUnseen(threadId: Long) =
+        where(Message::class.java)
             .equalTo("seen", false)
             .equalTo("read", false)
             .equalTo("threadId", threadId)
-            .sort("date")
-            .findAll()
 
     override fun getUnreadMessages(threadId: Long): RealmResults<Message> =
         Realm.getDefaultInstance()
@@ -310,38 +385,29 @@ constructor(
         return countUpdated // a mix of convo and message updates, so not overly useful. meh
     }
 
-    override fun markAllSeen() =
-        mutableSetOf<Long>().let { threadIds ->
-            Realm.getDefaultInstance()
-                .use { realm ->
-                    realm
-                        .where(Message::class.java)
-                        .equalTo("seen", false)
-                        .findAll()
-                        .takeIf { it.isNotEmpty() }
-                        ?.let { messages ->
-                            realm.executeTransaction {
-                                messages.forEach {
-                                    it.seen = true
-                                    threadIds += it.threadId
-                                }
-                            }
-                        }
-                }
-                .run { telephonyMarkSeenRead(true, null, threadIds) }
+    override fun markAllSeen(): Int {
+        var updated = -1
+        var threadIds = emptySet<Long>()
+        Realm.getDefaultInstance().use { realm ->
+            realm.drainMessages(
+                { where(Message::class.java).equalTo("seen", false) },
+                afterEach = { updated = telephonyMarkSeenRead(true, null, threadIds) },
+            ) { page ->
+                threadIds = page.mapTo(mutableSetOf()) { it.threadId }
+                page.setBoolean("seen", true)
+            }
         }
+        return updated
+    }
 
     override fun markSeen(threadId: Long) =
         Realm.getDefaultInstance()
             .use { realm ->
-                realm
-                    .where(Message::class.java)
-                    .equalTo("threadId", threadId)
-                    .equalTo("seen", false)
-                    .findAll()
-                    .let { messages ->
-                        realm.executeTransaction { messages.forEach { it.seen = true } }
-                    }
+                realm.drainMessages({
+                    where(Message::class.java).equalTo("threadId", threadId).equalTo("seen", false)
+                }) { page ->
+                    page.setBoolean("seen", true)
+                }
             }
             .run { telephonyMarkSeenRead(true, null, listOf(threadId)) }
 
@@ -351,23 +417,18 @@ constructor(
             ?.let {
                 Realm.getDefaultInstance()
                     ?.use { realm ->
-                        realm
-                            .where(Message::class.java)
-                            .anyOf("threadId", threadIds.toLongArray())
-                            .beginGroup()
-                            .equalTo("read", false)
-                            .or()
-                            .equalTo("seen", false)
-                            .endGroup()
-                            .findAll()
-                            .let { messages ->
-                                realm.executeTransaction {
-                                    messages.forEach {
-                                        it.seen = true
-                                        it.read = true
-                                    }
-                                }
-                            }
+                        realm.drainMessages({
+                            where(Message::class.java)
+                                .anyOf("threadId", threadIds.toLongArray())
+                                .beginGroup()
+                                .equalTo("read", false)
+                                .or()
+                                .equalTo("seen", false)
+                                .endGroup()
+                        }) { page ->
+                            page.setBoolean("seen", true)
+                            page.setBoolean("read", true)
+                        }
                     }
                     .run { telephonyMarkSeenRead(true, true, threadIds) }
             } ?: 0
@@ -511,11 +572,9 @@ constructor(
 
                     // Get the image dimensions
                     val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                    BitmapFactory.decodeStream(
-                        context.contentResolver.openInputStream(uri),
-                        null,
-                        options,
-                    )
+                    context.contentResolver.openInputStream(uri)?.use { stream ->
+                        BitmapFactory.decodeStream(stream, null, options)
+                    }
                     val width = options.outWidth
                     val height = options.outHeight
                     val aspectRatio = width.toFloat() / height.toFloat()
@@ -1471,38 +1530,46 @@ constructor(
         Realm.getDefaultInstance().use { realm ->
             realm.refresh()
 
-            val messages =
-                realm.where(Message::class.java).anyOf("id", messageIds.toLongArray()).findAll()
-
-            val uris = messages.map { it.getUri() }
-
-            realm.executeTransaction { messages.deleteAllFromRealm() }
-
-            uris.forEach { uri -> context.contentResolver.delete(uri, null, null) }
+            var uris = emptyList<Uri>()
+            messageIds.asSequence().chunked(MESSAGE_PAGE_SIZE.toInt()).forEach { ids ->
+                realm.drainMessages(
+                    { where(Message::class.java).anyOf("id", ids.toLongArray()) },
+                    afterEach = { deleteFromTelephony(uris) },
+                ) { page ->
+                    uris = page.map { it.getUri() }
+                    page.deleteAllFromRealm()
+                }
+            }
         }
 
-    override fun getOldMessageCounts(maxAgeDays: Int) =
+    override fun getOldMessageCounts(maxAgeDays: Int): Map<Long, Int> {
+        val before = now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())
+        val counts = mutableMapOf<Long, Int>()
         Realm.getDefaultInstance().use { realm ->
-            realm
-                .where(Message::class.java)
-                .lessThan("date", now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong()))
-                .findAll()
-                .groupingBy { message -> message.threadId }
-                .eachCount()
+            realm.forEachMessagePage({ where(Message::class.java).lessThan("date", before) }) { page
+                ->
+                page.forEach { message ->
+                    counts[message.threadId] = (counts[message.threadId] ?: 0) + 1
+                }
+            }
         }
+        return counts
+    }
 
-    override fun deleteOldMessages(maxAgeDays: Int) =
+    override fun deleteOldMessages(maxAgeDays: Int) {
+        val before = now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong())
+        var uris = emptyList<Uri>()
         Realm.getDefaultInstance().use { realm ->
-            val messages =
-                realm
-                    .where(Message::class.java)
-                    .lessThan("date", now() - TimeUnit.DAYS.toMillis(maxAgeDays.toLong()))
-                    .findAll()
-
-            val uris = messages.map { it.getUri() }
-
-            realm.executeTransaction { messages.deleteAllFromRealm() }
-
-            uris.forEach { uri -> context.contentResolver.delete(uri, null, null) }
+            realm.drainMessages(
+                { where(Message::class.java).lessThan("date", before) },
+                afterEach = { deleteFromTelephony(uris) },
+            ) { page ->
+                uris = page.map { it.getUri() }
+                page.deleteAllFromRealm()
+            }
         }
+    }
+
+    private fun deleteFromTelephony(uris: List<Uri>) =
+        uris.forEach { uri -> context.contentResolver.delete(uri, null, null) }
 }

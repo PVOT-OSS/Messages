@@ -22,3 +22,21 @@ sealed class ConversationInfoItem {
 
     data class ConversationInfoMedia(val value: MmsPart) : ConversationInfoItem()
 }
+
+/** The recipients and settings, followed by [media] read one item at a time */
+class ConversationInfoItems(
+    private val header: List<ConversationInfoItem>,
+    private val media: List<MmsPart>,
+) : AbstractList<ConversationInfoItem>() {
+
+    override val size: Int
+        get() = header.size + media.size
+
+    override fun get(index: Int): ConversationInfoItem =
+        header.getOrNull(index)
+            ?: ConversationInfoItem.ConversationInfoMedia(media[index - header.size])
+
+    override fun equals(other: Any?) = this === other
+
+    override fun hashCode() = System.identityHashCode(this)
+}

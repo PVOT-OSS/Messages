@@ -51,12 +51,12 @@ constructor(private val context: Context, private val colors: Colors) :
                 val binding = ConversationRecipientListItemBinding.inflate(inflater, parent, false)
                 QkViewHolder(binding.root).apply {
                     binding.root.setOnClickListener {
-                        val item = getItem(adapterPosition) as? ConversationInfoRecipient
+                        val item = getItemOrNull(adapterPosition) as? ConversationInfoRecipient
                         item?.value?.id?.run(recipientClicks::onNext)
                     }
 
                     binding.root.setOnLongClickListener {
-                        val item = getItem(adapterPosition) as? ConversationInfoRecipient
+                        val item = getItemOrNull(adapterPosition) as? ConversationInfoRecipient
                         item?.value?.id?.run(recipientLongClicks::onNext)
                         true
                     }
@@ -79,7 +79,7 @@ constructor(private val context: Context, private val colors: Colors) :
                 val binding = ConversationMediaListItemBinding.inflate(inflater, parent, false)
                 QkViewHolder(binding.root).apply {
                     binding.root.setOnClickListener {
-                        val item = getItem(adapterPosition) as? ConversationInfoMedia
+                        val item = getItemOrNull(adapterPosition) as? ConversationInfoMedia
                         item?.value?.id?.run(mediaClicks::onNext)
                     }
                 }

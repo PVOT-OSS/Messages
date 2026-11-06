@@ -4,19 +4,14 @@
  */
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.pvot.android.library)
+    alias(libs.plugins.legacy.kapt)
 }
 
 android {
     namespace = "org.prauga.messages.telephony"
-    compileSdk { version = release(36) }
 
-    defaultConfig {
-        minSdk = 23
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
+    defaultConfig { minSdk = 24 }
 
     lint { abortOnError = false }
 }

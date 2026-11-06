@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2017 Moez Bhatti <moez.bhatti@gmail.com>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -71,7 +72,7 @@ constructor(private val context: Context, private val colors: Colors) :
 
         return QkBindingViewHolder(binding).apply {
             binding.root.setOnClickListener {
-                val menuItem = getItem(adapterPosition)
+                val menuItem = getItemOrNull(adapterPosition) ?: return@setOnClickListener
                 menuItemClicks.onNext(menuItem.actionId)
             }
         }

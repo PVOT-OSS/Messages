@@ -2,9 +2,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 [versions]
-agp = "8.13.2"
+agp = "9.5.0"
 firebase-crashlytics-gradle = "3.0.6"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 appcompat = "1.7.1"
 autodispose-android-archcomponents = "1.4.1"
 conductor = "3.2.0"
@@ -23,7 +23,7 @@ kotlinx-coroutines-core = "1.8.0"
 ktx = "1.17.0"
 libphonenumber-android = "9.0.17"
 lifecycle = "2.10.0"
-material = "1.13.0"
+material = "1.14.0"
 mockito-android = "5.7.0"
 moshi = "1.15.2"
 okhttp3 = "4.12.0"
@@ -98,6 +98,7 @@ moshi-kotlin = { module = "com.squareup.moshi:moshi-kotlin", version.ref = "mosh
 moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
 okhttp3-okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp3" }
 photoview = { module = "com.github.chrisbanes:photoview", version.ref = "photoview" }
+pvot-design-system-views = { module = "com.prauga.pvot:design-system-views" }
 realm-android-adapters = { module = "com.github.realm:realm-android-adapters", version.ref = "realm-android-adapters" }
 realm-android-library = { module = "io.realm:realm-android-library", version.ref = "realm-annotations" }
 realm-annotations-processor = { module = "io.realm:realm-annotations-processor", version.ref = "realm-annotations" }
@@ -127,5 +128,7 @@ truth = { module = "com.google.truth:truth", version.ref = "truth" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
+pvot-android-application = { id = "pvot.android.application" }
+pvot-android-library = { id = "pvot.android.library" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }

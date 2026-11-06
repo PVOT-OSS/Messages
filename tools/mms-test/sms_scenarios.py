@@ -50,14 +50,14 @@ class Device:
         return self.adb("shell", command, check=check)
 
     def broadcast(self, action, *extras):
-        command = ["am", "broadcast", "-a", f"org.prauga.messages.{action}", "-n", RECEIVER,
+        command = ["am", "broadcast", "--user", "current", "-a", f"org.prauga.messages.{action}", "-n", RECEIVER,
                    *extras]
         self.adb("shell", " ".join(shlex.quote(c) for c in command))
 
     def rows(self, limit=60):
         columns = ["_id", "thread_id", "address", "type", "status", "error_code", "read", "seen",
                    "protocol", "reply_path_present", "service_center", "date", "date_sent", "body"]
-        command = ["am", "broadcast", "-a", "org.prauga.messages.TEST_SMS_DUMP", "-n", RECEIVER,
+        command = ["am", "broadcast", "--user", "current", "-a", "org.prauga.messages.TEST_SMS_DUMP", "-n", RECEIVER,
                    "--ei", "limit", str(limit)]
         output = self.adb("shell", " ".join(shlex.quote(c) for c in command))
         match = re.search(r'data="(.*)"\s*$', output, re.S)

@@ -30,7 +30,6 @@ import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.withLatestFrom
@@ -48,6 +47,7 @@ import org.prauga.messages.R
 import org.prauga.messages.carrier.CarrierMmsConfig
 import org.prauga.messages.common.Navigator
 import org.prauga.messages.common.base.QkViewModel
+import org.prauga.messages.common.base.Selection
 import org.prauga.messages.common.util.ClipboardUtils
 import org.prauga.messages.common.util.MessageDetailsFormatter
 import org.prauga.messages.common.util.extensions.makeToast
@@ -74,9 +74,10 @@ import org.prauga.messages.manager.PermissionManager
 import org.prauga.messages.model.Attachment
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
+import org.prauga.messages.model.MessageSelection
 import org.prauga.messages.model.MmsPart
 import org.prauga.messages.model.Recipient
-import org.prauga.messages.model.getText
+import org.prauga.messages.model.appendMessageText
 import org.prauga.messages.repository.ContactRepository
 import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.EmojiReactionRepository
@@ -90,6 +91,9 @@ import org.prauga.messages.util.SmsSettings
 import org.prauga.messages.util.runAfter
 import org.prauga.messages.util.tryOrNull
 import timber.log.Timber
+
+/** The clipboard goes through a Binder transaction, which fails above about 1 MB */
+private const val MAX_COPY_CHARS = 250_000
 
 class ComposeViewModel
 @Inject
@@ -454,11 +458,13 @@ constructor(
         // Copy the message contents
         view.optionsItemIntent
             .filter { it == R.id.copy }
-            .withLatestFrom(view.messagesSelectedIntent) { _, messageIds ->
-                ClipboardUtils.copy(
-                    context,
-                    messageIds.mapNotNull(messageRepo::getMessage).sortedBy { it.date }.getText(),
-                )
+            .withLatestFrom(view.messagesSelectedIntent, conversation) { _, selection, conversation
+                ->
+                val text = StringBuilder()
+                appendSelectedText(selection.of(conversation), text) {
+                    text.length < MAX_COPY_CHARS
+                }
+                ClipboardUtils.copy(context, text.toString())
             }
             .autoDispose(view.scope())
             .subscribe { view.clearSelection() }
@@ -467,8 +473,11 @@ constructor(
         view.optionsItemIntent
             .filter { it == R.id.share }
             .observeOn(Schedulers.io())
-            .withLatestFrom(view.messagesSelectedIntent) { _, messageIds -> messageIds }
-            .mapNotNull { messageIds ->
+            .withLatestFrom(view.messagesSelectedIntent, conversation) { _, selection, conversation
+                ->
+                selection.of(conversation)
+            }
+            .mapNotNull { selection ->
                 val filename =
                     "$SAVED_MESSAGE_TEXT_FILE_PREFIX${
                     SimpleDateFormat(
@@ -486,12 +495,12 @@ constructor(
                         FileUtils.Companion.Location.Cache,
                         filename,
                         mimeType,
-                        messageIds
-                            .mapNotNull(messageRepo::getMessage)
-                            .sortedBy { it.date }
-                            .getText()
-                            .toByteArray(),
-                    )
+                    ) { stream ->
+                        stream.bufferedWriter().let { writer ->
+                            appendSelectedText(selection, writer)
+                            writer.flush()
+                        }
+                    }
 
                 if (e is Exception) Pair(filename, e)
                 else {
@@ -526,8 +535,11 @@ constructor(
         // Show the message details
         view.optionsItemIntent
             .filter { it == R.id.details }
-            .withLatestFrom(view.messagesSelectedIntent) { _, messages -> messages }
-            .mapNotNull { messages -> messages.firstOrNull().also { view.clearSelection() } }
+            .withLatestFrom(view.messagesSelectedIntent, conversation) { _, selection, conversation
+                ->
+                selection.of(conversation)
+            }
+            .mapNotNull { selection -> firstSelectedId(selection).also { view.clearSelection() } }
             .mapNotNull(messageRepo::getMessage)
             .map(messageDetailsFormatter::format)
             .autoDispose(view.scope())
@@ -536,8 +548,9 @@ constructor(
         // Open the reaction picker for a single selected message
         view.optionsItemIntent
             .filter { it == R.id.react }
-            .withLatestFrom(view.messagesSelectedIntent) { _, messages ->
-                messages.firstOrNull() ?: -1L
+            .withLatestFrom(view.messagesSelectedIntent, conversation) { _, selection, conversation
+                ->
+                firstSelectedId(selection.of(conversation)) ?: -1L
             }
             .filter { it != -1L }
             .autoDispose(view.scope())
@@ -591,7 +604,7 @@ constructor(
         // Show the delete message dialog if one or more messages selected
         view.optionsItemIntent
             .filter { it == R.id.delete }
-            .withLatestFrom(view.messagesSelectedIntent) { _, selectedMessages -> selectedMessages }
+            .withLatestFrom(view.messagesSelectedIntent) { _, selection -> selection }
             .filter { permissionManager.isDefaultSms().also { if (!it) view.requestDefaultSms() } }
             .autoDispose(view.scope())
             .subscribe { view.showDeleteDialog(it) }
@@ -607,16 +620,13 @@ constructor(
         // Forward the message
         view.optionsItemIntent
             .filter { it == R.id.forward }
-            .withLatestFrom(
-                view.messagesSelectedIntent,
-                BiFunction<Int, List<Long>, Pair<Int, List<Long>>> { action, messages ->
-                    action to messages
-                },
-            )
+            .withLatestFrom(view.messagesSelectedIntent, conversation) { _, selection, conversation
+                ->
+                selection.of(conversation)
+            }
             .autoDispose(view.scope())
-            .subscribe { pair ->
-                val messages = pair?.second
-                messages?.firstOrNull()?.let { id ->
+            .subscribe { selection ->
+                firstSelectedId(selection)?.let { id ->
                     messageRepo.getMessage(id)?.let { message ->
                         navigator.showCompose(
                             message.getText(),
@@ -630,10 +640,10 @@ constructor(
         // expand message to show additional info
         view.optionsItemIntent
             .filter { it == R.id.show_status }
-            .withLatestFrom(view.messagesSelectedIntent) { _, messages -> messages }
+            .withLatestFrom(view.messagesSelectedIntent) { _, selection -> selection }
             .autoDispose(view.scope())
-            .subscribe { messageIds ->
-                view.expandMessages(messageIds, true)
+            .subscribe { selection ->
+                view.expandMessages(selection)
                 view.clearSelection()
             }
 
@@ -769,15 +779,17 @@ constructor(
 
         // Update the State when the message selected count changes
         view.messagesSelectedIntent
-            .map {
-                val selectedMessages = it.mapNotNull(messageRepo::getMessage)
-                val hasText = selectedMessages.any { msg -> msg.hasNonWhitespaceText() }
+            .withLatestFrom(conversation) { selection, conversation ->
+                val selected = selection.of(conversation)
+                val hasText =
+                    selection.count > 0 && anySelected(selected) { it.hasNonWhitespaceText() }
                 val canReact =
-                    selectedMessages.singleOrNull()?.let { msg ->
-                        !msg.isMe() && !msg.isEmojiReaction && msg.hasNonWhitespaceText()
-                    } ?: false
+                    selection.count == 1 &&
+                        anySelected(selected) { msg ->
+                            !msg.isMe() && !msg.isEmojiReaction && msg.hasNonWhitespaceText()
+                        }
 
-                Triple(selectedMessages.size, hasText, canReact)
+                Triple(selection.count, hasText, canReact)
             }
             .autoDispose(view.scope())
             .subscribe {
@@ -887,7 +899,7 @@ constructor(
         view.attachAnyFileIntent
             .doOnNext { newState { copy(attaching = false) } }
             .autoDispose(view.scope())
-            .subscribe { view.requestGallery("*/*", ComposeView.AttachAFileRequestCode) }
+            .subscribe { view.requestFile() }
 
         // Choose a time to schedule the message
         view.scheduleIntent
@@ -1366,20 +1378,22 @@ constructor(
 
         // Delete the message
         view.confirmDeleteIntent
-            .withLatestFrom(view.messagesSelectedIntent, conversation, state) {
-                _,
-                messages,
-                conversation,
-                state ->
-                Triple(messages, conversation, state)
+            .withLatestFrom(conversation, state) { selection, conversation, state ->
+                Triple(selection, conversation, state)
             }
             .autoDispose(view.scope())
-            .subscribe { (messages, conversation, state) ->
+            .subscribe { (selection, conversation, state) ->
                 val remainingMessages = state.messages?.second?.size ?: 0
                 val deletingLastMessage =
-                    remainingMessages > 0 && remainingMessages <= messages.size
+                    remainingMessages > 0 && remainingMessages <= selection.count
 
-                deleteMessages.execute(DeleteMessages.Params(messages.toList(), conversation.id)) {
+                val params =
+                    DeleteMessages.Params(
+                        emptyList(),
+                        conversation.id,
+                        selection = selection.of(conversation),
+                    )
+                deleteMessages.execute(params) {
                     if (deletingLastMessage) {
                         newState { copy(hasError = true) }
                     }
@@ -1409,4 +1423,40 @@ constructor(
 
     private fun groupMmsAllowed(subId: Int): Boolean =
         tryOrNull { CarrierMmsConfig.get(context, subId).groupMmsEnabled } ?: true
+
+    private fun Selection.of(conversation: Conversation) =
+        MessageSelection(conversation.id, upToId = upToId, except = except, picked = picked)
+
+    private fun firstSelectedId(selection: MessageSelection): Long? {
+        if (selection.upToId == 0L) return selection.picked.firstOrNull()
+        var id: Long? = null
+        messageRepo.forEachMessage(selection) { message ->
+            id = message.id
+            false
+        }
+        return id
+    }
+
+    private fun anySelected(selection: MessageSelection, predicate: (Message) -> Boolean): Boolean {
+        var found = false
+        messageRepo.forEachMessage(selection) { message ->
+            found = predicate(message)
+            !found
+        }
+        return found
+    }
+
+    /** Appends the selected messages' text, oldest first, while [more] */
+    private fun appendSelectedText(
+        selection: MessageSelection,
+        out: Appendable,
+        more: () -> Boolean = { true },
+    ) {
+        var previous: Message? = null
+        messageRepo.forEachMessage(selection) { message ->
+            out.appendMessageText(previous, message)
+            previous = message
+            more()
+        }
+    }
 }

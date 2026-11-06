@@ -1,5 +1,6 @@
 /*
  * SPDX-FileCopyrightText: 2025 gavine99 <github@xymail.tk>
+ * SPDX-FileCopyrightText: Saalim Quadri <danascape@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -15,9 +16,12 @@ fun CharSequence.isEmojiOnly(considerWhitespace: Boolean = false): Boolean {
 
     if (cs.isEmpty()) return false
 
+    val emojiCompat = if (EmojiCompat.isConfigured()) EmojiCompat.get() else return false
+    if (emojiCompat.loadState != EmojiCompat.LOAD_STATE_SUCCEEDED) return false
+
     return when (
         val spannable =
-            EmojiCompat.get().process(cs, 0, (cs.length - 1), Int.MAX_VALUE, REPLACE_STRATEGY_ALL)
+            emojiCompat.process(cs, 0, (cs.length - 1), Int.MAX_VALUE, REPLACE_STRATEGY_ALL)
     ) {
         is Spannable -> {
             (spannable.getSpans(0, (spannable.length - 1), EmojiSpan::class.java).fold(0) {

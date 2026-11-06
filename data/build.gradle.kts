@@ -5,19 +5,14 @@
  */
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.pvot.android.library)
+    alias(libs.plugins.legacy.kapt)
 }
 
 android {
     namespace = "org.prauga.messages.data"
-    compileSdk { version = release(36) }
 
-    defaultConfig {
-        minSdk = 23
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
+    defaultConfig { minSdk = 24 }
 }
 
 dependencies {
@@ -48,6 +43,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.moshi.kotlin)
     testImplementation(libs.robolectric)
     testImplementation(libs.truth)
     testImplementation(libs.androidx.runner)

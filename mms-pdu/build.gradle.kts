@@ -3,16 +3,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-}
+plugins { alias(libs.plugins.pvot.android.library) }
 
 android {
     namespace = "com.google.android.mms"
-    compileSdk { version = release(36) }
 
-    defaultConfig { minSdk = 23 }
+    defaultConfig { minSdk = 24 }
 
     testFixtures { enable = true }
 
@@ -22,6 +18,7 @@ android {
 dependencies {
     implementation(libs.timber)
     implementation(libs.kotlin.stdlib)
+    testFixturesImplementation(libs.kotlin.stdlib)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)

@@ -4,19 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-}
+plugins { alias(libs.plugins.pvot.android.library) }
 
 android {
     namespace = "org.prauga.messages.common"
-    compileSdk { version = release(36) }
 
-    defaultConfig {
-        minSdk = 23
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
+    defaultConfig { minSdk = 24 }
 }
 
 dependencies {

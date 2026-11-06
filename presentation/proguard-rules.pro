@@ -122,9 +122,6 @@
     @dagger.Provides <methods>;
 }
 
-# RxJava
--keep class io.reactivex.** { *; }
--keep class io.reactivex.subjects.** { *; }
 -keep class androidx.activity.result.** { *; }
 -keep class org.prauga.messages.** { *; }
 

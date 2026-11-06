@@ -3,16 +3,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-}
+plugins { alias(libs.plugins.pvot.android.library) }
 
 android {
     namespace = "org.prauga.messages.otp"
-    compileSdk { version = release(36) }
+    resourcePrefix = null
 
-    defaultConfig { minSdk = 23 }
+    defaultConfig { minSdk = 24 }
 
     testOptions { unitTests.isIncludeAndroidResources = true }
 

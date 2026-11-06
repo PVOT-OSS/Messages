@@ -13,8 +13,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxbinding2.view.clicks
-import com.uber.autodispose.android.lifecycle.scope
-import com.uber.autodispose.autoDispose
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
@@ -96,10 +94,5 @@ class BlockedNumbersController :
                 .create()
 
         dialog.show()
-
-        themedActivity?.theme?.take(1)?.autoDispose(scope())?.subscribe { theme ->
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(theme.theme)
-            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.setTextColor(theme.theme)
-        }
     }
 }

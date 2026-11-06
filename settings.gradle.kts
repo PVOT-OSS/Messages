@@ -4,6 +4,7 @@
  */
 
 pluginManagement {
+    includeBuild("PvotLib/build-logic")
     repositories {
         gradlePluginPortal()
         google()
@@ -32,6 +33,13 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Messages"
+
+includeBuild("PvotLib") {
+    dependencySubstitution {
+        substitute(module("com.prauga.pvot:design-system-views"))
+            .using(project(":design-system-views"))
+    }
+}
 
 include(":presentation")
 

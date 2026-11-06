@@ -144,7 +144,7 @@
         style="@style/Toolbar"
         android:layout_width="match_parent"
         android:background="@drawable/rounded_rectangle_top_4dp"
-        android:backgroundTint="?attr/colorPrimary"
+        android:backgroundTint="?attr/colorSurface"
         app:layout_constraintBottom_toTopOf="@id/messages"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_weight="1">

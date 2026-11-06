@@ -27,9 +27,11 @@ import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.prauga.messages.BuildConfig
 import org.prauga.messages.R
 import org.prauga.messages.app.utils.AppUtil.applyEdgeToEdgeInsets
 import org.prauga.messages.common.util.FileLoggingTree
+import org.prauga.messages.common.util.plantWhile
 import org.prauga.messages.injection.AppComponentManager
 import org.prauga.messages.injection.appComponent
 import org.prauga.messages.interactor.SpeakThreads
@@ -38,6 +40,7 @@ import org.prauga.messages.manager.ReferralManager
 import org.prauga.messages.migration.QkMigration
 import org.prauga.messages.migration.QkRealmMigration
 import org.prauga.messages.util.NightModeManager
+import org.prauga.messages.util.Preferences
 import org.prauga.messages.worker.HousekeepingWorker
 import org.prauga.messages.worker.SmsSendRetryWorker
 import timber.log.Timber
@@ -54,6 +57,8 @@ class QKApplication : Application(), HasAndroidInjector {
     @Inject lateinit var fileLoggingTree: FileLoggingTree
 
     @Inject lateinit var nightModeManager: NightModeManager
+
+    @Inject lateinit var prefs: Preferences
 
     @Inject lateinit var realmMigration: QkRealmMigration
 
@@ -85,8 +90,6 @@ class QKApplication : Application(), HasAndroidInjector {
 
         qkMigration.performMigration()
 
-        SmsSendRetryWorker.kick(this, resetDelays = false)
-
         GlobalScope.launch(Dispatchers.IO) {
             referralManager.trackReferrer()
             billingManager.checkForPurchases()
@@ -96,7 +99,8 @@ class QKApplication : Application(), HasAndroidInjector {
         nightModeManager.updateCurrentTheme()
 
         // configure timber logging
-        Timber.plant(Timber.DebugTree(), fileLoggingTree)
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+        fileLoggingTree.plantWhile(prefs.logging.asObservable())
 
         // configure emoji compatibility with bundled package
         // (bundled library works with no play-services/gsm os versions)
@@ -131,6 +135,8 @@ class QKApplication : Application(), HasAndroidInjector {
 
         // register, or re-register, housekeeping work manager
         HousekeepingWorker.register(applicationContext)
+
+        SmsSendRetryWorker.kick(this, resetDelays = false)
     }
 
     private fun registerActivityLifecycle() {

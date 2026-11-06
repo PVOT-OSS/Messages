@@ -198,14 +198,24 @@ open class Message : RealmObject() {
 
 // extension function to get all text from a list of messages
 fun List<Message>.getText(withSubject: Boolean = true): String =
-    foldIndexed(StringBuilder()) { index, acc, message ->
-            when {
-                index == 0 -> acc.append(message.getText(withSubject))
-
-                this[index - 1].compareSender(message) ->
-                    acc.appendLine().append(message.getText(withSubject))
-
-                else -> acc.appendLine().appendLine().append(message.getText(withSubject))
+    StringBuilder()
+        .also { text ->
+            forEachIndexed { index, message ->
+                text.appendMessageText(getOrNull(index - 1), message, withSubject)
             }
         }
         .toString()
+
+/** Appends [message] the way [getText] joins it to the [previous] one */
+fun Appendable.appendMessageText(
+    previous: Message?,
+    message: Message,
+    withSubject: Boolean = true,
+) {
+    when {
+        previous == null -> Unit
+        previous.compareSender(message) -> appendLine()
+        else -> appendLine().appendLine()
+    }
+    append(message.getText(withSubject))
+}
