@@ -2,9 +2,7 @@
 <!--
      SPDX-FileCopyrightText: 2019 Moez Bhatti <moez.bhatti@gmail.com>
      SPDX-License-Identifier: GPL-3.0-or-later
--->
-
-<resources>
+--><resources>
     <string name="shortcut_compose_long_label">Yeni konuşma</string>
     <string name="shortcut_compose_short_label">Oluştur</string>
     <string name="shortcut_compose_disabled_message">Kısayol devre dışı</string>
@@ -489,4 +487,8 @@ BAĞLAM İSTEĞİ</string>
     <string name="messageLinkHandling_dialog_body">Bazı bağlantılar güvenli olmayabilir veya sizi beklenmedik bir şekilde başka bir sayfaya yönlendirebilir. Devam etmeden önce aşağıdaki bağlantıyı inceleyin:\n\n%1$s\n\nDevam etmek istiyor musunuz?</string>
     <string name="messageLinkHandling_dialog_positive">Evet, bağlantıyı aç</string>
     <string name="messages_text_share_file_error">Paylaşırken bir sorun oluştu</string>
+    <plurals name="delete_confirmation_message">
+        <item quantity="one">mesajı silmek istediğinizden emin misiniz?</item>
+        <item quantity="other">%d mesajı silmek istediğinize emin misiniz?</item>
+    </plurals>
 </resources>
