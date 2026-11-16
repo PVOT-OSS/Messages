@@ -119,12 +119,19 @@ class TestMmsPushReceiver : MmsReceiver() {
     private fun setPref(context: Context, intent: Intent) {
         val key = intent.getStringExtra("key") ?: return
         PreferenceManager.getDefaultSharedPreferences(context).edit {
-            if (intent.hasExtra("value")) putBoolean(key, intent.getBooleanExtra("value", false))
-            else remove(key)
+            when {
+                intent.hasExtra("value") -> putBoolean(key, intent.getBooleanExtra("value", false))
+                intent.hasExtra("int") -> putInt(key, intent.getIntExtra("int", 0))
+                else -> remove(key)
+            }
         }
     }
 
     private fun testAttachment(context: Context, kind: String, index: Int): Attachment {
+        if (kind == "photo") {
+            return Attachment(context, Uri.fromFile(File(context.cacheDir, "test-photo.jpg")))
+        }
+
         fun bitmap(size: Int, format: Bitmap.CompressFormat, color: Int) =
             ByteArrayOutputStream()
                 .also { out ->
