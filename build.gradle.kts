@@ -6,6 +6,7 @@
 // Needed until we upstream
 buildscript {
     dependencies {
+        classpath(libs.kotlin.gradle.plugin)
         classpath(libs.realm.gradle.plugin)
         classpath(libs.firebase.crashlytics.gradle)
     }
