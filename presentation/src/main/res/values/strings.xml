@@ -31,6 +31,8 @@
     <string name="menu_mms_part_open">Open externally</string>
 
     <string name="main_drawer_open_cd">Open navigation drawer</string>
+    <string name="main_more_cd">More options</string>
+    <string name="main_selection_clear_cd">Clear selection</string>
     <string name="main_title_selected">%d selected</string>
     <string name="main_menu_clear">Clear</string>
     <string name="main_menu_select_all">Select all</string>
@@ -380,6 +382,7 @@
     <string name="message_content_filters_title">Message content filters</string>
     <string name="message_content_filters_empty">Your message content filters will appear here</string>
     <string name="message_content_filters_add_cd">Create a new filter</string>
+    <string name="message_content_filters_remove_cd">Remove filter</string>
     <string name="message_content_filters_dialog_title">Drop messages matching</string>
     <string name="message_content_filters_dialog_hint">Word, phrase or regular expression</string>
     <string name="message_content_filters_dialog_case_switch">Case sensitive</string>

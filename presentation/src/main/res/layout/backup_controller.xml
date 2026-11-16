@@ -70,6 +70,7 @@
 
                 <ImageView
                     android:id="@+id/progressCancel"
+                    android:contentDescription="@string/button_cancel"
                     android:layout_width="56dp"
                     android:layout_height="56dp"
                     android:background="?android:attr/selectableItemBackground"

@@ -23,6 +23,7 @@
 
     <ImageView
         android:id="@+id/unblock"
+        android:contentDescription="@string/blocking_unblock_title"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginStart="8dp"

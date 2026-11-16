@@ -41,6 +41,7 @@
 
     <ImageView
         android:id="@+id/compose"
+        android:contentDescription="@string/main_fab_cd"
         android:layout_width="48dp"
         android:layout_height="0dp"
         android:layout_alignTop="@id/toolbar"

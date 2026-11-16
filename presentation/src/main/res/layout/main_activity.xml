@@ -117,7 +117,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="center"
-                android:contentDescription="@string/main_drawer_open_cd"
+                android:contentDescription="@string/main_more_cd"
                 app:srcCompat="@drawable/ic_filter"
                 app:tint="?attr/colorOnSurface" />
 

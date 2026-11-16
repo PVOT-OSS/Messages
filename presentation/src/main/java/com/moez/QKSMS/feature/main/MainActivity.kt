@@ -584,6 +584,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override fun showBackButton(show: Boolean) =
         toggle.let {
             it.onDrawerSlide(binding.drawer.root, if (show) 1f else 0f)
+            binding.toolbar.navigationContentDescription =
+                getString(
+                    if (show) R.string.main_selection_clear_cd else R.string.main_drawer_open_cd
+                )
             it.drawerArrowDrawable.color =
                 when (show) {
                     true -> resolveThemeColor(android.R.attr.textColorSecondary)
