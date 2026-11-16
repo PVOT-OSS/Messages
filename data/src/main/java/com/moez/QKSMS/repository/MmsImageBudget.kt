@@ -12,6 +12,13 @@ object MmsImageBudget {
 
     private const val MIN_IMAGE_SIZE = 4096
 
+    /** Like [budgets], but images that all fit share the whole of [remaining] by their size */
+    fun shares(sizes: List<Int>, remaining: Double): List<Double> {
+        val budgets = budgets(sizes, remaining)
+        val total = budgets.sum()
+        return if (total < remaining) budgets.map { it / total * remaining } else budgets
+    }
+
     fun budgets(sizes: List<Int>, remaining: Double): List<Double> {
         val counted = sizes.map { max(it, MIN_IMAGE_SIZE).toDouble() }
         if (counted.sum() <= remaining) return counted

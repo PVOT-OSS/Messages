@@ -44,4 +44,20 @@ class MmsImageBudgetTest {
         assertEquals(280_000.0, budgets[1] + budgets[2], 0.5)
         assertEquals(1.5, budgets[1] / budgets[2], 0.001)
     }
+
+    @Test
+    fun givenImagesThatFit_whenShared_thenTheySplitTheWholeBudgetBySize() {
+        assertBudgets(
+            listOf(40_000.0, 80_000.0),
+            MmsImageBudget.shares(listOf(10_000, 20_000), 120_000.0),
+        )
+    }
+
+    @Test
+    fun givenImagesThatDontFit_whenShared_thenTheSameAsBudgets() {
+        assertBudgets(
+            MmsImageBudget.budgets(listOf(400_000, 100_000), 150_000.0),
+            MmsImageBudget.shares(listOf(400_000, 100_000), 150_000.0),
+        )
+    }
 }

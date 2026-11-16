@@ -541,108 +541,33 @@ constructor(
                         mmsPart
                     }
 
-            val imageBytesByAttachment =
-                attachments
-                    // filter in images only
-                    .filter { it.isImage(context) }
-                    // filter in only items that exist (user may have deleted the file)
-                    .filter { it.uri.resourceExists(context) }
-                    .associateWith {
-                        when (it.getType(context) == "image/gif") {
-                            true -> ImageUtils.getScaledGif(context, it.uri, maxWidth, maxHeight)
-                            false -> ImageUtils.getScaledImage(context, it.uri, maxWidth, maxHeight)
-                        }
+            val images =
+                attachments.filter { it.isImage(context) }.filter { it.uri.resourceExists(context) }
+            val budgets =
+                MmsImageBudget.shares(
+                    images.map { it.getSize(context).coerceIn(0, Int.MAX_VALUE.toLong()).toInt() },
+                    remainingBytes,
+                )
+            images.zip(budgets).forEach { (attachment, budget) ->
+                val gif = attachment.getType(context) == "image/gif"
+                val bytes =
+                    when (gif) {
+                        true -> scaledGif(attachment, maxWidth, maxHeight, budget)
+                        false ->
+                            ImageUtils.compressImage(
+                                context,
+                                attachment.uri,
+                                maxWidth,
+                                maxHeight,
+                                budget.toLong(),
+                            ) ?: throw compressionFailed(attachment, budget)
                     }
-                    .toMutableMap()
-
-            val imageByteCount = imageBytesByAttachment.values.sumOf { it.size }
-            if (imageByteCount > remainingBytes) {
-                val budgets =
-                    imageBytesByAttachment.keys
-                        .zip(
-                            MmsImageBudget.budgets(
-                                imageBytesByAttachment.values.map { it.size },
-                                remainingBytes,
-                            )
-                        )
-                        .toMap()
-                imageBytesByAttachment.forEach { (attachment, originalBytes) ->
-                    val uri = attachment.uri
-                    val maxBytes = budgets.getValue(attachment)
-
-                    // Get the image dimensions
-                    val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                    context.contentResolver.openInputStream(uri)?.use { stream ->
-                        BitmapFactory.decodeStream(stream, null, options)
-                    }
-                    val width = options.outWidth
-                    val height = options.outHeight
-                    val aspectRatio = width.toFloat() / height.toFloat()
-
-                    var attempts = 0
-                    var scaledBytes = originalBytes
-
-                    while (scaledBytes.size > maxBytes) {
-                        // Estimate how much we need to scale the image down by. If it's still
-                        // too big, we'll need to try smaller and smaller values
-                        val scale = maxBytes / originalBytes.size * (0.9 - attempts * 0.2)
-                        if (scale <= 0) {
-                            val errorMsg =
-                                "Failed to compress image from ${originalBytes.size / 1024}KB " +
-                                    "to fit within ${maxBytes.toInt() / 1024}KB limit. " +
-                                    "Try using a smaller image or increasing your MMS size limit in settings."
-                            Timber.e(errorMsg)
-                            throw MmsCompressionException(errorMsg, attachment.getName(context))
-                        }
-
-                        val newArea = scale * width * height
-                        val newWidth = sqrt(newArea * aspectRatio).toInt()
-                        val newHeight = (newWidth / aspectRatio).toInt()
-
-                        attempts++
-                        scaledBytes =
-                            when (attachment.getType(context) == "image/gif") {
-                                true ->
-                                    ImageUtils.getScaledGif(
-                                        context,
-                                        attachment.uri,
-                                        newWidth,
-                                        newHeight,
-                                    )
-                                false ->
-                                    ImageUtils.getScaledImage(
-                                        context,
-                                        attachment.uri,
-                                        newWidth,
-                                        newHeight,
-                                    )
-                            }
-
-                        Timber.d(
-                            "Compression attempt $attempts: ${scaledBytes.size / 1024
-                        }/${maxBytes.toInt() / 1024}Kb ($width*$height -> $newWidth*${
-                            newHeight})"
-                        )
-
-                        // release the attachment hold on the image bytes so the GC can reclaim
-                        attachment.releaseResourceBytes()
-                    }
-
-                    Timber.v(
-                        "Compressed ${originalBytes.size / 1024}Kb to ${
-                        scaledBytes.size / 1024}Kb with a target size of ${
-                        maxBytes.toInt() / 1024}Kb in $attempts attempts"
-                    )
-                    imageBytesByAttachment[attachment] = scaledBytes
-                }
-            }
-
-            imageBytesByAttachment.forEach { (attachment, bytes) ->
                 parts +=
-                    when (attachment.getType(context) == "image/gif") {
-                        true -> MMSPart(attachment.getName(context), ContentType.IMAGE_GIF, bytes)
-                        false -> MMSPart(attachment.getName(context), ContentType.IMAGE_JPEG, bytes)
-                    }
+                    MMSPart(
+                        attachment.getName(context),
+                        if (gif) ContentType.IMAGE_GIF else ContentType.IMAGE_JPEG,
+                        bytes,
+                    )
             }
 
             text?.let { bytes ->
@@ -1568,6 +1493,50 @@ constructor(
                 page.deleteAllFromRealm()
             }
         }
+    }
+
+    private fun compressionFailed(
+        attachment: Attachment,
+        maxBytes: Double,
+    ): MmsCompressionException {
+        val message =
+            "Failed to compress image to fit within ${maxBytes.toInt() / 1024}KB limit. " +
+                "Try using a smaller image or increasing your MMS size limit in settings."
+        Timber.e(message)
+        return MmsCompressionException(message, attachment.getName(context))
+    }
+
+    private fun scaledGif(
+        attachment: Attachment,
+        maxWidth: Int,
+        maxHeight: Int,
+        maxBytes: Double,
+    ): ByteArray {
+        val originalBytes = ImageUtils.getScaledGif(context, attachment.uri, maxWidth, maxHeight)
+        if (originalBytes.size <= maxBytes) return originalBytes
+
+        val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        context.contentResolver.openInputStream(attachment.uri)?.use { stream ->
+            BitmapFactory.decodeStream(stream, null, options)
+        }
+        val width = options.outWidth
+        val height = options.outHeight
+        val aspectRatio = width.toFloat() / height.toFloat()
+
+        var attempts = 0
+        var scaledBytes = originalBytes
+        while (scaledBytes.size > maxBytes) {
+            val scale = maxBytes / originalBytes.size * (0.9 - attempts * 0.2)
+            if (scale <= 0) throw compressionFailed(attachment, maxBytes)
+
+            val newArea = scale * width * height
+            val newWidth = sqrt(newArea * aspectRatio).toInt()
+            val newHeight = (newWidth / aspectRatio).toInt()
+
+            attempts++
+            scaledBytes = ImageUtils.getScaledGif(context, attachment.uri, newWidth, newHeight)
+        }
+        return scaledBytes
     }
 
     private fun deleteFromTelephony(uris: List<Uri>) =
