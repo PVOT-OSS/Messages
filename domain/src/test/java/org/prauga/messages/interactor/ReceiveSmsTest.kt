@@ -105,6 +105,7 @@ class ReceiveSmsTest {
         receiveSms.buildObservable(messageId).subscribe(testSubscriber)
 
         testSubscriber.assertComplete()
+        testSubscriber.assertValueCount(0)
         verify(messageRepo).deleteMessages(listOf(messageId))
     }
 
@@ -196,6 +197,7 @@ class ReceiveSmsTest {
         receiveSms.buildObservable(messageId).subscribe(testSubscriber)
 
         testSubscriber.assertComplete()
+        testSubscriber.assertValueCount(0)
         verify(messageRepo).deleteMessages(listOf(messageId))
     }
 
@@ -290,6 +292,7 @@ class ReceiveSmsTest {
         receiveSms.buildObservable(messageId).subscribe(testSubscriber)
 
         testSubscriber.assertComplete()
+        testSubscriber.assertValueCount(1)
         verify(notificationManager).update(threadId)
     }
 

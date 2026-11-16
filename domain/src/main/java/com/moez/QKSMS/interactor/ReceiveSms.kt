@@ -18,6 +18,7 @@ import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.util.Preferences
 import timber.log.Timber
 
+/** Emits once when the message reaches a notification, nothing when it's dropped or blocked */
 class ReceiveSms
 @Inject
 constructor(

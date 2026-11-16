@@ -17,14 +17,10 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.inOrder
-import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import org.prauga.messages.interactor.ReceiveSms
-import org.prauga.messages.model.Conversation
-import org.prauga.messages.model.Message
-import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -37,8 +33,6 @@ class SmsReceiverTest {
 
     @Mock private lateinit var messageRepository: MessageRepository
 
-    @Mock private lateinit var conversationRepository: ConversationRepository
-
     @Mock private lateinit var receiveSms: ReceiveSms
 
     private lateinit var receiver: SmsReceiver
@@ -49,14 +43,12 @@ class SmsReceiverTest {
         receiver = SmsReceiver()
         // Manually inject dependencies for testing
         receiver.messageRepo = messageRepository
-        receiver.conversationRepo = conversationRepository
         receiver.receiveSms = receiveSms
-        whenever(receiveSms.buildObservable(MESSAGE_ID)) doReturn Flowable.just(Unit)
     }
 
     @Test
-    fun givenClassZeroSms_whenReceived_thenNotifiesBeforePoppingUp() {
-        stored(blocked = false)
+    fun givenClassZeroSms_whenDelivered_thenPopsUpAfterNotifying() {
+        whenever(receiveSms.buildObservable(MESSAGE_ID)) doReturn Flowable.just(Unit)
 
         receiver.receiveClassZero(context, MESSAGE_ID)
 
@@ -73,8 +65,8 @@ class SmsReceiverTest {
     }
 
     @Test
-    fun givenClassZeroSmsDroppedByAFilter_whenReceived_thenDoesNotPopUp() {
-        whenever(messageRepository.getMessage(MESSAGE_ID)) doReturn null
+    fun givenClassZeroSmsDroppedOrBlocked_whenReceived_thenDoesNotPopUp() {
+        whenever(receiveSms.buildObservable(MESSAGE_ID)) doReturn Flowable.empty<Unit>()
 
         receiver.receiveClassZero(context, MESSAGE_ID)
 
@@ -82,19 +74,13 @@ class SmsReceiverTest {
     }
 
     @Test
-    fun givenClassZeroSmsFromABlockedSender_whenReceived_thenDoesNotPopUp() {
-        stored(blocked = true)
+    fun givenTheCheckFails_whenReceived_thenStillPopsUp() {
+        whenever(receiveSms.buildObservable(MESSAGE_ID)) doReturn
+            Flowable.error<Unit>(IllegalStateException())
 
         receiver.receiveClassZero(context, MESSAGE_ID)
 
-        verify(context, never()).startActivity(any())
-    }
-
-    private fun stored(blocked: Boolean) {
-        val message = mock<Message> { on { threadId } doReturn THREAD_ID }
-        val conversation = mock<Conversation> { on { this.blocked } doReturn blocked }
-        whenever(messageRepository.getMessage(MESSAGE_ID)) doReturn message
-        whenever(conversationRepository.getConversation(THREAD_ID)) doReturn conversation
+        verify(context).startActivity(any())
     }
 
     @Test
@@ -201,6 +187,5 @@ class SmsReceiverTest {
 
     private companion object {
         const val MESSAGE_ID = 7L
-        const val THREAD_ID = 3L
     }
 }

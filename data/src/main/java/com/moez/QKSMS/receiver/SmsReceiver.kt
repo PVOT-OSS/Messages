@@ -21,7 +21,6 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 import org.prauga.messages.interactor.ReceiveSms
 import org.prauga.messages.model.ReceivedSmsDetails
-import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.worker.ReceiveSmsWorker
 import org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
@@ -30,7 +29,6 @@ import timber.log.Timber
 
 class SmsReceiver : BroadcastReceiver() {
     @Inject lateinit var messageRepo: MessageRepository
-    @Inject lateinit var conversationRepo: ConversationRepository
     @Inject lateinit var receiveSms: ReceiveSms
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -95,11 +93,15 @@ class SmsReceiver : BroadcastReceiver() {
      * from the background only while it handles a class 0 delivery
      */
     internal fun receiveClassZero(context: Context, messageId: Long) {
-        receiveSms.buildObservable(messageId).blockingSubscribe({}, Timber::w)
-
-        // Blocking or a content filter may have dropped it
-        val threadId = messageRepo.getMessage(messageId)?.threadId ?: return
-        if (conversationRepo.getConversation(threadId)?.blocked == true) return
+        // Reading the conversation back here could see a snapshot older than the blocking check
+        val delivered =
+            try {
+                receiveSms.buildObservable(messageId).count().blockingGet() > 0
+            } catch (e: Exception) {
+                Timber.w(e, "Unable to check the class 0 SMS, showing it anyway")
+                true
+            }
+        if (!delivered) return
 
         try {
             context.startActivity(
