@@ -26,6 +26,7 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.size
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -292,16 +293,28 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             return
         }
 
-        if (!state.defaultSms) {
-            binding.notDefaultSmsView.setVisible(true)
-            binding.recyclerView.setVisible(false)
-            binding.empty.setVisible(false)
-            binding.searchPill.setVisible(false)
-            binding.compose.setVisible(false)
-            binding.filterGroup.setVisible(false)
+        val needsDefaultSms = !state.defaultSms
+        binding.notDefaultSmsView.setVisible(needsDefaultSms)
+        binding.fastScroller.setVisible(!needsDefaultSms)
+        binding.drawerLayout.setDrawerLockMode(
+            if (needsDefaultSms) DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+            else DrawerLayout.LOCK_MODE_UNLOCKED
+        )
+        if (needsDefaultSms) {
+            binding.cVTopBar2.setVisible(true)
+            listOf(
+                    binding.toolbar,
+                    binding.cVTopBar3,
+                    binding.filterGroup,
+                    binding.recyclerView,
+                    binding.empty,
+                    binding.searchPill,
+                    binding.compose,
+                    binding.syncing,
+                    binding.snackbar,
+                )
+                .forEach { it.setVisible(false) }
             return
-        } else {
-            binding.notDefaultSmsView.setVisible(false)
         }
 
         val addContact =
