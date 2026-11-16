@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
 import com.jakewharton.rxbinding2.widget.textChanges
+import com.prauga.pvot.designsystem.theme.PvotAppTheme
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
@@ -163,7 +164,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             }
         }
 
-        binding.btnChangeDefaultSms.setOnClickListener { requestDefaultSms() }
+        binding.notDefaultSmsView.setContent {
+            PvotAppTheme { DefaultSmsScreen(onChangeDefaultApp = ::requestDefaultSms) }
+        }
 
         binding.clearSearch.clicks().autoDispose(scope()).subscribe { clearSearch() }
 
