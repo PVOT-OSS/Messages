@@ -13,15 +13,15 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Telephony.Sms
 import android.telephony.SmsMessage
-import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.OutOfQuotaPolicy
 import androidx.work.WorkManager
 import androidx.work.workDataOf
 import dagger.android.AndroidInjection
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import org.prauga.messages.interactor.ReceiveSms
 import org.prauga.messages.model.ReceivedSmsDetails
+import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.prauga.messages.worker.ReceiveSmsWorker
 import org.prauga.messages.worker.ReceiveSmsWorker.Companion.INPUT_DATA_KEY_MESSAGE_ID
@@ -30,6 +30,8 @@ import timber.log.Timber
 
 class SmsReceiver : BroadcastReceiver() {
     @Inject lateinit var messageRepo: MessageRepository
+    @Inject lateinit var conversationRepo: ConversationRepository
+    @Inject lateinit var receiveSms: ReceiveSms
 
     override fun onReceive(context: Context, intent: Intent) {
         AndroidInjection.inject(this, context)
@@ -65,7 +67,7 @@ class SmsReceiver : BroadcastReceiver() {
                     .id
 
             if (sms.classZero) {
-                showClassZero(context, messageId)
+                receiveClassZero(context, messageId)
             } else {
                 // start worker with message id as param
                 WorkManager.getInstance(context)
@@ -88,16 +90,16 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    private fun showClassZero(context: Context, messageId: Long) {
-        WorkManager.getInstance(context)
-            .enqueueUniqueWork(
-                classZeroWork(messageId),
-                ExistingWorkPolicy.REPLACE,
-                OneTimeWorkRequestBuilder<ReceiveSmsWorker>()
-                    .setInputData(workDataOf(INPUT_DATA_KEY_MESSAGE_ID to messageId))
-                    .setInitialDelay(CLASS_ZERO_TIMEOUT_MINUTES, TimeUnit.MINUTES)
-                    .build(),
-            )
+    /**
+     * Runs before the broadcast finishes: the platform lets the default SMS app start an activity
+     * from the background only while it handles a class 0 delivery
+     */
+    internal fun receiveClassZero(context: Context, messageId: Long) {
+        receiveSms.buildObservable(messageId).blockingSubscribe({}, Timber::w)
+
+        // Blocking or a content filter may have dropped it
+        val threadId = messageRepo.getMessage(messageId)?.threadId ?: return
+        if (conversationRepo.getConversation(threadId)?.blocked == true) return
 
         try {
             context.startActivity(
@@ -137,8 +139,5 @@ class SmsReceiver : BroadcastReceiver() {
     companion object {
         private const val CLASS_ZERO_ACTIVITY =
             "org.prauga.messages.feature.classzero.ClassZeroActivity"
-        private const val CLASS_ZERO_TIMEOUT_MINUTES = 5L
-
-        fun classZeroWork(messageId: Long) = "class-zero:$messageId"
     }
 }

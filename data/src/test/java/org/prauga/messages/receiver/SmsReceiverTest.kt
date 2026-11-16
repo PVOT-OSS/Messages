@@ -7,11 +7,24 @@ package org.prauga.messages.receiver
 
 import android.content.Context
 import android.content.Intent
+import io.reactivex.Flowable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.inOrder
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
+import org.prauga.messages.interactor.ReceiveSms
+import org.prauga.messages.model.Conversation
+import org.prauga.messages.model.Message
+import org.prauga.messages.repository.ConversationRepository
 import org.prauga.messages.repository.MessageRepository
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -24,6 +37,10 @@ class SmsReceiverTest {
 
     @Mock private lateinit var messageRepository: MessageRepository
 
+    @Mock private lateinit var conversationRepository: ConversationRepository
+
+    @Mock private lateinit var receiveSms: ReceiveSms
+
     private lateinit var receiver: SmsReceiver
 
     @Before
@@ -32,6 +49,52 @@ class SmsReceiverTest {
         receiver = SmsReceiver()
         // Manually inject dependencies for testing
         receiver.messageRepo = messageRepository
+        receiver.conversationRepo = conversationRepository
+        receiver.receiveSms = receiveSms
+        whenever(receiveSms.buildObservable(MESSAGE_ID)) doReturn Flowable.just(Unit)
+    }
+
+    @Test
+    fun givenClassZeroSms_whenReceived_thenNotifiesBeforePoppingUp() {
+        stored(blocked = false)
+
+        receiver.receiveClassZero(context, MESSAGE_ID)
+
+        inOrder(receiveSms, context) {
+            verify(receiveSms).buildObservable(MESSAGE_ID)
+            val popup = argumentCaptor<Intent>()
+            verify(context).startActivity(popup.capture())
+            org.junit.Assert.assertEquals(
+                "org.prauga.messages.feature.classzero.ClassZeroActivity",
+                popup.firstValue.component?.className,
+            )
+            org.junit.Assert.assertEquals(MESSAGE_ID, popup.firstValue.getLongExtra("id", -1))
+        }
+    }
+
+    @Test
+    fun givenClassZeroSmsDroppedByAFilter_whenReceived_thenDoesNotPopUp() {
+        whenever(messageRepository.getMessage(MESSAGE_ID)) doReturn null
+
+        receiver.receiveClassZero(context, MESSAGE_ID)
+
+        verify(context, never()).startActivity(any())
+    }
+
+    @Test
+    fun givenClassZeroSmsFromABlockedSender_whenReceived_thenDoesNotPopUp() {
+        stored(blocked = true)
+
+        receiver.receiveClassZero(context, MESSAGE_ID)
+
+        verify(context, never()).startActivity(any())
+    }
+
+    private fun stored(blocked: Boolean) {
+        val message = mock<Message> { on { threadId } doReturn THREAD_ID }
+        val conversation = mock<Conversation> { on { this.blocked } doReturn blocked }
+        whenever(messageRepository.getMessage(MESSAGE_ID)) doReturn message
+        whenever(conversationRepository.getConversation(THREAD_ID)) doReturn conversation
     }
 
     @Test
@@ -134,5 +197,10 @@ class SmsReceiverTest {
         org.junit.Assert.assertEquals(2, nonNullBodies.size)
         org.junit.Assert.assertEquals("Hello", nonNullBodies[0])
         org.junit.Assert.assertEquals("World", nonNullBodies[1])
+    }
+
+    private companion object {
+        const val MESSAGE_ID = 7L
+        const val THREAD_ID = 3L
     }
 }

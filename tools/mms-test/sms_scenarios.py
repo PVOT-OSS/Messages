@@ -233,7 +233,7 @@ def _class_zero(ctx, button):
     shown = wait_for("the flash SMS to pop up", lambda: "ClassZeroActivity" in ctx.device.shell(
         "dumpsys activity activities | grep -E 'topResumedActivity|ResumedActivity'"), 15)
     assert shown
-    assert not any(text in n for n in ctx.device.notifications()), "it shouldn't be notified"
+    wait_for("it to alert", lambda: any(text in n for n in ctx.device.notifications()), 10)
     dump = ctx.device.shell("uiautomator dump /sdcard/ui.xml >/dev/null; cat /sdcard/ui.xml")
     match = re.search(rf'text="{button}"[^>]*bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', dump,
                       re.I)
@@ -245,11 +245,12 @@ def _class_zero(ctx, button):
 def receive_class_zero_saved(ctx):
     row, text = _class_zero(ctx, "Save")
     wait_for("it to be kept as read", lambda: (ctx.device.row(row["_id"]) or {}).get("read") == "1")
-    stays("and never notified", lambda: not any(text in n for n in ctx.device.notifications()), 3)
+    wait_for("its alert to clear", lambda: not any(text in n for n in ctx.device.notifications()))
 
 def receive_class_zero_dismissed(ctx):
-    row, _ = _class_zero(ctx, "Cancel")
+    row, text = _class_zero(ctx, "Cancel")
     wait_for("it to be dropped", lambda: ctx.device.row(row["_id"]) is None, 15)
+    wait_for("its alert to clear", lambda: not any(text in n for n in ctx.device.notifications()))
 
 def send_short(ctx):
     sends = ctx.device.sends()
