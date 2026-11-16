@@ -127,12 +127,9 @@
                 android:layout_toEndOf="@id/cancelFrame"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:orientation="horizontal">
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+                android:gravity="end"
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
 
                 <FrameLayout
                     android:layout_width="wrap_content"
