@@ -24,6 +24,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.get
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
@@ -314,6 +315,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     binding.snackbar,
                 )
                 .forEach { it.setVisible(false) }
+            binding.bottom.isInvisible = true
             return
         }
 
@@ -476,6 +478,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 binding.snackbar.isVisible = false
             }
         }
+        binding.bottom.isInvisible = !binding.snackbar.isVisible && !binding.syncing.isVisible
 
         when {
             !state.defaultSms -> {
