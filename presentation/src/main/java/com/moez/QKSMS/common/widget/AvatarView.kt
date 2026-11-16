@@ -7,9 +7,14 @@
 package org.prauga.messages.common.widget
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
@@ -91,12 +96,37 @@ class AvatarView @JvmOverloads constructor(context: Context, attrs: AttributeSet
             layout.initial.text = null
             layout.icon.visibility = VISIBLE
         }
+        layout.initial.visibility = VISIBLE
 
         setBackgroundTint(
             if (hasAlphabetInitial) context.getColorCompat(R.color.avatar_background) else null
         )
 
         layout.photo.setImageDrawable(null)
-        photoUri?.let { photoUri -> GlideApp.with(layout.photo).load(photoUri).into(layout.photo) }
+        photoUri?.let { photoUri ->
+            GlideApp.with(layout.photo).load(photoUri).listener(photoShown).into(layout.photo)
+        }
     }
+
+    private val photoShown =
+        object : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>,
+                isFirstResource: Boolean,
+            ): Boolean = false
+
+            override fun onResourceReady(
+                resource: Drawable,
+                model: Any,
+                target: Target<Drawable>?,
+                dataSource: DataSource,
+                isFirstResource: Boolean,
+            ): Boolean {
+                layout.initial.visibility = GONE
+                layout.icon.visibility = GONE
+                return false
+            }
+        }
 }
