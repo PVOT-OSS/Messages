@@ -676,6 +676,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 else Snackbar.LENGTH_INDEFINITE,
             )
             .let {
+                if (binding.searchPill.isVisible) it.anchorView = binding.searchPill
                 it.setAction(R.string.button_undo) { undoArchiveIntent.onNext(Unit) }
                 it.setActionTextColor(colors.theme().theme)
                 it.show()
