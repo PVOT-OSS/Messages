@@ -278,11 +278,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         }
     }
 
-    override fun onNewIntent(intent: Intent?) =
-        intent?.let {
-            super.onNewIntent(intent)
-            it.run(onNewIntentIntent::onNext)
-        } ?: Unit
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        onNewIntentIntent.onNext(intent)
+    }
 
     override fun render(state: MainState) {
         if (state.hasError) {

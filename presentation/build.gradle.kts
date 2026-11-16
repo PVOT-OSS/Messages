@@ -6,6 +6,7 @@
 
 plugins {
     alias(libs.plugins.pvot.android.application)
+    alias(libs.plugins.pvot.android.compose)
     id("realm-android") // must come before Kotlin plugins
     alias(libs.plugins.legacy.kapt)
 }
@@ -83,6 +84,8 @@ dependencies {
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.viewpager2)
     implementation(libs.material)
+    implementation(libs.pvot.core.ui)
+    implementation(libs.pvot.design.system)
     implementation(libs.pvot.design.system.views)
     implementation(libs.androidx.work.runtime.ktx)
 
