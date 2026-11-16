@@ -52,6 +52,7 @@ class BlockingRepositoryImpl @Inject constructor(private val phoneNumberUtils: P
 
     override fun isBlocked(address: String): Boolean {
         return Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
             realm.where(BlockedNumber::class.java).findAll().any { number ->
                 phoneNumberUtils.compare(number.address, address)
             }
@@ -72,6 +73,7 @@ class BlockingRepositoryImpl @Inject constructor(private val phoneNumberUtils: P
 
     override fun unblockNumbers(vararg addresses: String) {
         Realm.getDefaultInstance().use { realm ->
+            realm.refresh()
             val ids =
                 realm
                     .where(BlockedNumber::class.java)
