@@ -14,7 +14,7 @@
     android:gravity="center_vertical"
     android:nextFocusRight="@+id/compose"
     android:orientation="horizontal"
-    android:paddingStart="12dp"
+    android:paddingStart="16dp"
     android:paddingTop="8dp"
     android:paddingEnd="16dp"
     android:paddingBottom="0dp">
@@ -24,7 +24,6 @@
         android:layout_width="57dp"
         android:layout_height="58dp"
         android:layout_gravity="top"
-        android:layout_marginStart="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -94,13 +93,9 @@
 
     <ImageView
         android:id="@+id/unread"
-        android:layout_width="20dp"
-        android:layout_height="16sp"
-        android:paddingStart="8dp"
-        android:paddingTop="2dp"
-        android:paddingBottom="2dp"
-        android:translationX="-14dp"
-        android:translationY="-2dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:importantForAccessibility="no"
         android:src="@drawable/circle"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/avatars"
