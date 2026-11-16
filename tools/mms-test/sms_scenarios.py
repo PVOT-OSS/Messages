@@ -248,7 +248,7 @@ def receive_class_zero_saved(ctx):
     wait_for("its alert to clear", lambda: not any(text in n for n in ctx.device.notifications()))
 
 def receive_class_zero_dismissed(ctx):
-    row, text = _class_zero(ctx, "Cancel")
+    row, text = _class_zero(ctx, "Discard")
     wait_for("it to be dropped", lambda: ctx.device.row(row["_id"]) is None, 15)
     wait_for("its alert to clear", lambda: not any(text in n for n in ctx.device.notifications()))
 

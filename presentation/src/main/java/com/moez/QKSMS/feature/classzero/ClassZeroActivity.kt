@@ -5,11 +5,27 @@
 
 package org.prauga.messages.feature.classzero
 
-import android.app.AlertDialog
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import com.prauga.pvot.designsystem.components.PvotDialog
+import com.prauga.pvot.designsystem.components.PvotDialogAction
+import com.prauga.pvot.designsystem.components.PvotDialogActionStyle
+import com.prauga.pvot.designsystem.motion.PvotDurations
+import com.prauga.pvot.designsystem.theme.PvotAppTheme
 import dagger.android.AndroidInjection
 import javax.inject.Inject
+import kotlinx.coroutines.delay
 import org.prauga.messages.R
 import org.prauga.messages.interactor.DeleteMessages
 import org.prauga.messages.interactor.MarkRead
@@ -32,23 +48,86 @@ class ClassZeroActivity : AppCompatActivity() {
             return
         }
         val threadId = message.threadId
+        val sender = message.address
+        val body = message.body
 
-        AlertDialog.Builder(this)
-            .setTitle(message.address)
-            .setMessage(message.body)
-            .setCancelable(false)
-            .setPositiveButton(R.string.button_save) { _, _ ->
-                markRead.execute(listOf(threadId))
-                finish()
+        setContent {
+            PvotAppTheme {
+                var visible by rememberSaveable { mutableStateOf(true) }
+                ClassZeroDialog(
+                    visible = visible,
+                    sender = sender,
+                    body = body,
+                    // A second tap while the dialog leaves must not act again
+                    onSave = {
+                        if (visible) {
+                            markRead.execute(listOf(threadId))
+                            visible = false
+                        }
+                    },
+                    onDiscard = {
+                        if (visible) {
+                            deleteMessages.execute(DeleteMessages.Params(listOf(id), threadId))
+                            visible = false
+                        }
+                    },
+                )
+                if (!visible) {
+                    LaunchedEffect(Unit) {
+                        // Lets the dialog play its exit before the window goes
+                        delay(PvotDurations.Short.toLong())
+                        finish()
+                    }
+                }
             }
-            .setNegativeButton(R.string.button_cancel) { _, _ ->
-                deleteMessages.execute(DeleteMessages.Params(listOf(id), threadId))
-                finish()
-            }
-            .show()
+        }
     }
 
     companion object {
         const val EXTRA_ID = "id"
+    }
+}
+
+@Composable
+private fun ClassZeroDialog(
+    visible: Boolean,
+    sender: String,
+    body: String,
+    onSave: () -> Unit,
+    onDiscard: () -> Unit,
+) {
+    PvotDialog(
+        visible = visible,
+        onDismissRequest = {},
+        title = sender,
+        message = body,
+        icon = {
+            Icon(
+                painter = painterResource(R.drawable.ic_message_black_24dp),
+                contentDescription = null,
+            )
+        },
+        dismissOnOutsideTap = false,
+    ) {
+        PvotDialogAction(
+            label = stringResource(R.string.button_save),
+            onClick = onSave,
+            style = PvotDialogActionStyle.Primary,
+        )
+        PvotDialogAction(label = stringResource(R.string.button_discard), onClick = onDiscard)
+    }
+}
+
+@Preview
+@Composable
+private fun ClassZeroDialogPreview() {
+    PvotAppTheme {
+        ClassZeroDialog(
+            visible = true,
+            sender = "5557002",
+            body = "Your balance is 20.00",
+            onSave = {},
+            onDiscard = {},
+        )
     }
 }
