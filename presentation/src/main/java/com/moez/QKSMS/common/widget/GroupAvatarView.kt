@@ -47,7 +47,7 @@ class GroupAvatarView @JvmOverloads constructor(context: Context, attrs: Attribu
         layout.avatar1Frame.updateLayoutParams<LayoutParams> {
             matchConstraintPercentWidth = if (recipients.size > 1) 0.75f else 1.0f
         }
-        layout.avatar2.isVisible = recipients.size > 1
+        layout.avatar2Frame.isVisible = recipients.size > 1
 
         recipients.getOrNull(0).run(layout.avatar1::setRecipient)
         recipients.getOrNull(1).run(layout.avatar2::setRecipient)
