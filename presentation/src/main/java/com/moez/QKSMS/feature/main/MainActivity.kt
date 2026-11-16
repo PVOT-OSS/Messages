@@ -420,7 +420,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     binding.recyclerView.adapter = conversationsAdapter
                 conversationsAdapter.updateData(state.page.data)
                 itemTouchHelper.attachToRecyclerView(binding.recyclerView)
-                binding.empty.setText(R.string.inbox_empty_text)
+                binding.empty.setText(
+                    when (state.currentFilter) {
+                        ConversationFilterType.UNREAD -> R.string.inbox_unread_empty_text
+                        ConversationFilterType.ALL -> R.string.inbox_empty_text
+                    }
+                )
             }
 
             is Searching -> {
