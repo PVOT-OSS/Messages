@@ -164,7 +164,12 @@ constructor(
                     .beginGroup()
                     .contains("body", normalizedQuery, Case.INSENSITIVE)
                     .or()
-                    .contains("parts.text", normalizedQuery, Case.INSENSITIVE)
+                    // Every MMS has a layout part, whose markup would match words like "image"
+                    .rawPredicate(
+                        "SUBQUERY(parts, \$part, \$part.type ==[c] 'text/plain' AND " +
+                            "\$part.text CONTAINS[c] \$0).@count > 0",
+                        normalizedQuery.toString(),
+                    )
                     .endGroup()
                     .sort("date", Sort.DESCENDING)
                     .limit(MAX_SEARCH_MESSAGES)
@@ -192,14 +197,8 @@ constructor(
                         )
                     val items =
                         messages.mapNotNull { message ->
-                            val body =
-                                when {
-                                    message.body.isNotEmpty() -> message.body
-                                    message.parts.isNotEmpty() ->
-                                        message.parts.firstOrNull()?.text ?: ""
-                                    else -> ""
-                                }
-                            body
+                            message
+                                .getText(withSubject = false)
                                 .takeIf { it.isNotEmpty() }
                                 ?.let {
                                     SearchItem.Message(

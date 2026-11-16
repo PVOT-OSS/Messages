@@ -25,6 +25,7 @@ import org.prauga.messages.mapper.CursorToConversation
 import org.prauga.messages.mapper.CursorToRecipient
 import org.prauga.messages.model.Conversation
 import org.prauga.messages.model.Message
+import org.prauga.messages.model.MmsPart
 import org.prauga.messages.model.Recipient
 import org.prauga.messages.model.SearchItem
 import org.prauga.messages.testutil.RealmTestHelper
@@ -67,6 +68,30 @@ class ConversationSearchInstrumentedTest {
             type = "sms"
             this.body = body
             date = id
+        }
+
+    /** A layout part first, as carriers send them, then the text */
+    private fun mms(id: Long, threadId: Long, text: String) =
+        Message().apply {
+            this.id = id
+            this.threadId = threadId
+            type = "mms"
+            date = id
+            parts =
+                RealmList(
+                    MmsPart().apply {
+                        this.id = id * 10
+                        messageId = id
+                        type = "application/smil"
+                        this.text = LAYOUT
+                    },
+                    MmsPart().apply {
+                        this.id = id * 10 + 1
+                        messageId = id
+                        type = "text/plain"
+                        this.text = text
+                    },
+                )
         }
 
     private fun Realm.conversation(
@@ -127,7 +152,64 @@ class ConversationSearchInstrumentedTest {
             .inOrder()
     }
 
+    @Test
+    fun givenMms_whenSearchingAWordOnlyInItsLayout_thenNothingMatches() {
+        realm.executeTransaction { r ->
+            r.insert(mms(1, 1, "see you at noon"))
+            r.conversation(1, "5550001", mms(1, 1, ""))
+        }
+
+        assertThat(repository.searchConversationsGrouped("layout")).isEmpty()
+    }
+
+    @Test
+    fun givenMms_whenSearchingItsText_thenTheTextIsShownNotTheLayout() {
+        realm.executeTransaction { r ->
+            r.insert(mms(1, 1, "see you at noon"))
+            r.conversation(1, "5550001", mms(1, 1, ""))
+        }
+
+        val messages =
+            repository.searchConversationsGrouped("NOON").filterIsInstance<SearchItem.Message>()
+
+        assertThat(messages.map { it.body }).containsExactly("see you at noon")
+    }
+
+    @Test
+    fun givenAQueryWithQuotesAndBackslashes_whenSearching_thenItIsMatchedLiterally() {
+        val text = """it's a \\ path"""
+        realm.executeTransaction { r ->
+            r.insert(mms(1, 1, text))
+            r.conversation(1, "5550001", mms(1, 1, ""))
+        }
+
+        val results = repository.searchConversationsGrouped("""it's a \\""")
+
+        val messages = results.filterIsInstance<SearchItem.Message>()
+
+        assertThat(messages.map { it.body }).containsExactly(text)
+    }
+
+    @Test
+    fun givenManyMmsWhoseLayoutHasTheWord_whenSearching_thenAnOlderTextMatchIsStillFound() {
+        val count = ConversationRepositoryImpl.MAX_SEARCH_MESSAGES + 100
+        realm.executeTransaction { r ->
+            r.insert(sms(1, 1, "an image of the cat"))
+            r.insert((2..count).map { mms(it, 1, "photo $it") })
+            r.conversation(1, "5550001", sms(count, 1, ""))
+        }
+
+        val messages =
+            repository.searchConversationsGrouped("image").filterIsInstance<SearchItem.Message>()
+
+        assertThat(messages.map { it.messageId }).containsExactly(1L)
+    }
+
     private companion object {
         const val ALLOCATION_LIMIT = 4_000_000L
+        const val LAYOUT =
+            "<smil><head><layout><root-layout/><region id=\"Image\" top=\"0%\" left=\"0%\" " +
+                "height=\"80%\"/></layout></head><body><par dur=\"5000ms\">" +
+                "<img src=\"image.jpg\" region=\"Image\"/></par></body></smil>"
     }
 }
