@@ -88,15 +88,28 @@ class MmsPartTest {
     }
 
     @Test
-    fun givenUnknownType_whenGetSummary_thenReturnsSubtype() {
-        val part = createMmsPart(type = "application/pdf")
-        assertEquals("pdf", part.getSummary())
+    fun givenUnknownTypeWithAName_whenGetSummary_thenReturnsTheName() {
+        val part = createMmsPart(type = "application/pdf", name = "report.pdf")
+        assertEquals("report.pdf", part.getSummary())
     }
 
     @Test
-    fun givenOctetStreamType_whenGetSummary_thenReturnsSubtype() {
+    fun givenUnknownTypeWithoutAName_whenGetSummary_thenReturnsNull() {
         val part = createMmsPart(type = "application/octet-stream")
-        assertEquals("octet-stream", part.getSummary())
+        assertNull(part.getSummary())
+    }
+
+    @Test
+    fun givenRcsRichCard_whenGetSummary_thenReturnsNull() {
+        val part =
+            createMmsPart(type = "application/vnd.gsma.botmessage.v1.0+json", name = "card.json")
+        assertNull(part.getSummary())
+    }
+
+    @Test
+    fun givenStructuredXml_whenGetSummary_thenReturnsNull() {
+        val part = createMmsPart(type = "application/vnd.gsma.rcs-ft-http+xml", name = "ft.xml")
+        assertNull(part.getSummary())
     }
 
     // getBestFilename Tests - Note: These tests verify the logic pattern

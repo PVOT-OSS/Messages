@@ -48,6 +48,7 @@ open class MmsPart : RealmObject() {
             type.startsWith("image") -> "Picture"
             type.startsWith("video") -> "Video"
             type.startsWith("audio") -> "Audio"
-            else -> type.substring(type.indexOf('/') + 1)
+            type == "application/json" || type.endsWith("+json") || type.endsWith("+xml") -> null
+            else -> name?.takeIf { it.isNotBlank() }
         }
 }
