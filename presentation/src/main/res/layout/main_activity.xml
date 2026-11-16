@@ -243,6 +243,8 @@
                     android:layout_height="wrap_content"
                     android:background="@android:color/transparent"
                     android:hint="@string/title_conversations"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
                     android:maxLines="1"
                     android:paddingStart="8dp"
                     android:paddingEnd="5dp"

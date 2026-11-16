@@ -17,6 +17,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
+import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -35,6 +36,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
+import com.jakewharton.rxbinding2.widget.editorActions
 import com.jakewharton.rxbinding2.widget.textChanges
 import com.prauga.pvot.designsystem.theme.PvotAppTheme
 import com.uber.autodispose.android.lifecycle.scope
@@ -185,6 +187,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         binding.toolbarSearch.textChanges().autoDispose(scope()).subscribe { text ->
             binding.clearSearch.isVisible = text.isNotEmpty()
         }
+
+        // Results update while typing, so Search only has to get the keyboard out of the way
+        binding.toolbarSearch
+            .editorActions { it == EditorInfo.IME_ACTION_SEARCH }
+            .autoDispose(scope())
+            .subscribe { dismissKeyboard() }
 
         toggle.syncState()
         title = ""
