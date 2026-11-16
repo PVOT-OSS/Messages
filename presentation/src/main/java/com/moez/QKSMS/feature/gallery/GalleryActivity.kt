@@ -119,7 +119,7 @@ class GalleryActivity :
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home -> onBackPressed()
+            android.R.id.home -> onBackPressedDispatcher.onBackPressed()
             else -> optionsItemSubject.onNext(item.itemId)
         }
         return true

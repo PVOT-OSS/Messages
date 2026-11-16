@@ -12,7 +12,6 @@ import org.prauga.messages.model.SearchItem
 import org.prauga.messages.repository.SyncRepository
 
 data class MainState(
-    val hasError: Boolean = false,
     val page: MainPage = Inbox(),
     val drawerOpen: Boolean = false,
     val upgraded: Boolean = true,

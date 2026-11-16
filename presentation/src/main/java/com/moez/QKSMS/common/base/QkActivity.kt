@@ -44,7 +44,7 @@ abstract class QkActivity<Vb : ViewBinding>(inflate: (LayoutInflater) -> Vb) :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                onBackPressed()
+                onBackPressedDispatcher.onBackPressed()
                 true
             }
 

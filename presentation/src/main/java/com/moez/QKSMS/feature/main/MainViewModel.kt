@@ -413,7 +413,7 @@ constructor(
                                 }
                             }
 
-                            else -> newState { copy(hasError = true) }
+                            else -> Unit
                         }
 
                     NavItem.BACKUP -> navigator.showBackup()

@@ -32,6 +32,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
 import android.widget.SeekBar
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
@@ -144,6 +145,16 @@ class ComposeActivity :
     }
     override val viewQksmsPlusIntent: Subject<Unit> = PublishSubject.create()
     override val backPressedIntent: Subject<Unit> = PublishSubject.create()
+
+    private val backCallback =
+        object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() = backPressedIntent.onNext(Unit)
+        }
+
+    init {
+        onBackPressedDispatcher.addCallback(this, backCallback)
+    }
+
     override val confirmDeleteIntent: Subject<Selection> = PublishSubject.create()
     override val clearCurrentMessageIntent: Subject<Boolean> = PublishSubject.create()
     override val messageLinkAskIntent: Subject<Uri> by lazy { messageAdapter.messageLinkClicks }
@@ -387,6 +398,7 @@ class ComposeActivity :
             finish()
             return
         }
+        backCallback.isEnabled = state.selectedMessages > 0 || state.attaching
 
         threadId.onNext(state.threadId)
 
@@ -837,8 +849,6 @@ class ComposeActivity :
         cameraDestination = savedInstanceState.getParcelable(ComposeView.CameraDestinationKey)
         super.onRestoreInstanceState(savedInstanceState)
     }
-
-    override fun onBackPressed() = backPressedIntent.onNext(Unit)
 
     override fun focusMessage() {
         binding.message.requestFocus()

@@ -18,6 +18,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
 import android.widget.ProgressBar
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
@@ -144,6 +145,15 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     private val itemTouchHelper by lazy { ItemTouchHelper(itemTouchCallback) }
     private val changelogDialog by lazy { ChangelogDialog(this) }
     private val backPressedSubject: Subject<NavItem> = PublishSubject.create()
+
+    private val backCallback =
+        object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() = backPressedSubject.onNext(NavItem.BACK)
+        }
+
+    init {
+        onBackPressedDispatcher.addCallback(this, backCallback)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -289,10 +299,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     }
 
     override fun render(state: MainState) {
-        if (state.hasError) {
-            finish()
-            return
-        }
+        backCallback.isEnabled = state.drawerOpen || state.page !is Inbox || state.page.selected > 0
 
         val needsDefaultSms = !state.defaultSms
         binding.notDefaultSmsView.setVisible(needsDefaultSms)
@@ -669,8 +676,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
     override fun onOptionsItemSelected(item: MenuItem) =
         optionsItemIntent.onNext(item.itemId).let { true }
-
-    override fun onBackPressed() = backPressedSubject.onNext(NavItem.BACK)
 
     override fun drawerToggled(opened: Boolean) {
         if (opened) {

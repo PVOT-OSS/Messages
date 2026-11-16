@@ -9,6 +9,7 @@ package org.prauga.messages.feature.scheduled
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -39,6 +40,15 @@ class ScheduledActivity :
     override val editScheduledMessage: Subject<Long> = PublishSubject.create()
     override val backPressedIntent: Subject<Unit> = PublishSubject.create()
 
+    private val backCallback =
+        object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() = backPressedIntent.onNext(Unit)
+        }
+
+    init {
+        onBackPressedDispatcher.addCallback(this, backCallback)
+    }
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ScheduledViewModel::class.java]
     }
@@ -65,6 +75,7 @@ class ScheduledActivity :
     }
 
     override fun render(state: ScheduledState) {
+        backCallback.isEnabled = state.selectedMessages > 0
         scheduledMessageAdapter.updateData(state.scheduledMessages)
 
         setTitle(
@@ -92,8 +103,6 @@ class ScheduledActivity :
         binding.compose.isVisible = state.upgraded && (state.conversationId == null)
         binding.upgrade.isVisible = !state.upgraded
     }
-
-    override fun onBackPressed() = backPressedIntent.onNext(Unit)
 
     override fun clearSelection() = scheduledMessageAdapter.clearSelection()
 

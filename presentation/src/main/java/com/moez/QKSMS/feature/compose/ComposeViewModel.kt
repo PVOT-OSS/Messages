@@ -1370,6 +1370,7 @@ constructor(
             .withLatestFrom(state) { _, state ->
                 when {
                     state.selectedMessages > 0 -> view.clearSelection()
+                    state.attaching -> newState { copy(attaching = false) }
                     else -> newState { copy(hasError = true) }
                 }
             }

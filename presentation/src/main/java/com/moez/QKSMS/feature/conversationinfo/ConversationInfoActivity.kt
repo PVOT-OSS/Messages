@@ -12,6 +12,7 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import dagger.android.AndroidInjection
 import org.prauga.messages.common.base.QkThemedActivity
+import org.prauga.messages.common.base.handleBackWith
 import org.prauga.messages.databinding.ContainerActivityBinding
 
 class ConversationInfoActivity :
@@ -28,11 +29,6 @@ class ConversationInfoActivity :
             val threadId = intent.extras?.getLong("threadId") ?: 0L
             router.setRoot(RouterTransaction.with(ConversationInfoController(threadId)))
         }
-    }
-
-    override fun onBackPressed() {
-        if (!router.handleBack()) {
-            super.onBackPressed()
-        }
+        handleBackWith(router)
     }
 }
