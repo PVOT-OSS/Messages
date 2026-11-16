@@ -200,12 +200,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if (dy > 0 && binding.cVTopBar2.translationY == 0f) {
+                    if (dy > 0 && binding.messagesText.translationY == 0f) {
                         // Hide
                         val translationY =
-                            -binding.cVTopBar2.height.toFloat() -
+                            -binding.messagesText.height.toFloat() -
                                 8f * resources.displayMetrics.density
-                        binding.cVTopBar2
+                        binding.messagesText
                             .animate()
                             .translationY(translationY)
                             .setDuration(200)
@@ -225,9 +225,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                             .translationY(translationY)
                             .setDuration(200)
                             .start()
-                    } else if (dy < 0 && binding.cVTopBar2.translationY != 0f) {
+                    } else if (dy < 0 && binding.messagesText.translationY != 0f) {
                         // Show
-                        binding.cVTopBar2.animate().translationY(0f).setDuration(200).start()
+                        binding.messagesText.animate().translationY(0f).setDuration(200).start()
                         binding.cVTopBar3.animate().translationY(0f).setDuration(200).start()
                         binding.filterGroup.animate().translationY(0f).setDuration(200).start()
                         binding.recyclerView.animate().translationY(0f).setDuration(200).start()
@@ -302,7 +302,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             else DrawerLayout.LOCK_MODE_UNLOCKED
         )
         if (needsDefaultSms) {
-            binding.cVTopBar2.setVisible(true)
+            binding.messagesText.setVisible(true)
             listOf(
                     binding.toolbar,
                     binding.cVTopBar3,
@@ -350,7 +350,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         val hasSelection = selectedConversations > 0
         binding.toolbar.setVisible(hasSelection)
 
-        binding.cVTopBar2.setVisible(!hasSelection)
+        binding.messagesText.setVisible(!hasSelection)
         binding.cVTopBar3.setVisible(!hasSelection)
 
         binding.toolbarSearch.setVisible(
