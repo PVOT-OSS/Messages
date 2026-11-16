@@ -11,7 +11,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.work.WorkerFactory
 import com.f2prateek.rx.preferences2.RxSharedPreferences
 import com.squareup.moshi.Moshi
@@ -21,7 +20,6 @@ import dagger.Provides
 import javax.inject.Singleton
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.blocking.BlockingManager
-import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.util.BillingManagerImpl
 import org.prauga.messages.common.util.NotificationManagerImpl
 import org.prauga.messages.common.util.ShortcutManagerImpl
@@ -109,9 +107,6 @@ class AppModule(private var application: Application) {
     fun provideMoshi(): Moshi {
         return Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
     }
-
-    @Provides
-    fun provideViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory = factory
 
     // Listener
 

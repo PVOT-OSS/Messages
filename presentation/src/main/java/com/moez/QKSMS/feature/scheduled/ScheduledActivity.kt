@@ -18,6 +18,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject
 import org.prauga.messages.R
+import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.setBackgroundTint
 import org.prauga.messages.common.util.extensions.setTint
@@ -27,7 +28,7 @@ class ScheduledActivity :
     QkThemedActivity<ScheduledActivityBinding>(ScheduledActivityBinding::inflate), ScheduledView {
 
     @Inject lateinit var scheduledMessageAdapter: ScheduledMessageAdapter
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     override val composeIntent by lazy { binding.compose.clicks() }
     override val upgradeIntent by lazy { binding.upgrade.clicks() }

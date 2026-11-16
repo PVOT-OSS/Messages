@@ -24,6 +24,7 @@ import io.reactivex.subjects.Subject
 import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.QkDialog
+import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.animateLayoutChanges
 import org.prauga.messages.common.util.extensions.setVisible
@@ -38,7 +39,7 @@ class NotificationPrefsActivity :
 
     @Inject lateinit var actionsDialog: QkDialog
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     override val preferenceClickIntent: Subject<PreferenceView> = PublishSubject.create()
     override val previewModeSelectedIntent by lazy { previewModeDialog.adapter.menuItemClicks }

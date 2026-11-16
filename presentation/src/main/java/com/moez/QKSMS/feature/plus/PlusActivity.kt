@@ -16,6 +16,7 @@ import dagger.android.AndroidInjection
 import javax.inject.Inject
 import kotlinx.coroutines.launch
 import org.prauga.messages.R
+import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.FontProvider
 import org.prauga.messages.common.util.extensions.makeToast
@@ -34,7 +35,7 @@ class PlusActivity :
 
     @Inject lateinit var fontProvider: FontProvider
     @Inject lateinit var upgradeButtonExperiment: UpgradeButtonExperiment
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PlusViewModel::class.java]

@@ -22,6 +22,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject
 import org.prauga.messages.R
+import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.base.QkActivity
 import org.prauga.messages.common.util.DateFormatter
 import org.prauga.messages.common.util.extensions.setVisible
@@ -33,7 +34,7 @@ class GalleryActivity :
 
     @Inject lateinit var dateFormatter: DateFormatter
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     @Inject lateinit var pagerAdapter: GalleryPagerAdapter
 

@@ -43,6 +43,7 @@ import io.reactivex.subjects.Subject
 import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.androidxcompat.drawerOpen
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.autoScrollToStart
@@ -77,7 +78,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
     @Inject lateinit var itemTouchCallback: ConversationItemTouchCallback
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     override val onNewIntentIntent: Subject<Intent> = PublishSubject.create()
     override val activityResumedIntent: Subject<Boolean> = PublishSubject.create()

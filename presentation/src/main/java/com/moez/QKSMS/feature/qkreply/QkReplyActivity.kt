@@ -30,6 +30,7 @@ import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject
 import org.prauga.messages.R
+import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.util.extensions.autoScrollToStart
 import org.prauga.messages.common.util.extensions.setVisible
@@ -43,7 +44,7 @@ class QkReplyActivity :
 
     @Inject lateinit var adapter: MessagesAdapter
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     override val menuItemIntent: Subject<Int> = PublishSubject.create()
     override val textChangedIntent by lazy { binding.message.textChanges() }

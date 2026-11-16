@@ -62,6 +62,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import org.prauga.messages.R
 import org.prauga.messages.common.Navigator
+import org.prauga.messages.common.ViewModelFactory
 import org.prauga.messages.common.base.QkThemedActivity
 import org.prauga.messages.common.base.Selection
 import org.prauga.messages.common.util.DateFormatter
@@ -91,7 +92,7 @@ class ComposeActivity :
     @Inject lateinit var dateFormatter: DateFormatter
     @Inject lateinit var messageAdapter: MessagesAdapter
     @Inject lateinit var navigator: Navigator
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelFactory
 
     override val activityVisibleIntent: Subject<Boolean> = PublishSubject.create()
     override val chipsSelectedIntent: Subject<HashMap<String, String?>> = PublishSubject.create()
