@@ -12,17 +12,18 @@ import androidx.appcompat.app.AlertDialog
 import org.prauga.messages.R
 import org.prauga.messages.databinding.TextInputDialogBinding
 
-class TextInputDialog(context: Activity, hint: String, listener: (String) -> Unit) :
+class TextInputDialog(context: Activity, title: String, hint: String, listener: (String) -> Unit) :
     AlertDialog(context, R.style.AppThemeDialog) {
 
     private val layout = TextInputDialogBinding.inflate(LayoutInflater.from(context))
 
     init {
+        setTitle(title)
         layout.field.hint = hint
 
         setView(layout.root)
         setButton(BUTTON_NEUTRAL, context.getString(R.string.button_cancel)) { _, _ -> }
-        setButton(BUTTON_NEGATIVE, context.getString(R.string.button_delete)) { _, _ ->
+        setButton(BUTTON_NEGATIVE, context.getString(R.string.button_clear)) { _, _ ->
             listener("")
         }
         setButton(BUTTON_POSITIVE, context.getString(R.string.button_save)) { _, _ ->

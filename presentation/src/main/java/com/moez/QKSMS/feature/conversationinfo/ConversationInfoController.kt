@@ -41,9 +41,11 @@ class ConversationInfoController(val threadId: Long = 0) :
     private lateinit var recyclerView: RecyclerView
 
     private val nameDialog: TextInputDialog by lazy {
+        val activity = checkNotNull(activity)
         TextInputDialog(
-            activity!!,
-            activity!!.getString(R.string.info_name),
+            activity,
+            activity.getString(R.string.main_menu_rename_conversation),
+            activity.getString(R.string.info_name),
             nameChangeSubject::onNext,
         )
     }

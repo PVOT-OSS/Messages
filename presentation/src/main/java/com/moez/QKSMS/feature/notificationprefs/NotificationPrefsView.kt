@@ -6,6 +6,7 @@
 package org.prauga.messages.feature.notificationprefs
 
 import android.net.Uri
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import io.reactivex.subjects.Subject
 import org.prauga.messages.common.base.QkView
@@ -22,5 +23,5 @@ interface NotificationPrefsView : QkView<NotificationPrefsState> {
 
     fun showRingtonePicker(default: Uri?)
 
-    fun showActionDialog(selected: Int)
+    fun showActionDialog(@StringRes title: Int, selected: Int)
 }

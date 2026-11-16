@@ -5,6 +5,7 @@
 
 package org.prauga.messages.feature.settings.swipe
 
+import androidx.annotation.StringRes
 import io.reactivex.Observable
 import org.prauga.messages.common.base.QkViewContract
 
@@ -19,5 +20,5 @@ interface SwipeActionsView : QkViewContract<SwipeActionsState> {
 
     fun actionSelected(): Observable<Int>
 
-    fun showSwipeActions(selected: Int)
+    fun showSwipeActions(@StringRes title: Int, selected: Int)
 }

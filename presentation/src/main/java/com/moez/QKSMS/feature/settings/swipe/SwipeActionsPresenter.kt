@@ -43,12 +43,14 @@ class SwipeActionsPresenter @Inject constructor(context: Context, private val pr
             .actionClicks()
             .map { action ->
                 when (action) {
-                    SwipeActionsView.Action.RIGHT -> prefs.swipeRight.get()
-                    SwipeActionsView.Action.LEFT -> prefs.swipeLeft.get()
+                    SwipeActionsView.Action.RIGHT ->
+                        R.string.settings_swipe_actions_right to prefs.swipeRight.get()
+                    SwipeActionsView.Action.LEFT ->
+                        R.string.settings_swipe_actions_left to prefs.swipeLeft.get()
                 }
             }
             .autoDispose(view.scope())
-            .subscribe(view::showSwipeActions)
+            .subscribe { (title, selected) -> view.showSwipeActions(title, selected) }
 
         view
             .actionSelected()

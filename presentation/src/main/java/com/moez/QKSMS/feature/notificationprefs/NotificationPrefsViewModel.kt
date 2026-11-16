@@ -134,11 +134,23 @@ constructor(
                         ringtone.get().takeIf { it.isNotEmpty() }?.let(Uri::parse)
                     )
 
-                R.id.action1 -> view.showActionDialog(prefs.notifAction1.get())
+                R.id.action1 ->
+                    view.showActionDialog(
+                        R.string.settings_notification_action_1,
+                        prefs.notifAction1.get(),
+                    )
 
-                R.id.action2 -> view.showActionDialog(prefs.notifAction2.get())
+                R.id.action2 ->
+                    view.showActionDialog(
+                        R.string.settings_notification_action_2,
+                        prefs.notifAction2.get(),
+                    )
 
-                R.id.action3 -> view.showActionDialog(prefs.notifAction3.get())
+                R.id.action3 ->
+                    view.showActionDialog(
+                        R.string.settings_notification_action_3,
+                        prefs.notifAction3.get(),
+                    )
 
                 R.id.qkreply -> prefs.qkreply.set(!prefs.qkreply.get())
 

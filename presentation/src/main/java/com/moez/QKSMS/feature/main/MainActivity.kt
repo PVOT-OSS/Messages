@@ -653,7 +653,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     }
 
     override fun showRenameDialog(conversationName: String) =
-        TextInputDialog(this, getString(R.string.info_name), renameConversationIntent::onNext)
+        TextInputDialog(
+                this,
+                getString(R.string.main_menu_rename_conversation),
+                getString(R.string.info_name),
+                renameConversationIntent::onNext,
+            )
             .setText(conversationName)
             .show()
 

@@ -96,6 +96,7 @@ class SettingsController :
         TextInputDialog(
             activity!!,
             context.getString(R.string.settings_signature_title),
+            context.getString(R.string.settings_signature_title),
             signatureSubject::onNext,
         )
     }
@@ -165,7 +166,11 @@ class SettingsController :
                         .mapIndexed { index, title -> MenuItem(title, index) }
                         .drop(1)
         }
+        nightModeDialog.setTitle(R.string.settings_night_title)
+        sendDelayDialog.setTitle(R.string.settings_delayed_title)
         sendDelayDialog.adapter.setData(R.array.delayed_sending_labels)
+        mmsSizeDialog.setTitle(R.string.settings_mms_size_title)
+        messageLinkHandlingDialog.setTitle(R.string.settings_mms_weblink_title)
         mmsSizeDialog.adapter.setData(R.array.mms_sizes, R.array.mms_sizes_ids)
         messageLinkHandlingDialog.adapter.setData(
             R.array.messageLinkHandlings,

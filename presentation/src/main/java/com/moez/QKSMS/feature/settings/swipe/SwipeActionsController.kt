@@ -9,6 +9,7 @@ package org.prauga.messages.feature.settings.swipe
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.jakewharton.rxbinding2.view.clicks
@@ -92,7 +93,8 @@ class SwipeActionsController :
 
     override fun actionSelected(): Observable<Int> = actionsDialog.adapter.menuItemClicks
 
-    override fun showSwipeActions(selected: Int) {
+    override fun showSwipeActions(@StringRes title: Int, selected: Int) {
+        actionsDialog.setTitle(title)
         actionsDialog.adapter.selectedItem = selected
         activity?.let(actionsDialog::show)
     }

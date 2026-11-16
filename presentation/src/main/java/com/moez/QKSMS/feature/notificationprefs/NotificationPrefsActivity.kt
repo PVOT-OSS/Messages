@@ -12,6 +12,7 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.jakewharton.rxbinding2.view.clicks
@@ -132,7 +133,8 @@ class NotificationPrefsActivity :
         startActivityForResult(intent, 123)
     }
 
-    override fun showActionDialog(selected: Int) {
+    override fun showActionDialog(@StringRes title: Int, selected: Int) {
+        actionsDialog.setTitle(title)
         actionsDialog.adapter.selectedItem = selected
         actionsDialog.show(this)
     }
