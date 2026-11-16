@@ -12,8 +12,9 @@ import io.reactivex.subscribers.TestSubscriber
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.inOrder
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import org.prauga.messages.blocking.BlockingClient
 import org.prauga.messages.manager.NotificationManager
@@ -127,8 +128,31 @@ class ReceiveSmsTest {
         receiveSms.buildObservable(messageId).subscribe(testSubscriber)
 
         testSubscriber.assertComplete()
+        testSubscriber.assertValueCount(0)
         verify(messageRepo).markRead(listOf(threadId))
         verify(conversationRepo).markBlocked(listOf(threadId), 0, "spam")
+    }
+
+    @Test
+    fun givenFirstMessageFromABlockedNumber_whenBuildObservable_thenCreatesTheConversationBeforeBlocking() {
+        val messageId = 100L
+        val threadId = 200L
+        `when`(messageRepo.getMessage(messageId)).thenReturn(message)
+        `when`(message.id).thenReturn(messageId)
+        `when`(message.threadId).thenReturn(threadId)
+        `when`(message.address).thenReturn("+1234567890")
+        `when`(blockingClient.shouldBlock("+1234567890"))
+            .thenReturn(Single.just(BlockingClient.Action.Block("spam")))
+        `when`(message.getText()).thenReturn("")
+        `when`(filterRepo.isBlocked("", "+1234567890", contactsRepo)).thenReturn(false)
+        `when`(conversationRepo.getOrCreateConversation(threadId)).thenReturn(conversation)
+        `when`(conversation.blocked).thenReturn(true)
+
+        receiveSms.buildObservable(messageId).subscribe(TestSubscriber<Any>())
+
+        val order = inOrder(conversationRepo)
+        order.verify(conversationRepo).getOrCreateConversation(threadId)
+        order.verify(conversationRepo).markBlocked(listOf(threadId), 0, "spam")
     }
 
     @Test

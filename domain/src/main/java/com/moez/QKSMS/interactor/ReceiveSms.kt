@@ -48,6 +48,8 @@ constructor(
                     action is BlockingClient.Action.Block -> {
                         // blocked
                         Timber.v("address is blocked")
+                        // A first message has no conversation yet, and only existing ones get marked
+                        conversationRepo.getOrCreateConversation(it.threadId)
                         messageRepo.markRead(listOf(it.threadId))
                         conversationRepo.markBlocked(
                             listOf(it.threadId),
