@@ -17,7 +17,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewStub
-import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -36,14 +35,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxbinding2.view.clicks
-import com.jakewharton.rxbinding2.widget.editorActions
-import com.jakewharton.rxbinding2.widget.textChanges
 import com.prauga.pvot.designsystem.theme.PvotAppTheme
 import com.uber.autodispose.android.lifecycle.scope
 import com.uber.autodispose.autoDispose
 import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import javax.inject.Inject
@@ -88,8 +86,8 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
     override val onNewIntentIntent: Subject<Intent> = PublishSubject.create()
     override val activityResumedIntent: Subject<Boolean> = PublishSubject.create()
-    override val queryChangedIntent by lazy { binding.toolbarSearch.textChanges() }
-    override val composeIntent by lazy { binding.compose.clicks() }
+    override val queryChangedIntent: Subject<CharSequence> = BehaviorSubject.createDefault("")
+    override val composeIntent: Subject<Unit> = PublishSubject.create()
     override val filterSelectedIntent: Subject<MessageCategory> = PublishSubject.create()
     override val drawerToggledIntent: Observable<Boolean> by lazy {
         binding.drawerLayout.drawerOpen(Gravity.START)
@@ -143,6 +141,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     private val backPressedSubject: Subject<NavItem> = PublishSubject.create()
     private var showHeaderMenu by mutableStateOf(true)
     private var activeFilter by mutableStateOf(MessageCategory.ALL)
+    private var query by mutableStateOf("")
+    private var showSearch by mutableStateOf(true)
+    private var showCompose by mutableStateOf(true)
 
     private val backCallback =
         object : OnBackPressedCallback(false) {
@@ -156,6 +157,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
+        savedInstanceState?.getString(STATE_QUERY)?.let(::onQueryChanged)
         viewModel.bindView(this)
         onNewIntentIntent.onNext(intent)
 
@@ -178,17 +180,20 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             PvotAppTheme { DefaultSmsScreen(onChangeDefaultApp = ::requestDefaultSms) }
         }
 
-        binding.clearSearch.clicks().autoDispose(scope()).subscribe { clearSearch() }
-
-        binding.toolbarSearch.textChanges().autoDispose(scope()).subscribe { text ->
-            binding.clearSearch.isVisible = text.isNotEmpty()
+        binding.searchBar.setContent {
+            PvotAppTheme {
+                InboxSearchBar(
+                    query = query,
+                    onQueryChange = ::onQueryChanged,
+                    onClear = ::clearSearch,
+                    // Results update while typing, so Search only hides the keyboard
+                    onSearch = ::dismissKeyboard,
+                    showSearch = showSearch,
+                    showCompose = showCompose,
+                    onCompose = { composeIntent.onNext(Unit) },
+                )
+            }
         }
-
-        // Results update while typing, so Search only has to get the keyboard out of the way
-        binding.toolbarSearch
-            .editorActions { it == EditorInfo.IME_ACTION_SEARCH }
-            .autoDispose(scope())
-            .subscribe { dismissKeyboard() }
 
         toggle.syncState()
         title = ""
@@ -285,15 +290,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             }
             binding.drawer.plusIcon.setTint(theme.theme)
             binding.drawer.rateIcon.setTint(theme.theme)
-
-            val primaryTextColor = resolveThemeColor(android.R.attr.textColorPrimary)
-            val secondaryTextColor = resolveThemeColor(android.R.attr.textColorSecondary)
-            binding.searchIcon.setTint(primaryTextColor)
-            binding.clearSearch.setTint(primaryTextColor)
-            binding.toolbarSearch.setTextColor(primaryTextColor)
-            binding.toolbarSearch.setHintTextColor(secondaryTextColor)
-
-            binding.compose.setTint(primaryTextColor)
         }
     }
 
@@ -320,8 +316,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                     binding.filterGroup,
                     binding.recyclerView,
                     binding.empty,
-                    binding.searchPill,
-                    binding.compose,
+                    binding.searchBar,
                     binding.syncing,
                     binding.snackbar,
                 )
@@ -363,11 +358,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
         binding.inboxHeader.setVisible(!hasSelection)
 
-        binding.toolbarSearch.setVisible(
+        binding.searchBar.setVisible(true)
+        showSearch =
             (state.page is Inbox && state.page.selected == 0) ||
                 (state.page is Archived && state.page.selected == 0) ||
                 state.page is Searching
-        )
         binding.toolbarTitle.setVisible(true)
         binding.filterGroup.setVisible(state.page is Inbox || state.page is Archived)
 
@@ -396,7 +391,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         binding.drawer.plusBanner.isVisible = !state.upgraded
         binding.drawer.rateLayout.setVisible(state.showRating)
 
-        binding.compose.setVisible(state.page is Inbox || state.page is Archived)
+        showCompose = state.page is Inbox || state.page is Archived
         conversationsAdapter.emptyView =
             binding.empty.takeIf { state.page is Inbox || state.page is Archived }
         searchAdapter.emptyView = binding.empty.takeIf { state.page is Searching }
@@ -429,7 +424,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 if (binding.recyclerView.adapter !== searchAdapter)
                     binding.recyclerView.adapter = searchAdapter
                 searchAdapter.data = state.page.data ?: listOf()
-                searchAdapter.setQuery(binding.toolbarSearch.text.toString())
+                searchAdapter.setQuery(query)
                 itemTouchHelper.attachToRecyclerView(null)
                 binding.empty.setText(R.string.inbox_search_empty_text)
             }
@@ -611,8 +606,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
 
     override fun clearSearch() {
         dismissKeyboard()
-        binding.toolbarSearch.text = null
-        binding.clearSearch.isVisible = false
+        onQueryChanged("")
+    }
+
+    private fun onQueryChanged(text: String) {
+        query = text
+        queryChangedIntent.onNext(text)
     }
 
     override fun clearSelection() = conversationsAdapter.clearSelection()
@@ -678,11 +677,16 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 else Snackbar.LENGTH_INDEFINITE,
             )
             .let {
-                if (binding.searchPill.isVisible) it.anchorView = binding.searchPill
+                if (binding.searchBar.isVisible) it.anchorView = binding.searchBar
                 it.setAction(R.string.button_undo) { undoArchiveIntent.onNext(Unit) }
                 it.setActionTextColor(colors.theme().theme)
                 it.show()
             }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(STATE_QUERY, query)
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?) =
         menu?.let {
@@ -697,6 +701,10 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         if (opened) {
             dismissKeyboard()
             if (!binding.drawer.inbox.isInTouchMode) binding.drawer.inbox.requestFocus()
-        } else binding.toolbarSearch.requestFocus()
+        } else binding.searchBar.requestFocus()
+    }
+
+    private companion object {
+        const val STATE_QUERY = "query"
     }
 }

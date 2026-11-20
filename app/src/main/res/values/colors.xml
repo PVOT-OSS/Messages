@@ -33,8 +33,6 @@
     <color name="accent_highlight">#D6ECFF</color>
     <color name="ripple_color">#330A84FF</color>
 
-    <color name="frost_surface">#ffffff</color>
-    <color name="frost_stroke">#e0e0e0</color>
 
     <color name="ic_launcher">#1976e7</color>
     <color name="ic_launcher_background">#FFFFFF</color>
