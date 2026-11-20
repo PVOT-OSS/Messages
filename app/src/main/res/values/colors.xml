@@ -18,7 +18,6 @@
     <color name="md_theme_onSurface">#000000</color>
 
     <color name="md_theme_surfaceVariant">#E5E5EA</color>
-    <color name="md_theme_outline">#C6C6D0</color>
 
     <color name="label_primary">#000000</color>
     <color name="label_secondary">#993C3C43</color>
@@ -41,9 +40,6 @@
     <color name="ic_launcher_background">#FFFFFF</color>
 
     <!-- Main Activity -->
-    <color name="home_filter_chip_selected">#6b5cee</color>
-    <color name="home_filter_chip_background">@android:color/white </color>
-    <color name="home_filter_chip_text_unselected">#1a1a1a</color>
 
     <color name="avatar_background">#FFB6C1</color>
 

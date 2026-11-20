@@ -86,58 +86,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-        <com.google.android.material.chip.ChipGroup
+        <androidx.compose.ui.platform.ComposeView
             android:id="@+id/filterGroup"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/inboxHeader"
-            app:selectionRequired="true"
-            app:singleLine="true"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/filterAll"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/main_filter_all"
-                android:textColor="@color/filter_chip_text"
-                app:chipBackgroundColor="@color/filter_chip_background"
-                app:chipCornerRadius="18dp"
-                app:chipStrokeColor="@color/md_theme_outline"
-                app:chipStrokeWidth="1dp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/filterUnread"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/main_filter_unread"
-                android:textColor="@color/filter_chip_text"
-                app:chipBackgroundColor="@color/filter_chip_background"
-                app:chipCornerRadius="18dp"
-                app:chipStrokeColor="@color/md_theme_outline"
-                app:chipStrokeWidth="1dp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/filterArchived"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/drawer_archived"
-                android:textColor="@color/filter_chip_text"
-                app:chipBackgroundColor="@color/filter_chip_background"
-                app:chipCornerRadius="18dp"
-                app:chipStrokeColor="@color/md_theme_outline"
-                app:chipStrokeWidth="1dp" />
-
-        </com.google.android.material.chip.ChipGroup>
+            app:layout_constraintTop_toBottomOf="@id/inboxHeader" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

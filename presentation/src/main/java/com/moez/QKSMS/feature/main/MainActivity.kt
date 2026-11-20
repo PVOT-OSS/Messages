@@ -90,13 +90,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     override val activityResumedIntent: Subject<Boolean> = PublishSubject.create()
     override val queryChangedIntent by lazy { binding.toolbarSearch.textChanges() }
     override val composeIntent by lazy { binding.compose.clicks() }
-    override val filterSelectedIntent by lazy {
-        Observable.merge(
-            binding.filterAll.clicks().map { MessageCategory.ALL },
-            binding.filterUnread.clicks().map { MessageCategory.UNREAD },
-            binding.filterArchived.clicks().map { MessageCategory.ARCHIVED },
-        )
-    }
+    override val filterSelectedIntent: Subject<MessageCategory> = PublishSubject.create()
     override val drawerToggledIntent: Observable<Boolean> by lazy {
         binding.drawerLayout.drawerOpen(Gravity.START)
     }
@@ -148,6 +142,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     private val changelogDialog by lazy { ChangelogDialog(this) }
     private val backPressedSubject: Subject<NavItem> = PublishSubject.create()
     private var showHeaderMenu by mutableStateOf(true)
+    private var activeFilter by mutableStateOf(MessageCategory.ALL)
 
     private val backCallback =
         object : OnBackPressedCallback(false) {
@@ -205,6 +200,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         binding.inboxHeader.setContent {
             PvotAppTheme {
                 InboxHeader(showMenu = showHeaderMenu, onNavigate = backPressedSubject::onNext)
+            }
+        }
+        binding.filterGroup.setContent {
+            PvotAppTheme {
+                InboxFilters(active = activeFilter, onSelect = filterSelectedIntent::onNext)
             }
         }
 
@@ -455,9 +455,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             }
         }
 
-        binding.filterAll.isChecked = state.activeChip == MessageCategory.ALL
-        binding.filterUnread.isChecked = state.activeChip == MessageCategory.UNREAD
-        binding.filterArchived.isChecked = state.activeChip == MessageCategory.ARCHIVED
+        activeFilter = state.activeChip
 
         binding.drawer.inbox.isActivated = state.page is Inbox
         binding.drawer.archived.isActivated = state.page is Archived
