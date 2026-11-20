@@ -22,13 +22,13 @@ import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.PopupMenu
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
-import androidx.core.view.get
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.core.view.size
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -147,6 +147,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
     private val itemTouchHelper by lazy { ItemTouchHelper(itemTouchCallback) }
     private val changelogDialog by lazy { ChangelogDialog(this) }
     private val backPressedSubject: Subject<NavItem> = PublishSubject.create()
+    private var showHeaderMenu by mutableStateOf(true)
 
     private val backCallback =
         object : OnBackPressedCallback(false) {
@@ -201,7 +202,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             homeIntent.onNext(Unit)
         }
 
-        binding.cVTopBar3.clicks().autoDispose(scope()).subscribe { showDrawerMenu() }
+        binding.inboxHeader.setContent {
+            PvotAppTheme {
+                InboxHeader(showMenu = showHeaderMenu, onNavigate = backPressedSubject::onNext)
+            }
+        }
 
         itemTouchCallback.adapter = conversationsAdapter
         conversationsAdapter.autoScrollToStart(binding.recyclerView)
@@ -218,17 +223,12 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    if (dy > 0 && binding.messagesText.translationY == 0f) {
+                    if (dy > 0 && binding.inboxHeader.translationY == 0f) {
                         // Hide
                         val translationY =
-                            -binding.messagesText.height.toFloat() -
+                            -binding.inboxHeader.height.toFloat() -
                                 8f * resources.displayMetrics.density
-                        binding.messagesText
-                            .animate()
-                            .translationY(translationY)
-                            .setDuration(200)
-                            .start()
-                        binding.cVTopBar3
+                        binding.inboxHeader
                             .animate()
                             .translationY(translationY)
                             .setDuration(200)
@@ -243,10 +243,9 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
                             .translationY(translationY)
                             .setDuration(200)
                             .start()
-                    } else if (dy < 0 && binding.messagesText.translationY != 0f) {
+                    } else if (dy < 0 && binding.inboxHeader.translationY != 0f) {
                         // Show
-                        binding.messagesText.animate().translationY(0f).setDuration(200).start()
-                        binding.cVTopBar3.animate().translationY(0f).setDuration(200).start()
+                        binding.inboxHeader.animate().translationY(0f).setDuration(200).start()
                         binding.filterGroup.animate().translationY(0f).setDuration(200).start()
                         binding.recyclerView.animate().translationY(0f).setDuration(200).start()
                     }
@@ -294,9 +293,6 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             binding.toolbarSearch.setTextColor(primaryTextColor)
             binding.toolbarSearch.setHintTextColor(secondaryTextColor)
 
-            binding.messagesText.setTextColor(primaryTextColor)
-            binding.menuIcon.setTint(primaryTextColor)
-
             binding.compose.setTint(primaryTextColor)
         }
     }
@@ -316,11 +312,11 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             if (needsDefaultSms) DrawerLayout.LOCK_MODE_LOCKED_CLOSED
             else DrawerLayout.LOCK_MODE_UNLOCKED
         )
+        showHeaderMenu = !needsDefaultSms
         if (needsDefaultSms) {
-            binding.messagesText.setVisible(true)
+            binding.inboxHeader.setVisible(true)
             listOf(
                     binding.toolbar,
-                    binding.cVTopBar3,
                     binding.filterGroup,
                     binding.recyclerView,
                     binding.empty,
@@ -365,8 +361,7 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
         val hasSelection = selectedConversations > 0
         binding.toolbar.setVisible(hasSelection)
 
-        binding.messagesText.setVisible(!hasSelection)
-        binding.cVTopBar3.setVisible(!hasSelection)
+        binding.inboxHeader.setVisible(!hasSelection)
 
         binding.toolbarSearch.setVisible(
             (state.page is Inbox && state.page.selected == 0) ||
@@ -705,60 +700,5 @@ class MainActivity : QkThemedActivity<MainActivityBinding>(MainActivityBinding::
             dismissKeyboard()
             if (!binding.drawer.inbox.isInTouchMode) binding.drawer.inbox.requestFocus()
         } else binding.toolbarSearch.requestFocus()
-    }
-
-    private fun showDrawerMenu() {
-        val popup = PopupMenu(this, binding.cVTopBar3, Gravity.END, 0, R.style.DrawerPopupMenu)
-        popup.menuInflater.inflate(R.menu.drawer_menu, popup.menu)
-
-        try {
-            val fieldMPopup = PopupMenu::class.java.getDeclaredField("mPopup")
-            fieldMPopup.isAccessible = true
-            val mPopup = fieldMPopup.get(popup)
-            mPopup.javaClass
-                .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-                .invoke(mPopup, true)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        val iconColor = resolveThemeColor(android.R.attr.textColorPrimary)
-        for (i in 0 until popup.menu.size) {
-            val menuItem = popup.menu[i]
-            menuItem.icon?.setTint(iconColor)
-        }
-
-        popup.setOnMenuItemClickListener { item ->
-            when (item.itemId) {
-                R.id.menu_backup -> {
-                    backPressedSubject.onNext(NavItem.BACKUP)
-                    true
-                }
-
-                R.id.menu_scheduled -> {
-                    backPressedSubject.onNext(NavItem.SCHEDULED)
-                    true
-                }
-
-                R.id.menu_blocking -> {
-                    backPressedSubject.onNext(NavItem.BLOCKING)
-                    true
-                }
-
-                R.id.menu_settings -> {
-                    backPressedSubject.onNext(NavItem.SETTINGS)
-                    true
-                }
-
-                //                R.id.menu_invite -> {
-                //                    backPressedSubject.onNext(NavItem.INVITE)
-                //                    true
-                //                }
-
-                else -> false
-            }
-        }
-
-        popup.show()
     }
 }

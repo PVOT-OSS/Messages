@@ -115,10 +115,4 @@
         <item name="android:layout_marginEnd">32dp</item>
     </style>
 
-    <style name="DrawerPopupMenu" parent="Widget.AppCompat.PopupMenu">
-        <item name="android:popupBackground">@drawable/bg_popup_menu</item>
-        <item name="android:popupElevation">8dp</item>
-        <item name="android:dropDownVerticalOffset">8dp</item>
-    </style>
-
 </resources>

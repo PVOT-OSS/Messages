@@ -78,50 +78,13 @@
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-        <org.prauga.messages.common.widget.QkTextView
-            android:id="@+id/messagesText"
-            android:layout_width="wrap_content"
-            android:layout_height="52dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:gravity="center_vertical"
-            android:text="@string/app_name"
-            android:textSize="27sp"
-            app:layout_constraintEnd_toStartOf="@id/cVTopBar3"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintHorizontal_chainStyle="packed"
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/inboxHeader"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/toolbar" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cVTopBar3"
-            android:layout_width="52dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?attr/selectableItemBackground"
-            app:cardBackgroundColor="@color/frost_surface"
-            app:cardCornerRadius="26dp"
-            app:cardElevation="6dp"
-            app:cardUseCompatPadding="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:strokeWidth="1dp">
-
-            <ImageView
-                android:id="@+id/menuIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/main_more_cd"
-                app:srcCompat="@drawable/ic_filter"
-                app:tint="?attr/colorOnSurface" />
-
-        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/filterGroup"
@@ -133,7 +96,7 @@
             android:layout_marginBottom="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/messagesText"
+            app:layout_constraintTop_toBottomOf="@id/inboxHeader"
             app:selectionRequired="true"
             app:singleLine="true"
             app:singleSelection="true">
